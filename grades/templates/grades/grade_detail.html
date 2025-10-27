@@ -1,0 +1,159 @@
+
+<!-- ========== templates/grades/grade_detail.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Détail de la note - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-star"></i> Détail de la note</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informations</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Étudiant:</strong><br>{{ grade.enrollment.student.user.get_full_name }}<br>
+                        <small class="text-muted">{{ grade.enrollment.student.student_number }}</small></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Cours:</strong><br>{{ grade.enrollment.course_section.course.code }} - {{ grade.enrollment.course_section.course.name }}<br>
+                        <small class="text-muted">Section {{ grade.enrollment.course_section.section_number }}</small></p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h6 class="mb-3">Détail des notes</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Examen Mi-Parcours (25%)</small>
+                                <h4 class="mb-0">{{ grade.midterm_exam|default:"-" }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Examen Final (35%)</small>
+                                <h4 class="mb-0">{{ grade.final_exam|default:"-" }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Travaux (20%)</small>
+                                <h4 class="mb-0">{{ grade.assignments|default:"-" }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Participation (10%)</small>
+                                <h4 class="mb-0">{{ grade.participation|default:"-" }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Projet (10%)</small>
+                                <h4 class="mb-0">{{ grade.project|default:"-" }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h6>Note Finale</h6>
+                                <h2 class="mb-0">{{ grade.final_grade|floatformat:2|default:"-" }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h6>Note Lettre</h6>
+                                <h2 class="mb-0">{{ grade.letter_grade|default:"-" }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if grade.comments %}
+                <hr>
+                <div class="mt-3">
+                    <h6>Commentaires du professeur</h6>
+                    <div class="alert alert-info">
+                        {{ grade.comments }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informations complémentaires</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Noté par:</strong><br>{{ grade.graded_by.user.get_full_name|default:"Non assigné" }}</p>
+                <p><strong>Dernière modification:</strong><br>{{ grade.updated_at|date:"d/m/Y H:i" }}</p>
+                <p><strong>Statut:</strong><br>
+                    {% if grade.is_passing %}
+                        <span class="badge bg-success">Réussi</span>
+                    {% elif grade.is_passing == False %}
+                        <span class="badge bg-danger">Échoué</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Non évalué</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        {% if history %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Historique des modifications</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for item in history %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ item.component }}</h6>
+                            <small>{{ item.modified_at|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <p class="mb-1"><small>{{ item.old_value }} → {{ item.new_value }}</small></p>
+                        <small class="text-muted">Par: {{ item.modified_by.user.get_full_name }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+{% endblock %}

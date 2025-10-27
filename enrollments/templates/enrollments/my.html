@@ -1,0 +1,114 @@
+<!-- ========== templates/enrollments/my_enrollments.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Mes Inscriptions - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-clipboard-check"></i> Mes Inscriptions</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h3>{{ total_enrolled }}</h3>
+                <p class="mb-0">Cours actifs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h3>{{ total_completed }}</h3>
+                <p class="mb-0">Cours complétés</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-danger text-white">
+            <div class="card-body">
+                <h3>{{ total_dropped }}</h3>
+                <p class="mb-0">Cours abandonnés</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'enrollments:available_sections' %}" class="btn btn-warning btn-lg w-100 h-100 d-flex align-items-center justify-content-center">
+            <div>
+                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                <p class="mb-0">Nouvelle inscription</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            {% for value, label in status_choices %}
+            <li class="nav-item">
+                <a class="nav-link {% if current_status == value %}active{% endif %}" 
+                   href="?status={{ value }}">
+                    {{ label }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-body">
+        {% if enrollments %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Cours</th>
+                        <th>Section</th>
+                        <th>Professeur</th>
+                        <th>Horaire</th>
+                        <th>Session</th>
+                        <th>Date d'inscription</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                        <td>
+                            <strong>{{ enrollment.course_section.course.code }}</strong><br>
+                            <small class="text-muted">{{ enrollment.course_section.course.name }}</small>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ enrollment.course_section.section_number }}</span></td>
+                        <td>{{ enrollment.course_section.professor.user.get_full_name }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ enrollment.course_section.get_day_of_week_display }}</span><br>
+                            <small>{{ enrollment.course_section.start_time|time:"H:i" }} - {{ enrollment.course_section.end_time|time:"H:i" }}</small>
+                        </td>
+                        <td><small>{{ enrollment.course_section.get_session_display }}</small></td>
+                        <td>{{ enrollment.enrollment_date|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'courses:section_detail' enrollment.course_section.id %}" class="btn btn-sm btn-info" title="Détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if enrollment.status == 'ENROLLED' %}
+                            <a href="{% url 'enrollments:drop_enrollment' enrollment.id %}" 
+                               class="btn btn-sm btn-danger" 
+                               title="Abandonner"
+                               onclick="return confirm('Voulez-vous vraiment abandonner ce cours ?')">
+                                <i class="fas fa-times"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Aucune inscription trouvée.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes sections - Notes - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-edit"></i> Saisie des notes - Mes sections</h2>
+        <p class="text-muted">Sélectionnez une section pour saisir ou consulter les notes</p>
+    </div>
+</div>
+
+{% if sections %}
+<div class="row">
+    {% for section in sections %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <span class="badge bg-light text-dark">{{ section.course.code }}</span>
+                    {{ section.course.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <small class="text-muted">Section {{ section.section_number }}</small>
+                </p>
+                
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <p class="mb-2">
+                            <small>
+                                <i class="fas fa-calendar"></i> {{ section.get_day_of_week_display }}
+                            </small>
+                        </p>
+                        <p class="mb-2">
+                            <small>
+                                <i class="fas fa-clock"></i> {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-2">
+                            <small>
+                                <i class="fas fa-door-open"></i> Salle: {{ section.room|default:"N/A" }}
+                            </small>
+                        </p>
+                        <p class="mb-2">
+                            <small>
+                                <i class="fas fa-users"></i> Étudiants: 
+                                <span class="badge bg-{% if section.enrolled_count >= section.max_students %}danger{% else %}success{% endif %}">
+                                    {{ section.enrolled_count }}
+                                </span>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'grades:grade_entry' section.id %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Saisir / Modifier les notes
+                    </a>
+                    <a href="{% url 'grades:grades_summary' section.id %}" class="btn btn-info">
+                        <i class="fas fa-eye"></i> Voir toutes les notes
+                    </a>
+                    <a href="{% url 'grades:course_statistics' section.id %}" class="btn btn-success">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>
+                    <i class="fas fa-calendar-alt"></i> 
+                    {{ section.get_session_display }} - {{ section.get_semester_display }} {{ section.year }}
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i> Vous n'avez aucune section assignée pour le moment.
+</div>
+{% endif %}
+
+<!-- Aide rapide -->
+<div class="card mt-4 bg-light">
+    <div class="card-body">
+        <h5><i class="fas fa-question-circle"></i> Aide rapide</h5>
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <h6><i class="fas fa-edit text-warning"></i> Saisir / Modifier les notes</h6>
+                <p class="small">Utilisez ce bouton pour entrer ou modifier les notes de vos étudiants. Vous pouvez saisir chaque composante (examen, travaux, etc.) et la note finale sera calculée automatiquement.</p>
+            </div>
+            <div class="col-md-4">
+                <h6><i class="fas fa-eye text-info"></i> Voir toutes les notes</h6>
+                <p class="small">Consultez un récapitulatif complet de toutes les notes déjà saisies pour cette section. Mode lecture seule avec possibilité d'impression.</p>
+            </div>
+            <div class="col-md-4">
+                <h6><i class="fas fa-chart-bar text-success"></i> Statistiques</h6>
+                <p class="small">Visualisez les statistiques de performance de la section : moyenne, distribution des notes, taux de réussite, etc.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

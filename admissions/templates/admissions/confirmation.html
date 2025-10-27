@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block authenticated_content %}
+<section class="bg-white py-16">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+        <div class="mb-8">
+            <svg class="w-20 h-20 text-success mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        
+        <h1 class="text-3xl font-crimson font-bold text-primary mb-4">
+            Candidature {% if candidature.statut == 'soumis' %}Soumise{% else %}Sauvegardée{% endif %} avec Succès!
+        </h1>
+        
+        <p class="text-lg text-gray-600 mb-8">
+            Merci {{ candidature.prenom }} {{ candidature.nom }}! 
+            {% if candidature.statut == 'soumis' %}
+            Nous avons bien reçu votre candidature pour le programme {{ candidature.get_programme_display }}.
+            {% else %}
+            Votre brouillon a été sauvegardé. Vous pouvez le compléter plus tard.
+            {% endif %}
+        </p>
+        
+        <div class="bg-surface rounded-xl p-6 mb-8 text-left">
+            <h3 class="font-bold text-primary mb-4">Détails de votre candidature:</h3>
+            <ul class="space-y-2 text-gray-600">
+                <li><strong>Numéro:</strong> #{{ candidature.id|stringformat:"05d" }}</li>
+                <li><strong>Email:</strong> {{ candidature.email }}</li>
+                <li><strong>Programme:</strong> {{ candidature.get_programme_display }}</li>
+                <li><strong>Date:</strong> {{ candidature.date_creation|date:"d/m/Y à H:i" }}</li>
+            </ul>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'portal:home_page_academic' %}" class="btn-primary">Retour à l'accueil</a>
+            <a href="{% url 'accounts:students_dashboard' %}" class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-lg font-semibold transition-all">
+                Accéder au Portail
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

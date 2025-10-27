@@ -1,0 +1,108 @@
+<!-- ========== templates/courses/my_courses.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Mes Cours - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-book"></i> {% if is_student %}Mes Cours{% else %}Mes Sections{% endif %}</h2>
+    </div>
+</div>
+
+{% if is_student %}
+<div class="card">
+    <div class="card-body">
+        {% if enrollments %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Cours</th>
+                        <th>Section</th>
+                        <th>Professeur</th>
+                        <th>Horaire</th>
+                        <th>Salle</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                        <td>
+                            <strong>{{ enrollment.course_section.course.code }}</strong><br>
+                            <small class="text-muted">{{ enrollment.course_section.course.name }}</small>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ enrollment.course_section.section_number }}</span></td>
+                        <td>{{ enrollment.course_section.professor.user.get_full_name }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ enrollment.course_section.get_day_of_week_display }}</span><br>
+                            <small>{{ enrollment.course_section.start_time|time:"H:i" }} - {{ enrollment.course_section.end_time|time:"H:i" }}</small>
+                        </td>
+                        <td>{{ enrollment.course_section.room|default:"N/A" }}</td>
+                        <td>
+                            <a href="{% url 'courses:section_detail' enrollment.course_section.id %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Vous n'êtes inscrit à aucun cours.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% elif is_professor %}
+<div class="card">
+    <div class="card-body">
+        {% if sections %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Cours</th>
+                        <th>Section</th>
+                        <th>Horaire</th>
+                        <th>Étudiants</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for section in sections %}
+                    <tr>
+                        <td>
+                            <strong>{{ section.course.code }}</strong><br>
+                            <small class="text-muted">{{ section.course.name }}</small>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ section.section_number }}</span></td>
+                        <td>
+                            <span class="badge bg-primary">{{ section.get_day_of_week_display }}</span><br>
+                            <small>{{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}</small>
+                        </td>
+                        <td><span class="badge bg-success">{{ section.enrolled_count }}/{{ section.max_students }}</span></td>
+                        <td>
+                            <a href="{% url 'courses:section_detail' section.id %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'grades:grade_entry' section.id %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Vous n'avez aucune section assignée.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

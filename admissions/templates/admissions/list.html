@@ -1,0 +1,1133 @@
+{% extends 'base_public.html' %}
+{% load static %}
+{% block title %}Accueil - FASCH{% endblock %}
+
+<!-- Hero Section -->
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #1e293b;
+            --secondary: #7C3AED;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+        }
+
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-crimson { font-family: 'Crimson Text', serif; }
+        
+        .bg-primary { background-color: var(--primary) !important; }
+        .bg-primary-900 { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%) !important; }
+        .bg-primary-100 { background-color: rgba(30, 58, 138, 0.1) !important; }
+        .bg-primary-50 { background-color: rgba(30, 58, 138, 0.05) !important; }
+        .bg-secondary { background-color: var(--secondary) !important; }
+        .bg-secondary-100 { background-color: rgba(124, 58, 237, 0.1) !important; }
+        .bg-secondary-50 { background-color: rgba(124, 58, 237, 0.05) !important; }
+        .bg-accent { background-color: var(--accent) !important; }
+        .bg-accent-100 { background-color: rgba(245, 158, 11, 0.1) !important; }
+        .bg-accent-90 { background-color: rgba(245, 158, 11, 0.9) !important; }
+        .bg-success { background-color: var(--success) !important; }
+        .bg-success-100 { background-color: rgba(16, 185, 129, 0.1) !important; }
+        .bg-success-50 { background-color: rgba(16, 185, 129, 0.05) !important; }
+        .bg-warning { background-color: var(--warning) !important; }
+        .bg-surface { background-color: var(--surface) !important; }
+        .bg-background { background-color: var(--background) !important; }
+        
+        .text-primary { color: var(--primary) !important; }
+        .text-secondary { color: var(--secondary) !important; }
+        .text-accent { color: var(--accent) !important; }
+        .text-success { color: var(--success) !important; }
+        .text-warning { color: var(--warning) !important; }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .btn-secondary-custom {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .shadow-soft { box-shadow: var(--shadow-soft) !important; }
+        .shadow-medium { box-shadow: var(--shadow-medium) !important; }
+        .shadow-large { box-shadow: var(--shadow-large) !important; }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .requirements-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .requirements-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-large) !important;
+        }
+        
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-line {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: -40px;
+            width: 2px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+        
+        .step-content {
+            margin-left: 50px;
+        }
+        
+        .tour-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large) !important;
+        }
+        
+        .tour-card img {
+            transition: transform 0.3s ease;
+        }
+        
+        .tour-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .scholarship-card {
+            transition: all 0.3s ease;
+        }
+        
+        .scholarship-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .ambassador-card {
+            transition: all 0.3s ease;
+        }
+        
+        .ambassador-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .ambassador-card img {
+            transition: transform 0.3s ease;
+        }
+        
+        .ambassador-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .faq-item {
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .text-balance {
+            text-wrap: balance;
+        }
+        
+        /* Form styling */
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .form-checkbox {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 8px center;
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            appearance: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-error {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .form-success {
+            color: #059669;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .deadline-banner {
+            background: rgba(245, 158, 11, 0.9) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1e40af;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .step-line {
+                left: 12px !important;
+            }
+            
+            .step-content {
+                margin-left: 40px !important;
+            }
+            
+            .tour-card img {
+                height: 200px !important;
+            }
+        }
+    </style>
+
+
+{% block public_content %}
+    <!-- Hero Section -->
+    <section class="position-relative overflow-hidden" style="min-height: 100vh;">
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-20"></div>
+        <div class="position-absolute top-0 start-0 w-100 h-100">
+            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2940&auto=format&fit=crop" 
+                 alt="Campus FASCH" class="w-100 h-100 object-fit-cover" 
+                 onerror="this.src='https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+        </div>
+        
+        <div class="container position-relative z-10 py-5" style="min-height: 100vh; display: flex; align-items: center;">
+            <div class="row justify-content-center text-center text-white">
+                <div class="col-12 col-lg-10">
+                    <h1 class="display-3 fw-bold font-playfair mb-4 text-balance">Votre Avenir Commence Ici</h1>
+                    <p class="lead fs-3 mb-5 opacity-90">Rejoignez FASCH et façonnez l'avenir des sciences humaines en Haïti. Découvrez nos programmes d'excellence et commencez votre candidature dès aujourd'hui.</p>
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <button onclick="scrollToApplication()" class="btn btn-secondary-custom btn-lg px-5 py-3">
+                            <i class="bi bi-file-earmark-plus me-2"></i>
+                            Commencer Ma Candidature
+                        </button>
+                        <button onclick="scrollToRequirements()" class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none transition-all">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Voir les Exigences
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admission Deadlines Banner -->
+        <div class="deadline-banner position-absolute bottom-0 start-0 end-0 py-3">
+            <div class="container">
+                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2 mb-2 mb-sm-0">
+                        <i class="bi bi-calendar3 text-white fs-5"></i>
+                        <span class="fw-semibold">Date limite d'admission: 15 Mars 2026</span>
+                    </div>
+                    <div id="countdown-timer" class="small fw-medium">
+                        <span id="days">182</span> jours restants
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="row g-4 text-center justify-content-center">
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-primary mb-2">94%</div>
+                    <div class="text-muted">Taux d'Acceptation</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-secondary mb-2">2,847</div>
+                    <div class="text-muted">Étudiants Inscrits</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-success mb-2">85%</div>
+                    <div class="text-muted">Bourses Accordées</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-accent mb-2">15</div>
+                    <div class="text-muted">Jours Traitement</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admission Requirements -->
+    <section id="requirements" class="bg-surface py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Exigences d'Admission</h2>
+                <p class="lead text-muted">Découvrez les critères d'admission pour chaque programme et préparez votre dossier de candidature</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Psychology Requirements -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card requirements-card h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-primary-100 rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-brain text-primary fs-5"></i>
+                                </div>
+                                <h3 class="h5 font-crimson fw-bold text-primary mb-0">Psychologie</h3>
+                            </div>
+                            <ul class="space-y-2 small text-muted mb-4">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Baccalauréat scientifique ou littéraire</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Moyenne générale ≥ 12/20</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Test de français écrit et oral</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Entretien de motivation</span>
+                                </li>
+                            </ul>
+                            <div class="border-top pt-3">
+                                <span class="small text-muted">Places disponibles: <strong>120</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sociology Requirements -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card requirements-card h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-secondary-100 rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-people-fill text-secondary fs-5"></i>
+                                </div>
+                                <h3 class="h5 font-crimson fw-bold text-primary mb-0">Sociologie</h3>
+                            </div>
+                            <ul class="space-y-2 small text-muted mb-4">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Baccalauréat toutes séries</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Moyenne générale ≥ 11/20</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Essai sur un sujet social</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Connaissance de l'histoire d'Haïti</span>
+                                </li>
+                            </ul>
+                            <div class="border-top pt-3">
+                                <span class="small text-muted">Places disponibles: <strong>80</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Work Requirements -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card requirements-card h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-success-100 rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-hand-thumbs-up-fill text-success fs-5"></i>
+                                </div>
+                                <h3 class="h5 font-crimson fw-bold text-primary mb-0">Travail Social</h3>
+                            </div>
+                            <ul class="space-y-2 small text-muted mb-4">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Baccalauréat toutes séries</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Moyenne générale ≥ 10/20</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Expérience bénévolat (recommandée)</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Lettre de motivation détaillée</span>
+                                </li>
+                            </ul>
+                            <div class="border-top pt-3">
+                                <span class="small text-muted">Places disponibles: <strong>60</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication Requirements -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card requirements-card h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-accent-100 rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-megaphone-fill text-accent fs-5"></i>
+                                </div>
+                                <h3 class="h5 font-crimson fw-bold text-primary mb-0">Communication</h3>
+                            </div>
+                            <ul class="space-y-2 small text-muted mb-4">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Baccalauréat littéraire préféré</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Moyenne générale ≥ 12/20</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Portfolio créatif (optionnel)</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
+                                    <span>Test d'expression écrite</span>
+                                </li>
+                            </ul>
+                            <div class="border-top pt-3">
+                                <span class="small text-muted">Places disponibles: <strong>100</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Tracker -->
+    <section id="application" class="bg-white py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Suivez Votre Candidature</h2>
+                <p class="lead text-muted">Processus transparent et suivi en temps réel de votre dossier d'admission</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <!-- Application Status Steps -->
+                    <div class="position-relative mb-5">
+                        <div class="step-line d-none d-md-block"></div>
+                        
+                        <div class="space-y-4">
+                            <!-- Step 1: Application Submission -->
+                            <div class="position-relative d-flex align-items-center">
+                                <div class="step-circle bg-success z-2">
+                                    <i class="bi bi-check text-white"></i>
+                                </div>
+                                <div class="step-content flex-grow-1 ms-4">
+                                    <h3 class="h5 font-crimson fw-bold text-primary mb-1">Soumission de Candidature</h3>
+                                    <p class="text-muted mb-2">Remplissez le formulaire en ligne et téléchargez vos documents</p>
+                                    <span class="badge bg-success">Complété</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Document Review -->
+                            <div class="position-relative d-flex align-items-center">
+                                <div class="step-circle bg-warning z-2">
+                                    <i class="bi bi-clock text-white"></i>
+                                </div>
+                                <div class="step-content flex-grow-1 ms-4">
+                                    <h3 class="h5 font-crimson fw-bold text-primary mb-1">Révision des Documents</h3>
+                                    <p class="text-muted mb-2">Notre équipe examine votre dossier académique</p>
+                                    <span class="badge bg-warning text-dark">En cours (7-10 jours)</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Interview -->
+                            <div class="position-relative d-flex align-items-center">
+                                <div class="step-circle bg-light border z-2">
+                                    <i class="bi bi-person text-muted"></i>
+                                </div>
+                                <div class="step-content flex-grow-1 ms-4">
+                                    <h3 class="h5 font-crimson fw-bold text-muted mb-1">Entretien</h3>
+                                    <p class="text-muted mb-2">Entretien avec un membre de la faculté</p>
+                                    <span class="badge bg-secondary text-white">En attente</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Final Decision -->
+                            <div class="position-relative d-flex align-items-center">
+                                <div class="step-circle bg-light border z-2">
+                                    <i class="bi bi-envelope text-muted"></i>
+                                </div>
+                                <div class="step-content flex-grow-1 ms-4">
+                                    <h3 class="h5 font-crimson fw-bold text-muted mb-1">Décision Finale</h3>
+                                    <p class="text-muted mb-2">Notification de l'acceptation ou du refus</p>
+                                    <span class="badge bg-secondary text-white">En attente</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Application Form -->
+                    <div class="card bg-surface shadow-soft">
+                        <div class="card-body p-4 p-md-5">
+                            <h3 class="h3 font-crimson fw-bold text-primary mb-4">Commencer Votre Candidature</h3>
+                            
+                            <!-- Messages -->
+                            <div id="form-messages" class="mb-4" style="display: none;"></div>
+                            
+                            <form id="admission-form" class="space-y-4">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-input" id="prenom" name="prenom" required>
+                                        <div class="form-error" id="prenom-error"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="nom" class="form-label">Nom de famille <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-input" id="nom" name="nom" required>
+                                        <div class="form-error" id="nom-error"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-input" id="email" name="email" required>
+                                        <div class="form-error" id="email-error"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="telephone" class="form-label">Téléphone <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-input" id="telephone" name="telephone" required>
+                                        <div class="form-error" id="telephone-error"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="programme" class="form-label">Programme souhaité <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="programme" name="programme" required>
+                                        <option value="">Sélectionnez un programme</option>
+                                        <option value="psychologie">Psychologie</option>
+                                        <option value="sociologie">Sociologie</option>
+                                        <option value="travail-social">Travail Social</option>
+                                        <option value="communication">Communication</option>
+                                    </select>
+                                    <div class="form-error" id="programme-error"></div>
+                                </div>
+
+                                <div>
+                                    <label for="lettre_motivation" class="form-label">Lettre de motivation <span class="text-danger">*</span></label>
+                                    <textarea class="form-textarea" id="lettre_motivation" name="lettre_motivation" placeholder="Pourquoi souhaitez-vous rejoindre FASCH ? Quels sont vos objectifs professionnels ?..." required></textarea>
+                                    <div class="form-error" id="lettre_motivation-error"></div>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="checkbox" class="form-checkbox" id="accepte_conditions" name="accepte_conditions" required>
+                                    <label for="accepte_conditions" class="small text-muted mb-0">
+                                        J'accepte les <a href="#" class="text-primary fw-semibold">conditions d'admission</a> et la <a href="#" class="text-primary fw-semibold">politique de confidentialité</a>
+                                    </label>
+                                    <div class="form-error" id="accepte_conditions-error"></div>
+                                </div>
+
+                                <div class="d-flex flex-column flex-sm-row gap-3">
+                                    <button type="submit" class="btn btn-primary-custom flex-grow-1">
+                                        <i class="bi bi-send me-2"></i>
+                                        Soumettre Ma Candidature
+                                    </button>
+                                    <button type="button" class="btn border-2 border-secondary text-secondary px-4 py-3 rounded fw-semibold transition-all" onclick="saveDraft()">
+                                        <i class="bi bi-save me-2"></i>
+                                        Sauvegarder le Brouillon
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Campus Tour -->
+    <section class="bg-surface py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Visite Virtuelle du Campus</h2>
+                <p class="lead text-muted">Découvrez nos installations modernes et notre environnement d'apprentissage exceptionnel</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Library Tour -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card tour-card h-100" onclick="openVirtualTour('library')">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2940&auto=format&fit=crop" 
+                                 alt="Bibliothèque FASCH" class="w-100 h-100 object-fit-cover" 
+                                 onerror="this.src='https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-60"></div>
+                            <div class="position-absolute bottom-0 start-0 p-3 text-white">
+                                <h3 class="h5 font-crimson fw-bold">Bibliothèque Centrale</h3>
+                                <p class="small opacity-90">50,000 ouvrages spécialisés</p>
+                            </div>
+                            <div class="position-absolute top-3 end-3 bg-white bg-opacity-90 rounded-circle p-2">
+                                <i class="bi bi-book text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-4">Explorez notre bibliothèque moderne avec espaces d'étude individuels et collectifs, ressources numériques et archives historiques.</p>
+                            <div class="d-flex align-items-center text-primary fw-semibold">
+                                <span>Commencer la visite</span>
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classrooms Tour -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card tour-card h-100" onclick="openVirtualTour('classrooms')">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2940&auto=format&fit=crop" 
+                                 alt="Salles de classe FASCH" class="w-100 h-100 object-fit-cover" 
+                                 onerror="this.src='https://images.pixabay.com/photo/2016/02/19/11/19/conference-room-1209978_1280.jpg'; this.onerror=null;" />
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-60"></div>
+                            <div class="position-absolute bottom-0 start-0 p-3 text-white">
+                                <h3 class="h5 font-crimson fw-bold">Salles de Classe</h3>
+                                <p class="small opacity-90">Équipement multimédia moderne</p>
+                            </div>
+                            <div class="position-absolute top-3 end-3 bg-white bg-opacity-90 rounded-circle p-2">
+                                <i class="bi bi-easel-fill text-secondary"></i>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-4">Découvrez nos amphithéâtres et salles de séminaire équipés des dernières technologies pour un apprentissage interactif.</p>
+                            <div class="d-flex align-items-center text-primary fw-semibold">
+                                <span>Commencer la visite</span>
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Life Tour -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card tour-card h-100" onclick="openVirtualTour('student-life')">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2942&auto=format&fit=crop" 
+                                 alt="Vie étudiante FASCH" class="w-100 h-100 object-fit-cover" 
+                                 onerror="this.src='https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-60"></div>
+                            <div class="position-absolute bottom-0 start-0 p-3 text-white">
+                                <h3 class="h5 font-crimson fw-bold">Espaces Étudiants</h3>
+                                <p class="small opacity-90">Cafétéria, jardins, clubs</p>
+                            </div>
+                            <div class="position-absolute top-3 end-3 bg-white bg-opacity-90 rounded-circle p-2">
+                                <i class="bi bi-people text-success"></i>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-4">Visitez nos espaces de détente, la cafétéria, les jardins et découvrez la richesse de la vie étudiante à FASCH.</p>
+                            <div class="d-flex align-items-center text-primary fw-semibold">
+                                <span>Commencer la visite</span>
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Aid & Scholarships -->
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Aide Financière & Bourses</h2>
+                <p class="lead text-muted">Nous rendons l'éducation de qualité accessible à tous les étudiants méritants</p>
+            </div>
+
+            <div class="row g-5">
+                <!-- Scholarship Types -->
+                <div class="col-lg-8">
+                    <h3 class="h3 font-crimson fw-bold text-primary mb-4">Types de Bourses Disponibles</h3>
+                    
+                    <!-- Merit Scholarship -->
+                    <div class="card scholarship-card mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="bg-primary rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-award text-white"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h4 class="h5 font-crimson fw-bold text-primary mb-2">Bourse d'Excellence Académique</h4>
+                                    <p class="text-muted mb-3">Pour les étudiants avec une moyenne ≥ 15/20 au baccalauréat</p>
+                                    <div class="d-flex align-items-center gap-3 small">
+                                        <span class="badge bg-primary text-white">75% des frais</span>
+                                        <span class="text-muted">50 bourses disponibles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Need-based Scholarship -->
+                    <div class="card scholarship-card mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-heart-fill text-white"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h4 class="h5 font-crimson fw-bold text-primary mb-2">Bourse Sociale</h4>
+                                    <p class="text-muted mb-3">Aide financière basée sur les besoins familiaux</p>
+                                    <div class="d-flex align-items-center gap-3 small">
+                                        <span class="badge bg-secondary text-white">50% des frais</span>
+                                        <span class="text-muted">100 bourses disponibles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work-Study Program -->
+                    <div class="card scholarship-card">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="bg-success rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-briefcase text-white"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h4 class="h5 font-crimson fw-bold text-primary mb-2">Programme Travail-Études</h4>
+                                    <p class="text-muted mb-3">Travail à temps partiel sur le campus pour financer vos études</p>
+                                    <div class="d-flex align-items-center gap-3 small">
+                                        <span class="badge bg-success text-white">15h/semaine</span>
+                                        <span class="text-muted">30 postes disponibles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Calculator -->
+                <div class="col-lg-4">
+                    <div class="card shadow-soft">
+                        <div class="card-body p-4">
+                            <h3 class="h4 font-crimson fw-bold text-primary mb-4">Calculateur de Coûts</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="program-cost" class="form-label">Programme d'études</label>
+                                    <select id="program-cost" class="form-select" onchange="calculateCosts()">
+                                        <option value="25000">Psychologie - 25,000 HTG/semestre</option>
+                                        <option value="23000">Sociologie - 23,000 HTG/semestre</option>
+                                        <option value="22000">Travail Social - 22,000 HTG/semestre</option>
+                                        <option value="26000">Communication - 26,000 HTG/semestre</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="scholarship-type" class="form-label">Type de bourse</label>
+                                    <select id="scholarship-type" class="form-select" onchange="calculateCosts()">
+                                        <option value="0">Aucune bourse</option>
+                                        <option value="75">Bourse d'Excellence (75%)</option>
+                                        <option value="50">Bourse Sociale (50%)</option>
+                                        <option value="25">Bourse Partielle (25%)</option>
+                                    </select>
+                                </div>
+
+                                <div class="bg-white border border-primary-200 rounded p-4">
+                                    <h4 class="h6 font-crimson fw-bold text-primary mb-3">Estimation des Coûts Annuels</h4>
+                                    <div class="space-y-2 small">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted">Frais de scolarité (2 semestres)</span>
+                                            <span id="tuition-cost" class="fw-semibold">50,000 HTG</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted">Réduction bourse</span>
+                                            <span id="scholarship-reduction" class="fw-semibold text-success">-0 HTG</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted">Frais d'inscription</span>
+                                            <span class="fw-semibold">2,500 HTG</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted">Matériel pédagogique</span>
+                                            <span class="fw-semibold">3,000 HTG</span>
+                                        </div>
+                                        <hr class="my-2" />
+                                        <div class="d-flex justify-content-between fs-5 fw-bold text-primary">
+                                            <span>Total à payer</span>
+                                            <span id="total-cost">55,500 HTG</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button class="btn btn-primary-custom w-100" onclick="requestScholarship()">
+                                        <i class="bi bi-award me-2"></i>
+                                        Demander une Bourse
+                                    </button>
+                                    <p class="small text-muted mt-2 mb-0">Les demandes de bourse sont traitées en 5-7 jours ouvrables</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Ambassadors -->
+    <section class="bg-surface py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Rencontrez Nos Ambassadeurs Étudiants</h2>
+                <p class="lead text-muted">Obtenez des conseils authentiques de nos étudiants actuels sur la vie universitaire à FASCH</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Ambassador 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card ambassador-card h-100 text-center">
+                        <div class="card-body p-4">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616c9c1e4d3?q=80&w=2787&auto=format&fit=crop" 
+                                 alt="Marie-Carla Joseph" class="rounded-circle mx-auto mb-3" 
+                                 style="width: 96px; height: 96px; object-fit: cover;"
+                                 onerror="this.src='https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-2">Marie-Carla Joseph</h3>
+                            <p class="text-secondary fw-semibold mb-2">3ème année - Psychologie</p>
+                            <p class="text-muted small mb-4">
+                                "FASCH m'a donné les outils pour comprendre l'esprit humain et aider ma communauté. Les professeurs sont exceptionnels!"
+                            </p>
+                            <div class="d-flex justify-content-center gap-2 mb-4">
+                                <span class="badge bg-primary-100 text-primary small">Psychologie clinique</span>
+                                <span class="badge bg-secondary-100 text-secondary small">Recherche</span>
+                            </div>
+                            <button onclick="contactAmbassador('marie-carla')" class="btn btn-primary-custom btn-sm">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                Contacter Marie-Carla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambassador 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card ambassador-card h-100 text-center">
+                        <div class="card-body p-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2787&auto=format&fit=crop" 
+                                 alt="Jean-Baptiste Morin" class="rounded-circle mx-auto mb-3" 
+                                 style="width: 96px; height: 96px; object-fit: cover;"
+                                 onerror="this.src='https://images.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg'; this.onerror=null;" />
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-2">Jean-Baptiste Morin</h3>
+                            <p class="text-secondary fw-semibold mb-2">4ème année - Sociologie</p>
+                            <p class="text-muted small mb-4">
+                                "Étudier la société haïtienne à FASCH m'a ouvert les yeux sur les enjeux de développement de notre pays."
+                            </p>
+                            <div class="d-flex justify-content-center gap-2 mb-4">
+                                <span class="badge bg-primary-100 text-primary small">Sociologie urbaine</span>
+                                <span class="badge bg-success-100 text-success small">Développement</span>
+                            </div>
+                            <button onclick="contactAmbassador('jean-baptiste')" class="btn btn-primary-custom btn-sm">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                Contacter Jean-Baptiste
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambassador 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card ambassador-card h-100 text-center">
+                        <div class="card-body p-4">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2761&auto=format&fit=crop" 
+                                 alt="Nadège Pierre" class="rounded-circle mx-auto mb-3" 
+                                 style="width: 96px; height: 96px; object-fit: cover;"
+                                 onerror="this.src='https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-2">Nadège Pierre</h3>
+                            <p class="text-secondary fw-semibold mb-2">2ème année - Travail Social</p>
+                            <p class="text-muted small mb-4">
+                                "Le programme de travail social m'a préparée à faire une vraie différence dans les communautés rurales."
+                            </p>
+                            <div class="d-flex justify-content-center gap-2 mb-4">
+                                <span class="badge bg-primary-100 text-primary small">Intervention sociale</span>
+                                <span class="badge bg-accent-100 text-accent small">Communautaire</span>
+                            </div>
+                            <button onclick="contactAmbassador('nadege')" class="btn btn-primary-custom btn-sm">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                Contacter Nadège
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold font-crimson text-primary mb-4">Questions Fréquemment Posées</h2>
+                <p class="lead text-muted">Trouvez rapidement les réponses à vos questions sur l'admission à FASCH</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="space-y-3">
+                        <!-- FAQ Item 1 -->
+                        <div class="card faq-item border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link w-100 text-start p-4 fw-semibold text-primary text-decoration-none" onclick="toggleFAQ(1)">
+                                    <span>Quand commencent les inscriptions pour l'année académique 2026-2027?</span>
+                                    <i id="faq-icon-1" class="bi bi-chevron-down float-end faq-icon"></i>
+                                </button>
+                            </div>
+                            <div id="faq-content-1" class="card-body p-0 border-top collapse">
+                                <div class="p-4">
+                                    <p class="text-muted mb-0">Les inscriptions pour l'année académique 2026-2027 ont commencé le 1er janvier 2026 et se terminent le 15 mars 2026. Nous encourageons les candidats à soumettre leur dossier le plus tôt possible car les places sont limitées dans chaque programme.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 2 -->
+                        <div class="card faq-item border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link w-100 text-start p-4 fw-semibold text-primary text-decoration-none" onclick="toggleFAQ(2)">
+                                    <span>Puis-je postuler à plusieurs programmes simultanément?</span>
+                                    <i id="faq-icon-2" class="bi bi-chevron-down float-end faq-icon"></i>
+                                </button>
+                            </div>
+                            <div id="faq-content-2" class="card-body p-0 border-top collapse">
+                                <div class="p-4">
+                                    <p class="text-muted mb-0">Oui, vous pouvez postuler à un maximum de deux programmes. Cependant, vous devrez indiquer votre ordre de préférence et payer des frais d'inscription pour chaque programme. Si vous êtes accepté dans votre premier choix, votre candidature pour le second programme sera automatiquement annulée.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 3 -->
+                        <div class="card faq-item border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link w-100 text-start p-4 fw-semibold text-primary text-decoration-none" onclick="toggleFAQ(3)">
+                                    <span>Quels documents dois-je fournir pour ma candidature?</span>
+                                    <i id="faq-icon-3" class="bi bi-chevron-down float-end faq-icon"></i>
+                                </button>
+                            </div>
+                            <div id="faq-content-3" class="card-body p-0 border-top collapse">
+                                <div class="p-4">
+                                    <p class="text-muted mb-0">Documents requis: diplôme de baccalauréat certifié, relevé de notes du baccalauréat, acte de naissance, 2 photos d'identité récentes, lettre de motivation, certificat médical, et pour certains programmes, des documents supplémentaires comme un portfolio ou des lettres de recommandation.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 4 -->
+                        <div class="card faq-item border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link w-100 text-start p-4 fw-semibold text-primary text-decoration-none" onclick="toggleFAQ(4)">
+                                    <span>Y a-t-il des possibilités de logement sur le campus?</span>
+                                    <i id="faq-icon-4" class="bi bi-chevron-down float-end faq-icon"></i>
+                                </button>
+                            </div>
+                            <div id="faq-content-4" class="card-body p-0 border-top collapse">
+                                <div class="p-4">
+                                    <p class="text-muted mb-0">FASCH ne dispose pas actuellement de résidences universitaires sur le campus. Cependant, nous maintenons une liste de logements recommandés près de l'université et pouvons vous aider à trouver des options d'hébergement abordables. Notre service aux étudiants organise également des sessions d'information sur le logement.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 5 -->
+                        <div class="card faq-item border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link w-100 text-start p-4 fw-semibold text-primary text-decoration-none" onclick="toggleFAQ(5)">
+                                    <span>Comment puis-je financer mes études si je n'obtiens pas de bourse?</span>
+                                    <i id="faq-icon-5" class="bi bi-chevron-down float-end faq-icon"></i>
+                                </button>
+                            </div>
+                            <div id="faq-content-5" class="card-body p-0 border-top collapse">
+                                <div class="p-4">
+                                    <p class="text-muted mb-0">Plusieurs options s'offrent à vous: plans de paiement échelonnés sans intérêt, programme travail-études sur le campus, partenariats avec des banques locales pour des prêts étudiants à taux préférentiels, et possibilité de bourses partielles en cours d'études basées sur les performances académiques.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-primary text-white py-5">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8">
+                    <h2 class="display-3 fw-bold font-playfair mb-4">Prêt à Rejoindre FASCH ?</h2>
+                    <p class="fs-2 opacity-90 mb-4">Ne manquez pas cette opportunité de façonner votre avenir. Les places sont limitées et la date limite approche.</p>
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <button onclick="scrollToApplication()" class="btn btn-secondary-custom btn-lg px-5 py-3">
+                            <i class="bi bi-file-earmark-plus me-2"></i>
+                            Commencer Ma Candidature
+                        </button>
+                        <a href="#" class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none transition-all">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Accès Portail Étudiant
+                        </a>
+                    </div>
+                    <p class="small opacity-75 mt-4 mb-0">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Date limite: 15 Mars 2026 - <span id="days-remaining">182 jours restants</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    {% endblock %}

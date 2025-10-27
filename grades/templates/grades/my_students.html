@@ -1,0 +1,152 @@
+
+<!-- ========== templates/grades/my_students.html ========== -->
+{% extends 'base.html' %}
+
+{% block title %}Mes Étudiants - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2><i class="fas fa-user-graduate"></i> Mes Étudiants</h2>
+        <p class="text-muted">{{ total_students }} étudiant(s) dans mes cours</p>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'grades:palmares' %}" class="btn btn-warning">
+            <i class="fas fa-trophy"></i> Voir le Palmarès
+        </a>
+    </div>
+</div>
+
+<!-- Recherche -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Rechercher par nom ou numéro étudiant..." 
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Rechercher
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Liste des étudiants -->
+{% if page_obj %}
+    {% for student_data in page_obj %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>{{ student_data.student.user.get_full_name }}</h5>
+                    <p class="text-muted mb-1">
+                        <i class="fas fa-id-card"></i> {{ student_data.student.student_number }}
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="fas fa-envelope"></i> {{ student_data.student.user.email }}
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-building"></i> {{ student_data.student.department.name }}
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6 class="text-muted mb-2">GPA</h6>
+                        <h2 class="mb-0 {% if student_data.gpa >= 3.0 %}text-success{% elif student_data.gpa >= 2.0 %}text-primary{% else %}text-warning{% endif %}">
+                            {{ student_data.gpa|floatformat:2 }}
+                        </h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6 class="text-muted mb-2">Cours suivis</h6>
+                        <h2 class="mb-0">{{ student_data.courses|length }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-3 text-end">
+                    <button type="button" class="btn btn-info btn-sm mb-2" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#courses{{ student_data.student.id }}">
+                        <i class="fas fa-eye"></i> Voir les cours
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Cours de l'étudiant (collapsible) -->
+            <div class="collapse mt-3" id="courses{{ student_data.student.id }}">
+                <hr>
+                <h6>Cours inscrits:</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Nom du cours</th>
+                                <th>Section</th>
+                                <th class="text-center">Crédits</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course_info in student_data.courses %}
+                            <tr>
+                                <td><strong>{{ course_info.course.code }}</strong></td>
+                                <td>{{ course_info.course.name }}</td>
+                                <td>Section {{ course_info.section.section_number }}</td>
+                                <td class="text-center">{{ course_info.course.credits }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'grades:grade_entry' course_info.section.id %}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Noter
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Précédent
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Suivant
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> Aucun étudiant trouvé.
+    </div>
+{% endif %}
+{% endblock %}

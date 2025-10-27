@@ -1,0 +1,96 @@
+/* ---------- THEME FASCH NAVBAR (Bootstrap → Tailwind look) ---------- */
+:root {
+  --fasch-primary: #1E3A8A;
+  --fasch-primary-600: #2563EB;
+  --fasch-gray-700: #374151;
+  --fasch-gray-400: #9CA3AF;
+  --fasch-surface: #F8FAFC;
+}
+
+.navbar.shadow-soft {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.navbar.bg-white {
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+}
+.navbar-brand small {
+  color: #6B7280;
+  font-size: 0.8rem;
+}
+
+/* Liens */
+.navbar-nav .nav-link {
+  color: var(--fasch-gray-700);
+  border-radius: .375rem;
+  transition: all .2s ease;
+  font-size: 0.95rem;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--fasch-primary);
+}
+.navbar-nav .nav-link.text-primary {
+  font-weight: 600;
+  color: var(--fasch-primary);
+}
+
+/* Boutons arrondis */
+.btn-primary-custom {
+  background-color: var(--fasch-primary);
+  border-color: var(--fasch-primary);
+  color: #fff !important;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.12);
+}
+.btn-primary-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(30, 58, 138, 0.16);
+}
+
+.btn-outline-primary {
+  color: var(--fasch-primary);
+  border-color: rgba(30, 58, 138, 0.2);
+  border-radius: 999px;
+  font-weight: 600;
+}
+.btn-outline-primary:hover {
+  background-color: var(--fasch-primary);
+  color: #fff !important;
+}
+
+/* Mobile menu */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: var(--fasch-surface);
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.06);
+  }
+  .navbar-collapse .nav-link {
+    display: block;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+  }
+  .navbar-collapse .nav-link:hover {
+    background-color: rgba(30, 58, 138, 0.05);
+  }
+}
+
+/* Lang switcher */
+.lang-switch button {
+  background: none;
+  border: none;
+  color: var(--fasch-primary);
+  font-weight: 600;
+}
+.lang-switch .divider {
+  color: var(--fasch-gray-400);
+  margin: 0 .5rem;
+}

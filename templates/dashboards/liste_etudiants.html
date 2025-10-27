@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block authenticated_content %}
+<div class="container mt-4">
+  <h2>Liste des étudiants</h2>
+
+  <form method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ search|default:'' }}">
+
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+  </form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Étudiant</th>
+        <th>Département</th>
+        <th>Email</th>
+        <th>Niveau</th>
+        <th>Téléphone</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for etu in page_obj %}
+      <tr>
+        <td>
+
+        <strong>{{ etu.student_profile.student_number }}</strong><br>
+        <small>{{ etu.student_profile.user.get_full_name }}</small>
+        </td>
+
+        <td>{{ etu.student_profile.department.name }}</td>
+        <td>{{ etu.email }}</td>
+        <td>{{ etu.student_profile.get_current_year_display }}</td>
+        <td>{{ etu.phone_number }}</td>
+
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">Aucun etudiant trouvé.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+                {% include 'partials/pagination.html' %}
+
+{% endblock %}

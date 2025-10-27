@@ -1,0 +1,336 @@
+# Guide de Démarrage Rapide - Système FASCH
+
+## 📋 Checklist de mise en place
+
+### 1. Structure des dossiers à créer
+
+```
+fasch_university/
+├── accounts/
+│   └── management/
+│       └── commands/
+├── departments/
+│   └── management/
+│       └── commands/
+│           └── load_departments.py
+├── courses/
+├── enrollments/
+├── grades/
+├── templates/
+│   ├── accounts/
+│   │   ├── login.html
+│   │   ├── change_password.html
+│   │   ├── profile.html
+│   │   ├── user_list.html
+│   │   ├── user_create.html
+│   │   └── user_update.html
+│   ├── courses/
+│   │   ├── course_list.html
+│   │   ├── course_detail.html
+│   │   ├── course_form.html
+│   │   ├── section_list.html
+│   │   ├── section_detail.html
+│   │   ├── section_form.html
+│   │   └── my_courses.html
+│   ├── enrollments/
+│   │   ├── my_enrollments.html
+│   │   ├── available_sections.html
+│   │   ├── enrollment_list.html
+│   │   └── enrollment_history.html
+│   ├── grades/
+│   │   ├── my_grades.html
+│   │   ├── grade_entry.html
+│   │   ├── grade_list.html
+│   │   ├── grade_detail.html
+│   │   ├── professor_sections.html
+│   │   ├── transcript.html
+│   │   └── course_statistics.html
+│   ├── base.html
+│   ├── home.html
+│   ├── dashboard_student.html
+│   ├── dashboard_professor.html
+│   └── dashboard_admin.html
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── media/
+│   └── profiles/
+├── data/
+│   └── departments.csv
+└── fasch_config/
+    ├── settings.py
+    ├── urls.py
+    └── views.py
+```
+
+### 2. Fichiers __init__.py nécessaires
+
+Créer des fichiers `__init__.py` vides dans :
+- `accounts/management/`
+- `accounts/management/commands/`
+- `departments/management/`
+- `departments/management/commands/`
+
+### 3. Fichier requirements.txt complet
+
+```txt
+Django==4.2
+mysqlclient
+python-decouple
+Pillow
+```
+
+### 4. Exemple de fichier .env
+
+```env
+SECRET_KEY=django-insecure-your-very-long-secret-key-here-change-this
+DEBUG=True
+DB_NAME=fasch_university_db
+DB_USER=root
+DB_PASSWORD=
+DB_HOST=127.0.0.1
+DB_PORT=3306
+```
+
+### 5. Fichier data/departments.csv
+
+```csv
+code,name,description
+PSYCHO,Psychologie,Département de Psychologie
+COMM,Communication sociale,Département de Communication sociale
+SOCIO,Sociologie,Département de Sociologie
+SERVSOC,Service social,Département de Service social
+```
+
+## 🚀 Commandes de démarrage
+
+### Installation initiale
+
+```bash
+# 1. Créer l'environnement virtuel
+python -m venv venv
+
+# 2. Activer l'environnement (Windows)
+venv\Scripts\activate
+# OU (Linux/Mac)
+source venv/bin/activate
+
+# 3. Installer les dépendances
+pip install -r requirements.txt
+
+# 4. Créer les migrations
+python manage.py makemigrations accounts
+python manage.py makemigrations departments
+python manage.py makemigrations courses
+python manage.py makemigrations enrollments
+python manage.py makemigrations grades
+
+# 5. Appliquer les migrations
+python manage.py migrate
+
+# 6. Créer le superuser
+python manage.py createsuperuser
+
+# 7. Charger les départements
+python manage.py load_departments
+
+# 8. Collecter les fichiers statiques
+python manage.py collectstatic --noinput
+
+# 9. Lancer le serveur
+python manage.py runserver
+```
+
+## 📝 Ordre de création des données
+
+1. **Départements** (via commande ou admin)
+2. **Administrateurs** (via interface admin)
+3. **Professeurs** (assigner aux départements)
+4. **Cours** (par département et année)
+5. **Sections de cours** (avec professeurs et horaires)
+6. **Étudiants** (assigner aux départements et années)
+7. **Inscriptions** (les étudiants s'inscrivent ou admin inscrit)
+8. **Notes** (les professeurs saisissent les notes)
+
+## 🔑 Identifiants par défaut
+
+### Superuser (à créer)
+- Email : votre-email@example.com
+- Mot de passe : celui que vous choisissez
+
+### Utilisateurs créés par admin
+- Mot de passe temporaire : `TempPass2024!`
+- Doivent changer à la première connexion
+
+## 🎯 URLs principales
+
+```
+http://127.0.0.1:8000/                          # Page d'accueil
+http://127.0.0.1:8000/accounts/login/           # Connexion
+http://127.0.0.1:8000/dashboard/                # Tableau de bord
+http://127.0.0.1:8000/admin/                    # Interface admin Django
+http://127.0.0.1:8000/accounts/users/           # Gestion utilisateurs (admin)
+http://127.0.0.1:8000/courses/                  # Liste des cours
+http://127.0.0.1:8000/enrollments/available/    # Inscriptions (étudiant)
+http://127.0.0.1:8000/grades/my-grades/         # Mes notes (étudiant)
+http://127.0.0.1:8000/grades/professor/sections/ # Saisie notes (professeur)
+```
+
+## 🛠️ Commandes utiles
+
+```bash
+# Créer une nouvelle migration
+python manage.py makemigrations
+
+# Voir le SQL d'une migration
+python manage.py sqlmigrate accounts 0001
+
+# Vérifier les problèmes
+python manage.py check
+
+# Créer un superuser
+python manage.py createsuperuser
+
+# Lancer les tests
+python manage.py test
+
+# Lancer le shell Django
+python manage.py shell
+
+# Vider la base de données
+python manage.py flush
+```
+
+## 🐛 Résolution de problèmes courants
+
+### Erreur de connexion MySQL
+```bash
+# Vérifier que XAMPP MySQL est démarré
+# Vérifier les identifiants dans .env
+# Tester la connexion MySQL via phpMyAdmin
+```
+
+### Erreur "No module named 'mysqlclient'"
+```bash
+pip install mysqlclient
+# Si erreur sur Windows, installer:
+# https://www.lfd.uci.edu/~gohlke/pythonlibs/#mysqlclient
+```
+
+### Erreur de migrations
+```bash
+# Supprimer tous les fichiers de migration sauf __init__.py
+# Supprimer la base de données
+# Recréer la base de données
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Static files non chargés
+```bash
+python manage.py collectstatic
+# Vérifier STATIC_ROOT et STATIC_URL dans settings.py
+```
+
+## 📚 Documentation des rôles
+
+### SUPERUSER
+- Accès complet au système
+- Peut tout faire
+
+### ADMIN
+- Créer/modifier utilisateurs
+- Gérer cours et sections
+- Voir toutes les inscriptions et notes
+- Générer des rapports
+
+### PROFESSOR
+- Voir ses sections
+- Saisir les notes de ses étudiants
+- Voir les statistiques de ses cours
+- Ne peut pas voir les notes d'autres professeurs
+
+### STUDENT
+- S'inscrire aux cours (max 7 par session)
+- Voir ses cours et horaires
+- Consulter ses notes
+- Générer son relevé de notes
+
+## 🎨 Personnalisation
+
+### Changer les couleurs
+Modifier dans `templates/base.html` :
+```css
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+}
+```
+
+### Modifier le nombre max de cours
+Dans `fasch_config/settings.py` :
+```python
+MAX_COURSES_PER_SESSION = 8  # Changer cette valeur
+```
+
+### Modifier les pondérations des notes
+Dans `grades/models.py`, méthode `calculate_final_grade()` :
+```python
+weights = {
+    'midterm_exam': 0.25,      # 25%
+    'final_exam': 0.35,        # 35%
+    'assignments': 0.20,       # 20%
+    'participation': 0.10,     # 10%
+    'project': 0.10,           # 10%
+}
+```
+
+## ✅ Vérification finale
+
+Avant de mettre en production :
+
+- [ ] Tous les fichiers sont créés
+- [ ] L'environnement virtuel est activé
+- [ ] Les dépendances sont installées
+- [ ] La base de données est créée
+- [ ] Les migrations sont appliquées
+- [ ] Le superuser est créé
+- [ ] Les départements sont chargés
+- [ ] Le serveur démarre sans erreur
+- [ ] La page d'accueil s'affiche
+- [ ] La connexion fonctionne
+- [ ] Les fichiers statiques se chargent
+- [ ] DEBUG=False en production
+- [ ] SECRET_KEY changée en production
+- [ ] ALLOWED_HOSTS configuré en production
+
+## 📞 Support
+
+Pour toute question :
+1. Vérifier la documentation
+2. Consulter les logs Django
+3. Vérifier les erreurs dans la console
+4. Tester dans le shell Django
+
+## 🔒 Sécurité en production
+
+```python
+# Dans settings.py pour la production :
+DEBUG = False
+ALLOWED_HOSTS = ['votre-domaine.com', 'www.votre-domaine.com']
+SECRET_KEY = 'votre-nouvelle-cle-tres-longue-et-securisee'
+
+# Utiliser HTTPS
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Headers de sécurité
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+```
+
+Bon développement ! 🚀

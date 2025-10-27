@@ -1,0 +1,1549 @@
+{%extends 'base_public.html' %}
+<!-- Custom Styles -->
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-dark: #1e293b;
+    --secondary: #7c3aed;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  body {
+    font-family: "Crimson Text", serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--background);
+  }
+
+  .font-playfair {
+    font-family: "Playfair Display", serif;
+  }
+  .font-crimson {
+    font-family: "Crimson Text", serif;
+  }
+
+  .bg-primary {
+    background-color: var(--primary) !important;
+  }
+  .bg-primary-900 {
+    background: linear-gradient(
+      135deg,
+      var(--primary-dark) 0%,
+      var(--primary) 100%
+    ) !important;
+  }
+  .bg-primary-100 {
+    background-color: rgba(30, 58, 138, 0.1) !important;
+  }
+  .bg-primary-50 {
+    background-color: rgba(30, 58, 138, 0.05) !important;
+  }
+  .bg-secondary {
+    background-color: var(--secondary) !important;
+  }
+  .bg-secondary-100 {
+    background-color: rgba(124, 58, 237, 0.1) !important;
+  }
+  .bg-secondary-50 {
+    background-color: rgba(124, 58, 237, 0.05) !important;
+  }
+  .bg-accent {
+    background-color: var(--accent) !important;
+  }
+  .bg-accent-100 {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+  }
+  .bg-accent-50 {
+    background-color: rgba(245, 158, 11, 0.05) !important;
+  }
+  .bg-accent-200 {
+    border-color: rgba(245, 158, 11, 0.2) !important;
+  }
+  .bg-success {
+    background-color: var(--success) !important;
+  }
+  .bg-success-100 {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+  }
+  .bg-success-50 {
+    background-color: rgba(16, 185, 129, 0.05) !important;
+  }
+  .bg-surface {
+    background-color: var(--surface) !important;
+  }
+  .bg-background {
+    background-color: var(--background) !important;
+  }
+
+  .text-primary {
+    color: var(--primary) !important;
+  }
+  .text-secondary {
+    color: var(--secondary) !important;
+  }
+  .text-accent {
+    color: var(--accent) !important;
+  }
+  .text-success {
+    color: var(--success) !important;
+  }
+
+  .btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-primary-custom:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+  }
+
+  .btn-secondary-custom {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-secondary-custom:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft) !important;
+  }
+  .shadow-medium {
+    box-shadow: var(--shadow-medium) !important;
+  }
+  .shadow-large {
+    box-shadow: var(--shadow-large) !important;
+  }
+
+  .dept-nav-btn {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: white;
+  }
+
+  .dept-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dept-nav-btn.active {
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .course-year {
+    transition: all 0.3s ease;
+  }
+
+  .course-year:hover {
+    transform: translateX(4px);
+  }
+
+  .year-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .year-content.show {
+    max-height: 300px;
+  }
+
+  .year-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .year-arrow.rotated {
+    transform: rotate(180deg);
+  }
+
+  .career-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .career-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-large) !important;
+  }
+
+  .faculty-card {
+    transition: all 0.3s ease;
+  }
+
+  .faculty-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .faculty-card img {
+    transition: all 0.3s ease;
+  }
+
+  .faculty-card:hover img {
+    box-shadow: var(--shadow-large);
+    transform: scale(1.05);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hero-bg {
+    transition: opacity 1s ease-in-out;
+  }
+
+  .department-content {
+    display: none;
+  }
+
+  .department-content.active {
+    display: block;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1e40af;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dept-nav-btn {
+      padding: 12px !important;
+    }
+
+    .dept-nav-btn .display-6 {
+      font-size: 1rem !important;
+    }
+
+    .course-year .flex-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* Badge customization */
+  .badge-custom {
+    padding: 4px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Icon sizes */
+  .icon-lg {
+    font-size: 2rem;
+  }
+  .icon-md {
+    font-size: 1.25rem;
+  }
+  .icon-sm {
+    font-size: 0.875rem;
+  }
+</style>
+
+{%block public_content %}
+{% comment %} <div class="row mb-4">
+    <div class="col-md-12">
+        <h2><i class="fas fa-building"></i> Départements</h2>
+        <p>Liste des départements de l'université.</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for dept in departments %}
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ dept.name }}</h5>
+                {% if dept.description %}
+                <p class="card-text text-muted">{{ dept.description }}</p>
+                {% endif %}
+                <a href="{% url 'departments:list_by_department' dept.id %}" class="mt-auto btn btn-primary">
+                    Voir les cours
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Aucun département trouvé.
+        </div>
+    </div>
+    {% endfor %}
+</div> {% endcomment %}
+<!-- Hero Section Bootstrap 5 -->
+<section class="position-relative text-white overflow-hidden" style="min-height: 80vh;">
+  <!-- Overlay sombre -->
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+
+  <!-- Image de fond -->
+  <div class="position-absolute top-0 start-0 w-100 h-100">
+    <img id="dept-hero-bg"
+         src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=2940&auto=format&fit=crop"
+         alt="Psychologie - Laboratoire"
+         class="w-100 h-100 object-fit-cover"
+         style="transition: opacity 1s;"
+         onerror="this.src='https://images.pexels.com/photos/8923962/pexels-photo-8923962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+  </div>
+
+  <!-- Contenu central -->
+  <div class="container position-relative d-flex flex-column justify-content-center align-items-center text-center h-100">
+    <!-- Titre et sous-titre -->
+    <div class="mb-5">
+      <h1 class="display-3 fw-bold mb-3">Explorez Nos Programmes d'Excellence</h1>
+      <p class="lead text-white-50 mb-0">Quatre départements, une mission : former les leaders des sciences humaines en Haïti</p>
+    </div>
+
+    <!-- Navigation par département -->
+    <div class="row row-cols-2 row-cols-md-4 g-3 w-100 justify-content-center">
+      <!-- Psychologie -->
+      <div class="col">
+        <button onclick="showDepartment('psychology')"
+                class="dept-nav-btn btn w-100 text-center p-4 rounded text-white"
+                style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); transition: all 0.3s;">
+          <div class="fs-3 mb-2">🧠</div>
+          <div class="fw-semibold">Psychologie</div>
+          <div class="small opacity-75">Comprendre l'esprit</div>
+        </button>
+      </div>
+
+      <!-- Sociologie -->
+      <div class="col">
+        <button onclick="showDepartment('sociology')"
+                class="dept-nav-btn btn w-100 text-center p-4 rounded text-white"
+                style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); transition: all 0.3s;">
+          <div class="fs-3 mb-2">🏛️</div>
+          <div class="fw-semibold">Sociologie</div>
+          <div class="small opacity-75">Analyser la société</div>
+        </button>
+      </div>
+
+      <!-- Travail Social -->
+      <div class="col">
+        <button onclick="showDepartment('social-work')"
+                class="dept-nav-btn btn w-100 text-center p-4 rounded text-white"
+                style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); transition: all 0.3s;">
+          <div class="fs-3 mb-2">🤝</div>
+          <div class="fw-semibold">Travail Social</div>
+          <div class="small opacity-75">Servir la communauté</div>
+        </button>
+      </div>
+
+      <!-- Communication -->
+      <div class="col">
+        <button onclick="showDepartment('communication')"
+                class="dept-nav-btn btn w-100 text-center p-4 rounded text-white"
+                style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); transition: all 0.3s;">
+          <div class="fs-3 mb-2">📢</div>
+          <div class="fw-semibold">Communication</div>
+          <div class="small opacity-75">Maîtriser les médias</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CSS additionnel pour hover -->
+<style>
+  .dept-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+</style>
+
+
+<!-- Department Content Sections -->
+<div class="container py-5">
+  <!-- Psychology Department -->
+  <div id="psychology-content" class="department-content active">
+    <div class="row g-5 mb-5">
+      <!-- Program Overview -->
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="display-4 fw-bold font-crimson text-primary mb-4">
+            Département de Psychologie
+          </h2>
+          <p class="lead text-muted mb-4">
+            Notre programme de psychologie forme des professionnels capables de
+            comprendre et d'intervenir sur les défis psychologiques spécifiques
+            à la société haïtienne, alliant théories internationales et
+            pratiques culturellement adaptées.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Psychologie Clinique</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Psychologie Sociale</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Psychologie du Développement</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Neuropsychologie</span
+            >
+          </div>
+        </div>
+
+        <!-- Interactive Course Flow -->
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h4 font-crimson fw-bold text-primary mb-4">
+              Parcours Académique Interactif
+            </h3>
+            <div class="space-y-3">
+              <div class="course-year" data-year="1">
+                <div
+                  class="d-flex justify-content-between align-items-center p-4 bg-primary-50 rounded cursor-pointer"
+                  onclick="toggleYear(1)"
+                >
+                  <div>
+                    <h4 class="fw-semibold text-primary mb-1">
+                      Première Année - Fondements
+                    </h4>
+                    <p class="small text-muted mb-0">
+                      Introduction aux concepts de base
+                    </p>
+                  </div>
+                  <i
+                    class="bi bi-chevron-down text-primary year-arrow icon-md"
+                    style="transition: transform 0.3s ease"
+                  ></i>
+                </div>
+                <div class="year-content mt-2 ms-4 space-y-2">
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small"
+                      >Introduction à la Psychologie Générale</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small"
+                      >Statistiques et Méthodologie de Recherche</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Biologie et Neuroanatomie</span>
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Histoire de la Psychologie</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="course-year" data-year="2">
+                <div
+                  class="d-flex justify-content-between align-items-center p-4 bg-secondary-50 rounded cursor-pointer"
+                  onclick="toggleYear(2)"
+                >
+                  <div>
+                    <h4 class="fw-semibold text-secondary mb-1">
+                      Deuxième Année - Spécialisation
+                    </h4>
+                    <p class="small text-muted mb-0">
+                      Approfondissement des domaines clés
+                    </p>
+                  </div>
+                  <i
+                    class="bi bi-chevron-down text-secondary year-arrow icon-md"
+                    style="transition: transform 0.3s ease"
+                  ></i>
+                </div>
+                <div class="year-content mt-2 ms-4 space-y-2">
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small"
+                      >Psychologie Clinique et Psychopathologie</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Psychologie Sociale et Culturelle</span>
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small"
+                      >Tests et Évaluations Psychologiques</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="course-year" data-year="3">
+                <div
+                  class="d-flex justify-content-between align-items-center p-4 bg-success-50 rounded cursor-pointer"
+                  onclick="toggleYear(3)"
+                >
+                  <div>
+                    <h4 class="fw-semibold text-success mb-1">
+                      Troisième Année - Pratique
+                    </h4>
+                    <p class="small text-muted mb-0">
+                      Stages et applications pratiques
+                    </p>
+                  </div>
+                  <i
+                    class="bi bi-chevron-down text-success year-arrow icon-md"
+                    style="transition: transform 0.3s ease"
+                  ></i>
+                </div>
+                <div class="year-content mt-2 ms-4 space-y-2">
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-success rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Stage Clinique Supervisé</span>
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-success rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Thérapies et Interventions</span>
+                  </div>
+                  <div
+                    class="d-flex align-items-center gap-3 p-3 bg-light rounded"
+                  >
+                    <div
+                      class="bg-success rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span class="small">Projet de Recherche Final</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Info Sidebar -->
+      <div class="col-lg-4">
+        <!-- Admission Requirements -->
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-primary mb-4">
+              Conditions d'Admission
+            </h3>
+            <ul class="space-y-2 small">
+              <li class="d-flex align-items-start gap-2">
+                <i
+                  class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0 icon-sm"
+                ></i>
+                <span>Baccalauréat ou équivalent</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <i
+                  class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0 icon-sm"
+                ></i>
+                <span>Test d'aptitude psychologique</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <i
+                  class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0 icon-sm"
+                ></i>
+                <span>Entretien de motivation</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <i
+                  class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0 icon-sm"
+                ></i>
+                <span>Dossier académique complet</span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary-custom w-100 mt-3"
+              >Postuler Maintenant</a
+            >
+          </div>
+        </div>
+
+        <!-- Key Statistics -->
+        <div class="card bg-primary-50 mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-primary mb-4">
+              Statistiques Clés
+            </h3>
+            <div class="row text-center g-3">
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-primary">847</div>
+                <div class="small text-muted">Étudiants Actifs</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-secondary">96%</div>
+                <div class="small text-muted">Taux de Réussite</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-success">89%</div>
+                <div class="small text-muted">Insertion Professionnelle</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Deadline -->
+        <div class="card border-accent-200 mb-4">
+          <div class="card-body p-4 bg-accent-50">
+            <h3 class="h5 font-crimson fw-bold text-accent mb-2">
+              Date Limite
+            </h3>
+            <p class="small text-muted mb-2">Inscriptions pour 2026</p>
+            <div class="fs-4 fw-bold text-accent mb-2">15 Mars 2026</div>
+            <p class="small text-muted mb-0">
+              Places limitées - Inscrivez-vous tôt
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Faculty Expertise -->
+    <div class="mb-5">
+      <h3 class="h3 font-crimson fw-bold text-primary mb-5 text-center">
+        Notre Corps Professoral
+      </h3>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4 text-center faculty-card">
+          <div class="position-relative mb-3">
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2787&auto=format&fit=crop"
+              alt="Dr. Jean-Claude Moïse"
+              class="rounded-circle mx-auto shadow-medium"
+              style="width: 96px; height: 96px; object-fit: cover"
+              onerror="this.src='https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;"
+            />
+          </div>
+          <h4 class="font-crimson fw-bold text-primary mb-1">
+            Dr. Jean-Claude Moïse
+          </h4>
+          <p class="small text-secondary fw-semibold mb-2">
+            Directeur du Département
+          </p>
+          <p class="small text-muted mb-3">
+            Spécialiste en traumatisme post-catastrophe et résilience
+            communautaire
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-1">
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Psychologie Clinique</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Traumatisme</span
+            >
+          </div>
+        </div>
+
+        <div class="col-md-4 text-center faculty-card">
+          <div class="position-relative mb-3">
+            <img
+              src="https://images.unsplash.com/photo-1494790108755-2616c9c1e4d3?q=80&w=2787&auto=format&fit=crop"
+              alt="Prof. Marie-Solange Hyppolite"
+              class="rounded-circle mx-auto shadow-medium"
+              style="width: 96px; height: 96px; object-fit: cover"
+              onerror="this.src='https://images.pixabay.com/photo/2017/05/25/22/05/woman-2343357_1280.jpg'; this.onerror=null;"
+            />
+          </div>
+          <h4 class="font-crimson fw-bold text-primary mb-1">
+            Prof. Marie-Solange Hyppolite
+          </h4>
+          <p class="small text-secondary fw-semibold mb-2">
+            Psychologie du Développement
+          </p>
+          <p class="small text-muted mb-3">
+            Experte en développement de l'enfant dans le contexte haïtien
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-1">
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Développement</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Enfance</span
+            >
+          </div>
+        </div>
+
+        <div class="col-md-4 text-center faculty-card">
+          <div class="position-relative mb-3">
+            <img
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2940&auto=format&fit=crop"
+              alt="Dr. Frantz Voltaire"
+              class="rounded-circle mx-auto shadow-medium"
+              style="width: 96px; height: 96px; object-fit: cover"
+              onerror="this.src='https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;"
+            />
+          </div>
+          <h4 class="font-crimson fw-bold text-primary mb-1">
+            Dr. Frantz Voltaire
+          </h4>
+          <p class="small text-secondary fw-semibold mb-2">Neuropsychologie</p>
+          <p class="small text-muted mb-3">
+            Recherche sur les troubles cognitifs et la réhabilitation
+            neurologique
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-1">
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Neuropsychologie</span
+            >
+            <span class="badge bg-primary-100 text-primary badge-custom"
+              >Cognition</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Career Pathways -->
+    <div class="mb-5">
+      <h3 class="h3 font-crimson fw-bold text-primary mb-5 text-center">
+        Débouchés Professionnels
+      </h3>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="card career-card text-center h-100">
+            <div class="card-body p-4">
+              <div
+                class="bg-primary-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                style="width: 64px; height: 64px"
+              >
+                <i class="bi bi-heart-fill text-primary icon-md"></i>
+              </div>
+              <h4 class="font-crimson fw-bold text-primary mb-2">
+                Psychologue Clinicien
+              </h4>
+              <p class="small text-muted mb-3">
+                Thérapie individuelle et de groupe
+              </p>
+              <div class="small fw-semibold text-secondary">
+                45,000 - 85,000 HTG/mois
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="card career-card text-center h-100">
+            <div class="card-body p-4">
+              <div
+                class="bg-secondary-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                style="width: 64px; height: 64px"
+              >
+                <i class="bi bi-mortarboard-fill text-secondary icon-md"></i>
+              </div>
+              <h4 class="font-crimson fw-bold text-primary mb-2">
+                Psychologue Scolaire
+              </h4>
+              <p class="small text-muted mb-3">Accompagnement éducatif</p>
+              <div class="small fw-semibold text-secondary">
+                38,000 - 65,000 HTG/mois
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="card career-card text-center h-100">
+            <div class="card-body p-4">
+              <div
+                class="bg-success-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                style="width: 64px; height: 64px"
+              >
+                <i class="bi bi-graph-up text-success icon-md"></i>
+              </div>
+              <h4 class="font-crimson fw-bold text-primary mb-2">Chercheur</h4>
+              <p class="small text-muted mb-3">
+                Recherche académique et appliquée
+              </p>
+              <div class="small fw-semibold text-secondary">
+                42,000 - 95,000 HTG/mois
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="card career-card text-center h-100">
+            <div class="card-body p-4">
+              <div
+                class="bg-accent-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                style="width: 64px; height: 64px"
+              >
+                <i class="bi bi-briefcase text-accent icon-md"></i>
+              </div>
+              <h4 class="font-crimson fw-bold text-primary mb-2">
+                Consultant RH
+              </h4>
+              <p class="small text-muted mb-3">
+                Ressources humaines et formation
+              </p>
+              <div class="small fw-semibold text-secondary">
+                50,000 - 120,000 HTG/mois
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Testimonials -->
+    <div class="bg-primary-50 rounded p-4 p-md-5 mb-5">
+      <h3 class="h3 font-crimson fw-bold text-primary mb-5 text-center">
+        Témoignages d'Étudiants
+      </h3>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card bg-white h-100">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-start gap-3">
+                <img
+                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2761&auto=format&fit=crop"
+                  alt="Marie-Claire Augustin"
+                  class="rounded-circle flex-shrink-0"
+                  style="width: 48px; height: 48px; object-fit: cover"
+                  onerror="this.src='https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;"
+                />
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-3 small fst-italic">
+                    "Le programme m'a donné les outils théoriques et pratiques
+                    pour comprendre les défis psychologiques uniques de notre
+                    société. Les stages m'ont préparée à ma carrière."
+                  </p>
+                  <div>
+                    <div class="fw-semibold text-primary small">
+                      Marie-Claire Augustin
+                    </div>
+                    <div class="small text-muted">Étudiante en 3ème année</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card bg-white h-100">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-start gap-3">
+                <img
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2787&auto=format&fit=crop"
+                  alt="Jean-Baptiste Morin"
+                  class="rounded-circle flex-shrink-0"
+                  style="width: 48px; height: 48px; object-fit: cover"
+                  onerror="this.src='https://images.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg'; this.onerror=null;"
+                />
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-3 small fst-italic">
+                    "L'approche culturellement adaptée de FASCH m'a permis de
+                    mieux comprendre comment appliquer la psychologie dans le
+                    contexte haïtien."
+                  </p>
+                  <div>
+                    <div class="fw-semibold text-primary small">
+                      Jean-Baptiste Morin
+                    </div>
+                    <div class="small text-muted">
+                      Diplômé 2024, Psychologue Clinicien
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sociology Department (Hidden by default) -->
+  <div id="sociology-content" class="department-content">
+    <div class="row g-5 mb-5">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="display-4 fw-bold font-crimson text-primary mb-4">
+            Département de Sociologie
+          </h2>
+          <p class="lead text-muted mb-4">
+            Notre programme de sociologie forme des analystes sociaux capables
+            de comprendre et d'expliquer les dynamiques complexes de la société
+            haïtienne contemporaine, en alliant méthodes de recherche
+            rigoureuses et engagement communautaire.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge bg-secondary-100 text-secondary badge-custom"
+              >Sociologie Urbaine</span
+            >
+            <span class="badge bg-secondary-100 text-secondary badge-custom"
+              >Sociologie Rurale</span
+            >
+            <span class="badge bg-secondary-100 text-secondary badge-custom"
+              >Anthropologie Culturelle</span
+            >
+            <span class="badge bg-secondary-100 text-secondary badge-custom"
+              >Développement Social</span
+            >
+          </div>
+        </div>
+
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h4 font-crimson fw-bold text-primary mb-4">
+              Parcours de Formation
+            </h3>
+            <div class="space-y-4">
+              <div class="d-flex align-items-start gap-3">
+                <div
+                  class="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                  style="width: 32px; height: 32px"
+                >
+                  <span class="text-white fw-bold small">1</span>
+                </div>
+                <div class="flex-grow-1">
+                  <h4 class="fw-semibold text-secondary mb-1">
+                    Fondements Théoriques
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    Introduction aux grands courants sociologiques et aux
+                    méthodes de recherche sociale
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <div
+                  class="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                  style="width: 32px; height: 32px"
+                >
+                  <span class="text-white fw-bold small">2</span>
+                </div>
+                <div class="flex-grow-1">
+                  <h4 class="fw-semibold text-secondary mb-1">
+                    Recherche Appliquée
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    Projets de terrain dans les communautés urbaines et rurales
+                    d'Haïti
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <div
+                  class="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                  style="width: 32px; height: 32px"
+                >
+                  <span class="text-white fw-bold small">3</span>
+                </div>
+                <div class="flex-grow-1">
+                  <h4 class="fw-semibold text-secondary mb-1">
+                    Spécialisation
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    Choix d'une concentration en développement, genre, migration
+                    ou politique sociale
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-primary mb-4">
+              Projets de Recherche Actifs
+            </h3>
+            <ul class="space-y-2 small">
+              <li class="d-flex align-items-start gap-2">
+                <div
+                  class="bg-secondary rounded-circle mt-1 flex-shrink-0"
+                  style="width: 8px; height: 8px"
+                ></div>
+                <span>Migration interne post-séisme</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <div
+                  class="bg-secondary rounded-circle mt-1 flex-shrink-0"
+                  style="width: 8px; height: 8px"
+                ></div>
+                <span>Dynamiques familiales urbaines</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <div
+                  class="bg-secondary rounded-circle mt-1 flex-shrink-0"
+                  style="width: 8px; height: 8px"
+                ></div>
+                <span>Économie informelle et réseaux sociaux</span>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <div
+                  class="bg-secondary rounded-circle mt-1 flex-shrink-0"
+                  style="width: 8px; height: 8px"
+                ></div>
+                <span>Genre et participation politique</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card bg-secondary-50">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-secondary mb-4">
+              Partenariats
+            </h3>
+            <div class="space-y-3 small">
+              <div>
+                <div class="fw-semibold text-secondary">IHSI</div>
+                <div class="text-muted">Institut Haïtien de Statistique</div>
+              </div>
+              <div>
+                <div class="fw-semibold text-secondary">PNUD Haïti</div>
+                <div class="text-muted">Programme des Nations Unies</div>
+              </div>
+              <div>
+                <div class="fw-semibold text-secondary">FOKAL</div>
+                <div class="text-muted">Fondation Connaissance et Liberté</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Work Department (Hidden by default) -->
+  <div id="social-work-content" class="department-content">
+    <div class="row g-5 mb-5">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="display-4 fw-bold font-crimson text-primary mb-4">
+            Département de Travail Social
+          </h2>
+          <p class="lead text-muted mb-4">
+            Notre programme de travail social forme des professionnels de
+            l'intervention sociale capables de répondre aux défis sociaux
+            complexes d'Haïti, en combinant théories de l'intervention et
+            pratiques communautaires innovantes.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge bg-success-100 text-success badge-custom"
+              >Intervention Communautaire</span
+            >
+            <span class="badge bg-success-100 text-success badge-custom"
+              >Travail Social Clinique</span
+            >
+            <span class="badge bg-success-100 text-success badge-custom"
+              >Développement Social</span
+            >
+            <span class="badge bg-success-100 text-success badge-custom"
+              >Aide Humanitaire</span
+            >
+          </div>
+        </div>
+
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h4 font-crimson fw-bold text-primary mb-4">
+              Stages Pratiques
+            </h3>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="bg-success-50 p-3 rounded">
+                  <h4 class="fw-semibold text-success small mb-2">
+                    Stage Communautaire
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    400 heures dans les quartiers populaires de Port-au-Prince
+                  </p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="bg-success-50 p-3 rounded">
+                  <h4 class="fw-semibold text-success small mb-2">
+                    Stage Institutionnel
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    300 heures dans les ONG et services sociaux
+                  </p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="bg-success-50 p-3 rounded">
+                  <h4 class="fw-semibold text-success small mb-2">
+                    Stage International
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    Opportunités en République Dominicaine et Canada
+                  </p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="bg-success-50 p-3 rounded">
+                  <h4 class="fw-semibold text-success small mb-2">
+                    Projet Final
+                  </h4>
+                  <p class="small text-muted mb-0">
+                    Intervention sociale documentée et évaluée
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-primary mb-4">
+              Domaines d'Intervention
+            </h3>
+            <div class="space-y-2 small">
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="bg-success rounded-circle"
+                  style="width: 12px; height: 12px"
+                ></div>
+                <span>Protection de l'enfance</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="bg-success rounded-circle"
+                  style="width: 12px; height: 12px"
+                ></div>
+                <span>Santé communautaire</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="bg-success rounded-circle"
+                  style="width: 12px; height: 12px"
+                ></div>
+                <span>Développement rural</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="bg-success rounded-circle"
+                  style="width: 12px; height: 12px"
+                ></div>
+                <span>Gestion des catastrophes</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="bg-success rounded-circle"
+                  style="width: 12px; height: 12px"
+                ></div>
+                <span>Réinsertion sociale</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-success-50">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-success mb-3">
+              Certification
+            </h3>
+            <p class="small text-muted mb-3">
+              Diplôme reconnu par l'Association Haïtienne des Travailleurs
+              Sociaux (AHTS)
+            </p>
+            <div class="small text-muted">
+              Possibilité de certification internationale avec nos partenaires
+              canadiens
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Communication Department (Hidden by default) -->
+  <div id="communication-content" class="department-content">
+    <div class="row g-5 mb-5">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="display-4 fw-bold font-crimson text-primary mb-4">
+            Département de Communication
+          </h2>
+          <p class="lead text-muted mb-4">
+            Notre programme de communication forme des professionnels des médias
+            et de la communication adaptés aux réalités du paysage médiatique
+            haïtien, alliant techniques traditionnelles et innovations
+            numériques.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge bg-accent-100 text-accent badge-custom"
+              >Journalisme</span
+            >
+            <span class="badge bg-accent-100 text-accent badge-custom"
+              >Relations Publiques</span
+            >
+            <span class="badge bg-accent-100 text-accent badge-custom"
+              >Communication Digitale</span
+            >
+            <span class="badge bg-accent-100 text-accent badge-custom"
+              >Production Audiovisuelle</span
+            >
+          </div>
+        </div>
+
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h4 font-crimson fw-bold text-primary mb-4">
+              Équipements Professionnels
+            </h3>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <h4 class="fw-semibold text-accent small mb-2">Studio Radio</h4>
+                <ul class="small text-muted space-y-1 ps-3">
+                  <li>• Console de mixage professionnelle</li>
+                  <li>• Cabines d'enregistrement insonorisées</li>
+                  <li>• Logiciels de production audio</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h4 class="fw-semibold text-accent small mb-2">Studio TV</h4>
+                <ul class="small text-muted space-y-1 ps-3">
+                  <li>• Caméras HD professionnelles</li>
+                  <li>• Éclairage studio complet</li>
+                  <li>• Régie de production vidéo</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h4 class="fw-semibold text-accent small mb-2">
+                  Laboratoire Digital
+                </h4>
+                <ul class="small text-muted space-y-1 ps-3">
+                  <li>• Suite Adobe Creative complète</li>
+                  <li>• Stations de montage vidéo</li>
+                  <li>• Équipement de streaming</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h4 class="fw-semibold text-accent small mb-2">
+                  Salle de Presse
+                </h4>
+                <ul class="small text-muted space-y-1 ps-3">
+                  <li>• Accès aux agences de presse</li>
+                  <li>• Outils de veille médiatique</li>
+                  <li>• Espace de rédaction collaborative</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-primary mb-4">
+              Médias Partenaires
+            </h3>
+            <div class="space-y-3 small">
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="bg-accent-100 rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 32px; height: 32px"
+                >
+                  <i class="bi bi-radio text-accent icon-sm"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Radio Métropole</div>
+                  <div class="text-muted">Stages et collaborations</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="bg-accent-100 rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 32px; height: 32px"
+                >
+                  <i class="bi bi-tv text-accent icon-sm"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Télé Métropole</div>
+                  <div class="text-muted">Production de contenus</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="bg-accent-100 rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 32px; height: 32px"
+                >
+                  <i class="bi bi-newspaper text-accent icon-sm"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Le Nouvelliste</div>
+                  <div class="text-muted">Journalisme écrit</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-accent-50">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-accent mb-3">
+              Innovation Numérique
+            </h3>
+            <p class="small text-muted mb-3">
+              Premier programme en Haïti à intégrer les réseaux sociaux, le
+              podcasting et le marketing digital dans le cursus traditionnel.
+            </p>
+            <div class="d-flex flex-wrap gap-1">
+              <span class="badge bg-white text-accent small">YouTube</span>
+              <span class="badge bg-white text-accent small">TikTok</span>
+              <span class="badge bg-white text-accent small">Instagram</span>
+              <span class="badge bg-white text-accent small">Podcast</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call to Action -->
+<section class="bg-primary text-white py-5">
+  <div class="container text-center">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <h2 class="display-3 fw-bold font-playfair mb-4">
+          Prêt à Choisir Votre Parcours ?
+        </h2>
+        <p class="fs-2 opacity-90 mb-4">
+          Explorez nos programmes en détail et découvrez celui qui correspond à
+          vos aspirations professionnelles.
+        </p>
+        <div
+          class="d-flex flex-column flex-sm-row gap-3 justify-content-center"
+        >
+          <a href="#" class="btn btn-secondary-custom btn-lg px-5 py-3"
+            >Commencer Votre Candidature</a
+          >
+          <a
+            href="#"
+            class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none transition-all"
+          >
+            Accès Portail Étudiant
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+  // Department navigation and content switching
+  const departments = {
+    psychology: {
+      image:
+        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pexels.com/photos/8923962/pexels-photo-8923962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    },
+    sociology: {
+      image:
+        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2832&auto=format&fit=crop",
+      fallback:
+        "https://images.pixabay.com/photo/2017/07/31/11/21/people-2557396_1280.jpg",
+    },
+    "social-work": {
+      image:
+        "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    },
+    communication: {
+      image:
+        "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pixabay.com/photo/2016/02/01/00/56/news-1172463_1280.jpg",
+    },
+  };
+
+  function showDepartment(dept) {
+    // Update navigation buttons
+    document.querySelectorAll(".dept-nav-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      btn.classList.add("shadow-sm");
+    });
+    event.target.closest(".dept-nav-btn").classList.add("active");
+    event.target.closest(".dept-nav-btn").classList.remove("shadow-sm");
+
+    // Update hero background
+    const heroBg = document.getElementById("dept-hero-bg");
+    heroBg.src = departments[dept].image;
+    heroBg.onerror = function () {
+      this.src = departments[dept].fallback;
+      this.onerror = null;
+    };
+
+    // Show/hide content sections
+    document.querySelectorAll(".department-content").forEach((content) => {
+      content.classList.remove("active");
+    });
+    document.getElementById(dept + "-content").classList.add("active");
+
+    // Update page title
+    const titles = {
+      psychology: "Département de Psychologie - FASCH",
+      sociology: "Département de Sociologie - FASCH",
+      "social-work": "Département de Travail Social - FASCH",
+      communication: "Département de Communication - FASCH",
+    };
+    document.title = titles[dept] || "Programmes Départementaux - FASCH";
+  }
+
+  // Course year toggle functionality
+  function toggleYear(year) {
+    const yearElement = document.querySelector(`[data-year="${year}"]`);
+    const content = yearElement.querySelector(".year-content");
+    const arrow = yearElement.querySelector(".year-arrow");
+
+    if (content.classList.contains("show")) {
+      content.classList.remove("show");
+      arrow.classList.remove("rotated");
+    } else {
+      content.classList.add("show");
+      arrow.classList.add("rotated");
+    }
+  }
+
+  // Smooth scrolling for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    });
+  });
+
+  // Initialize page
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show psychology department by default
+    showDepartment("psychology");
+
+    // Add animation to career cards
+    const careerCards = document.querySelectorAll(".career-card");
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    careerCards.forEach((card) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = "all 0.6s ease";
+      observer.observe(card);
+    });
+  });
+</script>
+{% endblock %}

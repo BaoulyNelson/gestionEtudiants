@@ -1,0 +1,79 @@
+email,first_name,last_name,phone_number,date_of_birth,professor_id,department_code,specialization,hire_date
+marie.joseph@fasch.edu.ht,Marie,Joseph,+50937891234,1985-03-15,PROF001,PSYCHO,Psychologie clinique,2015-09-01
+jean.pierre@fasch.edu.ht,Jean,Pierre,+50937891235,1982-07-22,PROF002,PSYCHO,Psychologie du développement,2014-01-15
+anne.louis@fasch.edu.ht,Anne,Louis,+50937891236,1988-11-10,PROF003,COMM,Communication digitale,2017-08-20
+paul.francois@fasch.edu.ht,Paul,François,+50937891237,1980-05-18,PROF004,COMM,Journalisme,2013-09-01
+sophie.charles@fasch.edu.ht,Sophie,Charles,+50937891238,1986-09-25,PROF005,SOCIO,Sociologie urbaine,2016-01-10
+marc.jean@fasch.edu.ht,Marc,Jean,+50937891239,1983-12-08,PROF006,SOCIO,Anthropologie sociale,2015-09-01
+lucie.baptiste@fasch.edu.ht,Lucie,Baptiste,+50937891240,1987-04-30,PROF007,SERVSOC,Travail social communautaire,2018-01-15
+david.michel@fasch.edu.ht,David,Michel,+50937891241,1984-08-14,PROF008,SERVSOC,Intervention sociale,2016-09-01
+claire.simon@fasch.edu.ht,Claire,Simon,+50937891242,1989-02-20,PROF009,PSYCHO,Psychologie sociale,2019-01-10
+robert.andre@fasch.edu.ht,Robert,André,+50937891243,1981-06-12,PROF010,COMM,Relations publiques,2014-09-01
+marie.jean@fasch.edu.ht,Marie,Jean,+50937891244,1987-11-05,PROF011,PSYCHO,Pédagogie générale,2018-03-15
+patrick.desir@fasch.edu.ht,Patrick,Désir,+50937891245,1979-08-22,PROF012,PSYCHO,Psychologie clinique,2015-10-09
+emmanuelle.joseph@fasch.edu.ht,Emmanuelle,Joseph,+50937891246,1990-04-17,PROF013,SOCIO,Sociologie du développement,2020-01-12
+gerald.martin@fasch.edu.ht,Gérald,Martin,+50937891247,1983-09-29,PROF014,COMM,Communication interculturelle,2013-05-20
+francoise.louis@fasch.edu.ht,Françoise,Louis,+50937891248,1986-07-08,PROF015,PSYCHO,Psychologie du travail,2017-11-30
+etienne.charles@fasch.edu.ht,Étienne,Charles,+50937891249,1982-02-26,PROF016,PSYCHO,Didactique du français,2016-09-05
+sabine.pierre@fasch.edu.ht,Sabine,Pierre,+50937891250,1991-12-14,PROF017,SOCIO,Anthropologie sociale,2021-03-22
+jeanluc.renaud@fasch.edu.ht,Jean-Luc,Renaud,+50937891251,1984-05-01,PROF018,COMM,Journalisme et médias,2012-07-18
+aline.michel@fasch.edu.ht,Aline,Michel,+50937891252,1988-10-27,PROF019,PSYCHO,Neuropsychologie,2019-06-07
+roger.denis@fasch.edu.ht,Roger,Denis,+50937891253,1980-03-16,PROF026,PSYCHO,Sciences de l’éducation,2014-02-11
+michel.dupont@fasch.edu,Michel,Dupont,+50938101231,1970-06-12,PROF020,GEN,Mathématiques générales,2008-09-01
+anne.bernard@fasch.edu,Anne,Bernard,+50938221232,1974-03-04,PROF021,GEN,Physique fondamentale,2009-08-15
+paul.leroy@fasch.edu,Paul,Leroy,+50934781233,1976-07-20,PROF022,GEN,Chimie générale,2011-02-10
+jeanne.martin@fasch.edu,Jeanne,Martin,+50938991234,1980-01-28,PROF023,GEN,Biologie générale,2012-11-03
+lucie.robert@fasch.edu,Lucie,Robert,+50936451235,1975-05-18,PROF024,GEN,Histoire contemporaine,2010-05-21
+andre.moreau@fasch.edu,André,Moreau,+50938911236,1978-02-25,PROF025,GEN,Langue anglaise,2013-01-10
+sophie.guichard@fasch.edu,Sophie,Guichard,+50944123456,1978-04-15,PROF076,COMM,Communication et médias interactifs,2012-09-01
+francois.chevalier@fasch.edu,François,Chevalier,+50944234567,1975-02-08,PROF077,SOC,Sociologie de la famille contemporaine,2010-08-15
+isabelle.lopez@fasch.edu,Isabelle,Lopez,+50944345678,1980-06-20,PROF078,PSY,Psychologie de la santé mentale,2014-01-12
+philippe.maillard@fasch.edu,Philippe,Maillard,+50944456789,1972-11-10,PROF079,TSOC,Travail social et développement local,2008-03-25
+sandrine.brun@fasch.edu,Sandrine,Brun,+50944567890,1983-09-02,PROF000,COMM,Communication et marketing digital,2015-06-30
+daniel.schneider@fasch.edu,Daniel,Schneider,+50944678901,1976-01-28,PROF081,SOC,Sociologie urbaine et rurale,2009-09-01
+christine.renault@fasch.edu,Christine,Renault,+50944789012,1981-05-22,PROF082,PSY,Psychologie du comportement,2013-10-15
+alain.faure@fasch.edu,Alain,Faure,+50944890123,1970-03-11,PROF083,TSOC,Travail social et inclusion sociale,2006-01-05
+monique.blanchard@fasch.edu,Monique,Blanchard,+50944901234,1979-07-09,PROF084,COMM,Communication et relations médias,2011-04-22
+david.lucas@fasch.edu,David,Lucas,+50945012345,1977-10-01,PROF085,SOC,Sociologie des organisations contemporaines,2010-09-10
+claire.david@fasch.edu,Claire,David,+50945123456,1982-08-19,PROF086,PSY,Psychologie de l’apprentissage humain,2014-05-17
+julien.morel@fasch.edu,Julien,Morel,+50945234567,1974-12-13,PROF087,TSOC,Travail social et justice économique,2007-11-01
+valerie.garnier@fasch.edu,Valérie,Garnier,+50945345678,1983-02-27,PROF088,COMM,Communication et médias sociaux avancés,2015-02-14
+jeanpierre.philippe@fasch.edu,Jean-Pierre,Philippe,+50945456789,1976-09-25,PROF089,SOC,Sociologie de la culture moderne,2009-01-20
+nathalie.rene@fasch.edu,Nathalie,René,+50945567890,1980-11-30,PROF090,PSY,Psychologie clinique spécialisée,2013-03-28
+pascal.leclerc@fasch.edu,Pascal,Leclerc,+50945678901,1973-05-05,PROF091,TSOC,Travail social et politiques sociales,2008-07-10
+sophie.martinez@fasch.edu,Sophie,Martinez,+50945789012,1984-09-12,PROF092,COMM,Communication et relations publiques avancées,2016-01-04
+francois.garcia@fasch.edu,François,Garcia,+50945890123,1975-06-18,PROF093,SOC,Sociologie des réseaux sociaux numériques,2009-09-25
+catherine.roux@fasch.edu,Catherine,Roux,+50945901234,1981-10-08,PROF094,PSY,Psychologie de la motivation humaine,2013-05-19
+marc.blanc@fasch.edu,Marc,Blanc,+50946012345,1978-01-22,PROF095,TSOC,Travail social et développement communautaire avancé,2011-08-03
+isabelle.henry@fasch.edu,Isabelle,Henry,+50946123456,1982-12-15,PROF096,COMM,Communication et publicité digitale,2014-09-22
+philippe.michel@fasch.edu,Philippe,Michel,+50946234567,1976-04-18,PROF097,SOC,Sociologie de la consommation moderne,2009-11-12
+nathalie.lemoine@fasch.edu,Nathalie,Lemoine,+50946345678,1980-03-07,PROF098,PSY,Psychologie de la perception avancée,2013-06-08
+jean.fontaine@fasch.edu,Jean,Fontaine,+50946456789,1974-02-10,PROF099,TSOC,Travail social et intervention de crise sociale,2007-10-30
+sophie.guichard@fasch.edu,Sophie,Guichard,50911111111,1980-02-14,PROF080,COM,Communication et marketing digital,2015-09-01
+daniel.schneider@fasch.edu,Daniel,Schneider,50911111112,1978-07-22,PROF081,SOC,Sociologie urbaine et rurale,2013-09-01
+christine.renault@fasch.edu,Christine,Renault,50911111113,1982-05-03,PROF082,PSY,Psychologie du comportement,2016-02-01
+alain.faure@fasch.edu,Alain,Faure,50911111114,1975-11-09,PROF083,SSO,Travail social et inclusion sociale,2010-08-01
+monique.blanchard@fasch.edu,Monique,Blanchard,50911111115,1981-03-19,PROF084,COM,Communication et relations médias,2014-01-01
+david.lucas@fasch.edu,David,Lucas,50911111116,1979-12-01,PROF085,SOC,Sociologie des organisations contemporaines,2012-09-01
+claire.david@fasch.edu,Claire,David,50911111117,1984-06-17,PROF086,PSY,Psychologie de l’apprentissage humain,2017-09-01
+julien.morel@fasch.edu,Julien,Morel,50911111118,1983-04-23,PROF087,SSO,Travail social et justice économique,2015-01-01
+valerie.garnier@fasch.edu,Valérie,Garnier,50911111119,1980-09-29,PROF088,COM,Communication et médias sociaux avancés,2013-09-01
+jeanpierre.philippe@fasch.edu,Jean-Pierre,Philippe,50911111120,1976-12-25,PROF089,SOC,Sociologie de la culture moderne,2010-09-01
+nathalie.rene@fasch.edu,Nathalie,René,50911111121,1985-08-11,PROF090,PSY,Psychologie clinique spécialisée,2018-02-01
+pascal.leclerc@fasch.edu,Pascal,Leclerc,50911111122,1977-10-05,PROF091,SSO,Travail social et politiques sociales,2011-09-01
+sophie.martinez@fasch.edu,Sophie,Martinez,50911111123,1982-07-15,PROF092,COM,Communication et relations publiques avancées,2016-01-01
+francois.garcia@fasch.edu,François,Garcia,50911111124,1980-11-28,PROF093,SOC,Sociologie des réseaux sociaux numériques,2012-09-01
+catherine.roux@fasch.edu,Catherine,Roux,50911111125,1983-03-03,PROF094,PSY,Psychologie de la motivation humaine,2014-09-01
+marc.blanc@fasch.edu,Marc,Blanc,50911111126,1978-06-21,PROF095,SSO,Travail social et développement communautaire avancé,2010-09-01
+isabelle.henry@fasch.edu,Isabelle,Henry,50911111127,1984-01-10,PROF096,COM,Communication et publicité digitale,2017-09-01
+philippe.michel@fasch.edu,Philippe,Michel,50911111128,1975-02-12,PROF097,SOC,Sociologie de la consommation moderne,2011-09-01
+nathalie.lemoine@fasch.edu,Nathalie,Lemoine,50911111129,1986-08-04,PROF098,PSY,Psychologie de la perception avancée,2019-01-01
+prof001@example.com,Jean,Baptiste,50912345678,1980-05-12,PROF027,SS,Service Social,2010-09-01
+prof002@example.com,Marie,Claude,50987654321,1975-11-20,PROF028,PS,Psychologie,2008-02-15
+prof003@example.com,Lucien,Noel,50911223344,1982-07-30,PROF029,COM,Communication,2012-03-10
+prof004@example.com,Sophie,Laurent,50955667788,1985-01-18,PROF031,PHY,Physique,2015-08-01
+prof005@example.com,René,François,50999887766,1978-03-25,PROF032,CHE,Chimie,2009-06-12
+prof006@example.com,Clara,Jean,50922334455,1983-12-05,PROF033,BIO,Biologie,2011-09-01
+prof007@example.com,Pauline,Hilaire,50966778899,1980-10-10,PROF034,HIS,Histoire,2007-05-23
+prof008@example.com,Thierry,Joseph,50944556677,1979-08-15,PROF035,ENG,Anglais,2006-11-01
+prof009@example.com,Isabelle,Michel,50933445566,1984-06-20,PROF036,PHY,Physique,2013-01-15

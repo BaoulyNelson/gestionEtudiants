@@ -1,0 +1,103 @@
+
+
+<!-- ========== templates/grades/transcript.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Relevé de notes - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-file-alt"></i> Relevé de notes</h2>
+        <p class="text-muted">{{ student.user.get_full_name }} - {{ student.student_number }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+    </div>
+</div>
+
+<!-- Résumé -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h6>GPA Global</h6>
+                <h2>{{ final_gpa|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h6>Crédits Obtenus</h6>
+                <h2>{{ cumulative_credits }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notes par période -->
+{% for period, courses in periods %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            {{ period.1 }} {{ period.0 }}
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Cours</th>
+                        <th class="text-center">Crédits</th>
+                        <th class="text-center">Note</th>
+                        <th class="text-center">Lettre</th>
+                        <th class="text-center">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course_data in courses %}
+                    <tr>
+                        <td><strong>{{ course_data.enrollment.course_section.course.code }}</strong></td>
+                        <td>{{ course_data.enrollment.course_section.course.name }}</td>
+                        <td class="text-center">{{ course_data.enrollment.course_section.course.credits }}</td>
+                        <td class="text-center">{{ course_data.grade.final_grade|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary">{{ course_data.grade.letter_grade }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if course_data.grade.final_grade >= 90 %}4.0
+                            {% elif course_data.grade.final_grade >= 80 %}3.0
+                            {% elif course_data.grade.final_grade >= 70 %}2.0
+                            {% elif course_data.grade.final_grade >= 60 %}1.0
+                            {% else %}0.0{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="card">
+    <div class="card-body">
+        <h6>Légende des notes</h6>
+        <ul class="list-unstyled">
+            <li><span class="badge bg-success">A</span> : 90-100 (Excellent) - 4.0 points</li>
+            <li><span class="badge bg-primary">B</span> : 80-89 (Très bien) - 3.0 points</li>
+            <li><span class="badge bg-info">C</span> : 70-79 (Bien) - 2.0 points</li>
+            <li><span class="badge bg-warning">D</span> : 60-69 (Passable) - 1.0 point</li>
+            <li><span class="badge bg-danger">F</span> : 0-59 (Échec) - 0.0 point</li>
+        </ul>
+    </div>
+</div>
+
+<style media="print">
+    .btn, .sidebar, .navbar, footer { display: none !important; }
+    .content-wrapper { padding: 0 !important; }
+</style>
+{% endblock %}

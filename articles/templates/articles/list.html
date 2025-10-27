@@ -1,0 +1,878 @@
+{%extends 'base_public.html' %}
+{% load static %}
+
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-700: #1E40AF;
+            --primary-800: #1E3A8A;
+            --primary-900: #1E293B;
+            --secondary: #DC2626;
+            --success: #059669;
+            --warning: #D97706;
+            --accent: #7C3AED;
+            --surface: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background-color: var(--surface);
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-crimson {
+            font-family: 'Crimson Text', serif;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .bg-primary-700 {
+            background-color: var(--primary-700) !important;
+        }
+
+        .bg-primary-800 {
+            background-color: var(--primary-800) !important;
+        }
+
+        .bg-primary-900 {
+            background-color: var(--primary-900) !important;
+        }
+
+        .bg-secondary {
+            background-color: var(--secondary) !important;
+        }
+
+        .bg-success {
+            background-color: var(--success) !important;
+        }
+
+        .bg-surface {
+            background-color: var(--surface) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary) !important;
+        }
+
+        .text-success {
+            color: var(--success) !important;
+        }
+
+        .text-accent {
+            color: var(--accent) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            border-color: var(--primary-700);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-900) 0%, var(--primary-800) 50%, var(--primary-700) 100%);
+            color: white;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .shadow-soft {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .shadow-medium {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.25);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .img-hover {
+            transition: transform 0.3s ease;
+        }
+
+        .img-hover:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-custom {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 1rem;
+        }
+
+        .bg-primary-100 {
+            background-color: rgba(30, 58, 138, 0.1);
+        }
+
+        .bg-secondary-100 {
+            background-color: rgba(220, 38, 38, 0.1);
+        }
+
+        .bg-success-100 {
+            background-color: rgba(5, 150, 105, 0.1);
+        }
+
+        .bg-accent-100 {
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+
+        .bg-warning-100 {
+            background-color: rgba(217, 119, 6, 0.1);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .advanced-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .advanced-toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+
+    {%block public_content %}
+
+    <!-- Hero Section -->
+<!-- Hero Section (version Bootstrap adaptée au style Tailwind) -->
+<section class="position-relative text-white overflow-hidden" style="background: linear-gradient(135deg, #0f172a, #1e3a8a, #1d4ed8);">
+  
+  <!-- Overlay sombre -->
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-25"></div>
+  
+  <!-- Image de fond -->
+  <img 
+    src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2940&auto=format&fit=crop" 
+    alt="Recherche Académique"
+    class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+    onerror="this.src='https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" 
+  />
+
+  <!-- Contenu -->
+  <div class="position-relative container py-5 py-lg-7 text-center" style="z-index: 2;">
+    <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
+      Hub de Recherche & Publications
+    </h1>
+    <p class="lead mb-5" style="color: #cbd5e1; font-size: 1.25rem;">
+      Découvrez les contributions de FASCH aux sciences sociales haïtiennes et au discours académique mondial
+    </p>
+    
+    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
+      <button onclick="focusSearchInput()" class="btn btn-light px-5 py-3 fw-semibold shadow-sm" style="color:#1e3a8a;">
+        Rechercher Publications
+      </button>
+      <a href="#featured-research" class="btn btn-outline-light px-5 py-3 fw-semibold">
+        Recherches Vedettes
+      </a>
+    </div>
+  </div>
+</section>
+
+
+    <!-- Advanced Search Section -->
+    <section class="bg-white py-5 border-bottom">
+        <div class="container">
+            <div class="bg-surface rounded p-4 shadow-soft">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 font-crimson fw-bold text-primary mb-0">Moteur de Recherche Académique</h2>
+                    <button onclick="toggleAdvancedSearch()" class="btn btn-link text-primary text-decoration-none fw-semibold">
+                        <span id="advanced-toggle-text">Recherche Avancée</span>
+                        <i id="advanced-toggle-icon" class="bi bi-chevron-down ms-2 advanced-toggle-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Basic Search -->
+                <div class="mb-4">
+                    <div class="position-relative">
+                        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                        <input id="main-search" 
+                               type="text" 
+                               class="form-control form-control-lg ps-5" 
+                               placeholder="Rechercher par titre, auteur, mots-clés..."
+                               onkeyup="performSearch()" />
+                    </div>
+                </div>
+
+                <!-- Advanced Search Filters -->
+                <div id="advanced-search" class="collapse">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Département</label>
+                            <select class="form-select" onchange="performSearch()">
+                                <option value="">Tous les départements</option>
+                                <option value="psychologie">Psychologie</option>
+                                <option value="sociologie">Sociologie</option>
+                                <option value="travail-social">Travail Social</option>
+                                <option value="communication">Communication</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Type de Publication</label>
+                            <select class="form-select" onchange="performSearch()">
+                                <option value="">Tous les types</option>
+                                <option value="article">Article de recherche</option>
+                                <option value="these">Thèse</option>
+                                <option value="conference">Communication</option>
+                                <option value="rapport">Rapport</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Année de Publication</label>
+                            <select class="form-select" onchange="performSearch()">
+                                <option value="">Toutes les années</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="older">Plus ancien</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Langue</label>
+                            <select class="form-select" onchange="performSearch()">
+                                <option value="">Toutes les langues</option>
+                                <option value="francais">Français</option>
+                                <option value="creole">Kreyòl Ayisyen</option>
+                                <option value="anglais">Anglais</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <button onclick="resetFilters()" class="btn btn-outline-secondary">Réinitialiser</button>
+                        <button onclick="performSearch()" class="btn btn-primary">Appliquer Filtres</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Impact Metrics -->
+    <section class="bg-surface py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="h2 font-crimson fw-bold text-primary mb-3">Impact de Notre Recherche</h2>
+                <p class="lead text-muted">Mesurer l'influence de FASCH sur le développement social d'Haïti</p>
+            </div>
+            
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-primary mb-2">847</div>
+                    <div class="text-muted">Publications Totales</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-secondary mb-2">2,341</div>
+                    <div class="text-muted">Citations Académiques</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-success mb-2">156</div>
+                    <div class="text-muted">Projets Actifs</div>
+                </div>
+                <div class="col-6 col-md-3 fade-in">
+                    <div class="display-4 fw-bold text-accent mb-2">23</div>
+                    <div class="text-muted">Partenariats Internationaux</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Research Highlights -->
+    <section id="featured-research" class="bg-white py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 font-crimson fw-bold text-primary mb-3">
+                    Recherches Vedettes
+                </h2>
+                <p class="lead text-muted">
+                    Projets actuels abordant les défis sociaux d'Haïti avec des approches innovantes
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Featured Research 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <article class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=2940&auto=format&fit=crop" 
+                                 alt="Psychologie Post-Catastrophe" 
+                                 class="card-img-top h-100 object-fit-cover img-hover"
+                                 onerror="this.src='https://images.pexels.com/photos/8923962/pexels-photo-8923962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                            <span class="badge bg-primary position-absolute top-0 start-0 m-3">Psychologie</span>
+                            <span class="badge bg-success position-absolute top-0 end-0 m-3">En cours</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-3">
+                                Résilience Communautaire Post-Séisme
+                            </h3>
+                            <p class="card-text text-muted small mb-3">
+                                Étude longitudinale sur les mécanismes de résilience psychologique dans les communautés affectées par le séisme de 2010.
+                            </p>
+                            <div class="d-flex justify-content-between text-muted small mb-3">
+                                <span>Dr. Jean-Claude Moïse</span>
+                                <span>2023-2025</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="bi bi-eye me-1"></i>
+                                    <span>247 vues</span>
+                                </div>
+                                <button onclick="viewResearch('resilience-communautaire')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Voir détails <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Featured Research 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <article class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2832&auto=format&fit=crop" 
+                                 alt="Développement Rural" 
+                                 class="card-img-top h-100 object-fit-cover img-hover"
+                                 onerror="this.src='https://images.pixabay.com/photo/2017/07/31/11/21/people-2557396_1280.jpg'; this.onerror=null;" />
+                            <span class="badge bg-secondary position-absolute top-0 start-0 m-3">Sociologie</span>
+                            <span class="badge bg-warning position-absolute top-0 end-0 m-3">Publication</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-3">
+                                Dynamiques Sociales en Milieu Rural Haïtien
+                            </h3>
+                            <p class="card-text text-muted small mb-3">
+                                Analyse des transformations socio-économiques dans les communautés rurales et leur impact sur les structures traditionnelles.
+                            </p>
+                            <div class="d-flex justify-content-between text-muted small mb-3">
+                                <span>Prof. Marie-Claire Augustin</span>
+                                <span>Publié 2024</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="bi bi-book me-1"></i>
+                                    <span>89 citations</span>
+                                </div>
+                                <button onclick="viewResearch('dynamiques-rurales')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Lire article <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Featured Research 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <article class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2940&auto=format&fit=crop" 
+                                 alt="Médias Sociaux Haïti" 
+                                 class="card-img-top h-100 object-fit-cover img-hover"
+                                 onerror="this.src='https://images.pixabay.com/photo/2016/02/01/00/56/news-1172463_1280.jpg'; this.onerror=null;" />
+                            <span class="badge bg-accent position-absolute top-0 start-0 m-3">Communication</span>
+                            <span class="badge bg-primary position-absolute top-0 end-0 m-3">Nouveau</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="h5 font-crimson fw-bold text-primary mb-3">
+                                Littératie Médiatique et Réseaux Sociaux
+                            </h3>
+                            <p class="card-text text-muted small mb-3">
+                                Initiative de formation pour développer l'esprit critique face à l'information numérique en Haïti.
+                            </p>
+                            <div class="d-flex justify-content-between text-muted small mb-3">
+                                <span>Dr. Pierre-Louis Dumas</span>
+                                <span>Septembre 2025</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="bi bi-people me-1"></i>
+                                    <span>1,247 participants</span>
+                                </div>
+                                <button onclick="viewResearch('litteratie-medias')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Découvrir <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Research Profiles -->
+    <section class="bg-surface py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 font-crimson fw-bold text-primary mb-3">
+                    Profils de Recherche Faculté
+                </h2>
+                <p class="lead text-muted">
+                    Découvrez l'expertise et les contributions de nos chercheurs
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Faculty Profile 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2787&auto=format&fit=crop" 
+                                     alt="Dr. Jean-Claude Moïse" 
+                                     class="rounded-circle object-fit-cover me-3" 
+                                     style="width: 64px; height: 64px;"
+                                     onerror="this.src='https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                                <div>
+                                    <h3 class="h6 font-crimson fw-bold text-primary mb-0">Dr. Jean-Claude Moïse</h3>
+                                    <p class="text-secondary fw-semibold small mb-0">Psychologie Clinique</p>
+                                    <p class="text-muted small mb-0">Directeur de Recherche</p>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="h6 fw-semibold mb-2">Domaines d'Expertise</h4>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-primary-100 text-primary badge-custom">Traumatisme</span>
+                                    <span class="badge bg-primary-100 text-primary badge-custom">Résilience</span>
+                                    <span class="badge bg-primary-100 text-primary badge-custom">Santé Mentale</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="h6 fw-semibold mb-2">Publications Récentes</h4>
+                                <ul class="small text-muted list-unstyled mb-0">
+                                    <li class="mb-1">• "Résilience post-séisme en Haïti" (2024)</li>
+                                    <li class="mb-1">• "Approches thérapeutiques culturelles" (2023)</li>
+                                    <li>• "Santé mentale communautaire" (2023)</li>
+                                </ul>
+                            </div>
+                            <button onclick="viewFacultyProfile('jean-claude-moise')" class="btn btn-primary w-100">
+                                Voir Profil Complet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculty Profile 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616c9c1e4d3?q=80&w=2787&auto=format&fit=crop" 
+                                     alt="Prof. Marie-Claire Augustin" 
+                                     class="rounded-circle object-fit-cover me-3" 
+                                     style="width: 64px; height: 64px;"
+                                     onerror="this.src='https://images.pixabay.com/photo/2017/05/25/22/05/woman-2343357_1280.jpg'; this.onerror=null;" />
+                                <div>
+                                    <h3 class="h6 font-crimson fw-bold text-primary mb-0">Prof. Marie-Claire Augustin</h3>
+                                    <p class="text-secondary fw-semibold small mb-0">Sociologie Urbaine</p>
+                                    <p class="text-muted small mb-0">Chercheure Principale</p>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="h6 fw-semibold mb-2">Domaines d'Expertise</h4>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-secondary-100 text-secondary badge-custom">Urbanisation</span>
+                                    <span class="badge bg-secondary-100 text-secondary badge-custom">Développement</span>
+                                    <span class="badge bg-secondary-100 text-secondary badge-custom">Migration</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="h6 fw-semibold mb-2">Publications Récentes</h4>
+                                <ul class="small text-muted list-unstyled mb-0">
+                                    <li class="mb-1">• "Port-au-Prince: Défis urbains" (2024)</li>
+                                    <li class="mb-1">• "Migrations internes en Haïti" (2024)</li>
+                                    <li>• "Sociologie du développement" (2023)</li>
+                                </ul>
+                            </div>
+                            <button onclick="viewFacultyProfile('marie-claire-augustin')" class="btn btn-primary w-100">
+                                Voir Profil Complet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculty Profile 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-soft card-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2940&auto=format&fit=crop" 
+                                     alt="Dr. Pierre-Louis Dumas" 
+                                     class="rounded-circle object-fit-cover me-3" 
+                                     style="width: 64px; height: 64px;"
+                                     onerror="this.src='https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;" />
+                                <div>
+                                    <h3 class="h6 font-crimson fw-bold text-primary mb-0">Dr. Pierre-Louis Dumas</h3>
+                                    <p class="text-secondary fw-semibold small mb-0">Communication Digitale</p>
+                                    <p class="text-muted small mb-0">Directeur Innovation</p>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="h6 fw-semibold mb-2">Domaines d'Expertise</h4>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-accent-100 text-accent badge-custom">Médias Sociaux</span>
+                                    <span class="badge bg-accent-100 text-accent badge-custom">Journalisme</span>
+                                    <span class="badge bg-accent-100 text-accent badge-custom">Littératie</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h4 class="h6 fw-semibold mb-2">Publications Récentes</h4>
+                                <ul class="small text-muted list-unstyled mb-0">
+                                    <li class="mb-1">• "Médias numériques en Haïti" (2025)</li>
+                                    <li class="mb-1">• "Formation journalistique moderne" (2024)</li>
+                                    <li>• "Communication de crise" (2024)</li>
+                                </ul>
+                            </div>
+                            <button onclick="viewFacultyProfile('pierre-louis-dumas')" class="btn btn-primary w-100">
+                                Voir Profil Complet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Research Showcase -->
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 font-crimson fw-bold text-primary mb-3">
+                    Vitrine de Recherche Étudiante
+                </h2>
+                <p class="lead text-muted">
+                    Découvrez les projets innovants de nos étudiants appliquant leurs connaissances à la société haïtienne
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Student Research 1 -->
+                <div class="col-lg-6">
+                    <div class="card border-0 bg-surface shadow-soft card-hover h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="flex-grow-1">
+                                    <h3 class="h5 font-crimson fw-bold text-primary mb-2">
+                                        Impact des Réseaux Sociaux sur la Jeunesse Haïtienne
+                                    </h3>
+                                    <p class="small text-muted mb-1">Thèse de Maîtrise - Communication</p>
+                                    <p class="small fw-semibold text-secondary mb-0">Nadège Saint-Louis, M.A. 2025</p>
+                                </div>
+                                <span class="badge bg-success-100 text-success badge-custom ms-3">Finaliste</span>
+                            </div>
+                            <p class="text-muted mb-3">
+                                Analyse qualitative de l'influence des plateformes numériques sur les comportements et aspirations des jeunes de 16-25 ans en milieu urbain haïtien.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center small">
+                                <div class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <span>Soutenance: 15 Oct 2025</span>
+                                </div>
+                                <button onclick="viewStudentResearch('reseaux-sociaux-jeunesse')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Lire résumé <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Research 2 -->
+                <div class="col-lg-6">
+                    <div class="card border-0 bg-surface shadow-soft card-hover h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="flex-grow-1">
+                                    <h3 class="h5 font-crimson fw-bold text-primary mb-2">
+                                        Interventions Communautaires Post-Catastrophe
+                                    </h3>
+                                    <p class="small text-muted mb-1">Projet de Recherche - Travail Social</p>
+                                    <p class="small fw-semibold text-secondary mb-0">Jean-Baptiste Morin, B.A. 2024</p>
+                                </div>
+                                <span class="badge bg-primary-100 text-primary badge-custom ms-3">Publié</span>
+                            </div>
+                            <p class="text-muted mb-3">
+                                Évaluation des stratégies d'intervention sociale dans trois communautés rurales affectées par l'ouragan Matthew en 2016.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center small">
+                                <div class="text-muted">
+                                    <i class="bi bi-book me-1"></i>
+                                    <span>Revue Haïtienne de Travail Social</span>
+                                </div>
+                                <button onclick="viewStudentResearch('interventions-communautaires')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Télécharger PDF <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button onclick="viewAllStudentResearch()" class="btn btn-primary btn-lg">
+                    Voir Toutes les Recherches Étudiantes
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collaboration Opportunities -->
+    <section class="py-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);">
+        <div class="container text-white">
+            <div class="text-center mb-5">
+                <h2 class="display-5 font-playfair fw-bold mb-3">
+                    Opportunités de Collaboration
+                </h2>
+                <p class="lead opacity-75">
+                    Partenariats avec institutions gouvernementales, ONG et organisations internationales
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Government Partnerships -->
+                <div class="col-lg-4">
+                    <div class="card bg-white bg-opacity-10 border-0 h-100 backdrop-blur">
+                        <div class="card-body text-white">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-building fs-2 text-secondary me-3"></i>
+                                <h3 class="h5 font-crimson fw-bold mb-0">Partenariats Gouvernementaux</h3>
+                            </div>
+                            <ul class="list-unstyled opacity-75 mb-4">
+                                <li class="mb-2">• Ministère des Affaires Sociales</li>
+                                <li class="mb-2">• Institut de Bien-être Social</li>
+                                <li class="mb-2">• Direction de la Protection Civile</li>
+                                <li>• Ministère de la Santé Publique</li>
+                            </ul>
+                            <button onclick="viewPartnerships('government')" class="btn btn-link text-secondary text-decoration-none fw-semibold p-0">
+                                En savoir plus <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NGO Collaborations -->
+                <div class="col-lg-4">
+                    <div class="card bg-white bg-opacity-10 border-0 h-100 backdrop-blur">
+                        <div class="card-body text-white">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-people fs-2 text-success me-3"></i>
+                                <h3 class="h5 font-crimson fw-bold mb-0">Collaborations ONG</h3>
+                            </div>
+                            <ul class="list-unstyled opacity-75 mb-4">
+                                <li class="mb-2">• Partners In Health</li>
+                                <li class="mb-2">• Zanmi Lasante</li>
+                                <li class="mb-2">• Fonkoze</li>
+                                <li>• FOKAL</li>
+                            </ul>
+                            <button onclick="viewPartnerships('ngo')" class="btn btn-link text-success text-decoration-none fw-semibold p-0">
+                                Découvrir projets <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- International Partnerships -->
+                <div class="col-lg-4">
+                    <div class="card bg-white bg-opacity-10 border-0 h-100 backdrop-blur">
+                        <div class="card-body text-white">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-globe fs-2 text-warning me-3"></i>
+                                <h3 class="h5 font-crimson fw-bold mb-0">Partenariats Internationaux</h3>
+                            </div>
+                            <ul class="list-unstyled opacity-75 mb-4">
+                                <li class="mb-2">• Université de Montréal</li>
+                                <li class="mb-2">• Sciences Po Paris</li>
+                                <li class="mb-2">• University of Miami</li>
+                                <li>• USAID Education</li>
+                            </ul>
+                            <button onclick="viewPartnerships('international')" class="btn btn-link text-warning text-decoration-none fw-semibold p-0">
+                                Voir échanges <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publication Archives -->
+    <section class="bg-surface py-5">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5">
+                <div class="mb-3 mb-md-0">
+                    <h2 class="display-5 font-crimson fw-bold text-primary mb-2">
+                        Archives de Publications
+                    </h2>
+                    <p class="lead text-muted mb-0">
+                        Accès complet à notre base de données académique avec recherche textuelle
+                    </p>
+                </div>
+                <div class="d-flex gap-3">
+                    <button onclick="exportResults()" class="btn btn-secondary">
+                        <i class="bi bi-download me-2"></i>Exporter Résultats
+                    </button>
+                    <button onclick="advancedSearch()" class="btn btn-primary">
+                        <i class="bi bi-search me-2"></i>Recherche Avancée
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Results Display -->
+            <div id="search-results">
+                <!-- Sample Publication Entry -->
+                <article class="card border-0 shadow-soft mb-4 card-hover">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <h3 class="h5 font-crimson fw-bold text-primary mb-3">
+                                    "Résilience psychologique et reconstruction communautaire en Haïti post-2010"
+                                </h3>
+                                <p class="text-muted mb-2">
+                                    <span class="fw-semibold">Auteurs:</span> Jean-Claude Moïse, Marie Dupont, Pierre Augustin
+                                </p>
+                                <p class="text-muted mb-3">
+                                    <span class="fw-semibold">Publication:</span> Revue Haïtienne de Psychologie, Vol. 15, No. 2 (2024)
+                                </p>
+                                <p class="text-body small">
+                                    Cette étude longitudinale examine les mécanismes de résilience développés par les communautés haïtiennes suite au séisme de 2010, analysant les facteurs culturels, sociaux et psychologiques qui ont facilité la reconstruction...
+                                </p>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="d-flex flex-column gap-2 align-items-start align-items-lg-end">
+                                    <span class="badge bg-primary-100 text-primary badge-custom">Psychologie</span>
+                                    <span class="badge bg-secondary text-white badge-custom">2024</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div class="d-flex gap-4 small text-muted">
+                                <span>
+                                    <i class="bi bi-eye me-1"></i>
+                                    156 vues
+                                </span>
+                                <span>
+                                    <i class="bi bi-book me-1"></i>
+                                    23 citations
+                                </span>
+                            </div>
+                            <div class="d-flex gap-3">
+                                <button onclick="viewAbstract('resilience-2024')" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">
+                                    Résumé
+                                </button>
+                                <button onclick="downloadPDF('resilience-2024')" class="btn btn-link text-secondary text-decoration-none fw-semibold p-0">
+                                    <i class="bi bi-file-pdf me-1"></i>PDF
+                                </button>
+                                <button onclick="citePaper('resilience-2024')" class="btn btn-link text-muted text-decoration-none fw-semibold p-0">
+                                    Citer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Pagination -->
+                <div class="text-center py-4">
+                    <p class="text-muted mb-3">Affichage de 1-10 sur 847 résultats</p>
+                    <nav aria-label="Navigation pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'partials/footer.html' %}
+
+
+    <script id="dhws-dataInjector" src="{% static 'js/dhws-data-injector.js' %}"></script>
+
+    {% endblock %}

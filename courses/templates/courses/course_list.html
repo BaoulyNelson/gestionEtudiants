@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalogue des cours - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2><i class="fas fa-book-open"></i> Catalogue des cours</h2>
+    </div>
+    {% if user.is_admin_user %}
+    <div class="col-md-6 text-end">
+        <a href="{% url 'courses:course_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Ajouter un cours
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Filtres -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Département</label>
+                <select name="department" class="form-select">
+                    <option value="">Tous les départements</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.code }}" {% if current_department == dept.code %}selected{% endif %}>
+                            {{ dept.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Année d'études</label>
+                <select name="year_level" class="form-select">
+                    <option value="">Toutes les années</option>
+                    {% for value, label in year_choices %}
+                        <option value="{{ value }}" {% if current_year == value|stringformat:"s" %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Recherche</label>
+                <input type="text" name="search" class="form-control" placeholder="Code ou nom du cours..." value="{{ search_query|default:'' }}">
+
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Liste des cours -->
+{% if page_obj %}
+<div class="row">
+    {% for course in page_obj %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title">
+                        <span class="badge bg-primary">{{ course.code }}</span>
+                        {{ course.name }}
+                    </h5>
+                </div>
+                
+                <p class="card-text text-muted">{{ course.description|truncatewords:20|default:"Pas de description" }}</p>
+                
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="fas fa-building"></i> {{ course.department.name }}
+                        </small>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="fas fa-layer-group"></i> {{ course.get_year_level_display }}
+                        </small>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-coins"></i> {{ course.credits }} crédits
+                        </small>
+                    </div>
+                    <div class="col-6 mt-2">
+                        {% if course.is_active %}
+                            <span class="badge bg-success">Actif</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactif</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <a href="{% url 'courses:course_detail' course.id %}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye"></i> Détails
+                    </a>
+                    {% if user.is_admin_user %}
+                        <a href="{% url 'courses:course_update' course.id %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="{% url 'courses:section_create_for_course' course.id %}" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus"></i> Ajouter section
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Navigation">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_department %}&department={{ current_department }}{% endif %}{% if current_year %}&year_level={{ current_year }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                    Précédent
+                </a>
+            </li>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if current_department %}&department={{ current_department }}{% endif %}{% if current_year %}&year_level={{ current_year }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_department %}&department={{ current_department }}{% endif %}{% if current_year %}&year_level={{ current_year }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                    Suivant
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i> Aucun cours trouvé.
+</div>
+{% endif %}
+{% endblock %}

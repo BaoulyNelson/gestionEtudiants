@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Saisie des notes - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-edit"></i> Saisie des notes</h2>
+        <p class="text-muted">
+            <strong>{{ section.course.code }} - {{ section.course.name }}</strong><br>
+            Section {{ section.section_number }} | {{ section.get_session_display }} {{ section.get_semester_display }} {{ section.year }}
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Pondérations:</strong> Examen Mi-Parcours (25%), Examen Final (35%), Travaux (20%), Participation (10%), Projet (10%)
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 15%;">Étudiant</th>
+                            <th class="text-center">Examen Mi-Parcours (25%)</th>
+                            <th class="text-center">Examen Final (35%)</th>
+                            <th class="text-center">Travaux (20%)</th>
+                            <th class="text-center">Participation (10%)</th>
+                            <th class="text-center">Projet (10%)</th>
+                            <th class="text-center">Note Finale</th>
+                            <th style="width: 15%;">Commentaires</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in enrollment_grades %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.enrollment.student.student_number }}</strong><br>
+                                <small>{{ item.enrollment.student.user.get_full_name }}</small>
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="grade_{{ item.enrollment.id }}_midterm_exam" 
+                                       class="form-control form-control-sm text-center" 
+                                       min="0" max="100" step="0.01"
+                                       value="{% if item.grade %}{{ item.grade.midterm_exam|default:'' }}{% endif %}"
+                                       placeholder="0-100">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="grade_{{ item.enrollment.id }}_final_exam" 
+                                       class="form-control form-control-sm text-center" 
+                                       min="0" max="100" step="0.01"
+                                       value="{% if item.grade %}{{ item.grade.final_exam|default:'' }}{% endif %}"
+                                       placeholder="0-100">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="grade_{{ item.enrollment.id }}_assignments" 
+                                       class="form-control form-control-sm text-center" 
+                                       min="0" max="100" step="0.01"
+                                       value="{% if item.grade %}{{ item.grade.assignments|default:'' }}{% endif %}"
+                                       placeholder="0-100">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="grade_{{ item.enrollment.id }}_participation" 
+                                       class="form-control form-control-sm text-center" 
+                                       min="0" max="100" step="0.01"
+                                       value="{% if item.grade %}{{ item.grade.participation|default:'' }}{% endif %}"
+                                       placeholder="0-100">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="grade_{{ item.enrollment.id }}_project" 
+                                       class="form-control form-control-sm text-center" 
+                                       min="0" max="100" step="0.01"
+                                       value="{% if item.grade %}{{ item.grade.project|default:'' }}{% endif %}"
+                                       placeholder="0-100">
+                            </td>
+                            <td class="text-center align-middle">
+                                {% if item.grade and item.grade.final_grade %}
+                                    <strong class="{% if item.grade.final_grade >= 60 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ item.grade.final_grade|floatformat:2 }}
+                                    </strong>
+                                    <br>
+                                    <span class="badge bg-secondary">{{ item.grade.letter_grade }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <textarea name="comments_{{ item.enrollment.id }}" 
+                                          class="form-control form-control-sm" 
+                                          rows="2" 
+                                          placeholder="Commentaires...">{% if item.grade %}{{ item.grade.comments }}{% endif %}</textarea>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer toutes les notes
+                </button>
+                <a href="{% url 'grades:professor_sections' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .form-control-sm {
+        font-size: 0.875rem;
+    }
+    
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        opacity: 1;
+    }
+</style>
+{% endblock %}

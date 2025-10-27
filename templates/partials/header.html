@@ -1,0 +1,87 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-soft sticky-top" id="mainNav">
+    <div class="container">
+        <!-- Logo & texte -->
+        <a class="navbar-brand d-flex flex-column font-playfair fw-bold text-primary" href="{% url 'home' %}">
+            <span class="fs-3 text-primary">UEH</span>
+            <small class="text-muted fs-6">Faculté des Sciences Humaines</small>
+        </a>
+
+        <!-- Bouton mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Liens de navigation -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'home' %}">Accueil</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'departments:list' %}">Départements</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'articles:list' %}">Actualités</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'admissions:admision_center' %}">Admissions</a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-primary fw-semibold px-3" href="#" id="userDropdown"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i> {{ user.get_full_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                    <i class="fas fa-id-card me-1"></i> Mon Profil
+                                </a>
+                            </li>
+
+                            {% if user.is_superuser %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'admin:index' %}">
+                                        <i class="fas fa-cogs me-1"></i> Administration
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'home' %}">
+                                    ← Retour à la page d'accueil
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item d-flex align-items-center gap-2">
+                     
+
+                        <!-- Boutons -->
+                        <div class="d-flex align-items-center ms-3">
+                            <a href="{% url 'accounts:login' %}" class="btn btn-primary-custom btn-sm px-4 py-2 me-2">
+                                Connexion
+                            </a>
+                        
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

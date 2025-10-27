@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block authenticated_content %}
+<div class="container mt-4">
+  <h2>Liste des Professeurs</h2>
+
+  <form method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ search|default:'' }}">
+
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+  </form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Professeur</th>
+        <th>Email</th>
+        <th>Statut</th>
+        <th>Département</th>
+        <th>Spécialisation</th>
+        <th>Téléphone</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prof in page_obj %}
+      <tr>
+        <td>
+        <strong>{{ prof.professor_profile.professor_id }}</strong><br>
+        <small>{{ prof.professor_profile.user.get_full_name }}</small>
+
+        <td>{{ prof.email }}</td>
+        <td>{{ prof.is_active }}</td>
+        <td>{{ prof.professor_profile.department.name }}</td>
+        <td>{{ prof.professor_profile.specialization }}</td>
+        <td>{{ prof.phone_number }}</td>
+
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">Aucun professeur trouvé.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% include 'partials/pagination.html' %}
+
+{% endblock %}

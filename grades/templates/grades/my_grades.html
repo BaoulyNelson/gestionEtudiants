@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Notes - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-star"></i> Mes Notes</h2>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card warning">
+            <i class="fas fa-chart-line fa-3x mb-2"></i>
+            <h3>{{ gpa|floatformat:2|default:"N/A" }}</h3>
+            <p>Moyenne Générale (GPA)</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card success">
+            <i class="fas fa-book fa-3x mb-2"></i>
+            <h3>{{ total_credits }}</h3>
+            <p>Crédits Obtenus</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card info">
+            <i class="fas fa-clipboard-check fa-3x mb-2"></i>
+            <h3>{{ enrollment_grades|length }}</h3>
+            <p>Cours Évalués</p>
+        </div>
+    </div>
+</div>
+
+<!-- Liste des notes -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-list"></i> Détail des notes</h5>
+        <a href="{% url 'grades:transcript' %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-file-download"></i> Relevé de notes
+        </a>
+    </div>
+    <div class="card-body">
+        {% if enrollment_grades %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Cours</th>
+                            <th>Professeur</th>
+                            <th>Session</th>
+                            <th class="text-center">Examen Mi-Parcours</th>
+                            <th class="text-center">Examen Final</th>
+                            <th class="text-center">Travaux</th>
+                            <th class="text-center">Participation</th>
+                            <th class="text-center">Projet</th>
+                            <th class="text-center">Note Finale</th>
+                            <th class="text-center">Lettre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in enrollment_grades %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.enrollment.course_section.course.code }}</strong><br>
+                                <small class="text-muted">{{ item.enrollment.course_section.course.name }}</small>
+                            </td>
+                            <td>{{ item.enrollment.course_section.professor.user.get_full_name }}</td>
+                            <td>
+                                <small>
+                                    {{ item.enrollment.course_section.get_session_display }}<br>
+                                    {{ item.enrollment.course_section.get_semester_display }} {{ item.enrollment.course_section.year }}
+                                </small>
+                            </td>
+                            {% if item.grade %}
+                                <td class="text-center">{{ item.grade.midterm_exam|default:"-" }}</td>
+                                <td class="text-center">{{ item.grade.final_exam|default:"-" }}</td>
+                                <td class="text-center">{{ item.grade.assignments|default:"-" }}</td>
+                                <td class="text-center">{{ item.grade.participation|default:"-" }}</td>
+                                <td class="text-center">{{ item.grade.project|default:"-" }}</td>
+                                <td class="text-center">
+                                    {% if item.grade.final_grade %}
+                                        <strong class="{% if item.grade.final_grade >= 60 %}text-success{% else %}text-danger{% endif %}">
+                                            {{ item.grade.final_grade|floatformat:2 }}
+                                        </strong>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if item.grade.letter_grade %}
+                                        <span class="badge 
+                                            {% if item.grade.letter_grade == 'A' %}bg-success
+                                            {% elif item.grade.letter_grade == 'B' %}bg-primary
+                                            {% elif item.grade.letter_grade == 'C' %}bg-info
+                                            {% elif item.grade.letter_grade == 'D' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ item.grade.letter_grade }}
+                                        </span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td class="text-center" colspan="7">
+                                    <span class="badge bg-secondary">Non évalué</span>
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Légende -->
+            <div class="mt-4">
+                <h6>Légende des pondérations:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-circle text-primary"></i> Examen Mi-Parcours: 25%</li>
+                    <li><i class="fas fa-circle text-success"></i> Examen Final: 35%</li>
+                    <li><i class="fas fa-circle text-info"></i> Travaux/Devoirs: 20%</li>
+                    <li><i class="fas fa-circle text-warning"></i> Participation: 10%</li>
+                    <li><i class="fas fa-circle text-danger"></i> Projet: 10%</li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Aucune note disponible pour le moment.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

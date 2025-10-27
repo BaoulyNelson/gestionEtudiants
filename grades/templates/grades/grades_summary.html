@@ -1,0 +1,190 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Récapitulatif des notes - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-clipboard-check"></i> Récapitulatif des notes</h2>
+        <p class="text-muted">
+            <strong>{{ section.course.code }} - {{ section.course.name }}</strong><br>
+            Section {{ section.section_number }} | {{ section.get_session_display }} {{ section.get_semester_display }} {{ section.year }}
+        </p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'grades:grade_entry' section.id %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Modifier les notes
+        </a>
+        <button onclick="window.print()" class="btn btn-secondary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+    </div>
+</div>
+
+<!-- Statistiques de la section -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h3>{{ enrollment_grades|length }}</h3>
+                <p class="mb-0">Étudiants inscrits</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h3>{% for item in enrollment_grades %}{% if item.grade and item.grade.final_grade %}{{ forloop.counter }}{% endif %}{% endfor %}</h3>
+                <p class="mb-0">Notes saisies</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h3>
+                    {% widthratio enrollment_grades|length|add:0 1 1 as total %}
+                    {% with notees=0 %}
+                        {% for item in enrollment_grades %}
+                            {% if item.grade and item.grade.final_grade %}
+                                {% widthratio 1 1 1 as notees %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                    {{ enrollment_grades|length|add:"-1" }}
+                </h3>
+                <p class="mb-0">En attente</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3>
+                    {% with total=0 count=0 %}
+                        {% for item in enrollment_grades %}
+                            {% if item.grade and item.grade.final_grade %}
+                                {% widthratio item.grade.final_grade 1 1 as val %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                    -
+                </h3>
+                <p class="mb-0">Moyenne</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tableau des notes -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Numéro</th>
+                        <th>Nom complet</th>
+                        <th class="text-center">Examen Mi-Parcours<br><small>(25%)</small></th>
+                        <th class="text-center">Examen Final<br><small>(35%)</small></th>
+                        <th class="text-center">Travaux<br><small>(20%)</small></th>
+                        <th class="text-center">Participation<br><small>(10%)</small></th>
+                        <th class="text-center">Projet<br><small>(10%)</small></th>
+                        <th class="text-center">Note Finale</th>
+                        <th class="text-center">Lettre</th>
+                        <th>Commentaires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in enrollment_grades %}
+                    <tr>
+                        <td><strong>{{ item.enrollment.student.student_number }}</strong></td>
+                        <td>{{ item.enrollment.student.user.get_full_name }}</td>
+                        
+                        {% if item.grade %}
+                            <td class="text-center">
+                                {% if item.grade.midterm_exam %}
+                                    <span class="badge bg-light text-dark">{{ item.grade.midterm_exam }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.final_exam %}
+                                    <span class="badge bg-light text-dark">{{ item.grade.final_exam }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.assignments %}
+                                    <span class="badge bg-light text-dark">{{ item.grade.assignments }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.participation %}
+                                    <span class="badge bg-light text-dark">{{ item.grade.participation }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.project %}
+                                    <span class="badge bg-light text-dark">{{ item.grade.project }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.final_grade %}
+                                    <strong class="h5 {% if item.grade.final_grade >= 60 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ item.grade.final_grade|floatformat:2 }}
+                                    </strong>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.grade.letter_grade %}
+                                    <span class="badge 
+                                        {% if item.grade.letter_grade == 'A' %}bg-success
+                                        {% elif item.grade.letter_grade == 'B' %}bg-primary
+                                        {% elif item.grade.letter_grade == 'C' %}bg-info
+                                        {% elif item.grade.letter_grade == 'D' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ item.grade.letter_grade }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.grade.comments %}
+                                    <small>{{ item.grade.comments|truncatewords:5 }}</small>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td class="text-center" colspan="7">
+                                <span class="badge bg-secondary">Non noté</span>
+                            </td>
+                            <td>-</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style media="print">
+    .btn, .sidebar, .navbar, footer { display: none !important; }
+    .content-wrapper { padding: 0 !important; }
+</style>
+{% endblock %}

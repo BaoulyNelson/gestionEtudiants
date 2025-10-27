@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% block authenticated_content %}
+
+<div class="container mt-5">
+  <h2>Créer un nouvel utilisateur</h2>
+  <hr>
+
+  <form method="post" enctype="multipart/form-data" id="userCreateForm">
+    {% csrf_token %}
+
+    <div class="card shadow-sm p-4 mb-4">
+      <h4>Informations de base</h4>
+      <div class="row">
+        {% for field in form %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      {% comment %} <div class="mb-3">
+        <label for="role" class="form-label">Rôle de l'utilisateur</label>
+        <select name="role" id="role" class="form-select" required>
+          <option value="">-- Sélectionnez un rôle --</option>
+          <option value="STUDENT">Étudiant</option>
+          <option value="PROFESSOR">Professeur</option>
+          <option value="ADMIN">Administrateur</option>
+        </select>
+      </div>
+    </div> {% endcomment %}
+
+    <!-- Sous-formulaires dynamiques -->
+    {% comment %} <div id="studentForm" class="card shadow-sm p-4 mb-4" style="display: none;">
+      <h4>Informations de l'étudiant</h4>
+      <div class="row">
+        {% for field in student_form %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div> {% endcomment %}
+
+    {% comment %} <div id="professorForm" class="card shadow-sm p-4 mb-4" style="display: none;">
+      <h4>Informations du professeur</h4>
+      <div class="row">
+        {% for field in professor_form %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="adminForm" class="card shadow-sm p-4 mb-4" style="display: none;">
+      <h4>Informations administrateur</h4>
+      <div class="row">
+        {% for field in admin_form %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div> {% endcomment %}
+
+    <div class="text-end">
+      <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">Annuler</a>
+      <button type="submit" class="btn btn-primary">Créer l'utilisateur</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const roleSelect = document.getElementById('role');
+    const studentForm = document.getElementById('studentForm');
+    const professorForm = document.getElementById('professorForm');
+    const adminForm = document.getElementById('adminForm');
+
+    function toggleForms() {
+      const role = roleSelect.value;
+      studentForm.style.display = role === 'STUDENT' ? 'block' : 'none';
+      professorForm.style.display = role === 'PROFESSOR' ? 'block' : 'none';
+      adminForm.style.display = role === 'ADMIN' ? 'block' : 'none';
+    }
+
+    roleSelect.addEventListener('change', toggleForms);
+    toggleForms();  // initial call in case role is preselected
+  });
+</script>
+
+{% endblock %}

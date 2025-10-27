@@ -1,0 +1,618 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Déconnexion — Gestion des Notes{% endblock %}
+
+{% block extra_css %}
+<style>
+            :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        
+        .navbar .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            transition: color 0.3s;
+        }
+        
+        .navbar .nav-link:hover {
+            color: white !important;
+        }
+        
+        .container-main {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .badge-note-saisie {
+            background-color: var(--success-color);
+        }
+        
+        .badge-note-attente {
+            background-color: var(--warning-color);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .alert {
+            border-radius: 0.5rem;
+        }
+        
+        .page-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--primary-color);
+            border-left: 3px solid transparent;
+            padding-left: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-box h6 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box h3 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 768px) {
+            .container-main {
+                margin-top: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+        }
+    .logout-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .logout-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        animation: movePattern 20s linear infinite;
+    }
+
+    @keyframes movePattern {
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+            transform: translate(60px, 60px);
+        }
+    }
+
+    .logout-card {
+        max-width: 500px;
+        width: 100%;
+        border: none;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: white;
+        animation: slideIn 0.6s ease-out;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .logout-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .logout-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: moveStripes 20s linear infinite;
+    }
+
+    @keyframes moveStripes {
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+            transform: translate(50px, 50px);
+        }
+    }
+
+    .logout-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        z-index: 1;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 25px rgba(255, 255, 255, 0);
+        }
+    }
+
+    .logout-icon {
+        font-size: 4rem;
+        color: white;
+        animation: doorSwing 3s ease-in-out infinite;
+    }
+
+    @keyframes doorSwing {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(-15deg);
+        }
+        75% {
+            transform: rotate(15deg);
+        }
+    }
+
+    .logout-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-body {
+        padding: 2.5rem;
+        text-align: center;
+    }
+
+    .logout-message {
+        font-size: 1.1rem;
+        color: #4a5568;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+
+    .logout-message strong {
+        color: #2d3748;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+        border-left: 4px solid #f5576c;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .info-box p {
+        margin: 0;
+        color: #c53030;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-box i {
+        font-size: 1.2rem;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-logout {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    .btn-logout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        color: white;
+    }
+
+    .btn-logout i {
+        font-size: 1.2rem;
+    }
+
+    .btn-return {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+    .btn-return:hover {
+        background: #f7fafc;
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-return i {
+        font-size: 1.2rem;
+    }
+
+    .footer-text {
+        text-align: center;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .footer-text small {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-text i {
+        font-size: 1rem;
+    }
+
+    .security-features {
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+
+    .security-features h6 {
+        color: #2d3748;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .security-features ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        list-style: none;
+    }
+
+    .security-features li {
+        color: #4a5568;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .security-features li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #48bb78;
+        font-weight: bold;
+    }
+
+    @media (max-width: 576px) {
+        .logout-container {
+            padding: 1rem;
+        }
+
+        .logout-card {
+            margin: 0 1rem;
+        }
+
+        .logout-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .logout-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .logout-icon-wrapper {
+            width: 100px;
+            height: 100px;
+        }
+
+        .logout-icon {
+            font-size: 3rem;
+        }
+
+        .logout-title {
+            font-size: 1.6rem;
+        }
+    }
+
+    /* Animation de chargement sur le bouton */
+    .btn-logout.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn-logout.loading i {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+<div class="logout-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="logout-card mx-auto">
+                    <!-- En-tête avec animation -->
+                    <div class="logout-header">
+                        <div class="logout-icon-wrapper">
+                            <i class="fas fa-sign-out-alt logout-icon"></i>
+                        </div>
+                        <h2 class="logout-title">Déconnexion</h2>
+                    </div>
+
+                    <!-- Corps de la carte -->
+                    <div class="logout-body">
+                        <div class="logout-message">
+                            <p>
+                                Êtes-vous sûr(e) de vouloir <strong>vous déconnecter</strong> ?
+                            </p>
+                            <p>
+                                Vous devrez vous reconnecter pour accéder à nouveau à votre espace personnel.
+                            </p>
+                        </div>
+
+                        <!-- Info box -->
+                        <div class="info-box">
+                            <p>
+                                <i class="fas fa-info-circle"></i>
+                                Vos données sont automatiquement sauvegardées
+                            </p>
+                        </div>
+
+                        <!-- Fonctionnalités de sécurité -->
+                        <div class="security-features">
+                            <h6>
+                                <i class="fas fa-shield-alt"></i>
+                                Ce qui se passera :
+                            </h6>
+                            <ul>
+                                <li>Toutes vos modifications sont sauvegardées</li>
+                                <li>Votre session sera fermée en toute sécurité</li>
+                                <li>Vous pourrez vous reconnecter à tout moment</li>
+                            </ul>
+                        </div>
+
+                        <!-- Formulaire de déconnexion -->
+                        <form method="post" id="logoutForm">
+                            {% csrf_token %}
+                            <div class="button-group">
+                                <button type="submit" class="btn-logout" id="logoutBtn">
+                                    <i class="fas fa-check-circle"></i>
+                                    Oui, me déconnecter
+                                </button>
+                                <a href="{% url 'dashboard' %}" class="btn-return">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Non, revenir au tableau de bord
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+           
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('logoutForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Animation au chargement
+        const elements = document.querySelectorAll('.logout-message, .info-box, .security-features');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                el.style.transition = 'all 0.5s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 200 + (index * 150));
+        });
+
+        // Gestion de la soumission du formulaire
+        form.addEventListener('submit', function(e) {
+            // Désactiver le bouton et afficher le spinner
+            logoutBtn.classList.add('loading');
+            logoutBtn.innerHTML = '<i class="fas fa-spinner"></i> Déconnexion en cours...';
+            logoutBtn.disabled = true;
+        });
+
+        // Animation du bouton au survol
+        logoutBtn.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            icon.style.transform = 'rotate(180deg)';
+            icon.style.transition = 'transform 0.3s ease';
+        });
+
+        logoutBtn.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            icon.style.transform = 'rotate(0deg)';
+        });
+    });
+</script>
+{% endblock %}

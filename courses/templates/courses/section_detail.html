@@ -1,0 +1,96 @@
+<!-- ========== templates/courses/section_detail.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Détail Section - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-clipboard-list"></i> {{ section.course.code }}-{{ section.section_number }}</h2>
+        <p class="text-muted">{{ section.course.name }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informations de la section</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong><i class="fas fa-user"></i> Professeur:</strong><br>{{ section.professor.user.get_full_name }}</p>
+                        <p><strong><i class="fas fa-calendar"></i> Horaire:</strong><br>
+                            {{ section.get_day_of_week_display }} : {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
+                        </p>
+                        <p><strong><i class="fas fa-door-open"></i> Salle:</strong> {{ section.room|default:"Non assignée" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong><i class="fas fa-calendar-alt"></i> Session:</strong> {{ section.get_session_display }}</p>
+                        <p><strong><i class="fas fa-leaf"></i> Semestre:</strong> {{ section.get_semester_display }} {{ section.year }}</p>
+                        <p><strong><i class="fas fa-users"></i> Capacité:</strong> 
+                            <span class="badge {% if section.is_full %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ section.get_enrolled_count }}/{{ section.max_students }}
+                            </span>
+                        </p>
+                        <p><strong><i class="fas fa-toggle-on"></i> Statut:</strong>
+                            {% if section.is_open %}
+                                <span class="badge bg-success">Ouvert</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Fermé</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if can_view_students and enrollments %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Étudiants inscrits ({{ enrollments.count }})</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Date d'inscription</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.student.student_number }}</td>
+                                <td>{{ enrollment.student.user.get_full_name }}</td>
+                                <td>{{ enrollment.student.user.email }}</td>
+                                <td>{{ enrollment.enrollment_date|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Cours</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ section.course.name }}</strong></p>
+                <p><small class="text-muted">{{ section.course.description|truncatewords:20 }}</small></p>
+                <p><strong>Crédits:</strong> {{ section.course.credits }}</p>
+                <a href="{% url 'courses:course_detail' section.course.id %}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-eye"></i> Voir le cours
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

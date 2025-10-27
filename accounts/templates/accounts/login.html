@@ -1,0 +1,72 @@
+{% extends 'base_public.html' %}
+
+{% block title %}Connexion - FASCH{% endblock %}
+
+{% block public_content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-university fa-4x text-primary mb-3"></i>
+                    <h3>Système de Gestion FASCH</h3>
+                    <p class="text-muted">Connectez-vous à votre compte</p>
+                </div>
+
+                <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fas fa-user"></i> Email ou Téléphone
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.username.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock"></i> Mot de passe
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter
+                            </button>
+                        </div>
+                    </form>
+
+                <!-- Lien mot de passe oubliÃŠ -->
+           
+                <p class="mt-2">
+                    <a href="{% url 'accounts:password_reset' %}">Mot de passe oublié ?</a>
+                    </p>
+
+                <hr>
+
+                <div class="alert alert-warning text-center">
+                Utilisez le mot de passe par défaut <strong>motdepasse123</strong> lors de votre première connexion, puis modifiez-le immédiatement dans votre profil.
+                </div>
+
+                <div class="mt-4 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i> 
+                        Les comptes sont créés par l'administration.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

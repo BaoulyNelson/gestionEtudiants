@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block authenticated_content %}
+
+
+<div class="container mt-4">
+  <h2>Mes Professeurs</h2>
+
+  {% if professors %}
+    <table class="table table-striped mt-3">
+  <thead>
+    <tr>
+      <th>Code Prof</th>
+      <th>Nom Complet</th>
+      <th>Email</th>
+      <th>Cours enseignés</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for enr in enrollments %}
+    <tr>
+      <td>{{ enr.course_section.professor.professor_id }}</td>
+      <td>{{ enr.course_section.professor.user.first_name }} {{ enr.course_section.professor.user.last_name }}</td>
+      <td>{{ enr.course_section.professor.user.email }}</td>
+      <td>
+        <span class="badge bg-primary">{{ enr.course_section.course.name }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+  {% else %}
+      <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Vous n’avez encore aucun professeur associé à vos cours.
+        </div>
+  {% endif %}
+
+      
+</div>
+{% endblock %}

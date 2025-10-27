@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des utilisateurs - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2><i class="fas fa-users"></i> Gestion des utilisateurs</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'accounts:user_create' %}" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Créer un utilisateur
+        </a>
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Rôle</label>
+                <select name="role" class="form-select">
+                    <option value="">Tous les rôles</option>
+                    {% for value, label in role_choices %}
+                        <option value="{{ value }}" {% if current_role == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Recherche</label>
+                <input type="text" name="search" class="form-control" placeholder="Nom, email..." value="{{ search_query|default:'' }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Liste des utilisateurs -->
+<div class="card">
+    <div class="card-body">
+        {% if page_obj %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom complet</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Téléphone</th>
+                            <th>Statut</th>
+                            <th>Date création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_obj in page_obj %}
+                        <tr>
+                            <td>
+                                <strong>{{ user_obj.get_full_name }}</strong>
+                            </td>
+                            <td>{{ user_obj.email }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if user_obj.role == 'SUPERUSER' %}bg-danger
+                                    {% elif user_obj.role == 'ADMIN' %}bg-warning
+                                    {% elif user_obj.role == 'PROFESSOR' %}bg-info
+                                    {% else %}bg-primary{% endif %}">
+                                    {{ user_obj.get_role_display }}
+                                </span>
+                            </td>
+                            <td>{{ user_obj.phone_number|default:"-" }}</td>
+                            <td>
+                                {% if user_obj.is_active %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user_obj.created_at|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'accounts:user_update' user_obj.id %}" 
+                                       class="btn btn-sm btn-warning" 
+                                       title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'accounts:user_toggle_active' user_obj.id %}" 
+                                       class="btn btn-sm {% if user_obj.is_active %}btn-secondary{% else %}btn-success{% endif %}" 
+                                       title="{% if user_obj.is_active %}Désactiver{% else %}Activer{% endif %}"
+                                       onclick="return confirm('Êtes-vous sûr ?')">
+                                        <i class="fas fa-{% if user_obj.is_active %}ban{% else %}check{% endif %}"></i>
+                                    </a>
+                                    <a href="{% url 'accounts:reset_password' user_obj.id %}" 
+                                       class="btn btn-sm btn-danger" 
+                                       title="Réinitialiser mot de passe"
+                                       onclick="return confirm('Réinitialiser le mot de passe ?')">
+                                        <i class="fas fa-key"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_role %}&role={{ current_role }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                Précédent
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if current_role %}&role={{ current_role }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_role %}&role={{ current_role }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                Suivant
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Aucun utilisateur trouvé.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

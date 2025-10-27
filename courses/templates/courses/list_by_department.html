@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Cours - {{ department.name }}{% endblock %}
+
+{% block authenticated_content %}
+<h2>Cours du département {{ department.name }}</h2>
+
+<ul class="list-group mt-3">
+    {% for course in courses %}
+    <li class="list-group-item">
+        <strong>{{ course.code }}</strong> - {{ course.name }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">Aucun cours trouvé dans ce département.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'departments:list' %}" class="btn btn-secondary mt-3">Retour aux départements</a>
+{% endblock %}

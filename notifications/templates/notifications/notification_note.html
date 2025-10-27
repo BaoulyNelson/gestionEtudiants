@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
+        .content { background-color: #f8f9fa; padding: 20px; margin: 20px 0; }
+        .note-box { background-color: white; padding: 15px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .footer { text-align: center; color: #6c757d; font-size: 12px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>📚 FASCH - Notification de Note</h2>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour {{ utilisateur.get_full_name }},</p>
+            
+            <div class="note-box">
+                <h3>{{ cours }} ({{ code_cours }})</h3>
+                <p><strong>Note finale :</strong> {{ note_finale }}/100 ({{ note_lettre }})</p>
+                
+                {% if ancienne_note %}
+                <p><strong>Ancienne note :</strong> {{ ancienne_note }}/100</p>
+                {% endif %}
+                
+                {% if est_reussi %}
+                <p style="color: #28a745;">✅ Vous avez réussi ce cours !</p>
+                {% else %}
+                <p style="color: #dc3545;">❌ Note insuffisante pour valider ce cours.</p>
+                {% endif %}
+            </div>
+            
+            {% if commentaires %}
+            <p><strong>Commentaires du professeur :</strong></p>
+            <p style="background-color: white; padding: 10px; border-left: 3px solid #007bff;">
+                {{ commentaires }}
+            </p>
+            {% endif %}
+            
+            <p><strong>Professeur :</strong> {{ professeur }}</p>
+            
+            <p>
+                <a href="{% url 'grades:my_grades' %}" 
+                   style="display: inline-block; background-color: #007bff; color: white; 
+                          padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                    Voir toutes mes notes
+                </a>
+            </p>
+        </div>
+        
+  
+    </div>
+</body>
+</html>
+
+

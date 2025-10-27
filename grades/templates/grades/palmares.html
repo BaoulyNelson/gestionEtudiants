@@ -1,0 +1,237 @@
+<!-- ========== templates/grades/palmares.html ========== -->
+{% extends 'base.html' %}
+
+{% block title %}Palmarès - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-trophy"></i> Palmarès de mes étudiants</h2>
+        <p class="text-muted">Classement par moyenne générale (GPA)</p>
+    </div>
+</div>
+
+<!-- Statistiques globales -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h3>{{ total_students }}</h3>
+                <p class="mb-0">Étudiants classés</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-2x mb-2"></i>
+                <h3>{{ avg_gpa }}</h3>
+                <p class="mb-0">Moyenne générale</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        {% if top_student %}
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-crown fa-2x mb-2"></i>
+                <h5 class="mb-0">{{ top_student.student.user.get_full_name }}</h5>
+                <p class="mb-0">Meilleur étudiant ({{ top_student.gpa }})</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Section</label>
+                <select name="section" class="form-select">
+                    <option value="">Toutes les sections</option>
+                    {% for section in sections %}
+                        <option value="{{ section.id }}" {% if selected_section == section.id|stringformat:"s" %}selected{% endif %}>
+                            {{ section.course.code }} - Section {{ section.section_number }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Semestre</label>
+                <select name="semester" class="form-select">
+                    <option value="">Tous</option>
+                    {% for value, label in semester_choices %}
+                        <option value="{{ value }}" {% if semester == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Année</label>
+                <input type="number" name="year" class="form-control" placeholder="2024" value="{{ year }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Recherche</label>
+                <input type="text" name="search" class="form-control" placeholder="Nom ou numéro..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Palmarès -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-medal"></i> Classement</h5>
+        <button onclick="window.print()" class="btn btn-sm btn-secondary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+    </div>
+    <div class="card-body">
+        {% if palmares_list %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Rang</th>
+                            <th>Numéro</th>
+                            <th>Nom complet</th>
+                            <th class="text-center">Cours suivis</th>
+                            <th class="text-center">Crédits</th>
+                            <th class="text-center">GPA</th>
+                            <th class="text-center">Mention</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in palmares_list %}
+                        <tr {% if item.rank <= 3 %}class="table-{% if item.rank == 1 %}warning{% elif item.rank == 2 %}secondary{% else %}info{% endif %}"{% endif %}>
+                            <td class="text-center">
+                                {% if item.rank == 1 %}
+                                    <i class="fas fa-trophy text-warning fa-2x"></i>
+                                {% elif item.rank == 2 %}
+                                    <i class="fas fa-medal text-secondary fa-2x"></i>
+                                {% elif item.rank == 3 %}
+                                    <i class="fas fa-medal text-info fa-2x"></i>
+                                {% else %}
+                                    <strong>{{ item.rank }}</strong>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ item.student.student_number }}</strong></td>
+                            <td>
+                                {{ item.student.user.get_full_name }}
+                                {% if item.rank == 1 %}
+                                    <span class="badge bg-warning text-dark ms-2">
+                                        <i class="fas fa-star"></i> Major de promotion
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary">{{ item.courses|length }}</span>
+                            </td>
+                            <td class="text-center">{{ item.total_credits }}</td>
+                            <td class="text-center">
+                                <strong class="h5 
+                                    {% if item.gpa >= 3.5 %}text-success
+                                    {% elif item.gpa >= 3.0 %}text-primary
+                                    {% elif item.gpa >= 2.5 %}text-info
+                                    {% else %}text-warning{% endif %}">
+                                    {{ item.gpa }}
+                                </strong>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-{{ item.mention_class }}">
+                                    {{ item.mention }}
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#detailModal{{ item.student.id }}">
+                                    <i class="fas fa-eye"></i> Détails
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Modal détails -->
+                        <div class="modal fade" id="detailModal{{ item.student.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            Détails - {{ item.student.user.get_full_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <p><strong>Numéro:</strong> {{ item.student.student_number }}</p>
+                                                <p><strong>Rang:</strong> {{ item.rank }} / {{ total_students }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>GPA:</strong> {{ item.gpa }}</p>
+                                                <p><strong>Mention:</strong> <span class="badge bg-{{ item.mention_class }}">{{ item.mention }}</span></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <h6>Notes par cours:</h6>
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cours</th>
+                                                    <th class="text-center">Note</th>
+                                                    <th class="text-center">Lettre</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for grade_info in item.grades %}
+                                                <tr>
+                                                    <td>{{ grade_info.course.code }} - {{ grade_info.course.name }}</td>
+                                                    <td class="text-center">{{ grade_info.grade }}</td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-secondary">{{ grade_info.letter }}</span>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Légende -->
+            <div class="mt-4">
+                <h6>Légende des mentions:</h6>
+                <ul class="list-unstyled">
+                    <li><span class="badge bg-success">Summa Cum Laude</span> : GPA ≥ 3.7 (Excellent)</li>
+                    <li><span class="badge bg-info">Magna Cum Laude</span> : GPA ≥ 3.3 (Très Bien)</li>
+                    <li><span class="badge bg-primary">Cum Laude</span> : GPA ≥ 3.0 (Bien)</li>
+                    <li><span class="badge bg-secondary">Passable</span> : GPA < 3.0</li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Aucun étudiant trouvé avec les critères sélectionnés.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style media="print">
+    .btn, .modal, .sidebar, .navbar, footer { display: none !important; }
+    .content-wrapper { padding: 0 !important; }
+</style>
+{% endblock %}
+

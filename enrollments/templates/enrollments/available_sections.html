@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Sections disponibles - FASCH{% endblock %}
+{% block authenticated_content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-plus-circle"></i> Sections disponibles pour inscription</h2>
+        <p class="text-muted">
+            Vous pouvez vous inscrire à un maximum de 8 cours par session.<br>
+            <strong>⚠️ Seuls les cours de votre niveau actuel et de votre département sont affichés.</strong>
+        </p>
+              <p class="text-muted">
+            Département : <strong>{{ request.user.student_profile.department.name }}</strong> |
+            Niveau : <strong>{{ request.user.student_profile.get_current_year_display }}</strong>
+        </p>
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Session</label>
+                <select name="session" class="form-select">
+                    <option value="">Toutes</option>
+                    {% for value, label in session_choices %}
+                        <option value="{{ value }}" {% if request.GET.session == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Semestre</label>
+                <select name="semester" class="form-select">
+                    <option value="">Tous</option>
+                    {% for value, label in semester_choices %}
+                        <option value="{{ value }}" {% if request.GET.semester == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end"> <button type="submit" class="btn btn-primary w-100"> <i class="fas fa-search"></i> Filtrer </button> </div>
+
+     
+        </form>
+    </div>
+</div>
+
+<!-- Résultats -->
+{% if page_obj and page_obj.object_list %}
+<div class="row">
+    {% for section in page_obj %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <span class="badge bg-primary">{{ section.course.code }}</span>
+                    {{ section.course.name }}
+                </h5>
+                <p class="card-text text-muted">
+                    Section {{ section.section_number }} — {{ section.get_semester_display }} / {{ section.get_session_display }}
+                </p>
+
+                <div class="row small mt-3">
+                    <div class="col-6">
+                        <i class="fas fa-user"></i> {{ section.professor.user.get_full_name }}
+                    </div>
+                    <div class="col-6">
+                        <i class="fas fa-calendar"></i> {{ section.get_day_of_week_display }}
+                    </div>
+                    <div class="col-6 mt-2">
+                        <i class="fas fa-clock"></i> {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
+                    </div>
+                    <div class="col-6 mt-2">
+                        <i class="fas fa-door-open"></i> {{ section.room|default:"N/A" }}
+                    </div>
+                    <div class="col-6 mt-2">
+                        <i class="fas fa-coins"></i> {{ section.course.credits }} crédits
+                    </div>
+                    <div class="col-6 mt-2">
+                        <span class="badge {% if section.is_full %}bg-danger{% else %}bg-success{% endif %}">
+                            {{ section.enrolled_count }}/{{ section.max_students }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    {% if section.is_full %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-ban"></i> Complet
+                        </button>
+                    {% else %}
+                        <a href="{% url 'enrollments:enroll' section.id %}" 
+                           class="btn btn-success w-100"
+                           onclick="return confirm('Confirmer l\'inscription à ce cours ?')">
+                            <i class="fas fa-check"></i> S'inscrire
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-4">
+    {% include 'partials/pagination.html' %}
+</div>
+
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i> Aucune section disponible pour votre niveau ou selon les filtres choisis.
+</div>
+{% endif %}
+
+{% endblock %}

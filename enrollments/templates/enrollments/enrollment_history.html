@@ -1,0 +1,83 @@
+<!-- ========== templates/enrollments/enrollment_history.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Historique d'inscription - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-history"></i> Historique d'inscription</h2>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Détails de l'inscription</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Étudiant:</strong> {{ enrollment.student.user.get_full_name }} ({{ enrollment.student.student_number }})</p>
+                <p><strong>Cours:</strong> {{ enrollment.course_section.course.code }} - {{ enrollment.course_section.course.name }}</p>
+                <p><strong>Section:</strong> {{ enrollment.course_section.section_number }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Professeur:</strong> {{ enrollment.course_section.professor.user.get_full_name }}</p>
+                <p><strong>Statut actuel:</strong> 
+                    {% if enrollment.status == 'ENROLLED' %}
+                        <span class="badge bg-success">Inscrit</span>
+                    {% elif enrollment.status == 'DROPPED' %}
+                        <span class="badge bg-danger">Abandonné</span>
+                    {% elif enrollment.status == 'COMPLETED' %}
+                        <span class="badge bg-info">Complété</span>
+                    {% endif %}
+                </p>
+                <p><strong>Date d'inscription:</strong> {{ enrollment.enrollment_date|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Historique des modifications</h5>
+    </div>
+    <div class="card-body">
+        {% if history %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Ancien statut</th>
+                        <th>Nouveau statut</th>
+                        <th>Modifié par</th>
+                        <th>Raison</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td>{{ item.changed_at|date:"d/m/Y H:i" }}</td>
+                        <td><span class="badge bg-secondary">{{ item.previous_status }}</span></td>
+                        <td><span class="badge bg-primary">{{ item.new_status }}</span></td>
+                        <td>{{ item.changed_by.get_full_name|default:"Système" }}</td>
+                        <td>{{ item.reason|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Aucune modification enregistrée.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'enrollments:my_enrollments' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+{% endblock %}
+
