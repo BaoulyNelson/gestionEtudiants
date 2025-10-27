@@ -1,4 +1,15 @@
 code,name,description,credits,department_code,year_level
+HIPS101,Histoire des Idées Politiques et Sociales,Introduction aux grandes doctrines politiques et sociales,3,,1
+PHIL101,Philosophie,Notions fondamentales de la philosophie : logique, métaphysique et éthique,3,,1
+OT101,Organisation du Travail Intellectuel,Méthodes de travail universitaire et recherche documentaire,3,,1
+DROIT101,Introduction au Droit,Principes de base du droit civil et constitutionnel,3,,1
+CREO101,Créole : Expression Écrite et Orale,Perfectionnement de l’expression orale et écrite en créole,3,,1
+ECO101,Introduction à l’Économie,Concepts de base de la microéconomie et de la macroéconomie,3,,1
+MATH101,Mathématiques,Rappels et approfondissement des notions fondamentales d’analyse et d’algèbre,3,,1
+HH101,Histoire d’Haïti,Étude des grandes périodes de l’histoire d’Haïti,3,,1
+FR101,Français I : Expression Écrite et Orale,Grammaire et style du français académique,3,,1
+MC101,Monde Caraïbe,Analyse sociale et culturelle des sociétés caribéennes,3,,1
+SH101,Introduction aux Sciences Humaines,Panorama des disciplines des sciences humaines,3,,1
 GEN101,Méthodologie du Travail Universitaire,Techniques d'étude et de recherche,2,,1
 GEN102,Informatique de Base,Introduction aux outils informatiques,2,,1
 GEN103,Français I,Grammaire et expression écrite,3,,1
