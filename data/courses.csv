@@ -3,10 +3,10 @@ HIPS101,Histoire des Idées Politiques et Sociales,Introduction aux grandes doct
 PHIL101,Philosophie,Notions fondamentales de la philosophie : logique, métaphysique et éthique,3,,1
 OT101,Organisation du Travail Intellectuel,Méthodes de travail universitaire et recherche documentaire,3,,1
 DROIT101,Introduction au Droit,Principes de base du droit civil et constitutionnel,3,,1
-CREO101,Créole : Expression Écrite et Orale,Perfectionnement de l’expression orale et écrite en créole,3,,1
-ECO101,Introduction à l’Économie,Concepts de base de la microéconomie et de la macroéconomie,3,,1
-MATH101,Mathématiques,Rappels et approfondissement des notions fondamentales d’analyse et d’algèbre,3,,1
-HH101,Histoire d’Haïti,Étude des grandes périodes de l’histoire d’Haïti,3,,1
+CREO101,Créole : Expression Écrite et Orale,Perfectionnement de l'expression orale et écrite en créole,3,,1
+ECO101,Introduction à l'Économie,Concepts de base de la microéconomie et de la macroéconomie,3,,1
+MATH101,Mathématiques,Rappels et approfondissement des notions fondamentales d'analyse et d'algèbre,3,,1
+HH101,Histoire d'Haïti,Étude des grandes périodes de l'histoire d'Haïti,3,,1
 FR101,Français I : Expression Écrite et Orale,Grammaire et style du français académique,3,,1
 MC101,Monde Caraïbe,Analyse sociale et culturelle des sociétés caribéennes,3,,1
 SH101,Introduction aux Sciences Humaines,Panorama des disciplines des sciences humaines,3,,1
@@ -18,61 +18,49 @@ GEN105,Mathématiques de Base,Mathématiques appliquées aux sciences sociales,3
 GEN106,Introduction aux Sciences Sociales,Panorama des sciences humaines et sociales,3,,1
 GEN107,Histoire d'Haïti,Histoire sociale et politique d'Haïti,2,,1
 GEN108,Philosophie Générale,Introduction à la pensée philosophique,2,,1
+MAT101,Mathématiques générales,Introduction aux concepts fondamentaux de mathématiques,3,,1
+PHY101,Physique générale I,Principes de la mécanique et de la thermodynamique,3,,1
+CHE101,Chimie générale,Notions de base de chimie et réactions chimiques,3,,1
+BIO101,Biologie générale,Structure et fonctionnement du vivant,3,,1
+HIS101,Histoire contemporaine,Étude des grands événements du XXe siècle,3,,1
+ENG101,Anglais I,Introduction à la compréhension et expression écrite/orale en anglais,3,,1
 PSY101,Introduction à la Psychologie,Concepts fondamentaux de la psychologie,3,PSYCHO,2
-PSY102,Psychologie du Développement,Développement psychologique de l'enfance à l'âge adulte,3,PSYCHO,2
-PSY201,Psychologie Sociale,Étude des interactions sociales et comportements de groupe,3,PSYCHO,2
-PSY202,Psychologie Clinique,Introduction aux théories et pratiques cliniques,4,PSYCHO,2
 PSY301,Psychopathologie,Étude des troubles mentaux et comportementaux,4,PSYCHO,3
-PSY302,Méthodes de Recherche en Psychologie,Méthodologies de recherche et statistiques,3,PSYCHO,3
+PSY102,Psychologie du Développement,Développement psychologique de l'enfance à l'âge adulte,3,PSYCHO,2
 PSY401,Stage Clinique,Stage pratique en milieu clinique,6,PSYCHO,4
+PSY201,Psychologie Sociale,Étude des interactions sociales et comportements de groupe,3,PSYCHO,2
+PSY302,Méthodes de Recherche en Psychologie,Méthodologies de recherche et statistiques,3,PSYCHO,3
+PSY202,Psychologie Clinique,Introduction aux théories et pratiques cliniques,4,PSYCHO,2
+PSY303,Neuropsychologie,Étude des relations cerveau-comportement,4,PSYCHO,3
+PSY103,Psychologie Cognitive,Processus mentaux et traitement de l'information,3,PSYCHO,2
+PSY402,Psychologie du Travail,Application de la psychologie en milieu professionnel,4,PSYCHO,4
 COM101,Introduction à la Communication,Fondements de la communication humaine,3,COMM,2
-COM102,Théories de la Communication,Principales théories et modèles communicationnels,3,COMM,2
-COM201,Communication Digitale,Communication via les médias numériques,3,COMM,2
-COM202,Journalisme,Principes et pratiques du journalisme,4,COMM,2
 COM301,Relations Publiques,Gestion de l'image et communication institutionnelle,4,COMM,3
-COM302,Production Médiatique,Production de contenus multimédias,3,COMM,3
+COM102,Théories de la Communication,Principales théories et modèles communicationnels,3,COMM,2
 COM401,Projet de Communication,Projet professionnel en communication,6,COMM,4
+COM201,Communication Digitale,Communication via les médias numériques,3,COMM,2
+COM302,Production Médiatique,Production de contenus multimédias,3,COMM,3
+COM202,Journalisme,Principes et pratiques du journalisme,4,COMM,2
+COM303,Communication Organisationnelle,Communication interne et externe des organisations,4,COMM,3
+COM103,Sémiologie,Étude des signes et systèmes de signification,3,COMM,2
+COM402,Stage Professionnel,Immersion en milieu professionnel,6,COMM,4
 SOC101,Introduction à la Sociologie,Concepts de base de la sociologie,3,SOCIO,2
-SOC102,Sociologie de la Famille,Étude sociologique de la famille,3,SOCIO,2
-SOC201,Sociologie Urbaine,Analyse des phénomènes urbains,3,SOCIO,2
-SOC202,Anthropologie Sociale,Introduction à l'anthropologie,4,SOCIO,2
 SOC301,Méthodologie de Recherche Sociale,Méthodes quantitatives et qualitatives,4,SOCIO,3
-SOC302,Sociologie du Développement,Sociologie appliquée au développement,3,SOCIO,3
+SOC102,Sociologie de la Famille,Étude sociologique de la famille,3,SOCIO,2
 SOC401,Mémoire de Recherche,Projet de recherche sociologique,6,SOCIO,4
+SOC201,Sociologie Urbaine,Analyse des phénomènes urbains,3,SOCIO,2
+SOC302,Sociologie du Développement,Sociologie appliquée au développement,3,SOCIO,3
+SOC202,Anthropologie Sociale,Introduction à l'anthropologie,4,SOCIO,2
+SOC303,Sociologie Politique,Analyse des phénomènes politiques,4,SOCIO,3
+SOC103,Sociologie de l'Éducation,Systèmes éducatifs et inégalités sociales,3,SOCIO,2
+SOC402,Sociologie Économique,Analyse sociologique des activités économiques,4,SOCIO,4
 SSO101,Introduction au Service Social,Fondements du travail social,3,SERVSOC,2
-SSO102,Intervention Sociale,Techniques d'intervention sociale,3,SERVSOC,2
-SSO201,Travail Social Communautaire,Intervention au niveau communautaire,4,SERVSOC,2
-SSO202,Politiques Sociales,Analyse des politiques d'aide sociale,3,SERVSOC,2
 SSO301,Gestion de Projets Sociaux,Planification et gestion de projets,4,SERVSOC,3
-SSO302,Stage d'Intervention I,Premier stage pratique,3,SERVSOC,3
+SSO102,Intervention Sociale,Techniques d'intervention sociale,3,SERVSOC,2
 SSO401,Stage d'Intervention II,Stage professionnel avancé,6,SERVSOC,4
-PSY101,Introduction à la psychologie,Bases de la psychologie moderne,3,PSY,1
-SOC102,Introduction à la sociologie,Étude des interactions sociales,3,SOC,1
-COM103,Techniques de communication,Principes fondamentaux de la communication,3,COM,1
-SER104,Fondements du service social,Introduction au service à la communauté,3,SSO,1
-PSY201,Psychologie du développement,Évolution des comportements humains,4,PSY,2
-SOC202,Sociologie urbaine,Analyse des sociétés modernes,4,SOC,2
-COM203,Médias et société,Rôle des médias dans la société contemporaine,4,COM,2
-SER204,Intervention sociale,Stratégies d’aide et accompagnement,4,SSO,2
-PSY301,Psychopathologie,Étude des troubles mentaux,4,PSY,3
-SOC302,Méthodes de recherche sociologique,Outils et techniques de recherche,4,SOC,3
-COM303,Communication organisationnelle,Communication interne et externe,4,COM,3
-SER304,Éthique et déontologie du service social,Pratiques professionnelles responsables,4,SSO,3
-PSY401,Neuropsychologie,Relations entre cerveau et comportement,5,PSY,4
-SOC402,Sociologie politique,Analyse du pouvoir et des institutions,5,SOC,4
-COM403,Communication interculturelle,Communication entre cultures différentes,5,COM,4
-SER404,Politiques sociales,Étude des politiques publiques sociales,5,SSO,4
-MAT101,Mathématiques générales,Introduction aux concepts fondamentaux de mathématiques,3,GEN,1
-PHY101,Physique générale I,Principes de la mécanique et de la thermodynamique,3,GEN,1
-CHE101,Chimie générale,Notions de base de chimie et réactions chimiques,3,GEN,1
-BIO101,Biologie générale,Structure et fonctionnement du vivant,3,GEN,1
-HIS101,Histoire contemporaine,Étude des grands événements du XXe siècle,3,GEN,1
-ENG101,Anglais I,Introduction à la compréhension et expression écrite/orale en anglais,3,GEN,1
-MAT102,Algèbre et fonctions,Étude approfondie des fonctions et équations,3,GEN,2
-PHY102,Physique générale II,Électricité, magnétisme et ondes,3,GEN,2
-CHE102,Chimie organique,Introduction aux composés organiques et leurs réactions,3,GEN,2
-BIO102,Biologie cellulaire,Analyse de la structure et du fonctionnement cellulaire,3,GEN,2
-HIS102,Histoire des civilisations,Évolution des sociétés et cultures humaines,3,GEN,2
-ENG102,Anglais II,Perfectionnement de la grammaire et conversation avancée,3,GEN,2
-MAT103,Statistiques appliquées,Introduction aux méthodes statistiques et probabilités,3,GEN,3
-PHY103,Physique moderne,Concepts de relativité et mécanique quantique,3,GEN,3
+SSO201,Travail Social Communautaire,Intervention au niveau communautaire,4,SERVSOC,2
+SSO302,Stage d'Intervention I,Premier stage pratique,3,SERVSOC,3
+SSO202,Politiques Sociales,Analyse des politiques d'aide sociale,3,SERVSOC,2
+SSO303,Droit Social,Législation sociale et droits des usagers,4,SERVSOC,3
+SSO103,Psychologie pour Travailleurs Sociaux,Concepts psychologiques appliqués au travail social,3,SERVSOC,2
+SSO402,Évaluation de Programmes Sociaux,Méthodes d'évaluation et indicateurs d'impact,4,SERVSOC,4

@@ -1,59 +1,144 @@
 student_number,email,first_name,last_name,phone_number,date_of_birth,department_code,current_year,enrollment_date
-STU2024001,etudiant1@fasch.edu.ht,Pierre,Dupont,+50938001001,2006-01-15,,1,2024-09-01
-STU2024002,etudiant2@fasch.edu.ht,Marie,Laurent,+50938001002,2006-03-22,,1,2024-09-01
-STU2024003,etudiant3@fasch.edu.ht,Jean,Martin,+50938001003,2006-05-10,,1,2024-09-01
-STU2024004,etudiant4@fasch.edu.ht,Sophie,Bernard,+50938001004,2006-07-18,,1,2024-09-01
-STU2024005,etudiant5@fasch.edu.ht,Luc,Moreau,+50938001005,2006-02-25,,1,2024-09-01
-STU2024006,etudiant6@fasch.edu.ht,Emma,Simon,+50938001006,2006-11-30,,1,2024-09-01
-STU2024007,etudiant7@fasch.edu.ht,Thomas,Petit,+50938001007,2006-09-12,,1,2024-09-01
-STU2024008,etudiant8@fasch.edu.ht,Julie,Roux,+50938001008,2006-04-08,,1,2024-09-01
-STU2023001,etudiant9@fasch.edu.ht,Nicolas,Leroy,+50938002001,2005-06-20,PSYCHO,2,2023-09-01
-STU2023002,etudiant10@fasch.edu.ht,Laura,Girard,+50938002002,2005-08-14,PSYCHO,2,2023-09-01
-STU2023003,etudiant11@fasch.edu.ht,Alexandre,Blanc,+50938002003,2005-01-28,PSYCHO,2,2023-09-01
-STU2023004,etudiant12@fasch.edu.ht,Camille,Faure,+50938002004,2005-03-05,PSYCHO,2,2023-09-01
-STU2023005,etudiant13@fasch.edu.ht,Lucas,Mercier,+50938002005,2005-12-18,COMM,2,2023-09-01
-STU2023006,etudiant14@fasch.edu.ht,Léa,Vincent,+50938002006,2005-10-22,COMM,2,2023-09-01
-STU2023007,etudiant15@fasch.edu.ht,Antoine,Rousseau,+50938002007,2005-04-15,COMM,2,2023-09-01
-STU2023008,etudiant16@fasch.edu.ht,Chloé,Garnier,+50938002008,2005-07-09,SOCIO,2,2023-09-01
-STU2023009,etudiant17@fasch.edu.ht,Hugo,Chevalier,+50938002009,2005-02-11,SOCIO,2,2023-09-01
-STU2023010,etudiant18@fasch.edu.ht,Manon,François,+50938002010,2005-05-27,SERVSOC,2,2023-09-01
-STU2022001,etudiant19@fasch.edu.ht,Nathan,Fontaine,+50938003001,2004-08-03,PSYCHO,3,2022-09-01
-STU2022002,etudiant20@fasch.edu.ht,Sarah,Bonnet,+50938003002,2004-11-16,PSYCHO,3,2022-09-01
-STU2022003,etudiant21@fasch.edu.ht,Maxime,Lambert,+50938003003,2004-03-30,PSYCHO,3,2022-09-01
-STU2022004,etudiant22@fasch.edu.ht,Pauline,Muller,+50938003004,2004-06-24,COMM,3,2022-09-01
-STU2022005,etudiant23@fasch.edu.ht,Julien,Lefebvre,+50938003005,2004-01-07,COMM,3,2022-09-01
-STU2022006,etudiant24@fasch.edu.ht,Clara,Durand,+50938003006,2004-09-19,COMM,3,2022-09-01
-STU2022007,etudiant25@fasch.edu.ht,Mathis,Bertrand,+50938003007,2004-07-26,SOCIO,3,2022-09-01
-STU2022008,etudiant26@fasch.edu.ht,Inès,Morel,+50938003008,2004-04-12,SOCIO,3,2022-09-01
-STU2022009,etudiant27@fasch.edu.ht,Gabriel,Fournier,+50938003009,2004-12-05,SERVSOC,3,2022-09-01
-STU2022010,etudiant28@fasch.edu.ht,Océane,Giraud,+50938003010,2004-02-28,SERVSOC,3,2022-09-01
-STU2021001,etudiant29@fasch.edu.ht,Louis,Andre,+50938004001,2003-05-17,PSYCHO,4,2021-09-01
-STU2021002,etudiant30@fasch.edu.ht,Zoé,Roche,+50938004002,2003-08-21,PSYCHO,4,2021-09-01
-STU2021003,etudiant31@fasch.edu.ht,Théo,Legrand,+50938004003,2003-11-09,PSYCHO,4,2021-09-01
-STU2021004,etudiant32@fasch.edu.ht,Anaïs,Roy,+50938004004,2003-03-14,COMM,4,2021-09-01
-STU2021005,etudiant33@fasch.edu.ht,Raphaël,Clement,+50938004005,2003-07-02,COMM,4,2021-09-01
-STU2021006,etudiant34@fasch.edu.ht,Margaux,Gauthier,+50938004006,2003-10-25,SOCIO,4,2021-09-01
-STU2021007,etudiant35@fasch.edu.ht,Enzo,Perrin,+50938004007,2003-01-19,SOCIO,4,2021-09-01
-STU2021008,etudiant36@fasch.edu.ht,Lucie,Morin,+50938004008,2003-06-08,SERVSOC,4,2021-09-01
-STU2021009,etudiant37@fasch.edu.ht,Tom,Lefevre,+50938004009,2003-09-30,SERVSOC,4,2021-09-01
-STU2021010,etudiant38@fasch.edu.ht,Jade,Barbier,+50938004010,2003-12-11,PSYCHO,4,2021-09-01
-ETU001,etudiant.lina@fasch.edu,Lina,Joseph,+50934112233,2004-05-12,PSY,1,2024-09-01
-ETU002,etudiant.marc@fasch.edu,Marc,Pierre,+50937224455,2003-11-03,SOC,1,2024-09-01
-ETU003,etudiant.sarah@fasch.edu,Sarah,Michel,+50938997711,2005-02-08,COM,1,2024-09-01
-ETU004,etudiant.james@fasch.edu,James,Charles,+50936225566,2004-07-19,SSO,1,2024-09-01
-ETU005,etudiant.laura@fasch.edu,Laura,Jean,+50938112200,2003-09-22,PSY,2,2023-09-01
-ETU006,etudiant.paul@fasch.edu,Paul,René,+50933114488,2002-12-14,SOC,2,2023-09-01
-ETU007,etudiant.amelie@fasch.edu,Amélie,Bernard,+50937009911,2003-03-28,COM,2,2023-09-01
-ETU008,etudiant.michael@fasch.edu,Michael,Robert,+50939337766,2002-06-09,SSO,2,2023-09-01
-ETU009,etudiant.nadia@fasch.edu,Nadia,Louis,+50937774455,2004-01-16,PSY,1,2024-09-01
-ETU010,etudiant.kevin@fasch.edu,Kevin,Joseph,+50934223377,2003-08-11,SOC,1,2024-09-01
-ETU011,etudiant.claire@fasch.edu,Claire,Petit,+50938991122,2005-04-23,COM,1,2024-09-01
-ETU012,etudiant.thomas@fasch.edu,Thomas,Richard,+50939225533,2004-09-05,SSO,1,2024-09-01
-ETU013,etudiant.elise@fasch.edu,Elise,Durand,+50937114455,2002-10-10,PSY,3,2022-09-01
-ETU014,etudiant.alex@fasch.edu,Alex,François,+50938119922,2002-05-17,SOC,3,2022-09-01
-ETU015,etudiant.sophie@fasch.edu,Sophie,Gabriel,+50939448877,2001-12-02,COM,3,2022-09-01
-ETU016,etudiant.david@fasch.edu,David,Henry,+50933007788,2001-03-19,SSO,3,2022-09-01
-ETU017,etudiant.julie@fasch.edu,Julie,Laroche,+50936114477,2004-02-27,PSY,1,2024-09-01
-ETU018,etudiant.martin@fasch.edu,Martin,Joseph,+50938008899,2003-07-08,SOC,2,2023-09-01
-ETU019,etudiant.emilie@fasch.edu,Emilie,Paul,+50939557711,2002-09-30,COM,2,2023-09-01
-ETU020,etudiant.antoine@fasch.edu,Antoine,Louis,+50937119900,2001-11-25,SSO,4,2021-09-01
+STU2024001,jeanheroldjunior.anacius@fasch.edu.ht,Jean Herold Junior,ANACIUS,+5091584466483,2005-03-12,,1,2024-09-01
+STU2024002,mariedieunane.anousse@fasch.edu.ht,Marie Dieunane,ANOUSSE,+5091438776266,2005-06-25,,1,2024-09-01
+STU2024003,jeanbedaly.augustin@fasch.edu.ht,Jean Bédaly,AUGUSTIN,+5091215955238,2006-02-17,,1,2024-09-01
+STU2024004,barthélemyjunior.aurelus@fasch.edu.ht,Barthélémy Junior,AURELUS,+5091594261543,2004-11-30,,1,2024-09-01
+STU2024005,jnvobbasten.auguste@fasch.edu.ht,Jn Vob Basten,AUGUSTE,+5091021463351,2005-08-19,,1,2024-09-01
+STU2024006,rubenson.bassan@fasch.edu.ht,Rubenson,BASSAN,+5091600098227,2005-09-23,,1,2024-09-01
+STU2024007,rocheline.batichon@fasch.edu.ht,Rocheline,BATICHON,+5091531951556,2006-01-04,,1,2024-09-01
+STU2024008,mikekerry.belance@fasch.edu.ht,Mike Kerry,BELANCE,+5091540237296,2005-10-22,,1,2024-09-01
+STU2024009,lookendy.beltine@fasch.edu.ht,Lookendy,BELTINÉ,+5091541353184,2004-07-12,,1,2024-09-01
+STU2024010,sara.beneche@fasch.edu.ht,Sara,BENECHE,+5091571793530,2005-01-18,,1,2024-09-01
+STU2024011,berline.benoit@fasch.edu.ht,Berline,BENOIT,+5091508847417,2004-05-07,,1,2024-09-01
+STU2024012,manaika.bienaime@fasch.edu.ht,Manaïka,BIEN-AIMÉ,+5091601853054,2006-04-09,,1,2024-09-01
+STU2024013,wilgenson.bienaime@fasch.edu.ht,Wilgenson,BIEN-AIMÉ,+5091515042710,2005-03-14,,1,2024-09-01
+STU2024014,andersonbill.boursiquot@fasch.edu.ht,Anderson Bill,BOURSIQUOT,+5091277163887,2004-10-27,,1,2024-09-01
+STU2024015,amydeborah.breau@fasch.edu.ht,Amy-Deborah,BREAU,+5091530415367,2005-12-03,,1,2024-09-01
+STU2024016,neylie.brice@fasch.edu.ht,Neylie,BRICE,+5091532215105,2006-03-01,,1,2024-09-01
+STU2024017,stanykemarla.brutus@fasch.edu.ht,Stany Kemarla,BRUTUS,+5091583925611,2005-02-26,,1,2024-09-01
+STU2024018,stephanie.brutus@fasch.edu.ht,Stéphanie,BRUTUS,+5091463889469,2005-05-09,,1,2024-09-01
+STU2024019,elisabethmitshchov.cajoux@fasch.edu.ht,Elisabeth Mitshchov,CAJOUX,+5091585421933,2004-09-14,,1,2024-09-01
+STU2024020,lourdna.camille@fasch.edu.ht,Lourdna,CAMILLE,+5091591702586,2006-02-22,,1,2024-09-01
+STU2024021,sanchoniathon.cange@fasch.edu.ht,Sanchoniathon,CANGÉ,+5091246341167,2005-06-11,,1,2024-09-01
+STU2024022,marlyjunie.cardichon@fasch.edu.ht,Marly Junie,CARDICHON,+5091603231909,2004-12-16,,1,2024-09-01
+STU2024023,weshnerley.caries@fasch.edu.ht,Weshnerley,CARIÈS,+5091480515948,2005-09-27,,1,2024-09-01
+STU2024024,djerry.carisne@fasch.edu.ht,Djerry,CARISNÉ,+5091574544353,2004-08-10,,1,2024-09-01
+STU2024025,freuddarneley.cazeneuve@fasch.edu.ht,Freud Darneley,CAZENEUVE,+5091582443063,2005-04-01,,1,2024-09-01
+STU2024026,keurnane.charleron@fasch.edu.ht,Keurnane,CHARLERON,+5091027411876,2005-12-09,,1,2024-09-01
+STU2024027,mollichka.chery@fasch.edu.ht,Mollichka,CHERY,+5091543429857,2006-01-28,,1,2024-09-01
+STU2024028,saradjine.cima@fasch.edu.ht,Saradjine,CIMA,+50938001028,2005-07-18,,1,2024-09-01
+STU2024029,fredrique.clermond@fasch.edu.ht,Fédrique,CLERMOND,+50938001029,2006-05-23,,1,2024-09-01
+STU2024030,islande.compere@fasch.edu.ht,Islande,COMPÈRE,+5091586161461,2005-11-15,,1,2024-09-01
+STU2024031,nellie.delva@fasch.edu.ht,Nellie,DELVA,+50938001031,2004-03-08,,1,2024-09-01
+STU2024032,raphaelhans.degand@fasch.edu.ht,Raphaël Hans H.,DÉGAND,+5091550402314,2005-02-04,,1,2024-09-01
+STU2024033,wolfkenny.deshommes@fasch.edu.ht,Wolf Kenny,DESHOMMES,+5091374981403,2005-05-30,,1,2024-09-01
+STU2024034,carltzjosny.desir@fasch.edu.ht,Carltz Josny,DÉSIR,+5091595776586,2006-03-19,,1,2024-09-01
+STU2024035,christerling.desir@fasch.edu.ht,Christerling,DÉSIR,+5091602022610,2004-06-05,,1,2024-09-01
+STU2024036,fidjeniemariefabienne.desrosiers@fasch.edu.ht,Fidjenie Marie Fabienne,DESROSIERS,+5091168347444,2005-09-11,,1,2024-09-01
+STU2024037,marcevens.destine@fasch.edu.ht,Marc Evens,DESTINÉ,+5091556693734,2005-10-03,,1,2024-09-01
+STU2024038,amandaelysa.doirin@fasch.edu.ht,Amanda Elysa,DOIRIN,+5091584851282,2006-02-14,,1,2024-09-01
+STU2024039,noosline.dominique@fasch.edu.ht,Noosline,DOMINIQUE,+5091220125559,2005-01-09,,1,2024-09-01
+STU2024040,kervensky.dorce@fasch.edu.ht,Kervensky,DORCÉ,+5091612765942,2004-10-25,,1,2024-09-01
+STU2024041,stanley.durantil@fasch.edu.ht,Stanley,DURANTIL,+5091602504894,2005-07-07,,1,2024-09-01
+STU2024042,mathania.edme@fasch.edu.ht,Mathania,EDMÉ,+50938001042,2005-09-19,,1,2024-09-01
+STU2024043,woodolph.edmond@fasch.edu.ht,Woodolph,EDMOND,+5091379313326,2004-11-22,,1,2024-09-01
+STU2024044,veronicalandy.eugene@fasch.edu.ht,Veronica Landy,EUGENE,+5091536678269,2005-07-04,,1,2024-09-01
+STU2024045,dieulane.estime@fasch.edu.ht,Dieulane,ESTIMÉ,+5091598499473,2006-01-31,,1,2024-09-01
+STU2024046,mackendy.estime@fasch.edu.ht,Mackendy,ESTIMÉ,+50938001046,2005-03-16,,1,2024-09-01
+STU2024047,phenia.etienne@fasch.edu.ht,Phenia,ETIENNE,+5091524426781,2004-12-05,,1,2024-09-01
+STU2024048,loker.eustache@fasch.edu.ht,Loker,EUSTACHE,+5091318258228,2005-10-12,,1,2024-09-01
+STU2024049,makensley.eximond@fasch.edu.ht,Makensley,EXIMOND,+5091520116489,2006-02-03,,1,2024-09-01
+STU2024050,celena.fenelon@fasch.edu.ht,Céléna,FÉNÉLON,+5091622065914,2004-04-09,,1,2024-09-01
+STU2024051,kenspley.felix@fasch.edu.ht,Kenspley,FÉLIX,+5091480940905,2005-05-14,,1,2024-09-01
+STU2024052,yardlyelpenia.fitrion@fasch.edu.ht,Yardly El Pénia,FITRION,+5091601647705,2005-09-07,,1,2024-09-01
+STU2024053,mardoche.fontenel@fasch.edu.ht,Mardoché,FONTENEL,+5091232859525,2006-03-28,,1,2024-09-01
+STU2024054,sendy.fontus@fasch.edu.ht,Sendy,FONTUS,+5091604576135,2004-07-23,,1,2024-09-01
+STU2024055,yzmael.francique@fasch.edu.ht,Yzmaël,FRANCIQUE,+5091610820413,2005-01-12,,1,2024-09-01
+STU2024056,kervens.francois@fasch.edu.ht,Kervens,FRANÇOIS,+5091477404673,2005-02-22,,1,2024-09-01
+STU2024057,yvlene.francois@fasch.edu.ht,Yvlène,FRANÇOIS,+5091027411876,2004-09-30,,1,2024-09-01
+STU2024058,samson.gabriel@fasch.edu.ht,Samson,GABRIEL,+5091251324639,2005-06-18,,1,2024-09-01
+STU2024059,roseemmanuella.gay@fasch.edu.ht,Rose Emmanuella,GAY,+5091471996050,2004-10-14,,1,2024-09-01
+STU2024060,medjine.georges@fasch.edu.ht,Medjine,GEORGES,+50938001060,2006-04-25,,1,2024-09-01
+STU2024061,fritzmita.glodin@fasch.edu.ht,Fritz Mita V.A,GLODIN,+5091541969910,2005-08-21,,1,2024-09-01
+STU2024062,jocelyn.gontrand@fasch.edu.ht,Jocelyn,GONTRAND,+5091173873922,2005-12-02,,1,2024-09-01
+STU2024063,josemidla.hypolite@fasch.edu.ht,Jose Midla Kamnala,HYPPOLITE,+5091534370930,2004-11-10,,1,2024-09-01
+STU2024064,maevamontilus.jacques@fasch.edu.ht,Maeva Montilus,JACQUES,+5091428456533,2005-07-16,,1,2024-09-01
+STU2024065,sternetara.jacquet@fasch.edu.ht,Sterne Tara,JACQUET,+5091561375439,2006-02-20,,1,2024-09-01
+STU2024066,regilienne.janvier@fasch.edu.ht,Regilienne,JANVIER,+5091600297756,2004-03-03,,1,2024-09-01
+STU2024067,nandyjoseline.jasse@fasch.edu.ht,Nandy Joseline,JASSE,+5091600836979,2005-09-10,,1,2024-09-01
+STU2024068,eshcada.jeanbaptiste@fasch.edu.ht,Eshcada,JEAN-BAPTISTE,+5091578289135,2005-01-26,,1,2024-09-01
+STU2024069,bourassa.jeanclaude@fasch.edu.ht,Bourassa,JEAN CLAUDE,+5091070243972,2005-10-29,,1,2024-09-01
+STU2024070,kervens.jean@fasch.edu.ht,Kervens,JEAN,+5091596582074,2004-06-07,,1,2024-09-01
+STU2024071,teshuva.jeanlouis@fasch.edu.ht,Téshuva,JEAN-LOUIS,+5091453445188,2005-05-01,,1,2024-09-01
+STU2024072,yena.jeanlouis@fasch.edu.ht,Yéna,JEAN-LOUIS,+5091597774689,2005-11-12,,1,2024-09-01
+STU2024073,yenane.jeanlouis@fasch.edu.ht,Yénane,JEAN-LOUIS,+5091597761303,2004-08-05,,1,2024-09-01
+STU2024074,medjyne.jeanpaul@fasch.edu.ht,Médjyne,JEAN-PAUL,+5090043406728,2005-09-02,,1,2024-09-01
+STU2024075,jenniferrose.jeanpierre@fasch.edu.ht,Jennifer Rose,JEAN PIERRE,+5091199874869,2006-01-11,,1,2024-09-01
+STU2024076,naikaguechmy.jeune@fasch.edu.ht,Naïka Guechmy,JEUNE,+5091545451240,2005-02-09,,1,2024-09-01
+STU2024077,direnyhilaire.joseph@fasch.edu.ht,Direny Hilaire,JOSEPH,+5091588320196,2004-07-08,,1,2024-09-01
+STU2024078,david.joseph@fasch.edu.ht,David,JOSEPH,+5091442575174,2005-04-17,,1,2024-09-01
+STU2024079,richardson.joseph@fasch.edu.ht,Richardson,JOSEPH,+5091541477829,2006-02-24,,1,2024-09-01
+STU2024080,wisllycarlens.juste@fasch.edu.ht,Wislly Carlens,JUSTE,+5091541479284,2004-10-18,,1,2024-09-01
+STU2024081,ruben.kernizan@fasch.edu.ht,Ruben,KERNIZAN,+5091409954947,2005-06-13,,1,2024-09-01
+STU2024082,lucio.labonte@fasch.edu.ht,Lucio,LABONTE,+5091002911422,2005-09-06,,1,2024-09-01
+STU2024083,gabrianajenifer.lafontant@fasch.edu.ht,Gabriana Jenifer,LAFONTANT,+5091176483707,2004-04-27,,1,2024-09-01
+STU2024084,annie.laguerre@fasch.edu.ht,Annie,LAGUERRE,+5091237426576,2005-07-21,,1,2024-09-01
+STU2024085,barbarareginewoodcar.laguerre@fasch.edu.ht,Barbara Regine Woodcar,LAGUERRE,+5091540748486,2005-02-14,,1,2024-09-01
+STU2024086,judson.leconte@fasch.edu.ht,Judson,LECONTE,+5091578086308,2004-07-23,,1,2024-09-01
+STU2024087,mathania.leger@fasch.edu.ht,Mathania,LÉGER,+5091319821092,2006-03-05,,1,2024-09-01
+STU2024088,samsleypolincia.lince@fasch.edu.ht,Samsley Polincia,LINCE,+5091575059132,2005-10-09,,1,2024-09-01
+STU2024089,asslyne.louischarles@fasch.edu.ht,Asslyne,LOUIS CHARLES,+5091534397314,2004-06-29,,1,2024-09-01
+STU2024090,judson.louigene@fasch.edu.ht,Judson,LOUIGÈNE,+5091582739398,2005-11-17,,1,2024-09-01
+STU2024091,darre.gohétylouisjuste@fasch.edu.ht,DARRÉ Gohéty,LOUIS-JUSTE,+5091565398126,2005-03-30,,1,2024-09-01
+STU2024092,kendy.louis@fasch.edu.ht,Kendy,LOUIS,+5091446677886,2006-02-04,,1,2024-09-01
+STU2024093,wadley.louissaint@fasch.edu.ht,Wadley,LOUISSAINT,+5091582280394,2005-05-10,,1,2024-09-01
+STU2024094,sabrina.martineau@fasch.edu.ht,Sabrina,MARTINEAU,+5091489456341,2004-09-26,,1,2024-09-01
+STU2024095,lisadorah.mesilas@fasch.edu.ht,Lisa-Dorah,MESILAS,+5091584851185,2005-01-15,,1,2024-09-01
+STU2024096,narlie.michaud@fasch.edu.ht,Narlie,MICHAUD,+5091551034560,2006-03-22,,1,2024-09-01
+STU2024097,morencevardy.mombrun@fasch.edu.ht,Morence Vardy,MOMBRUN,+5091574324260,2004-11-07,,1,2024-09-01
+STU2024098,stasy.mombrun@fasch.edu.ht,Stasy,MOMBRUN,+5091560663362,2005-12-15,,1,2024-09-01
+STU2024099,benglyjeanardy.murat@fasch.edu.ht,Bengly Jean Ardy,MURAT,+5091095726551,2005-02-08,,1,2024-09-01
+STU2024100,jokebed.myrtil@fasch.edu.ht,Jokebed,MYRTIL,+5091541481127,2006-05-12,,1,2024-09-01
+STU2024101,benito.nelson@fasch.edu.ht,Benito,NELSON,+5091149275498,2004-04-18,,1,2024-09-01
+STU2024102,bethsarah.nicolas@fasch.edu.ht,Beth-Sarah,NICOLAS,+5091580355817,2005-07-02,,1,2024-09-01
+STU2024103,kentina.nozil@fasch.edu.ht,Kentina,NOZIL,+5091135206133,2005-09-30,,1,2024-09-01
+STU2024104,bryankewensky.odenat@fasch.edu.ht,Bryan Kewensky,ODENAT,+5091572783803,2004-12-19,,1,2024-09-01
+STU2024105,mariedanielle.oscar@fasch.edu.ht,Marie Danielle,OSCAR,+5091516188183,2005-08-06,,1,2024-09-01
+STU2024106,kendy.paul@fasch.edu.ht,Kendy,PAUL,+5091115897992,2004-10-10,,1,2024-09-01
+STU2024107,daniel.payen@fasch.edu.ht,Daniel,PAYEN,+5091554494647,2005-06-14,,1,2024-09-01
+STU2024108,maykel.petitfrere@fasch.edu.ht,Maykel,PETIT-FRÈRE,+5091595051802,2005-02-11,,1,2024-09-01
+STU2024109,djoudenie.pierre@fasch.edu.ht,Djoudenie,PIERRE,+5091613680167,2004-05-21,,1,2024-09-01
+STU2024110,jeanolwecare.pierre@fasch.edu.ht,Jean Olwecare,PIERRE,+5091574102906,2006-01-09,,1,2024-09-01
+STU2024111,sadrac.pierre@fasch.edu.ht,Sadrac,PIERRE,+5091566213217,2005-09-03,,1,2024-09-01
+STU2024112,sophonie.pierre@fasch.edu.ht,Sophonie,PIERRE,+5091320519977,2005-04-28,,1,2024-09-01
+STU2024113,jeanrony.pierrelouis@fasch.edu.ht,Jean Rony,PIERRE LOUIS,+5091333462493,2005-08-17,,1,2024-09-01
+STU2024114,maraloveshaina.registre@fasch.edu.ht,Mara-Love Shaina,REGISTRE,+5091570072556,2004-11-01,,1,2024-09-01
+STU2024115,daphca.rejouit@fasch.edu.ht,Daphca,RÉJOUIT,+5091605173170,2005-02-26,,1,2024-09-01
+STU2024116,asthofel.renaud@fasch.edu.ht,Asthofel,RENAUD,+50938001084,2004-07-05,,1,2024-09-01
+STU2024117,peterson.resiack@fasch.edu.ht,Peterson,RESIACK,+5091560270512,2005-05-13,,1,2024-09-01
+STU2024118,ashmarllydaens.saintil@fasch.edu.ht,Ashmarlly Daens,SAINTIL,+5091525463226,2006-03-16,,1,2024-09-01
+STU2024119,jeanfenold.saintlouis@fasch.edu.ht,Jean Fénold,SAINT-LOUIS,+5091526815794,2005-11-09,,1,2024-09-01
+STU2024120,sterline.saintfleur@fasch.edu.ht,Sterline,SAINT-FLEUR,+5091272658237,2004-08-12,,1,2024-09-01
+STU2024121,franckjunior.saintfleury@fasch.edu.ht,Franck Junior,SAINT FLEURY,+5091384866479,2005-12-28,,1,2024-09-01
+STU2024122,mardlyaleila.saintfort@fasch.edu.ht,Mardlya Leïla,SAINT FORT,+5091549225316,2004-09-07,,1,2024-09-01
+STU2024123,riphard.saintjuste@fasch.edu.ht,Riphard,SAINT JUSTE,+5091580764090,2005-02-02,,1,2024-09-01
+STU2024124,domilson.sambourg@fasch.edu.ht,Domilson,SAMBOURG,+5091256697857,2005-06-27,,1,2024-09-01
+STU2024125,mysendy.sanon@fasch.edu.ht,Mysendy,SANON,+5091485635996,2004-05-18,,1,2024-09-01
+STU2024126,noranerlie.sanon@fasch.edu.ht,Nora Nerlie,SANON,+5091599142777,2005-03-14,,1,2024-09-01
+STU2024127,jofrantz.serfeuille@fasch.edu.ht,Jofrantz,SERFEUILLE,+5091265538437,2006-02-06,,1,2024-09-01
+STU2024127,dimy.sicoit@fasch.edu.ht,Dimy,Sicoit,1513275079,2006-01-15,,1,2024-09-01
+STU2024128,chilki.sindick@fasch.edu.ht,Chilki,Sindick,1626844716,2006-01-15,,1,2024-09-01
+STU2024129,frantz.siril@fasch.edu.ht,Frantz,Siril,1012064245,2006-01-15,,1,2024-09-01
+STU2024130,sneika.synal@fasch.edu.ht,Sneika Anna Lora,Synal,1500325773,2006-01-15,,1,2024-09-01
+STU2024131,algui.tanice@fasch.edu.ht,Algui Jallalh,Tanice,1521739396,2006-01-15,,1,2024-09-01
+STU2024132,wadly.telusma@fasch.edu.ht,Wadly,Télusma,1106834215,2006-01-15,,1,2024-09-01
+STU2024133,berge.therlean@fasch.edu.ht,Berge,Therléan,,2006-01-15,,1,2024-09-01
+STU2024134,schneider.timothee@fasch.edu.ht,Schneider,Timothée,1334262161,2006-01-15,,1,2024-09-01
+STU2024135,enosch.tintin@fasch.edu.ht,Enosch,Tintin,1584550679,2006-01-15,,1,2024-09-01
+STU2024136,elove.valiere@fasch.edu.ht,Elove,Valière,1596273226,2006-01-15,,1,2024-09-01
+STU2024137,yoldialy.valtrain@fasch.edu.ht,Yoldialy Christie Marionie,Valtrain,1600819616,2006-01-15,,1,2024-09-01
+STU2024138,christopher.vercine@fasch.edu.ht,Christopher,Verciné,1512453877,2006-01-15,,1,2024-09-01
+STU2024139,dorian.vercine@fasch.edu.ht,Dorian,Verciné,,2006-01-15,,1,2024-09-01
+STU2024140,aseru.vincent@fasch.edu.ht,Aser-U,Vincent,1251399717,2006-01-15,,1,2024-09-01
+STU2024141,leniscar.virgile@fasch.edu.ht,Leniscar,Virgile,1557112677,2006-01-15,,1,2024-09-01
+STU2024142,zagaleau.abraham@fasch.edu.ht,Zagaleau,Abraham,1503197555,2006-01-15,,1,2024-09-01
