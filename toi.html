@@ -54,23 +54,21 @@
 
         /* Sidebar Styles */
         .sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    border-right: 1px solid #e2e8f0;
-    box-shadow: var(--shadow-lg);
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1040;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    /* Cachée par défaut sur mobile */
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-            
+            width: 280px;
+            min-width: 280px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(-100%);
+            transition: var(--transition);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1035;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar.active {
@@ -779,17 +777,16 @@
 
     <div class="d-flex min-vh-100">
         <!-- Sidebar -->
-            <nav class="sidebar" id="sidebar">
-                <div class="sidebar-header d-flex justify-content-between align-items-center">
-                    <h3 class="sidebar-title mb-0">
-                        <i class="fas fa-graduation-cap me-2"></i>
-                        Menu
-                    </h3>
-                    <button class="sidebar-close d-md-none" id="sidebarClose">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
+        <nav class="sidebar d-none d-md-flex" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title mb-0">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Menu
+                </h3>
+                <button class="sidebar-close d-md-none" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
             <ul class="sidebar-menu">
                 <li class="sidebar-menu-item">
@@ -1178,33 +1175,44 @@
                 initializeSearch();
             });
 
-function initializeDashboard() {
-    updateLayout();
-    
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(updateLayout, 150);
-    });
+            function initializeDashboard() {
+                // Set initial states
+                updateLayout();
+                
+                // Update layout on resize with debouncing
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(updateLayout, 150);
+                });
 
-    function updateLayout() {
-        const isDesktop = window.innerWidth >= 992;
-        
-        if (isDesktop) {
-            // Desktop: sidebar toujours visible
-            sidebar.classList.add('active');
-            mainContent.classList.add('expanded');
-            sidebarOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        } else {
-            // Mobile: fermer la sidebar
-            sidebar.classList.remove('active');
-            mainContent.classList.remove('expanded');
-            sidebarOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-    }
-}
+                // Update layout function
+                function updateLayout() {
+                    const isDesktop = window.innerWidth >= 992;
+                    const isTablet = window.innerWidth >= 768;
+                    
+                    if (isDesktop) {
+                        // Desktop: show sidebar permanently
+                        sidebar.classList.remove('d-none');
+                        sidebar.classList.add('d-md-flex');
+                        sidebar.classList.add('active');
+                        mainContent.classList.add('expanded');
+                        sidebarOverlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                    } else {
+                        // Mobile/Tablet: hide sidebar by default
+                        sidebar.classList.remove('active');
+                        mainContent.classList.remove('expanded');
+                        sidebarOverlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                        
+                        if (!isTablet) {
+                            sidebar.classList.add('d-none');
+                            sidebar.classList.remove('d-md-flex');
+                        }
+                    }
+                }
+            }
 
             function setupEventListeners() {
                 // Mobile menu toggle
@@ -1466,16 +1474,7 @@ function initializeDashboard() {
 
         })();
     </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-document.getElementById('mobileSearchToggle').addEventListener('click', function() {
-  const form = document.getElementById('searchForm');
-  form.classList.toggle('d-none');
-  form.classList.toggle('d-block');
-});
-});
-</script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

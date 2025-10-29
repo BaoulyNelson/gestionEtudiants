@@ -21,19 +21,19 @@ from departments.models import Department
 
 
 def faculty_workspace(request):
-    return render(request, 'faculty_workspace.html')
+    return render(request, 'portal/faculty_workspace.html')
 
 def department_programs(request):
-    return render(request, 'department_programs.html')
+    return render(request, 'portal/department_programs.html')
 
 def research_publications_hub(request):
-    return render(request, 'research_publications_hub.html')
+    return render(request, 'portal/research_publications_hub.html')
 
 def student_portal_dashboard(request):
-    return render(request, 'student_portal_dashboard.html')
+    return render(request, 'portal/student_portal_dashboard.html')
 
 def home_page_academic(request):
-    return render(request, 'home_page_academic_institution.html')
+    return render(request, 'portal/home_page_academic_institution.html')
 
 
 

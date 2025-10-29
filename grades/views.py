@@ -9,7 +9,8 @@ from enrollments.models import Enrollment
 from courses.models import CourseSection
 from .forms import GradeForm
 from utils.roles import is_admin, is_professor, is_student
-
+from accounts.models import User,Student
+from departments.models import Department
 
 
 
@@ -757,3 +758,76 @@ def palmares_view(request):
     }
     
     return render(request, 'grades/palmares.html', context)
+
+
+
+
+
+
+
+
+@login_required
+@user_passes_test(is_admin)
+def students_gpa_view(request):
+    """Vue pour afficher le GPA de tous les étudiants avec filtres"""
+    
+    department = request.GET.get('department')
+    year = request.GET.get('year')
+
+    # Base : tous les étudiants actifs
+    students = User.objects.filter(role='STUDENT', is_active=True)
+    
+    if department:
+        students = students.filter(student_profile__department__code=department)
+    if year:
+        students = students.filter(student_profile__current_year=year)
+    
+    students_gpa = []
+
+    for student in students.select_related('student_profile__department'):
+        enrollments = student.student_profile.enrollments.filter(
+            status__in=['ENROLLED', 'COMPLETED']
+        ).select_related('course_section__course')
+
+        total_points = 0
+        total_credits = 0
+
+        for enrollment in enrollments:
+            try:
+                grade = enrollment.grade
+                if grade.final_grade is not None:
+                    credits = enrollment.course_section.course.credits
+                    total_points += float(grade.final_grade) * credits
+                    total_credits += credits
+            except Grade.DoesNotExist:
+                continue
+
+        gpa = round(total_points / total_credits, 2) if total_credits > 0 else None
+
+        students_gpa.append({
+            'student': student,
+            'department': student.student_profile.department.name if student.student_profile.department else '-',
+            'year': student.student_profile.get_current_year_display(),
+            'gpa': gpa,
+            'total_credits': total_credits,
+            'courses_count': enrollments.count()
+        })
+
+    # Pagination
+    paginator = Paginator(students_gpa, getattr(settings, 'PAGINATION_PER_PAGE', 20))
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Données pour les filtres
+    departments = Department.objects.values_list('code', 'name')
+    years = Student.YEAR_CHOICES
+
+    context = {
+        'page_obj': page_obj,
+        'departments': departments,
+        'years': years,
+        'selected_department': department,
+        'selected_year': year,
+    }
+
+    return render(request, 'grades/students_gpa.html', context)

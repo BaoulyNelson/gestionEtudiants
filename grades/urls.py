@@ -25,4 +25,6 @@ urlpatterns = [
     # Admin
     path('', views.grade_list_view, name='grade_list'),
     path('generate-transcript/<int:student_id>/', views.generate_transcript_view, name='generate_transcript'),
+    path('students-gpa/', views.students_gpa_view, name='students_gpa'),
+
 ]

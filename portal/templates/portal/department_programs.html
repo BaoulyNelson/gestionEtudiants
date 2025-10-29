@@ -211,7 +211,7 @@
                         <a class="nav-link text-primary fw-semibold px-3" href="#alumni">Diplômés</a>
                     </li>
                     <li class="nav-item ms-2">
-                        <a class="btn btn-primary-custom btn-sm" href="#">S'inscrire</a>
+                        <a class="btn btn-primary-custom btn-sm" href="{% url 'accounts:login' %}">S'inscrire</a>
                     </li>
                 </ul>
             </div>
@@ -630,34 +630,8 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-4 mb-4">
-                    <h5 class="font-playfair fw-bold mb-3">FASCH</h5>
-                    <p class="text-muted small">Faculté des Sciences Humaines depuis 1975. Excellence académique en sciences humaines au service d'Haïti et de la Caraïbe.</p>
-                </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <h6 class="fw-bold mb-3">Départements</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="#" class="text-muted text-decoration-none">Psychologie</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Sociologie</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Travail Social</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Communication</a></li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <h6 class="fw-bold mb-3">Contact</h6>
-                    <p class="small text-muted">Université d'État d'Haïti<br>Port-au-Prince, Haïti<br>info@fasch.ueh.edu.ht<br>+509 1234-5678</p>
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="text-center small text-muted">
-                <p>&copy; 2025 Faculté des Sciences Humaines. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
+            {% include 'partials/footer.html' %}
+
 
     <!-- Bootstrap 5.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -9,7 +9,7 @@ class LoginForm(forms.Form):
         label='Email ou téléphone',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'email ou +50912345678',
+            'placeholder': 'tonexemple@gmail.com ou +50912345678',
             'autofocus': True
         })
     )
@@ -17,7 +17,7 @@ class LoginForm(forms.Form):
         label='Mot de passe',
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': '••••••••'
+            'placeholder': 'motdepasse123'
         })
     )
 
@@ -162,3 +162,17 @@ class AdminCreationForm(forms.ModelForm):
             'admin_id': forms.TextInput(attrs={'class': 'form-control'}),
             'position': forms.TextInput(attrs={'class': 'form-control'}),
         }
+        
+        
+
+class UserProfileForm(UserUpdateForm):
+    """Formulaire simplifié pour la page de profil personnelle"""
+    class Meta(UserUpdateForm.Meta):
+        fields = [
+            'first_name',
+            'last_name',
+            'phone_number',
+            'address',
+            'date_of_birth',
+            'profile_picture',
+        ]

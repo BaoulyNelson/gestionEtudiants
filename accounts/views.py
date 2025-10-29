@@ -8,8 +8,7 @@ from django.conf import settings
 from .models import User
 from .forms import (
     LoginForm, ChangePasswordForm, UserCreationForm,
-    StudentCreationForm, ProfessorCreationForm, AdminCreationForm,
-    UserUpdateForm, StudentUpdateForm, ProfessorUpdateForm
+    UserUpdateForm, StudentUpdateForm, ProfessorUpdateForm,UserProfileForm
 )
 from departments.models import Department
 from django.db.models import Count
@@ -160,10 +159,6 @@ def dashboard(request):
 
 
 
-
-
-
-
 def login_view(request):
     """Vue de connexion"""
     if request.user.is_authenticated:
@@ -179,7 +174,7 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    messages.success(request, f'Bienvenue, {user.get_full_name()}!')
+                    messages.success(request, f'Bienvenue, {user.get_role_display()} {user.get_full_name()}!')
                     return redirect('dashboard')
                 else:
                     messages.error(request, 'Ce compte est inactif.')
@@ -215,7 +210,7 @@ def change_password_view(request):
             user.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Votre mot de passe a été modifié avec succès.')
-            return redirect('home')
+            return redirect('dashboard')
     else:
         form = ChangePasswordForm(request.user)
     
@@ -224,16 +219,29 @@ def change_password_view(request):
 
 @login_required
 def profile_view(request):
-    """Vue du profil utilisateur"""
-    context = {'user': request.user}
-    
-    if request.user.is_student():
-        context['student'] = request.user.student_profile
-    elif request.user.is_professor():
-        context['professor'] = request.user.professor_profile
-    
-    return render(request, 'accounts/profile.html', context)
+    """Affichage et mise à jour du profil utilisateur"""
+    user = request.user
 
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profil mis à jour avec succès.')
+            return redirect('accounts:profile')
+    else:
+        form = UserProfileForm(instance=user)
+
+    context = {
+        'form': form,
+        'user': user,
+    }
+
+    if user.is_student():
+        context['student'] = user.student_profile
+    elif user.is_professor():
+        context['professor'] = user.professor_profile
+
+    return render(request, 'accounts/profile.html', context)
 
 
 
