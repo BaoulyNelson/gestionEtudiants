@@ -197,8 +197,6 @@ CSC,CULTURE ET SOCIETE DE LA CARAIBE,2,3,8,Optionnel,"24,33",Sociologie
 INF,INFORMATIQUE,0,3,8,Support technique,aucun,Sociologie
 
 
-
-
 code,name,credits,year_level,session,type,prerequisites,department
 SS1,Fondements philosophiques du Service Social,3,1,1,Obligatoire,ISH,Service Social
 SS2,Méthodologie de l’intervention en Travail Social,3,1,1,Obligatoire,ISH,Service Social
@@ -242,10 +240,6 @@ SS39,Démographie,3,3,,Optionnel,26,Service Social
 SS40,Déontologie du Travail social,3,3,,Obligatoire,"1,2,8,9,10",Service Social
 SS41,Atelier de mémoire,3,3,,Obligatoire,"1,2,8,9,10",Service Social
 SS42,Stage institutionnel,3,3,,Obligatoire,"1,2,8,9,10",Service Social
-
-
-
-code,name,year_level,department
 OTI,Organisation du Travail Intellectuel,Préparatoire,Psychologie
 EEF1,Expression Écrite/Orale Français I,Préparatoire,Psychologie
 EEC1,Expression Écrite/Orale Créole,Préparatoire,Psychologie
