@@ -38,6 +38,11 @@ class User(AbstractUser):
         ('PROFESSOR', 'Professeur'),
         ('STUDENT', 'Étudiant'),
     ]
+    GENDER_CHOICES = [
+        ('M', 'Masculin'),
+        ('F', 'Féminin'),
+    ]
+ 
     
     username = None  # On n'utilise pas le username par défaut
     email = models.EmailField('Email', unique=True)
@@ -46,7 +51,8 @@ class User(AbstractUser):
     first_name = models.CharField('Prénom', max_length=100)
     last_name = models.CharField('Nom', max_length=100)
     role = models.CharField('Rôle', max_length=20, choices=ROLE_CHOICES)
-    
+    gender = models.CharField('Genre', max_length=1, choices=GENDER_CHOICES, default='M')
+ 
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',
         message="Le numéro doit être au format: '+999999999'. Jusqu'à 15 chiffres."
@@ -105,6 +111,12 @@ class User(AbstractUser):
     def is_admin_user(self):
         return self.role in ['ADMIN', 'SUPERUSER']
 
+    def role_display_by_gender(self):
+        if self.role == 'STUDENT':
+            return 'Étudiante' if self.gender == 'F' else 'Étudiant'
+        elif self.role == 'PROFESSOR':
+            return 'Professeure' if self.gender == 'F' else 'Professeur'
+        return self.get_role_display()
 
 class Student(models.Model):
     """Profil étudiant"""

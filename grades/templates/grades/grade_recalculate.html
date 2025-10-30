@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recalculer les notes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-gradient-info text-white pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon icon-shape bg-white text-info rounded-circle me-3">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h5 class="mb-0 text-white">Recalculer les notes</h5>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="icon icon-shape icon-xxl bg-gradient-info text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-sync-alt fa-2x"></i>
+                        </div>
+                        <h4 class="text-gradient text-info">Recalcul automatique</h4>
+                    </div>
+
+                    <div class="alert alert-info border-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Information :</strong> Cette action va recalculer toutes les notes finales en fonction des composantes enregistrées.
+                    </div>
+
+                    <div class="border rounded p-3 bg-light mb-4">
+                        <h6 class="mb-3">
+                            <i class="fas fa-list-check me-2"></i>
+                            Cette opération va :
+                        </h6>
+                        <ul class="mb-0">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Recalculer la note finale de chaque étudiant
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Mettre à jour les mentions (A, B, C, D, F)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Recalculer les GPA de tous les étudiants
+                            </li>
+                            <li class="mb-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Mettre à jour les statistiques globales
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-warning border-warning mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Attention :</strong> Le processus peut prendre quelques instants selon le nombre de notes à recalculer.
+                    </div>
+
+                    <div class="card bg-gradient-light border-0 mb-4">
+                        <div class="card-body text-center">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3 class="text-primary mb-0">{{ total_grades }}</h3>
+                                    <p class="text-sm text-muted mb-0">
+                                        Note(s) à recalculer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" id="recalculateForm">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'grades:admin_grade_dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-info" id="submitBtn">
+                                <i class="fas fa-calculator me-1"></i> Lancer le recalcul
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Loader -->
+                    <div id="loader" class="text-center mt-4" style="display: none;">
+                        <div class="spinner-border text-info" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="text-muted mt-2">
+                            Recalcul en cours, veuillez patienter...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations complémentaires -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-question-circle me-2 text-primary"></i>
+                        Quand utiliser cette fonction ?
+                    </h6>
+                    <ul class="text-sm text-muted mb-0">
+                        <li class="mb-2">Après une modification des pourcentages de pondération</li>
+                        <li class="mb-2">En cas d'incohérence dans les calculs</li>
+                        <li class="mb-2">Après une importation en masse de notes</li>
+                        <li class="mb-0">Pour mettre à jour les statistiques globales</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.icon-shape {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-xxl {
+    width: 80px;
+    height: 80px;
+}
+
+.text-gradient {
+    background: linear-gradient(310deg, #17ad37, #1171ef);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>
+
+<script>
+document.getElementById('recalculateForm').addEventListener('submit', function(e) {
+    // Afficher le loader
+    document.getElementById('loader').style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Recalcul en cours...';
+});
+</script>
+{% endblock %}

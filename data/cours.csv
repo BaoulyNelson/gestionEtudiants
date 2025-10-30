@@ -1,0 +1,296 @@
+Niveau,Cours
+Préparatoire,Organisation du travail intellectuel (OTI)
+Préparatoire,Expression écrite/orale Français I
+Préparatoire,Expression écrite/orale Créole
+Préparatoire,Histoire d’Haïti
+Préparatoire,Histoire des idées politiques et sociales
+Préparatoire,Introduction aux sciences humaines
+Préparatoire,Introduction au droit
+Préparatoire,Mathématiques
+Préparatoire,Introduction au monde caraïbe
+Préparatoire,Philosophie
+Préparatoire,Introduction à l’économie
+Niveau I,Statistique I
+Niveau I,Expression écrite/orale Français II
+Niveau I,Psychologie de l’apprentissage
+Niveau I,Introduction à la psychologie
+Niveau I,Biologie
+Niveau I,Psychologie sociale
+Niveau I,Psychométrie
+Niveau I,Introduction à la psychiatrie
+Niveau I,Théorie de la personnalité
+Niveau I,Psychologie génétique
+Niveau I,Psychologie du travail
+Niveau I,Psychologie expérimentale
+Niveau I,Méthodologie I
+Niveau I,Génétique
+Niveau II,Statistique II
+Niveau II,Méthodologie II
+Niveau II,Psychopathologie I
+Niveau II,Psychopathologie II
+Niveau II,Psychologie de l’éducation
+Niveau II,Introduction à la psychanalyse
+Niveau II,Évaluation de l’intelligence
+Niveau II,Neuropsychologie I
+Niveau II,Neuropsychologie II
+Niveau II,Développement psychosocial de l’individu
+Niveau II,Évaluation des troubles de l’apprentissage
+Niveau II,Théorie et pratiques de stage I
+Niveau III,Psychologie clinique
+Niveau III,Atelier de mémoire
+Niveau III,Déontologie du métier de psychologue
+Niveau III,Techniques projectives I
+Niveau III,Techniques projectives II
+Niveau III,Comportement organisationnel
+Niveau III,Psychothérapies
+Niveau III,Enfants inadaptés
+Niveau III,Entretien clinique
+Niveau III,Théorie et pratiques de stage II
+Niveau III,Psychologie communautaire
+
+
+
+
+Niveau,Cours,Crédit,Session
+Année préparatoire,Organisation du travail intellectuel,3,1re session
+Année préparatoire,Français I,3,1re session
+Année préparatoire,Français II,3,2e session
+Année préparatoire,Histoire d’Haïti,3,1re session
+Année préparatoire,Introduction aux sciences humaines,3,1re session
+Année préparatoire,Introduction à la philosophie,3,1re session
+Année préparatoire,Introduction au monde caraïbe,3,2e session
+Année préparatoire,Introduction au droit,3,2e session
+Année préparatoire,Introduction à l’économie,3,2e session
+Année préparatoire,Introduction à la psychologie,3,2e session
+Année préparatoire,Histoire des idées politiques et sociales,3,2e session
+Niveau I,Introduction à la communication,3,1re session
+Niveau I,Introduction à la communication éducative,3,1re session
+Niveau I,Communication interpersonnelle,3,1re session
+Niveau I,Communication et société,3,1re session
+Niveau I,Histoire des idées politiques et sociales,3,1re session
+Niveau I,Journalisme et communication publique,3,2e session
+Niveau I,Langue et communication II,3,2e session
+Niveau I,Techniques de communication écrite,3,2e session
+Niveau I,Introduction à la linguistique,3,2e session
+Niveau I,Philosophie II,3,2e session
+Niveau II,Théories de la communication,3,1re session
+Niveau II,Sociologie de la communication,3,1re session
+Niveau II,Institutions de communication,3,1re session
+Niveau II,Médias et société,3,1re session
+Niveau II,Analyse du discours,3,1re session
+Niveau II,Communication graphique,3,2e session
+Niveau II,Techniques de communication orale,3,2e session
+Niveau II,Méthodologie de la recherche,3,2e session
+Niveau II,Psychologie sociale,3,2e session
+Niveau II,Statistique,3,2e session
+Niveau III,Communication organisationnelle,3,1re session
+Niveau III,Communication et médias,3,1re session
+Niveau III,Sémiotique,3,1re session
+Niveau III,Psychologie de la communication,3,1re session
+Niveau III,Techniques audiovisuelles,3,1re session
+Niveau III,Communication politique,3,2e session
+Niveau III,Communication internationale,3,2e session
+Niveau III,Déontologie et éthique des médias,3,2e session
+Niveau III,Stage de communication I,3,2e session
+Niveau III,Stage de communication II,3,2e session
+
+
+
+code,name,credits,year_level,session,department
+COMM101,Introduction à la Communication,3,1,1ère session,Communication
+COMM102,Psychologie Sociale,3,1,1ère session
+COMM103,Sociologie de la Communication,3,1,1ère session
+COMM104,Communication Écrite,3,1,1ère session
+COMM105,Histoire de la Civilisation,3,1,1ère session
+COMM106,Philosophie,3,1,2ème session
+COMM107,Français I : Expression Écrite et Orale,3,1,2ème session
+COMM108,Histoire d’Haïti,3,1,2ème session
+COMM109,Monde Caraïbe,3,1,2ème session
+COMM110,Introduction au Droit,3,1,2ème session
+COMM111,Sciences Humaines,3,1,2ème session
+COMM112,Organisation du Travail Intellectuel,3,1,2ème session
+COMM201,Théories de la Communication I,3,2,1ère session
+COMM202,Communication Éducative,3,2,1ère session
+COMM203,Communication Internationale,3,2,1ère session
+COMM204,Journalisme de Presse Écrite,3,2,1ère session
+COMM205,Journalisme Radiophonique,3,2,1ère session
+COMM206,Histoire de la Presse,3,2,1ère session
+COMM207,Français II : Technique de Rédaction,3,2,1ère session
+COMM208,Éthique et Déontologie du Journalisme,3,2,2ème session
+COMM209,Communication Institutionnelle,3,2,2ème session
+COMM210,Publicité et Propagande,3,2,2ème session
+COMM211,Communication Interpersonnelle,3,2,2ème session
+COMM212,Communication et Développement,3,2,2ème session
+COMM213,Optionnel (au choix),3,2,2ème session
+COMM301,Théories de la Communication II,3,3,1ère session
+COMM302,Journalisme Télévisuel,3,3,1ère session
+COMM303,Journalisme en Ligne,3,3,1ère session
+COMM304,Langage et Discours,3,3,1ère session
+COMM305,Méthodologie de la Recherche en Communication,3,3,1ère session
+COMM306,Psychologie de la Communication,3,3,1ère session
+COMM307,Techniques d’Enquête et de Sondage,3,3,2ème session
+COMM308,Analyse des Médias,3,3,2ème session
+COMM309,Communication Politique,3,3,2ème session
+COMM310,Communication et Opinion Publique,3,3,2ème session
+COMM311,Communication Sociale,3,3,2ème session
+COMM312,Communication et Culture,3,3,2ème session
+COMM401,Projet de Fin d’Études,3,4,1ère session
+COMM402,Stage Professionnel,3,4,1ère session
+COMM403,Communication et Multimédia,3,4,1ère session
+COMM404,Séminaire de Communication,3,4,1ère session
+COMM405,Analyse de Contenu,3,4,1ère session
+COMM406,Communication des Organisations,3,4,2ème session
+COMM407,Communication Marketing,3,4,2ème session
+COMM408,Communication Interculturelle,3,4,2ème session
+COMM409,Communication Stratégique,3,4,2ème session
+COMM410,Optionnel (au choix),3,4,2ème session
+
+
+
+
+code,name,credits,year_level,semester,type,prerequisites,department
+ISO,INTRODUCTION A LA SOCIOLOGIE,3,1,3,Obligatoire,"01,06",Sociologie
+ACU,ANTHROPOLOGIE CULTURELLE,3,1,3,Obligatoire,"6",Sociologie
+ANG/ESP,ANGLAIS / ESPAGNOL,2,1,3,Obligatoire,Aucun,Sociologie
+EEOF-2,EXPRESSION ECRITE ET ORALE FRANCAIS,3,1,3,Obligatoire,"10",Sociologie
+MET-1,METHODOLOGIE I,3,1,3,Obligatoire,"08,09",Sociologie
+STA-1,STATISTIQUE I,3,1,3,Obligatoire,"7",Sociologie
+PSH,PENSEE SOCIALE HAITIENNE,3,1,3,Optionnel,"5",Sociologie
+GEC,GEOGRAPHIE ECONOMIQUE,3,1,3,Obligatoire,"03,04",Sociologie
+TSO-1,THEORIES SOCIOLOGIQUES I,3,1,4,Obligatoire,"12",Sociologie
+STA-2,STATISTIQUE II,3,1,4,Obligatoire,"17",Sociologie
+MET-2,METHODOLOGIE II,3,1,4,Obligatoire,"16",Sociologie
+FSH,FORMATION SOCIALE HAITIENNE,3,1,4,Optionnel,"18",Sociologie
+HAL,HISTOIRE DE L’AMERIQUE LATINE,2,1,4,Obligatoire,"05,19",Sociologie
+TEC,THEORIES ECONOMIQUES,3,1,4,Obligatoire,"3",Sociologie
+PSO,PSYCHOLOGIE SOCIALE,3,1,4,Obligatoire,"06,12",Sociologie
+CRI,CRIMINOLOGIE,3,1,4,Optionnel,"02,12",Sociologie
+TSO-2,THEORIES SOCIOLOGIQUES II,3,2,5,Obligatoire,"20",Sociologie
+SRU,SOCIOLOGIE RURALE,3,2,5,Obligatoire,"13,19",Sociologie
+SPO-1,SOCIOLOGIE POLITIQUE I,3,2,5,Obligatoire,"09,20,25",Sociologie
+SCO,SOCIOLOGIE DE LA COMMUNICATION,3,2,5,Optionnel,"04,05,13,20",Sociologie
+SRE,SOCIOLOGIE DE LA RELIGION,3,2,5,Obligatoire,"13,20",Sociologie
+CSH,CULTURE ET SOCIETE EN HAITI,2,2,5,Obligatoire,"11,12,13",Sociologie
+SOR,SOCIOLOGIE DES ORGANISATIONS,3,2,5,Obligatoire,"08,20,26",Sociologie
+ASO,ANIMATION SOCIALE,3,2,5,Optionnel,"22,31,33,34",Sociologie
+TSO-3,THEORIES SOCIOLOGIQUES III,3,2,6,Obligatoire,"28",Sociologie
+SUR,SOCIOLOGIE URBAINE,3,2,6,Obligatoire,"29",Sociologie
+SPO-2,SOCIOLOGIE POLITIQUE II,3,2,6,Obligatoire,"30",Sociologie
+HES,HISTOIRE ECONOMIQUE ET SOCIALE D’HAITI,3,2,6,Obligatoire,"29",Sociologie
+SED,SOCIOLOGIE DE L’EDUCATION,3,2,6,Obligatoire,"28,33",Sociologie
+OSO,OBSERVATIONS SOCIOLOGIQUES,2,2,6,Obligatoire,"22,28",Sociologie
+STR,SOCIOLOGIE DU TRAVAIL,3,2,6,Obligatoire,"34",Sociologie
+ATE,AMENAGEMENT DU TERRITOIRE,3,2,6,Optionnel,"29",Sociologie
+EPI,EPISTEMOLOGIE,3,3,7,Obligatoire,"22,36",Sociologie
+SCO-1,SOCIOLOGIE CONTEMPORAINE I,3,3,7,Obligatoire,"36",Sociologie
+DEM,DEMOGRAPHIE,3,3,7,Obligatoire,"21",Sociologie
+EPO,ECONOMIE POLITIQUE,3,3,7,Obligatoire,"25",Sociologie
+EGP,ELABORATION ET GESTION DE PROJET,3,3,7,Optionnel,"34,37,40",Sociologie
+SDE,SOCIOLOGIE DU DEVELOPPEMENT,3,3,7,Obligatoire,"25,34,37,40",Sociologie
+SMS,SOCIOLOGIE DES MOUVEMENTS SOCIAUX,3,3,7,Optionnel,"33,42",Sociologie
+SCO-2,SOCIOLOGIE CONTEMPORAINE II,3,3,8,Obligatoire,"45",Sociologie
+PPO,PHILOSOPHIE POLITIQUE,3,3,8,Obligatoire,"38,44",Sociologie
+AME,ATELIER DE MEMOIRE,3,3,8,Obligatoire,"44",Sociologie
+SPR,STAGE PROFESSIONNEL,4,3,8,Obligatoire,"34,41",Sociologie
+PSO,POLITIQUE SOCIALE,3,3,8,Optionnel,"37,49",Sociologie
+CSC,CULTURE ET SOCIETE DE LA CARAIBE,2,3,8,Optionnel,"24,33",Sociologie
+INF,INFORMATIQUE,0,3,8,Support technique,aucun,Sociologie
+
+
+
+
+code,name,credits,year_level,session,type,prerequisites,department
+SS1,Fondements philosophiques du Service Social,3,1,1,Obligatoire,ISH,Service Social
+SS2,Méthodologie de l’intervention en Travail Social,3,1,1,Obligatoire,ISH,Service Social
+SS3,Psychologie sociale,3,1,1,Obligatoire,ISH,Service Social
+SS4,Développement psychosocial de l’individu,3,1,1,Obligatoire,ISH,Service Social
+SS5,Anthropologie culturelle,3,1,1,Optionnel,ISH,Service Social
+SS6,Informations médicales,3,1,1,Optionnel,ISH,Service Social
+SS7,Psychopathologie,3,1,1,Optionnel,ISH,Service Social
+SS8,Travail social individuel,3,1,2,Obligatoire,"1,2",Service Social
+SS9,Travail social de groupe,3,1,2,Obligatoire,"1,2",Service Social
+SS10,Travail social communautaire,3,1,2,Obligatoire,"1,2",Service Social
+SS11,Statistique I,3,1,2,Obligatoire,Math,Service Social
+SS12,Méthodologie I,3,1,2,Obligatoire,OTI,Service Social
+SS13,Introduction à la sociologie,3,1,2,Obligatoire,ISH,Service Social
+SS14,Visites institutionnelles,3,1,2,Obligatoire,"1,2",Service Social
+SS15,Animation sociale,3,2,,Obligatoire,"1,2,8,9,10",Service Social
+SS16,Législation sociale,3,2,,Obligatoire,IDR,Service Social
+SS17,Criminologie,3,2,,Obligatoire,IDR,Service Social
+SS18,Histoire économique et sociale d’Haïti,3,2,,Optionnel,"HH,HIPS",Service Social
+SS19,Histoire de la pensée sociale haïtienne,3,2,,Optionnel,"HH,HIPS",Service Social
+SS20,Sociologie des organisations,3,2,,Optionnel,13,Service Social
+SS21,Culture et société en Haïti,3,2,,Obligatoire,HIPS,Service Social
+SS22,Culture et société dans la Caraïbe,3,2,,Optionnel,HIPS,Service Social
+SS23,Epistémologie,3,2,,Optionnel,PHI,Service Social
+SS24,Sociologie rurale,3,2,,Optionnel,13,Service Social
+SS25,Méthodologie II,3,2,,Optionnel,METH II,Service Social
+SS26,Statistique II,3,2,,Obligatoire,STAT I,Service Social
+SS27,Français II,3,2,,Obligatoire,EF I,Service Social
+SS28,Espagnol,3,2,,Obligatoire,,Service Social
+SS29,Anglais,3,2,,Optionnel,,Service Social
+SS30,Politique sociale,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS31,Planification sociale,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS32,Sécurité sociale,3,3,,Obligatoire,16,Service Social
+SS33,Administration et gestion des services sociaux,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS34,Travail social et Problèmes sociaux actuels,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS35,Théories et pratiques en Service Social,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS36,Sociologie urbaine,3,3,,Optionnel,13,Service Social
+SS37,Sociologie du développement,3,3,,Optionnel,13,Service Social
+SS38,Sociologie politique,3,3,,Optionnel,13,Service Social
+SS39,Démographie,3,3,,Optionnel,26,Service Social
+SS40,Déontologie du Travail social,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS41,Atelier de mémoire,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+SS42,Stage institutionnel,3,3,,Obligatoire,"1,2,8,9,10",Service Social
+
+
+
+code,name,year_level,department
+OTI,Organisation du Travail Intellectuel,Préparatoire,Psychologie
+EEF1,Expression Écrite/Orale Français I,Préparatoire,Psychologie
+EEC1,Expression Écrite/Orale Créole,Préparatoire,Psychologie
+HH,Histoire d’Haïti,Préparatoire,Psychologie
+HIPS,Histoire des Idées Politiques et Sociales,Préparatoire,Psychologie
+ISH,Introduction aux Sciences Humaines,Préparatoire,Psychologie
+DROIT,Introduction au Droit,Préparatoire,Psychologie
+MATH,Mathématiques,Préparatoire,Psychologie
+MC,Monde Caraïbe,Préparatoire,Psychologie
+PHIL,Philosophie,Préparatoire,Psychologie
+ECO,Introduction à l’Économie,Préparatoire,Psychologie
+STA1,Statistique I,Niveau I,Psychologie
+EEF2,Expression Écrite/Orale Français II,Niveau I,Psychologie
+PSA,Psychologie de l’Apprentissage,Niveau I,Psychologie
+IPSY,Introduction à la Psychologie,Niveau I,Psychologie
+BIO,Biologie,Niveau I,Psychologie
+PSOC,Psychologie Sociale,Niveau I,Psychologie
+PMET,Psychométrie,Niveau I,Psychologie
+IPSYCH,Introduction à la Psychiatrie,Niveau I,Psychologie
+TPERS,Théorie de la Personnalité,Niveau I,Psychologie
+PGEN,Psychologie Génétique,Niveau I,Psychologie
+PTRAV,Psychologie du Travail,Niveau I,Psychologie
+PEXP, Psychologie Expérimentale,Niveau I,Psychologie
+MET1,Méthodologie I,Niveau I,Psychologie
+GEN, Génétique,Niveau I,Psychologie
+STA2,Statistique II,Niveau II,Psychologie
+MET2,Méthodologie II,Niveau II,Psychologie
+PPATH1,Psychopathologie I,Niveau II,Psychologie
+PPATH2,Psychopathologie II,Niveau II,Psychologie
+PEDU,Psychologie de l’Éducation,Niveau II,Psychologie
+PSA1,Introduction à la Psychanalyse,Niveau II,Psychologie
+EINT,Évaluation de l’Intelligence,Niveau II,Psychologie
+NEURO1,Neuropsychologie I,Niveau II,Psychologie
+NEURO2,Neuropsychologie II,Niveau II,Psychologie
+DPI,Développement Psychosocial de l’Individu,Niveau II,Psychologie
+ETA,Évaluation des Troubles de l’Apprentissage,Niveau II,Psychologie
+TPS1,Théorie et Pratiques de Stage I,Niveau II,Psychologie
+PCLIN,Psychologie Clinique,Niveau III,Psychologie
+MEM,Atelier de Mémoire,Niveau III,Psychologie
+DEON,Déontologie du Métier de Psychologue,Niveau III,Psychologie
+TPROJ1,Techniques Projectives I,Niveau III,Psychologie
+TPROJ2,Techniques Projectives II,Niveau III,Psychologie
+CORG,Comportement Organisationnel,Niveau III,Psychologie
+PSYTH,Psychothérapies,Niveau III,Psychologie
+ENF,Enfants Inadaptés,Niveau III,Psychologie
+ECLIN,Entretien Clinique,Niveau III,Psychologie
+TPS2,Théorie et Pratiques de Stage II,Niveau III,Psychologie
+PCOM,Psychologie Communautaire,Niveau III,Psychologie

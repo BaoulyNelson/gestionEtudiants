@@ -6,7 +6,6 @@ app_name = 'faculty'
 urlpatterns = [
     # Espace de travail principal
     path('', views.faculty_workspace, name='workspace'),
-    path('workspace/', views.faculty_workspace, name='faculty_workspace'),
     
     # Gestion des cours
     path('courses/', views.faculty_courses, name='faculty_courses'),

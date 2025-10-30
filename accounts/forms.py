@@ -55,7 +55,7 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'role',
+            'email', 'first_name', 'last_name', 'role','gender',
             'phone_number', 'address', 'date_of_birth',
             'profile_picture', 'is_active'
         ]
@@ -64,6 +64,7 @@ class UserCreationForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'role': forms.Select(attrs={'class': 'form-select'}),
+            'gender': forms.Select(attrs={'class': 'form-select'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'date_of_birth': forms.DateInput(attrs={

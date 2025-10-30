@@ -5,11 +5,11 @@ app_name = 'grades'
 
 urlpatterns = [
     # Professeurs
-    path('professor/sections/', views.professor_sections_view, name='professor_sections'),
-    path('professor/section/<int:section_id>/grade-entry/', views.grade_entry_view, name='grade_entry'),
+    path('sections/', views.professor_sections_view, name='professor_sections'),
+    path('section/<int:section_id>/grade-entry/', views.grade_entry_view, name='grade_entry'),
     path('my_students/', views.my_students_view, name='my_students'),
-    path('professor/palmares/', views.palmares_view, name='palmares'),
-    path('professor/section/<int:section_id>/summary/', views.grades_summary_view, name='grades_summary'),
+    path('palmares/', views.palmares_view, name='palmares'),
+    path('section/<int:section_id>/summary/', views.grades_summary_view, name='grades_summary'),
 
     
     
@@ -26,5 +26,17 @@ urlpatterns = [
     path('', views.grade_list_view, name='grade_list'),
     path('generate-transcript/<int:student_id>/', views.generate_transcript_view, name='generate_transcript'),
     path('students-gpa/', views.students_gpa_view, name='students_gpa'),
+    
+    
+    
+    path('<int:grade_id>/edit/', views.grade_edit, name='admin_grade_edit'),
+    path('<int:grade_id>/delete/', views.grade_delete, name='admin_grade_delete'),
+    path('bulk-entry/', views.grade_bulk_entry, name='admin_grade_bulk_entry'),
+    path('recalculate/', views.grade_recalculate, name='admin_grade_recalculate'),
+    path('export/', views.grade_export, name='admin_grade_export'),
+    path('statistics/', views.grade_statistics, name='admin_grade_statistics'),
+    
+    # API AJAX
+    path('search-ajax/', views.grade_search_ajax, name='admin_grade_search_ajax'),
 
 ]

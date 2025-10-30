@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} une note{% endblock %}
+
+{% block authenticated_content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>
+                            {{ action }} une note
+                        </h5>
+                        <a href="{% url 'grades:admin_grade_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if grade %}
+                    <!-- Informations de l'étudiant -->
+                    <div class="alert alert-info border-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Étudiant :</strong> 
+                                    {{ grade.enrollment.student.user.get_full_name }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Matricule :</strong> 
+                                    {{ grade.enrollment.student.student_number }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Cours :</strong> 
+                                    {{ grade.enrollment.course_section.course.code }} - 
+                                    {{ grade.enrollment.course_section.course.name }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Section :</strong> 
+                                    {{ grade.enrollment.course_section.section_number }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Sélection de l'inscription (création uniquement) -->
+                        {% if not grade %}
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Inscription <span class="text-danger">*</span>
+                            </label>
+                            {{ form.enrollment }}
+                            {% if form.enrollment.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.enrollment.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Sélectionnez l'étudiant et le cours pour lequel vous souhaitez créer une note
+                            </small>
+                        </div>
+                        {% endif %}
+
+                        <!-- Composantes de la note -->
+                        <div class="border rounded p-3 mb-4">
+                            <h6 class="mb-3">
+                                <i class="fas fa-calculator me-2"></i>
+                                Composantes de la note
+                            </h6>
+
+                            <div class="row">
+                                <!-- Mi-parcours -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Mi-parcours (30%)
+                                    </label>
+                                    {{ form.midterm_exam }}
+                                    {% if form.midterm_exam.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.midterm_exam.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Examen final -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Examen final (40%)
+                                    </label>
+                                    {{ form.final_exam }}
+                                    {% if form.final_exam.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.final_exam.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Travaux -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Travaux (15%)
+                                    </label>
+                                    {{ form.assignments }}
+                                    {% if form.assignments.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.assignments.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Participation -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Participation (5%)
+                                    </label>
+                                    {{ form.participation }}
+                                    {% if form.participation.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.participation.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Projet -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Projet (10%)
+                                    </label>
+                                    {{ form.project }}
+                                    {% if form.project.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.project.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="alert alert-light border mb-0">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Les notes doivent être comprises entre 0 et 100. La note finale sera calculée automatiquement selon les pourcentages indiqués.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Commentaires -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Commentaires (optionnel)
+                            </label>
+                            {{ form.comments }}
+                            {% if form.comments.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.comments.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Ajoutez des observations ou remarques sur la performance de l'étudiant
+                            </small>
+                        </div>
+
+                        <!-- Résultat calculé (modification uniquement) -->
+                        {% if grade and grade.final_grade %}
+                        <div class="alert alert-success border-success">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>
+                                        Note finale actuelle
+                                    </h6>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <h4 class="mb-0">
+                                        <span class="badge bg-gradient-primary px-4 py-2">
+                                            {{ grade.final_grade }} / 100
+                                        </span>
+                                        <span class="badge 
+                                            {% if grade.letter_grade == 'A' %}bg-gradient-success
+                                            {% elif grade.letter_grade == 'B' %}bg-gradient-info
+                                            {% elif grade.letter_grade == 'C' %}bg-gradient-warning
+                                            {% elif grade.letter_grade == 'D' %}bg-gradient-danger
+                                            {% elif grade.letter_grade == 'F' %}bg-gradient-dark
+                                            {% endif %} px-4 py-2 ms-2">
+                                            {{ grade.letter_grade }}
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'grades:admin_grade_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Style pour les champs de formulaire */
+.form-control, .form-select {
+    border: 1px solid #d2d6da;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #cb0c9f;
+    box-shadow: 0 0 0 2px rgba(203, 12, 159, 0.1);
+}
+
+/* Style pour les inputs de type number */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>
+
+<script>
+// Validation basique du formulaire
+(function() {
+    'use strict';
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+{% endblock %}

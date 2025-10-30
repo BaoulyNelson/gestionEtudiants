@@ -1,66 +1,210 @@
 code,name,description,credits,department_code,year_level
-HIPS101,Histoire des Idées Politiques et Sociales,Introduction aux grandes doctrines politiques et sociales,3,,1
-PHIL101,Philosophie,Notions fondamentales de la philosophie : logique, métaphysique et éthique,3,,1
-OT101,Organisation du Travail Intellectuel,Méthodes de travail universitaire et recherche documentaire,3,,1
-DROIT101,Introduction au Droit,Principes de base du droit civil et constitutionnel,3,,1
-CREO101,Créole : Expression Écrite et Orale,Perfectionnement de l'expression orale et écrite en créole,3,,1
-ECO101,Introduction à l'Économie,Concepts de base de la microéconomie et de la macroéconomie,3,,1
-MATH101,Mathématiques,Rappels et approfondissement des notions fondamentales d'analyse et d'algèbre,3,,1
-HH101,Histoire d'Haïti,Étude des grandes périodes de l'histoire d'Haïti,3,,1
-FR101,Français I : Expression Écrite et Orale,Grammaire et style du français académique,3,,1
-MC101,Monde Caraïbe,Analyse sociale et culturelle des sociétés caribéennes,3,,1
-SH101,Introduction aux Sciences Humaines,Panorama des disciplines des sciences humaines,3,,1
-GEN101,Méthodologie du Travail Universitaire,Techniques d'étude et de recherche,2,,1
-GEN102,Informatique de Base,Introduction aux outils informatiques,2,,1
-GEN103,Français I,Grammaire et expression écrite,3,,1
-GEN104,Anglais I,Anglais général et académique,3,,1
-GEN105,Mathématiques de Base,Mathématiques appliquées aux sciences sociales,3,,1
-GEN106,Introduction aux Sciences Sociales,Panorama des sciences humaines et sociales,3,,1
-GEN107,Histoire d'Haïti,Histoire sociale et politique d'Haïti,2,,1
-GEN108,Philosophie Générale,Introduction à la pensée philosophique,2,,1
-MAT101,Mathématiques générales,Introduction aux concepts fondamentaux de mathématiques,3,,1
-PHY101,Physique générale I,Principes de la mécanique et de la thermodynamique,3,,1
-CHE101,Chimie générale,Notions de base de chimie et réactions chimiques,3,,1
-BIO101,Biologie générale,Structure et fonctionnement du vivant,3,,1
-HIS101,Histoire contemporaine,Étude des grands événements du XXe siècle,3,,1
-ENG101,Anglais I,Introduction à la compréhension et expression écrite/orale en anglais,3,,1
-PSY101,Introduction à la Psychologie,Concepts fondamentaux de la psychologie,3,PSYCHO,2
-PSY301,Psychopathologie,Étude des troubles mentaux et comportementaux,4,PSYCHO,3
-PSY102,Psychologie du Développement,Développement psychologique de l'enfance à l'âge adulte,3,PSYCHO,2
-PSY401,Stage Clinique,Stage pratique en milieu clinique,6,PSYCHO,4
-PSY201,Psychologie Sociale,Étude des interactions sociales et comportements de groupe,3,PSYCHO,2
-PSY302,Méthodes de Recherche en Psychologie,Méthodologies de recherche et statistiques,3,PSYCHO,3
-PSY202,Psychologie Clinique,Introduction aux théories et pratiques cliniques,4,PSYCHO,2
-PSY303,Neuropsychologie,Étude des relations cerveau-comportement,4,PSYCHO,3
-PSY103,Psychologie Cognitive,Processus mentaux et traitement de l'information,3,PSYCHO,2
-PSY402,Psychologie du Travail,Application de la psychologie en milieu professionnel,4,PSYCHO,4
-COM101,Introduction à la Communication,Fondements de la communication humaine,3,COMM,2
-COM301,Relations Publiques,Gestion de l'image et communication institutionnelle,4,COMM,3
-COM102,Théories de la Communication,Principales théories et modèles communicationnels,3,COMM,2
-COM401,Projet de Communication,Projet professionnel en communication,6,COMM,4
-COM201,Communication Digitale,Communication via les médias numériques,3,COMM,2
-COM302,Production Médiatique,Production de contenus multimédias,3,COMM,3
-COM202,Journalisme,Principes et pratiques du journalisme,4,COMM,2
-COM303,Communication Organisationnelle,Communication interne et externe des organisations,4,COMM,3
-COM103,Sémiologie,Étude des signes et systèmes de signification,3,COMM,2
-COM402,Stage Professionnel,Immersion en milieu professionnel,6,COMM,4
-SOC101,Introduction à la Sociologie,Concepts de base de la sociologie,3,SOCIO,2
-SOC301,Méthodologie de Recherche Sociale,Méthodes quantitatives et qualitatives,4,SOCIO,3
-SOC102,Sociologie de la Famille,Étude sociologique de la famille,3,SOCIO,2
-SOC401,Mémoire de Recherche,Projet de recherche sociologique,6,SOCIO,4
-SOC201,Sociologie Urbaine,Analyse des phénomènes urbains,3,SOCIO,2
-SOC302,Sociologie du Développement,Sociologie appliquée au développement,3,SOCIO,3
-SOC202,Anthropologie Sociale,Introduction à l'anthropologie,4,SOCIO,2
-SOC303,Sociologie Politique,Analyse des phénomènes politiques,4,SOCIO,3
-SOC103,Sociologie de l'Éducation,Systèmes éducatifs et inégalités sociales,3,SOCIO,2
-SOC402,Sociologie Économique,Analyse sociologique des activités économiques,4,SOCIO,4
-SSO101,Introduction au Service Social,Fondements du travail social,3,SERVSOC,2
-SSO301,Gestion de Projets Sociaux,Planification et gestion de projets,4,SERVSOC,3
-SSO102,Intervention Sociale,Techniques d'intervention sociale,3,SERVSOC,2
-SSO401,Stage d'Intervention II,Stage professionnel avancé,6,SERVSOC,4
-SSO201,Travail Social Communautaire,Intervention au niveau communautaire,4,SERVSOC,2
-SSO302,Stage d'Intervention I,Premier stage pratique,3,SERVSOC,3
-SSO202,Politiques Sociales,Analyse des politiques d'aide sociale,3,SERVSOC,2
-SSO303,Droit Social,Législation sociale et droits des usagers,4,SERVSOC,3
-SSO103,Psychologie pour Travailleurs Sociaux,Concepts psychologiques appliqués au travail social,3,SERVSOC,2
-SSO402,Évaluation de Programmes Sociaux,Méthodes d'évaluation et indicateurs d'impact,4,SERVSOC,4
+PREP-HIPS1,Histoire des Idées Politiques et Sociales,Introduction aux grandes doctrines politiques et sociales,3,,1
+PREP-PHIL1,Philosophie,Notions fondamentales de la philosophie : logique, métaphysique et éthique,3,,1
+PREP-OT1,Organisation du Travail Intellectuel,Méthodes de travail universitaire et recherche documentaire,3,,1
+PREP-DROIT1,Introduction au Droit,Principes de base du droit civil et constitutionnel,3,,1
+PREP-CREO1,Créole : Expression Écrite et Orale,Perfectionnement de l'expression orale et écrite en créole,3,,1
+PREP-ECO1,Introduction à l'Économie,Concepts de base de la microéconomie et de la macroéconomie,3,,1
+PREP-MATH1,Mathématiques,Rappels et approfondissement des notions fondamentales d'analyse et d'algèbre,3,,1
+PREP-HH1,Histoire d'Haïti,Étude des grandes périodes de l'histoire d’Haïti,3,,1
+PREP-FR1,Français I : Expression Écrite et Orale,Grammaire et style du français académique,3,,1
+PREP-MC1,Monde Caraïbe,Analyse sociale et culturelle des sociétés caribéennes,3,,1
+PREP-SH1,Introduction aux Sciences Humaines,Panorama des disciplines des sciences humaines,3,,1
+SOC-ISO1,INTRODUCTION A LA SOCIOLOGIE,"Cours de base sur les fondements de la sociologie.",3,SOCIO,1
+SOC-ACU1,ANTHROPOLOGIE CULTURELLE,"Introduction à l’anthropologie et à la diversité culturelle.",3,SOCIO,1
+SOC-ANG1,ANGLAIS / ESPAGNOL,"Langue étrangère appliquée aux sciences sociales.",2,SOCIO,1
+SOC-EEOF1,EXPRESSION ECRITE ET ORALE FRANCAIS,"Perfectionnement en expression écrite et orale.",3,SOCIO,1
+SOC-MET1,METHODOLOGIE I,"Initiation à la méthodologie de recherche.",3,SOCIO,1
+SOC-STA1,STATISTIQUE I,"Introduction aux statistiques en sciences sociales.",3,SOCIO,1
+SOC-PSH1,PENSEE SOCIALE HAITIENNE,"Exploration des idées sociales haïtiennes.",3,SOCIO,1
+SOC-GEC1,GEOGRAPHIE ECONOMIQUE,"Étude des dynamiques économiques et spatiales.",3,SOCIO,1
+SOC-TSO1,THEORIES SOCIOLOGIQUES I,"Présentation des théories sociologiques classiques.",3,SOCIO,1
+SOC-STA2,STATISTIQUE II,"Approfondissement des méthodes statistiques.",3,SOCIO,2
+SOC-MET2,METHODOLOGIE II,"Approfondissement des techniques de recherche.",3,SOCIO,2
+SOC-FSH2,FORMATION SOCIALE HAITIENNE,"Analyse des structures sociales haïtiennes.",3,SOCIO,2
+SOC-HAL2,HISTOIRE DE L’AMERIQUE LATINE,"Étude historique et sociale du continent latino-américain.",2,SOCIO,2
+SOC-TEC2,THEORIES ECONOMIQUES,"Bases de l’économie politique appliquée.",3,SOCIO,2
+SOC-PSO2,PSYCHOLOGIE SOCIALE,"Introduction aux interactions sociales et aux comportements collectifs.",3,SOCIO,2
+SOC-CRI2,CRIMINOLOGIE,"Analyse des phénomènes criminels et de la déviance.",3,SOCIO,2
+SOC-TSO2,THEORIES SOCIOLOGIQUES II,"Approfondissement des théories contemporaines.",3,SOCIO,2
+SOC-SRU2,SOCIOLOGIE RURALE,"Analyse des sociétés rurales et de leurs transformations.",3,SOCIO,2
+SOC-SPO1,SOCIOLOGIE POLITIQUE I,"Introduction aux institutions et comportements politiques.",3,SOCIO,2
+SOC-SCO2,SOCIOLOGIE DE LA COMMUNICATION,"Étude des processus de communication sociale.",3,SOCIO,3
+SOC-SRE3,SOCIOLOGIE DE LA RELIGION,"Analyse des phénomènes religieux dans les sociétés modernes.",3,SOCIO,3
+SOC-CSH3,CULTURE ET SOCIETE EN HAITI,"Étude culturelle et sociale du contexte haïtien.",2,SOCIO,3
+SOC-SOR3,SOCIOLOGIE DES ORGANISATIONS,"Étude du fonctionnement des organisations sociales.",3,SOCIO,3
+SOC-ASO3,ANIMATION SOCIALE,"Introduction aux techniques d’intervention communautaire.",3,SOCIO,3
+SOC-TSO3,THEORIES SOCIOLOGIQUES III,"Analyse comparée des théories modernes.",3,SOCIO,3
+SOC-SUR3,SOCIOLOGIE URBAINE,"Étude des dynamiques sociales dans les espaces urbains.",3,SOCIO,3
+SOC-SPO2,SOCIOLOGIE POLITIQUE II,"Approfondissement de la sociologie politique.",3,SOCIO,3
+SOC-SED3,SOCIOLOGIE DE L’EDUCATION,"Analyse sociologique du système éducatif.",3,SOCIO,3
+SOC-STR3,SOCIOLOGIE DU TRAVAIL,"Étude des dynamiques du travail et des relations professionnelles.",3,SOCIO,3
+SOC-EPI4,EPISTEMOLOGIE,"Réflexion sur les fondements de la connaissance scientifique.",3,SOCIO,4
+SOC-SCO4,SOCIOLOGIE CONTEMPORAINE I,"Étude des approches sociologiques contemporaines.",3,SOCIO,4
+SOC-DEM4,DEMOGRAPHIE,"Analyse démographique et populationnelle.",3,SOCIO,4
+SOC-EPO4,ECONOMIE POLITIQUE,"Fondements et débats en économie politique.",3,SOCIO,4
+SOC-EGP4,ELABORATION ET GESTION DE PROJET,"Méthodes de conception et de gestion de projets sociaux.",3,SOCIO,4
+SOC-SDE4,SOCIOLOGIE DU DEVELOPPEMENT,"Analyse des processus de développement social et économique.",3,SOCIO,4
+SOC-SMS4,SOCIOLOGIE DES MOUVEMENTS SOCIAUX,"Étude des mobilisations sociales et collectives.",3,SOCIO,4
+SOC-PPO4,PHILOSOPHIE POLITIQUE,"Réflexion sur la pensée politique et ses auteurs majeurs.",3,SOCIO,4
+SOC-AME4,ATELIER DE MEMOIRE,"Encadrement du mémoire de fin d’études.",3,SOCIO,4
+SOC-SPR4,STAGE PROFESSIONNEL,"Expérience pratique en milieu professionnel.",4,SOCIO,4
+SOC-PSO4,POLITIQUE SOCIALE,"Étude des politiques publiques et sociales.",3,SOCIO,4
+SOC-CSC4,CULTURE ET SOCIETE DE LA CARAIBE,"Analyse culturelle et historique de la Caraïbe.",2,SOCIO,4
+SOC-INF4,INFORMATIQUE,"Outils informatiques appliqués à la recherche sociale.",0,SOCIO,4
+COM-IC1,Introduction à la Communication,Introduction aux concepts de base de la communication,3,COMM,1
+COM-PS1,Psychologie Sociale,Introduction à la psychologie appliquée à la communication,3,COMM,1
+COM-SC1,Sociologie de la Communication,Principes fondamentaux de la sociologie appliquée à la communication,3,COMM,1
+COM-CE1,Communication Écrite,Techniques de rédaction et expression écrite,3,COMM,1
+COM-HC1,Histoire de la Civilisation,Notions générales sur l’histoire des civilisations,3,COMM,1
+COM-PHI1,Philosophie,Notions fondamentales de philosophie et éthique,3,COMM,1
+COM-FR1,Français I : Expression Écrite et Orale,Grammaire et expression écrite et orale en français,3,COMM,1
+COM-HH1,Histoire d’Haïti,Étude de l’histoire d’Haïti et contexte culturel,3,COMM,1
+COM-MC1,Monde Caraïbe,Analyse sociale et culturelle des sociétés caribéennes,3,COMM,1
+COM-ID1,Introduction au Droit,Principes de base du droit et institutions,3,COMM,1
+COM-SH1,Sciences Humaines,Introduction aux sciences humaines appliquées à la communication,3,COMM,1
+COM-OT1,Organisation du Travail Intellectuel,Méthodes de travail universitaire et recherche documentaire,3,COMM,1
+COM-TC2,Théories de la Communication I,Introduction aux théories de la communication,3,COMM,2
+COM-CE2,Communication Éducative,Principes et méthodes de communication éducative,3,COMM,2
+COM-CI2,Communication Internationale,Théories et pratiques de la communication internationale,3,COMM,2
+COM-JP2,Journalisme de Presse Écrite,Techniques et pratiques du journalisme écrit,3,COMM,2
+COM-JR2,Journalisme Radiophonique,Techniques et pratiques du journalisme radiophonique,3,COMM,2
+COM-HP2,Histoire de la Presse,Histoire et évolution de la presse,3,COMM,2
+COM-FR2,Français II : Technique de Rédaction,Perfectionnement en rédaction française,3,COMM,2
+COM-ED2,Éthique et Déontologie du Journalisme,Règles éthiques du journalisme,3,COMM,2
+COM-CI2B,Communication Institutionnelle,Communication au sein des institutions,3,COMM,2
+COM-PP2,Publicité et Propagande,Principes de la publicité et communication persuasive,3,COMM,2
+COM-CI2C,Communication Interpersonnelle,Techniques de communication individuelle,3,COMM,2
+COM-CD2,Communication et Développement,Rôle de la communication dans le développement social,3,COMM,2
+COM-OPT2,Optionnel (au choix),Cours au choix selon le parcours de l’étudiant,3,COMM,2
+COM-TC3,Théories de la Communication II,Approfondissement des théories de la communication,3,COMM,3
+COM-JTV3,Journalisme Télévisuel,Techniques et pratiques du journalisme télévisuel,3,COMM,3
+COM-JL3,Journalisme en Ligne,Techniques du journalisme numérique et web,3,COMM,3
+COM-LD3,Langage et Discours,Analyse du langage et de la rhétorique,3,COMM,3
+COM-MRC3,Méthodologie de la Recherche en Communication,Méthodes de recherche appliquées à la communication,3,COMM,3
+COM-PC3,Psychologie de la Communication,Application de la psychologie aux pratiques communicationnelles,3,COMM,3
+COM-ES3,Techniques d’Enquête et de Sondage,Méthodes d’enquête et sondages,3,COMM,3
+COM-AM3,Analyse des Médias,Analyse critique des médias et contenus,3,COMM,3
+COM-CP3,Communication Politique,Principes et pratiques de la communication politique,3,COMM,3
+COM-COP3,Communication et Opinion Publique,Rapports entre médias et opinion publique,3,COMM,3
+COM-CS3,Communication Sociale,Communication dans les contextes sociaux et communautaires,3,COMM,3
+COM-CC3,Communication et Culture,Rapports entre communication et culture,3,COMM,3
+COM-PFE4,Projet de Fin d’Études,Réalisation d’un projet complet de communication,3,COMM,4
+COM-SP4,Stage Professionnel,Stage pratique en entreprise ou institution,3,COMM,4
+COM-CM4,Communication et Multimédia,Utilisation des outils multimédia dans la communication,3,COMM,4
+COM-SC4,Séminaire de Communication,Séminaires avancés sur la communication,3,COMM,4
+COM-AC4,Analyse de Contenu,Analyse critique des contenus médiatiques,3,COMM,4
+COM-CO4,Communication des Organisations,Communication institutionnelle et organisationnelle,3,COMM,4
+COM-CMKT4,Communication Marketing,Stratégies de communication marketing,3,COMM,4
+COM-CI4,Communication Interculturelle,Communication dans un contexte interculturel,3,COMM,4
+COM-CS4,Communication Stratégique,Planification et stratégies de communication,3,COMM,4
+COM-OPT4,Optionnel (au choix),Cours optionnel choisi par l’étudiant,3,COMM,4
+COM-IC1,Introduction à la communication,Introduction aux concepts de base de la communication,3,COMM,1
+COM-ICE1,Introduction à la communication éducative,Principes de communication dans l’éducation,3,COMM,1
+COM-CI1,Communication interpersonnelle,Techniques de communication entre individus,3,COMM,1
+COM-CS1,Communication et société,Rapports entre communication et société,3,COMM,1
+COM-HIPS1,Histoire des idées politiques et sociales,Introduction aux grandes doctrines politiques et sociales,3,COMM,1
+COM-JCP1,Journalisme et communication publique,Principes de base du journalisme et communication publique,3,COMM,1
+COM-LC2,Langue et communication II,Perfectionnement de l’expression orale et écrite,3,COMM,1
+COM-TCE1,Techniques de communication écrite,Techniques rédactionnelles avancées,3,COMM,1
+COM-IL1,Introduction à la linguistique,Notions fondamentales en linguistique,3,COMM,1
+COM-PHI2,Philosophie II,Notions avancées de philosophie appliquées à la communication,3,COMM,1
+COM-TC2,Théories de la communication,Introduction aux théories de la communication,3,COMM,2
+COM-SC2,Sociologie de la communication,Principes sociologiques appliqués à la communication,3,COMM,2
+COM-IC2,Institutions de communication,Fonctionnement et rôles des institutions de communication,3,COMM,2
+COM-MS2,Médias et société,Rapports entre médias et société,3,COMM,2
+COM-AD2,Analyse du discours,Analyse des textes et médias,3,COMM,2
+COM-CG2,Communication graphique,Techniques de communication visuelle et graphique,3,COMM,2
+COM-TCO2,Techniques de communication orale,Techniques d’expression orale et présentation,3,COMM,2
+COM-MRC2,Méthodologie de la recherche,Méthodes de recherche appliquées à la communication,3,COMM,2
+COM-PS2,Psychologie sociale,Principes de psychologie appliqués à la communication,3,COMM,2
+COM-STA2,Statistique,Notions statistiques de base pour la communication,3,COMM,2
+COM-CO3,Communication organisationnelle,Communication dans les organisations et entreprises,3,COMM,3
+COM-CM3,Communication et médias,Rapports entre communication et médias,3,COMM,3
+COM-SE3,Sémiotique,Analyse des signes et systèmes de communication,3,COMM,3
+COM-PC3,Psychologie de la communication,Applications psychologiques à la communication,3,COMM,3
+COM-TA3,Techniques audiovisuelles,Techniques de production audio et vidéo,3,COMM,3
+COM-CP3,Communication politique,Rapports entre communication et processus politiques,3,COMM,3
+COM-CI3,Communication internationale,Stratégies et pratiques de communication internationale,3,COMM,3
+COM-DE3,Déontologie et éthique des médias,Règles éthiques et déontologiques des médias,3,COMM,3
+COM-SC3,Stage de communication I,Stage pratique de communication I,3,COMM,3
+COM-SC4,Stage de communication II,Stage pratique de communication II,3,COMM,3
+PSY-STA1,Statistique I,Notions de base en statistiques,3,PSYCHO,1
+PSY-EEOF2,Expression écrite/orale Français II,Perfectionnement de l’expression écrite et orale,3,PSYCHO,1
+PSY-PA1,Psychologie de l’apprentissage,Principes fondamentaux de l’apprentissage humain,3,PSYCHO,1
+PSY-IP1,Introduction à la psychologie,Présentation générale de la psychologie,3,PSYCHO,1
+PSY-BIO1,Biologie,Principes fondamentaux de biologie appliqués à la psychologie,3,PSYCHO,1
+PSY-PSO1,Psychologie sociale,Introduction aux comportements sociaux et interactions,3,PSYCHO,1
+PSY-PSY1,Psychométrie,Techniques de mesure psychologique,3,PSYCHO,1
+PSY-IPY1,Introduction à la psychiatrie,Notions de base en psychiatrie,3,PSYCHO,1
+PSY-TP1,Théorie de la personnalité,Étude des principales théories de la personnalité,3,PSYCHO,1
+PSY-PG1,Psychologie génétique,Principes de développement psychologique et génétique,3,PSYCHO,1
+PSY-PT1,Psychologie du travail,Principes de psychologie appliqués au travail,3,PSYCHO,1
+PSY-PE1,Psychologie expérimentale,Introduction aux méthodes expérimentales,3,PSYCHO,1
+PSY-MET1,Méthodologie I,Introduction aux méthodes de recherche,3,PSYCHO,1
+PSY-GEN1,Génétique,Notions fondamentales de génétique,3,PSYCHO,1
+PSY-STA2,Statistique II,Statistiques avancées appliquées à la psychologie,3,PSYCHO,2
+PSY-MET2,Méthodologie II,Méthodes avancées de recherche,3,PSYCHO,2
+PSY-PP1,Psychopathologie I,Introduction aux troubles psychologiques,3,PSYCHO,2
+PSY-PP2,Psychopathologie II,Approfondissement des troubles psychologiques,3,PSYCHO,2
+PSY-PE2,Psychologie de l’éducation,Psychologie appliquée aux pratiques éducatives,3,PSYCHO,2
+PSY-IPAN2,Introduction à la psychanalyse,Principes de base de la psychanalyse,3,PSYCHO,2
+PSY-EI2,Évaluation de l’intelligence,Tests et méthodes d’évaluation cognitive,3,PSYCHO,2
+PSY-NP1,Neuropsychologie I,Introduction à la neuropsychologie,3,PSYCHO,2
+PSY-NP2,Neuropsychologie II,Applications avancées de la neuropsychologie,3,PSYCHO,2
+PSY-DPI2,Développement psychosocial de l’individu,Étude du développement social et affectif,3,PSYCHO,2
+PSY-ETA2,Évaluation des troubles de l’apprentissage,Méthodes d’évaluation des difficultés d’apprentissage,3,PSYCHO,2
+PSY-TPST1,Théorie et pratiques de stage I,Préparation et suivi du stage pratique,3,PSYCHO,2
+PSY-PC3,Psychologie clinique,Introduction à la pratique clinique,3,PSYCHO,3
+PSY-AM3,Atelier de mémoire,Pratique et rédaction d’un mémoire,3,PSYCHO,3
+PSY-DE3,Déontologie du métier de psychologue,Règles et principes éthiques de la profession,3,PSYCHO,3
+PSY-TP1-3,Techniques projectives I,Introduction aux techniques projectives,3,PSYCHO,3
+PSY-TP2-3,Techniques projectives II,Applications avancées des techniques projectives,3,PSYCHO,3
+PSY-CO3,Comportement organisationnel,Psychologie appliquée aux organisations,3,PSYCHO,3
+PSY-PS3,Psychothérapies,Principes et pratiques des psychothérapies,3,PSYCHO,3
+PSY-EI3,Enfants inadaptés,Étude des enfants présentant des difficultés d’adaptation,3,PSYCHO,3
+PSY-EC3,Entretien clinique,Méthodes et techniques d’entretien clinique,3,PSYCHO,3
+PSY-TPST2,Théorie et pratiques de stage II,Stage pratique et analyse,3,PSYCHO,3
+PSY-PCOM3,Psychologie communautaire,Applications de la psychologie dans la communauté,3,PSYCHO,3
+SS-FPS1,Fondements philosophiques du Service Social,Principes philosophiques appliqués au travail social,3,SERVSOC,1
+SS-MIS1,Méthodologie de l’intervention en Travail Social,Techniques d’intervention de base,3,SERVSOC,1
+SS-PSO1,Psychologie sociale,Introduction à la psychologie sociale,3,SERVSOC,1
+SS-DPI1,Développement psychosocial de l’individu,Étude du développement social et psychologique,3,SERVSOC,1
+SS-AC1,Anthropologie culturelle,Notions de base en anthropologie culturelle,3,SERVSOC,1
+SS-IM1,Informations médicales,Connaissances fondamentales en santé,3,SERVSOC,1
+SS-PATH1,Psychopathologie,Introduction aux troubles psychiques,3,SERVSOC,1
+SS-TSI2,Travail social individuel,Pratique du travail social individuel,3,SERVSOC,2
+SS-TSG2,Travail social de groupe,Méthodes d’intervention en groupe,3,SERVSOC,2
+SS-TSC2,Travail social communautaire,Approches de travail social communautaire,3,SERVSOC,2
+SS-STAT1,Statistique I,Notions de statistiques appliquées au social,3,SERVSOC,2
+SS-METH1,Méthodologie I,Introduction aux méthodes de recherche en travail social,3,SERVSOC,2
+SS-IS2,Introduction à la sociologie,Notions de base en sociologie,3,SERVSOC,2
+SS-VI2,Visites institutionnelles,Observation et analyse des institutions,3,SERVSOC,2
+SS-AS2,Animation sociale,Techniques d’animation de groupe,3,SERVSOC,2
+SS-LS2,Législation sociale,Principes du droit social,3,SERVSOC,2
+SS-CRI2,Criminologie,Introduction à la criminologie,3,SERVSOC,2
+SS-HES2,Histoire économique et sociale d’Haïti,Analyse historique et sociale,3,SERVSOC,2
+SS-HPH2,Histoire de la pensée sociale haïtienne,Étude de l’évolution des idées sociales,3,SERVSOC,2
+SS-SO2,Sociologie des organisations,Principes des organisations sociales,3,SERVSOC,2
+SS-CSH2,Culture et société en Haïti,Analyse des sociétés haïtiennes,3,SERVSOC,2
+SS-CSC2,Culture et société dans la Caraïbe,Étude comparative des sociétés caribéennes,3,SERVSOC,2
+SS-EPI2,Epistémologie,Principes de connaissance et méthodes scientifiques,3,SERVSOC,2
+SS-SR2,Sociologie rurale,Étude des sociétés rurales et dynamiques locales,3,SERVSOC,2
+SS-METH2,Méthodologie II,Approfondissement des méthodes de recherche,3,SERVSOC,2
+SS-STAT2,Statistique II,Statistiques avancées appliquées au social,3,SERVSOC,2
+SS-FR2,Français II,Perfectionnement du français académique écrit,3,SERVSOC,2
+SS-ESP2,Espagnol,Initiation à la langue espagnole,3,SERVSOC,2
+SS-ANG2,Anglais,Initiation à la langue anglaise,3,SERVSOC,2
+SS-PS3,Politique sociale,Étude des politiques sociales et interventions,3,SERVSOC,3
+SS-PS3-2,Planification sociale,Méthodes et outils de planification sociale,3,SERVSOC,3
+SS-SS3,Sécurité sociale,Introduction à la sécurité sociale,3,SERVSOC,3
+SS-AG3,Administration et gestion des services sociaux,Organisation et gestion des institutions sociales,3,SERVSOC,3
+SS-TP3,Travail social et Problèmes sociaux actuels,Analyse des enjeux sociaux contemporains,3,SERVSOC,3
+SS-TPPS3,Théories et pratiques en Service Social,Applications théoriques et pratiques du service social,3,SERVSOC,3
+SS-SU3,Sociologie urbaine,Étude des sociétés urbaines,3,SERVSOC,3
+SS-SD3,Sociologie du développement,Principes de développement social,3,SERVSOC,3
+SS-SP3,Sociologie politique,Introduction à la sociologie politique,3,SERVSOC,3
+SS-D3,Démographie,Analyse des populations et statistiques sociales,3,SERVSOC,3
+SS-DE3,Déontologie du Travail social,Règles éthiques et responsabilité professionnelle,3,SERVSOC,3
+SS-AM3,Atelier de mémoire,Encadrement et rédaction du mémoire,3,SERVSOC,3
+SS-SI3,Stage institutionnel,Expérience pratique en institution sociale,3,SERVSOC,3

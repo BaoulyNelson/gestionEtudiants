@@ -154,7 +154,7 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Session settings
-SESSION_COOKIE_AGE = 3600  # 1 heure
+SESSION_COOKIE_AGE = 7200  # 2 heure
 SESSION_SAVE_EVERY_REQUEST = True
 
 

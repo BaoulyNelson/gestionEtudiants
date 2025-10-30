@@ -5,7 +5,7 @@ from .models import User, Student, Professor, Admin
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ['email', 'first_name', 'last_name', 'role', 'phone_number', 'is_active', 'created_at']
+    list_display = ['email', 'first_name', 'last_name', 'role', 'gender', 'phone_number', 'is_active', 'created_at']
     list_filter = ['role', 'is_active', 'is_staff']
     search_fields = ['email', 'first_name', 'last_name', 'phone_number']
     ordering = ['-created_at']
@@ -15,7 +15,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password')
         }),
         ('Informations personnelles', {
-            'fields': ('first_name', 'last_name', 'phone_number', 'address', 
+            'fields': ('first_name', 'last_name', 'gender', 'phone_number', 'address', 
                       'date_of_birth', 'profile_picture')
         }),
         ('Rôle et permissions', {
@@ -31,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'role', 
+            'fields': ('email', 'first_name', 'last_name', 'role','gender', 
                       'password1', 'password2'),
         }),
     )

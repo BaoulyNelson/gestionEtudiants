@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Saisie en masse des notes{% endblock %}
+
+{% block authenticated_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">Saisie en masse des notes</h5>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Sélection de section -->
+                    {% if not section %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Veuillez sélectionner une section pour commencer la saisie des notes.
+                    </div>
+                    <form method="get" class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Section de cours</label>
+                            <select name="section_id" class="form-select" required>
+                                <option value="">-- Sélectionner une section --</option>
+                                {% comment %}
+                                <!-- Cette liste devrait être fournie par le contexte -->
+                                {% for sec in available_sections %}
+                                <option value="{{ sec.id }}">
+                                    {{ sec.course.code }} - {{ sec.course.name }} (Section {{ sec.section_number }})
+                                </option>
+                                {% endfor %}
+                                {% endcomment %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i> Charger
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- Informations de la section -->
+                    <div class="alert alert-success">
+                        <h6 class="mb-2">
+                            <i class="fas fa-book me-2"></i>
+                            {{ section.course.code }} - {{ section.course.name }}
+                        </h6>
+                        <p class="mb-0">
+                            <strong>Section:</strong> {{ section.section_number }} | 
+                            <strong>Professeur:</strong> {{ section.professor.user.get_full_name }} | 
+                            <strong>Étudiants:</strong> {{ enrollments|length }}
+                        </p>
+                    </div>
+
+                    {% if enrollments %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-items-center">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Étudiant</th>
+                                        <th>Mi-parcours<br><small>(30%)</small></th>
+                                        <th>Examen final<br><small>(40%)</small></th>
+                                        <th>Travaux<br><small>(15%)</small></th>
+                                        <th>Participation<br><small>(5%)</small></th>
+                                        <th>Projet<br><small>(10%)</small></th>
+                                        <th>Note finale</th>
+                                        <th>Mention</th>
+                                    </tr>
+                                </thead>
+
+
+
+                                <tbody>
+                                    {% for enrollment in enrollments %}
+
+                                    <tr>
+                                        <td>{{ enrollment.student.student_number }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar avatar-sm me-2 bg-gradient-primary">
+                                                    {{ enrollment.student.user.first_name.0 }}{{ enrollment.student.user.last_name.0 }}
+                                                </div>
+                                                <div>
+                                                    {{ enrollment.student.user.get_full_name }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="grade_{{ grade.id }}_midterm_exam" 
+                                                   class="form-control form-control-sm" 
+                                                   value="{{ grade.midterm_exam|default:'' }}"
+                                                   min="0" max="100" step="0.01"
+                                                   placeholder="0-100">
+                                        </td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="grade_{{ grade.id }}_final_exam" 
+                                                   class="form-control form-control-sm" 
+                                                   value="{{ grade.final_exam|default:'' }}"
+                                                   min="0" max="100" step="0.01"
+                                                   placeholder="0-100">
+                                        </td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="grade_{{ grade.id }}_assignments" 
+                                                   class="form-control form-control-sm" 
+                                                   value="{{ grade.assignments|default:'' }}"
+                                                   min="0" max="100" step="0.01"
+                                                   placeholder="0-100">
+                                        </td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="grade_{{ grade.id }}_participation" 
+                                                   class="form-control form-control-sm" 
+                                                   value="{{ grade.participation|default:'' }}"
+                                                   min="0" max="100" step="0.01"
+                                                   placeholder="0-100">
+                                        </td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="grade_{{ grade.id }}_project" 
+                                                   class="form-control form-control-sm" 
+                                                   value="{{ grade.project|default:'' }}"
+                                                   min="0" max="100" step="0.01"
+                                                   placeholder="0-100">
+                                        </td>
+                                        <td>
+                                            <strong class="text-primary">
+                                                {{ grade.final_grade|default:'-' }}
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-sm 
+                                                {% if grade.letter_grade == 'A' %}bg-gradient-success
+                                                {% elif grade.letter_grade == 'B' %}bg-gradient-info
+                                                {% elif grade.letter_grade == 'C' %}bg-gradient-warning
+                                                {% elif grade.letter_grade == 'D' %}bg-gradient-danger
+                                                {% elif grade.letter_grade == 'F' %}bg-gradient-dark
+                                                {% else %}bg-gradient-secondary{% endif %}">
+                                                {{ grade.letter_grade|default:'-' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'grades:admin_grade_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Enregistrer toutes les notes
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Aucun étudiant inscrit dans cette section.
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table input.form-control-sm {
+    min-width: 80px;
+}
+</style>
+{% endblock %}

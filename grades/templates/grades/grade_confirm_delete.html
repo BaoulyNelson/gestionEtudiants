@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmer la suppression{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-gradient-danger text-white pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon icon-shape bg-white text-danger rounded-circle me-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h5 class="mb-0 text-white">Confirmer la suppression</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning border-warning">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Attention !</strong> Cette action est irréversible.
+                    </div>
+
+                    <p class="text-lg mb-3">
+                        Êtes-vous sûr de vouloir supprimer cette note ?
+                    </p>
+
+                    <div class="border rounded p-3 bg-light mb-4">
+                        <h6 class="text-dark mb-3">
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            Détails de la note
+                        </h6>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-sm mb-2">
+                                    <strong>Étudiant :</strong><br>
+                                    {{ grade.enrollment.student.user.get_full_name }}
+                                </p>
+                                <p class="text-sm mb-2">
+                                    <strong>Matricule :</strong><br>
+                                    {{ grade.enrollment.student.student_number }}
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-sm mb-2">
+                                    <strong>Cours :</strong><br>
+                                    {{ grade.enrollment.course_section.course.code }}
+                                </p>
+                                <p class="text-sm mb-2">
+                                    <strong>Section :</strong><br>
+                                    {{ grade.enrollment.course_section.section_number }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-sm mb-0">
+                                    <strong>Note finale :</strong>
+                                    <span class="badge bg-gradient-primary ms-2">
+                                        {{ grade.final_grade|default:'-' }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-sm mb-0">
+                                    <strong>Mention :</strong>
+                                    <span class="badge 
+                                        {% if grade.letter_grade == 'A' %}bg-gradient-success
+                                        {% elif grade.letter_grade == 'B' %}bg-gradient-info
+                                        {% elif grade.letter_grade == 'C' %}bg-gradient-warning
+                                        {% elif grade.letter_grade == 'D' %}bg-gradient-danger
+                                        {% elif grade.letter_grade == 'F' %}bg-gradient-dark
+                                        {% else %}bg-gradient-secondary{% endif %} ms-2">
+                                        {{ grade.letter_grade|default:'-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if grade.midterm_exam or grade.final_exam or grade.assignments %}
+                        <hr class="my-3">
+                        <p class="text-sm mb-2"><strong>Composantes :</strong></p>
+                        <div class="row text-sm">
+                            {% if grade.midterm_exam %}
+                            <div class="col-6 mb-1">• Mi-parcours : {{ grade.midterm_exam }}</div>
+                            {% endif %}
+                            {% if grade.final_exam %}
+                            <div class="col-6 mb-1">• Examen final : {{ grade.final_exam }}</div>
+                            {% endif %}
+                            {% if grade.assignments %}
+                            <div class="col-6 mb-1">• Travaux : {{ grade.assignments }}</div>
+                            {% endif %}
+                            {% if grade.participation %}
+                            <div class="col-6 mb-1">• Participation : {{ grade.participation }}</div>
+                            {% endif %}
+                            {% if grade.project %}
+                            <div class="col-6 mb-1">• Projet : {{ grade.project }}</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if grade.graded_by %}
+                        <hr class="my-3">
+                        <p class="text-sm text-muted mb-0">
+                            <i class="fas fa-user me-1"></i>
+                            Noté par : {{ grade.graded_by.user.get_full_name }}
+                            <br>
+                            <i class="fas fa-clock me-1"></i>
+                            Le {{ grade.updated_at|date:"d/m/Y à H:i" }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'grades:admin_grade_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Oui, supprimer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

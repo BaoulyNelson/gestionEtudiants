@@ -1,0 +1,162 @@
+<!-- ========== templates/enrollments/enrollment_update.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Modifier inscription - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-edit"></i> Modifier l'inscription</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-info-circle"></i> Informations de l'inscription
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 30%;">Étudiant:</th>
+                        <td>
+                            <strong>{{ enrollment.student.student_number }}</strong><br>
+                            {{ enrollment.student.user.get_full_name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Cours:</th>
+                        <td>
+                            <strong>{{ enrollment.course_section.course.code }}</strong><br>
+                            {{ enrollment.course_section.course.name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Section:</th>
+                        <td>{{ enrollment.course_section.section_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Horaire:</th>
+                        <td>
+                            {{ enrollment.course_section.get_day_of_week_display }}
+                            {{ enrollment.course_section.start_time|time:"H:i" }} - 
+                            {{ enrollment.course_section.end_time|time:"H:i" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Professeur:</th>
+                        <td>
+                            {% if enrollment.course_section.professor %}
+                                {{ enrollment.course_section.professor.user.get_full_name }}
+                            {% else %}
+                                <span class="text-muted">Non assigné</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Session:</th>
+                        <td>
+                            {{ enrollment.course_section.get_session_display }} - 
+                            {{ enrollment.course_section.get_semester_display }} 
+                            {{ enrollment.course_section.year }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date d'inscription:</th>
+                        <td>{{ enrollment.enrollment_date|date:"d/m/Y à H:i" }}</td>
+                    </tr>
+                    {% if enrollment.drop_date %}
+                    <tr>
+                        <th>Date d'abandon:</th>
+                        <td class="text-danger">{{ enrollment.drop_date|date:"d/m/Y à H:i" }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <i class="fas fa-edit"></i> Modifier le statut
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">
+                            Statut actuel: 
+                            <strong>
+                                {% if enrollment.status == 'ENROLLED' %}
+                                    <span class="badge bg-success">{{ enrollment.get_status_display }}</span>
+                                {% elif enrollment.status == 'DROPPED' %}
+                                    <span class="badge bg-danger">{{ enrollment.get_status_display }}</span>
+                                {% elif enrollment.status == 'COMPLETED' %}
+                                    <span class="badge bg-primary">{{ enrollment.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ enrollment.get_status_display }}</span>
+                                {% endif %}
+                            </strong>
+                        </label>
+                        <select name="status" id="status" class="form-select" required>
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if value == enrollment.status %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Raison du changement</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="3" 
+                                  placeholder="Expliquez pourquoi vous modifiez ce statut..."></textarea>
+                        <small class="text-muted">Cette information sera enregistrée dans l'historique.</small>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Attention:</strong> Cette action sera enregistrée dans l'historique.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Enregistrer le changement
+                        </button>
+                        <a href="{% url 'enrollments:enrollment_history' enrollment.id %}" 
+                           class="btn btn-info">
+                            <i class="fas fa-history"></i> Voir l'historique
+                        </a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'enrollments:enrollment_delete' enrollment.id %}" 
+                           class="btn btn-danger"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette inscription ?');">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('status').addEventListener('change', function() {
+    const currentStatus = '{{ enrollment.status }}';
+    const newStatus = this.value;
+    
+    if (currentStatus !== newStatus) {
+        document.getElementById('reason').focus();
+    }
+});
+</script>
+
+{% endblock %}

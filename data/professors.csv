@@ -1,28 +1,48 @@
 email,first_name,last_name,phone_number,date_of_birth,professor_id,department_code,specialization,hire_date
-simeon.francois@institution.edu.ht,Simeon,FRANCOIS,+50937000001,1975-03-12,PROF001,HIPS,Sciences politiques / HIPS,2012-09-01
-janes.louis@institution.edu.ht,Janes,LOUIS,+50937000002,1978-07-05,PROF002,PHIL,Philosophie,2011-09-01
-roosevelt.millard@institution.edu.ht,Roosevelt,MILLARD,+50937000003,1976-10-22,PROF003,OT,Sciences humaines / Méthodologie,2014-09-01
-chenet.jean.baptiste@institution.edu.ht,Chenet,Jean Baptiste,+50937000004,1980-01-18,PROF004,DROIT,Droit,2013-09-01
-kenson'n.danjou@institution.edu.ht,Kenson'n,Danjou,+50937000005,1979-06-14,PROF005,CREO,Langues et Communication,2015-09-01
-yves.barthélémy@institution.edu.ht,Yves,Barthélémy,+50937000006,1974-09-09,PROF006,ECO,Sciences économiques,2010-09-01
-jean.roy.faustin@institution.edu.ht,Jean Roy,FAUSTIN,+50937000007,1977-02-26,PROF007,MATH,Sciences exactes / Mathématiques,2012-09-01
-job.silver@institution.edu.ht,Job,SILVER,+50937000008,1981-05-17,PROF008,CREO,Langues et Communication,2014-09-01
-julio.elisna@institution.edu.ht,Julio,ELISNA,+50937000009,1979-08-03,PROF009,OT,Sciences humaines / Méthodologie,2016-09-01
-kenaz.brunis@institution.edu.ht,Kenaz,BRUNIS,+50937000010,1973-04-21,PROF010,HIPS,Sciences politiques / HIPS,2012-09-01
-hubermane.ciguino@institution.edu.ht,Hubermane,CIGUINO,+50937000011,1982-09-14,PROF011,MATH,Sciences exactes / Mathématiques,2015-09-01
-charles.vorbe@institution.edu.ht,Charles,VORBE,+50937000012,1976-11-19,PROF012,DROIT,Droit,2013-09-01
-jean.evrard.jean.charles@institution.edu.ht,Jean Evrard,JEAN CHARLES,+50937000013,1983-07-30,PROF013,CREO,Langues et Communication,2016-09-01
-dérynx.petit.jean@institution.edu.ht,Dérynx,Petit Jean,+50937000014,1977-12-08,PROF014,HH,Histoire / Sciences humaines,2011-09-01
-georges.legagneur@institution.edu.ht,Georges,LEGAGNEUR,+50937000015,1975-02-14,PROF015,ECO,Sciences économiques,2012-09-01
-murielle.antoine@institution.edu.ht,Murielle,ANTOINE,+50937000016,1981-10-11,PROF016,FR,Langues et Communication,2014-09-01
-hancy.pierre@institution.edu.ht,Hancy,PIERRE,+50937000017,1978-06-22,PROF017,MC,Sciences sociales / Études caribéennes,2013-09-01
-jean.ronel.sistanis@institution.edu.ht,Jean Ronel,SISTANIS,+50937000018,1974-12-02,PROF018,DROIT,Droit,2012-09-01
-etienne.oremil@institution.edu.ht,Etienne,OREMIL,+50937000019,1980-04-15,PROF019,FR,Langues et Communication,2015-09-01
-max.lubin@institution.edu.ht,Max,LUBIN,+50937000020,1976-09-09,PROF020,CREO,Langues et Communication,2013-09-01
-dominique.muscadin@institution.edu.ht,Dominique,MUSCADIN,+50937000021,1982-02-25,PROF021,OT,Sciences humaines / Méthodologie,2015-09-01
-vosh.dathus@institution.edu.ht,Vosh,DATHUS,+50937000022,1979-11-13,PROF022,MC,Sciences sociales / Études caribéennes,2014-09-01
-schmied.saint.fleur@institution.edu.ht,Schmied Saint,FLEUR,+50937000023,1977-03-06,PROF023,MATH,Sciences exactes / Mathématiques,2011-09-01
-kensley.brutus@institution.edu.ht,Kensley,BRUTUS,+50937000024,1975-08-28,PROF024,CREO,Langues et Communication,2016-09-01
-emmanuel.milord@institution.edu.ht,Emmanuel,MILORD,+50937000025,1983-01-05,PROF025,HH,Histoire / Sciences humaines,2013-09-01
-jean.luc.tondreau@institution.edu.ht,Jean Luc,TONDREAU,+50937000026,1981-09-27,PROF026,FR,Langues et Communication,2014-09-01
-jérôme.millard@institution.edu.ht,Jérôme,Millard,+50937000027,1978-10-10,PROF027,MATH,Sciences exactes / Mathématiques,2015-09-01
+simeon.francois@institution.edu.ht,Simeon,FRANCOIS,+50937000001,1975-03-12,PROF001,,Sciences politiques / HIPS,2012-09-01
+janes.louis@institution.edu.ht,Janes,LOUIS,+50937000002,1978-07-05,PROF002,,Philosophie,2011-09-01
+roosevelt.millard@institution.edu.ht,Roosevelt,MILLARD,+50937000003,1976-10-22,PROF003,,Sciences humaines / Méthodologie,2014-09-01
+chenet.jean.baptiste@institution.edu.ht,Chenet,Jean Baptiste,+50937000004,1980-01-18,PROF004,,Droit,2013-09-01
+kenson'n.danjou@institution.edu.ht,Kenson'n,Danjou,+50937000005,1979-06-14,PROF005,,Langues et Communication,2015-09-01
+yves.barthélémy@institution.edu.ht,Yves,Barthélémy,+50937000006,1974-09-09,PROF006,,Sciences économiques,2010-09-01
+jean.roy.faustin@institution.edu.ht,Jean Roy,FAUSTIN,+50937000007,1977-02-26,PROF007,,Sciences exactes / Mathématiques,2012-09-01
+job.silver@institution.edu.ht,Job,SILVER,+50937000008,1981-05-17,PROF008,,Langues et Communication,2014-09-01
+julio.elisna@institution.edu.ht,Julio,ELISNA,+50937000009,1979-08-03,PROF009,,Sciences humaines / Méthodologie,2016-09-01
+kenaz.brunis@institution.edu.ht,Kenaz,BRUNIS,+50937000010,1973-04-21,PROF010,,Sciences politiques / HIPS,2012-09-01
+hubermane.ciguino@institution.edu.ht,Hubermane,CIGUINO,+50937000011,1982-09-14,PROF011,,Sciences exactes / Mathématiques,2015-09-01
+charles.vorbe@institution.edu.ht,Charles,VORBE,+50937000012,1976-11-19,PROF012,,Droit,2013-09-01
+jean.evrard.jean.charles@institution.edu.ht,Jean Evrard,JEAN CHARLES,+50937000013,1983-07-30,PROF013,,Langues et Communication,2016-09-01
+dérynx.petit.jean@institution.edu.ht,Dérynx,Petit Jean,+50937000014,1977-12-08,PROF014,,Histoire / Sciences humaines,2011-09-01
+georges.legagneur@institution.edu.ht,Georges,LEGAGNEUR,+50937000015,1975-02-14,PROF015,,Sciences économiques,2012-09-01
+murielle.antoine@institution.edu.ht,Murielle,ANTOINE,+50937000016,1981-10-11,PROF016,,Langues et Communication,2014-09-01
+hancy.pierre@institution.edu.ht,Hancy,PIERRE,+50937000017,1978-06-22,PROF017,,Sciences sociales / Études caribéennes,2013-09-01
+jean.ronel.sistanis@institution.edu.ht,Jean Ronel,SISTANIS,+50937000018,1974-12-02,PROF018,,Droit,2012-09-01
+etienne.oremil@institution.edu.ht,Etienne,OREMIL,+50937000019,1980-04-15,PROF019,,Langues et Communication,2015-09-01
+max.lubin@institution.edu.ht,Max,LUBIN,+50937000020,1976-09-09,PROF020,,Langues et Communication,2013-09-01
+dominique.muscadin@institution.edu.ht,Dominique,MUSCADIN,+50937000021,1982-02-25,PROF021,,Sciences humaines / Méthodologie,2015-09-01
+vosh.dathus@institution.edu.ht,Vosh,DATHUS,+50937000022,1979-11-13,PROF022,,Sciences sociales / Études caribéennes,2014-09-01
+schmied.saint.fleur@institution.edu.ht,Schmied Saint,FLEUR,+50937000023,1977-03-06,PROF023,,Sciences exactes / Mathématiques,2011-09-01
+kensley.brutus@institution.edu.ht,Kensley,BRUTUS,+50937000024,1975-08-28,PROF024,,Langues et Communication,2016-09-01
+emmanuel.milord@institution.edu.ht,Emmanuel,MILORD,+50937000025,1983-01-05,PROF025,,Histoire / Sciences humaines,2013-09-01
+jean.luc.tondreau@institution.edu.ht,Jean Luc,TONDREAU,+50937000026,1981-09-27,PROF026,,Langues et Communication,2014-09-01
+jérôme.millard@institution.edu.ht,Jérôme,Millard,+50937000027,1978-10-10,PROF027,,Sciences exactes / Mathématiques,2015-09-01
+marie.joseph@institution.edu.ht,Marie,JOSEPH,+50937000028,1976-04-15,PROF028,PSYCHO,Psychologie clinique,2013-09-01
+patrick.jean@institution.edu.ht,Patrick,JEAN,+50937000029,1980-11-22,PROF029,COMM,Communication et médias,2015-09-01
+claudette.pierre@institution.edu.ht,Claudette,PIERRE,+50937000030,1978-06-08,PROF030,SOCIO,Sociologie urbaine,2014-09-01
+jean.claude.baptiste@institution.edu.ht,Jean Claude,BAPTISTE,+50937000031,1975-09-14,PROF031,SERVSOC,Intervention sociale,2012-09-01
+rose.marie.louis@institution.edu.ht,Rose Marie,LOUIS,+50937000032,1982-03-27,PROF032,PSYCHO,Psychologie du développement,2016-09-01
+frantz.charles@institution.edu.ht,Frantz,CHARLES,+50937000033,1979-12-05,PROF033,COMM,Relations publiques,2014-09-01
+wideline.saint.val@institution.edu.ht,Wideline,SAINT VAL,+50937000034,1977-07-19,PROF034,SOCIO,Sociologie de la famille,2013-09-01
+peterson.francois@institution.edu.ht,Peterson,FRANCOIS,+50937000035,1981-01-30,PROF035,SERVSOC,Travail social communautaire,2015-09-01
+margaret.augustin@institution.edu.ht,Margaret,AUGUSTIN,+50937000036,1974-10-11,PROF036,PSYCHO,Psychologie sociale,2011-09-01
+james.michel@institution.edu.ht,James,MICHEL,+50937000037,1983-05-24,PROF037,COMM,Journalisme,2016-09-01
+yvrose.desir@institution.edu.ht,Yvrose,DESIR,+50937000038,1978-08-16,PROF038,SOCIO,Sociologie politique,2014-09-01
+ronald.paul@institution.edu.ht,Ronald,PAUL,+50937000039,1976-02-03,PROF039,SERVSOC,Politiques sociales,2012-09-01
+nadège.toussaint@institution.edu.ht,Nadège,TOUSSAINT,+50937000040,1980-11-28,PROF040,PSYCHO,Psychopathologie,2015-09-01
+junior.felix@institution.edu.ht,Junior,FELIX,+50937000041,1979-04-12,PROF041,COMM,Communication organisationnelle,2013-09-01
+fedline.remy@institution.edu.ht,Fedline,REMY,+50937000042,1975-09-07,PROF042,SOCIO,Anthropologie sociale,2011-09-01
+jackson.germain@institution.edu.ht,Jackson,GERMAIN,+50937000043,1982-06-21,PROF043,SERVSOC,Gestion de projets sociaux,2016-09-01
+anne.marie.andre@institution.edu.ht,Anne Marie,ANDRE,+50937000044,1977-12-18,PROF044,PSYCHO,Neuropsychologie,2014-09-01
+stenio.vincent@institution.edu.ht,Stenio,VINCENT,+50937000045,1981-03-09,PROF045,COMM,Communication digitale,2015-09-01
+mirlande.hyppolite@institution.edu.ht,Mirlande,HYPPOLITE,+50937000046,1978-07-25,PROF046,SOCIO,Méthodologie de recherche sociale,2013-09-01
+wisly.laurent@institution.edu.ht,Wisly,LAURENT,+50937000047,1974-01-14,PROF047,SERVSOC,Développement communautaire,2012-09-01

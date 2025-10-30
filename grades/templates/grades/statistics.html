@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Statistiques des notes{% endblock %}
+
+{% block authenticated_content %}
+<div class="container-fluid py-4">
+    <!-- En-tête -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Statistiques des notes
+                        </h5>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques globales -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex">
+                        <div class="icon icon-shape bg-gradient-primary text-white rounded-circle me-3">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Total des notes</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ stats.total|default:0 }}
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex">
+                        <div class="icon icon-shape bg-gradient-success text-white rounded-circle me-3">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Moyenne générale</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ stats.average|floatformat:2|default:"0.00" }}
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex">
+                        <div class="icon icon-shape bg-gradient-info text-white rounded-circle me-3">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Note maximale</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ stats.highest|floatformat:2|default:"0.00" }}
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex">
+                        <div class="icon icon-shape bg-gradient-warning text-white rounded-circle me-3">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Note minimale</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ stats.lowest|floatformat:2|default:"0.00" }}
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Distribution des mentions -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header pb-0">
+                    <h6>Distribution des mentions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">
+                                    <span class="badge bg-gradient-success me-2">A</span>
+                                    Excellence (90-100)
+                                </span>
+                                <span class="text-bold">{{ distribution.A|default:0 }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-success" role="progressbar"
+                                    style="width: {{ percentages.A|floatformat:2 }}%;">
+                                </div>
+
+                      
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">
+                                    <span class="badge bg-gradient-info me-2">B</span>
+                                    Bien (80-89)
+                                </span>
+                                <span class="text-bold">{{ distribution.B|default:0 }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-success" role="progressbar"
+                                    style="width: {{ percentages.A|floatformat:2 }}%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">
+                                    <span class="badge bg-gradient-warning me-2">C</span>
+                                    Assez bien (70-79)
+                                </span>
+                                <span class="text-bold">{{ distribution.C|default:0 }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-success" role="progressbar"
+                                    style="width: {{ percentages.A|floatformat:2 }}%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">
+                                    <span class="badge bg-gradient-danger me-2">D</span>
+                                    Passable (60-69)
+                                </span>
+                                <span class="text-bold">{{ distribution.D|default:0 }}</span>
+                            </div>
+                            <div class="progress">
+                                 <div class="progress-bar bg-gradient-success" role="progressbar"
+                                    style="width: {{ percentages.A|floatformat:2 }}%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">
+                                    <span class="badge bg-gradient-dark me-2">F</span>
+                                    Échec (0-59)
+                                </span>
+                                <span class="text-bold">{{ distribution.F|default:0 }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-success" role="progressbar"
+                                    style="width: {{ percentages.A|floatformat:2 }}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques par département -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header pb-0">
+                    <h6>Statistiques par département</h6>
+                </div>
+                <div class="card-body">
+                    {% if dept_stats %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-items-center">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Département
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        Notes
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        Moyenne
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in dept_stats %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ dept.name }}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="badge badge-sm bg-gradient-info">
+                                            {{ dept.count }}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-sm font-weight-bold">
+                                            {{ dept.average|floatformat:2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-light text-center">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Aucune donnée disponible
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 10 étudiants -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h6>
+                        <i class="fas fa-trophy me-2 text-warning"></i>
+                        Top 10 des meilleurs étudiants
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if top_students %}
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Rang
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Matricule
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Étudiant
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Département
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        Moyenne générale
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in top_students %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            {% if forloop.counter <= 3 %}
+                                            <i class="fas fa-medal text-warning fs-5 me-2"></i>
+                                            {% else %}
+                                            <span class="text-secondary text-sm me-3">{{ forloop.counter }}.</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary text-sm">
+                                            {{ item.student.student_number }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="avatar avatar-sm me-3 bg-gradient-primary">
+                                                {{ item.student.user.first_name.0 }}{{ item.student.user.last_name.0 }}
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">
+                                                    {{ item.student.user.get_full_name }}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary text-sm">
+                                            {{ item.student.department.name|default:"-" }}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="badge badge-lg bg-gradient-success">
+                                            {{ item.average|floatformat:2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-light text-center">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Aucune donnée disponible
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.icon-shape {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 0.5rem;
+}
+</style>
+{% endblock %}

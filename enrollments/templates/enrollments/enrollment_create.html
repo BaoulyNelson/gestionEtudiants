@@ -1,0 +1,222 @@
+<!-- ========== templates/enrollments/enrollment_create.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Nouvelle inscription - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-plus-circle"></i> Nouvelle inscription</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" id="enrollmentForm">
+            {% csrf_token %}
+            
+            <!-- Sélection de l'étudiant -->
+            <div class="mb-4">
+                <label for="student" class="form-label">
+                    <i class="fas fa-user-graduate"></i> Étudiant <span class="text-danger">*</span>
+                </label>
+                <select name="student" id="student" class="form-select" required>
+                    <option value="">-- Sélectionnez un étudiant --</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}" 
+                            data-department="{{ student.department.code }}"
+                            data-year="{{ student.current_year }}">
+                        {{ student.student_number }} - {{ student.user.get_full_name }}
+                        {% if student.department %}
+                            ({{ student.department.code }} - {{ student.get_current_year_display }})
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted">Recherchez par numéro ou nom d'étudiant</small>
+            </div>
+
+            <!-- Filtres de section -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Session</label>
+                    <select id="filterSession" class="form-select">
+                        <option value="">Toutes</option>
+                        {% for value, label in session_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Semestre</label>
+                    <select id="filterSemester" class="form-select">
+                        <option value="">Tous</option>
+                        {% for value, label in semester_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Recherche</label>
+                    <input type="text" id="searchCourse" class="form-control" placeholder="Code ou nom du cours">
+                </div>
+            </div>
+
+            <!-- Sélection de la section -->
+            <div class="mb-4">
+                <label for="section" class="form-label">
+                    <i class="fas fa-book"></i> Section <span class="text-danger">*</span>
+                </label>
+                <div id="sectionsList" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                    {% if sections_by_course %}
+                        {% for course, sections in sections_by_course.items %}
+                        <div class="section-group mb-3" 
+                             data-session="{{ sections.0.session }}"
+                             data-semester="{{ sections.0.semester }}"
+                             data-course="{{ course.code }}|{{ course.name }}">
+                            <h6 class="text-primary mb-2">
+                                <strong>{{ course.code }}</strong> - {{ course.name }}
+                                <span class="badge bg-secondary">{{ course.credits }} crédits</span>
+                            </h6>
+                            {% for section in sections %}
+                            <div class="form-check ms-3 mb-2">
+                                <input class="form-check-input" type="radio" 
+                                       name="section" 
+                                       id="section{{ section.id }}" 
+                                       value="{{ section.id }}"
+                                       data-course="{{ course.code }}"
+                                       data-session="{{ section.session }}"
+                                       data-semester="{{ section.semester }}"
+                                       required>
+                                <label class="form-check-label" for="section{{ section.id }}">
+                                    <strong>Section {{ section.section_number }}</strong>
+                                    - {{ section.get_day_of_week_display }}
+                                    {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
+                                    {% if section.professor %}
+                                    <small class="text-muted">
+                                        (Prof. {{ section.professor.user.get_full_name }})
+                                    </small>
+                                    {% endif %}
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ section.get_session_display }} - {{ section.get_semester_display }} {{ section.year }}
+                                        - Salle: {{ section.room }}
+                                        {% if section.max_students %}
+                                        - Places: {{ section.enrolled_count }}/{{ section.max_students }}
+                                        {% endif %}
+                                    </small>
+                                </label>
+                            </div>
+                            {% endfor %}
+                            <hr>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle"></i> Aucune section ouverte disponible.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-check"></i> Créer l'inscription
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.section-group {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.form-check-input:checked ~ .form-check-label {
+    font-weight: 600;
+}
+
+#sectionsList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#sectionsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#sectionsList::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+#sectionsList::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterSession = document.getElementById('filterSession');
+    const filterSemester = document.getElementById('filterSemester');
+    const searchCourse = document.getElementById('searchCourse');
+    const sectionGroups = document.querySelectorAll('.section-group');
+    
+    function filterSections() {
+        const sessionValue = filterSession.value.toLowerCase();
+        const semesterValue = filterSemester.value.toLowerCase();
+        const searchValue = searchCourse.value.toLowerCase();
+        
+        sectionGroups.forEach(group => {
+            const groupSession = group.dataset.session.toLowerCase();
+            const groupSemester = group.dataset.semester.toLowerCase();
+            const groupCourse = group.dataset.course.toLowerCase();
+            
+            const matchSession = !sessionValue || groupSession === sessionValue;
+            const matchSemester = !semesterValue || groupSemester === semesterValue;
+            const matchSearch = !searchValue || groupCourse.includes(searchValue);
+            
+            if (matchSession && matchSemester && matchSearch) {
+                group.style.display = 'block';
+            } else {
+                group.style.display = 'none';
+            }
+        });
+    }
+    
+    filterSession.addEventListener('change', filterSections);
+    filterSemester.addEventListener('change', filterSections);
+    searchCourse.addEventListener('input', filterSections);
+    
+    // Validation avant soumission
+    document.getElementById('enrollmentForm').addEventListener('submit', function(e) {
+        const student = document.getElementById('student').value;
+        const section = document.querySelector('input[name="section"]:checked');
+        
+        if (!student) {
+            e.preventDefault();
+            alert('Veuillez sélectionner un étudiant.');
+            return false;
+        }
+        
+        if (!section) {
+            e.preventDefault();
+            alert('Veuillez sélectionner une section.');
+            return false;
+        }
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,13 +1,15 @@
 <!-- ========== templates/grades/grade_list.html ========== -->
 {% extends 'base.html' %}
 {% block title %}Toutes les notes - FASCH{% endblock %}
+
 {% block authenticated_content %}
 <div class="row mb-4">
     <div class="col-12">
         <h2><i class="fas fa-trophy"></i> Gestion des notes</h2>
     </div>
 </div>
-<div class="card">
+
+<div class="card mb-3">
     <div class="card-body">
         <h6>Légende des notes</h6>
         <ul class="list-unstyled">
@@ -19,24 +21,29 @@
         </ul>
     </div>
 </div>
+      
 <div class="card mb-4">
     <div class="card-body">
         <form method="get" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label">Numéro étudiant</label>
-                <input type="text" name="student_number" class="form-control" placeholder="Rechercher...">
+                <input type="text" name="student_number" class="form-control" 
+                       placeholder="Rechercher..." value="{{ request.GET.student_number }}">
             </div>
             <div class="col-md-3">
                 <label class="form-label">Code cours</label>
-                <input type="text" name="course_code" class="form-control" placeholder="Ex: PSY101">
+                <input type="text" name="course_code" class="form-control" 
+                       placeholder="Ex: PSY101" value="{{ request.GET.course_code }}">
             </div>
             <div class="col-md-2">
                 <label class="form-label">Note min</label>
-                <input type="number" name="min_grade" class="form-control" min="0" max="100">
+                <input type="number" name="min_grade" class="form-control" 
+                       min="0" max="100" value="{{ request.GET.min_grade }}">
             </div>
             <div class="col-md-2">
                 <label class="form-label">Note max</label>
-                <input type="number" name="max_grade" class="form-control" min="0" max="100">
+                <input type="number" name="max_grade" class="form-control" 
+                       min="0" max="100" value="{{ request.GET.max_grade }}">
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
@@ -46,66 +53,145 @@
         </form>
     </div>
 </div>
+<div class="d-flex flex-column flex-md-row gap-3 mt-3">
+  <a href="{% url 'grades:professor_sections' %}" class="btn btn-success">
+    <i class="fas fa-plus-circle me-2"></i> Créer une Note
+  </a>
+
+  <a href="{% url 'grades:admin_grade_export' %}" class="btn btn-info">
+    <i class="fas fa-file-download me-2"></i> Exporter CSV
+  </a>
+</div>
 
 <div class="card">
     <div class="card-body">
-        {% if page_obj %}
+        {% if grouped_grades %}
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover table-bordered">
+                <thead class="table-light">
                     <tr>
-                        <th>Étudiant</th>
-                        <th>Cours</th>
-                        <th>Section</th>
-                        <th class="text-center">Note Finale</th>
-                        <th class="text-center">Mention</th>
-                        <th>Professeur</th>
-                        <th>Actions</th>
+                        <th style="width: 20%;">Étudiant</th>
+                        <th style="width: 15%;">Cours</th>
+                        <th style="width: 8%;" class="text-center">Section</th>
+                        <th style="width: 12%;" class="text-center">Note Finale</th>
+                        <th style="width: 10%;" class="text-center">Mention</th>
+                        <th style="width: 20%;">Professeur</th>
+                        <th style="width: 15%;" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for grade in page_obj %}
-                    <tr>
-                        <td>
-                            <strong>{{ grade.enrollment.student.student_number }}</strong><br>
-                            <small>{{ grade.enrollment.student.user.get_full_name }}</small>
-                        </td>
-                        <td>{{ grade.enrollment.course_section.course.code }}</td>
-                        <td>{{ grade.enrollment.course_section.section_number }}</td>
-                        <td class="text-center">
-                            {% if grade.final_grade %}
-                                <strong class="{% if grade.final_grade >= 60 %}text-success{% else %}text-danger{% endif %}">
-                                    {{ grade.final_grade|floatformat:2 }}
-                                </strong>
-                            {% else %}
-                                <span class="text-muted">-</span>
+                    {% for student_data in grouped_grades %}
+                        {% for grade in student_data.grades %}
+                        <tr>
+                            <!-- Afficher les infos étudiant seulement sur la première ligne -->
+                            {% if forloop.first %}
+                            <td rowspan="{{ student_data.grades|length }}" class="align-middle bg-light">
+                                <div class="d-flex flex-column">
+                                    <strong class="text-primary mb-1">{{ grade.enrollment.student.student_number }}</strong>
+                                    <span class="text-dark">{{ grade.enrollment.student.user.get_full_name }}</span>
+                                    {% if student_data.grades|length > 1 %}
+                                    <small class="text-muted mt-1">
+                                        <i class="fas fa-book-open"></i> {{ student_data.grades|length }} cours
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </td>
                             {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% if grade.letter_grade %}
-                                <span class="badge 
-                                    {% if grade.letter_grade == 'A' %}bg-success
-                                    {% elif grade.letter_grade == 'B' %}bg-primary
-                                    {% elif grade.letter_grade == 'C' %}bg-info
-                                    {% elif grade.letter_grade == 'D' %}bg-warning
-                                    {% else %}bg-danger{% endif %}">
-                                    {{ grade.letter_grade }}
-                                </span>
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>{{ grade.graded_by.user.get_full_name|default:"-" }}</td>
-                        <td>
-                            <a href="{% url 'grades:grade_detail' grade.id %}" class="btn btn-sm btn-info">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </td>
-                    </tr>
+                            
+                            <!-- Infos du cours -->
+                            <td>
+                                <strong>{{ grade.enrollment.course_section.course.code }}</strong><br>
+                                <small class="text-muted">{{ grade.enrollment.course_section.course.name|truncatewords:5 }}</small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary">{{ grade.enrollment.course_section.section_number }}</span>
+                            </td>
+                            <td class="text-center">
+                                {% if grade.final_grade %}
+                                    <strong class="fs-5 {% if grade.final_grade >= 60 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ grade.final_grade|floatformat:2 }}
+                                    </strong>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if grade.letter_grade %}
+                                    <span class="badge fs-6
+                                        {% if grade.letter_grade == 'A' %}bg-success
+                                        {% elif grade.letter_grade == 'B' %}bg-primary
+                                        {% elif grade.letter_grade == 'C' %}bg-info
+                                        {% elif grade.letter_grade == 'D' %}bg-warning text-dark
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ grade.letter_grade }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ grade.graded_by.user.get_full_name|default:"-" }}</small>
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'grades:grade_detail' grade.id %}" 
+                                   class="btn btn-sm btn-info" 
+                                   title="Voir détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                        <!-- Ligne de séparation entre étudiants -->
+                        {% if not forloop.last %}
+                        <tr class="table-separator">
+                            <td colspan="7" style="height: 8px; background: #f8f9fa; border: none;"></td>
+                        </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Navigation des pages" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.student_number %}&student_number={{ request.GET.student_number }}{% endif %}{% if request.GET.course_code %}&course_code={{ request.GET.course_code }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.student_number %}&student_number={{ request.GET.student_number }}{% endif %}{% if request.GET.course_code %}&course_code={{ request.GET.course_code }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.student_number %}&student_number={{ request.GET.student_number }}{% endif %}{% if request.GET.course_code %}&course_code={{ request.GET.course_code }}{% endif %}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.student_number %}&student_number={{ request.GET.student_number }}{% endif %}{% if request.GET.course_code %}&course_code={{ request.GET.course_code }}{% endif %}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
         {% else %}
         <div class="alert alert-info">
             <i class="fas fa-info-circle"></i> Aucune note trouvée.
@@ -113,4 +199,36 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+/* Style manuscrit */
+.table-bordered td {
+    border-color: #dee2e6;
+}
+
+.table-separator td {
+    padding: 0 !important;
+}
+
+/* Effet hover sur les groupes d'étudiants */
+tbody tr:hover td {
+    background-color: #f8f9fa !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+    .table {
+        font-size: 0.875rem;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+    }
+}
+</style>
+
 {% endblock %}

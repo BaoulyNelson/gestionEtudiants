@@ -174,7 +174,7 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    messages.success(request, f'Bienvenue, {user.get_role_display()} {user.get_full_name()}!')
+                    messages.success(request, f'Bienvenue, {user.role_display_by_gender()} {user.get_full_name()}!')
                     return redirect('dashboard')
                 else:
                     messages.error(request, 'Ce compte est inactif.')
@@ -338,7 +338,8 @@ def user_create_view(request):
 def user_update_view(request, user_id):
     """Modification d'un utilisateur"""
     user = get_object_or_404(User, id=user_id)
-    
+    profile_form = None  # ✅ toujours défini, même si aucune condition ne s’applique
+
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=user)
         
@@ -347,20 +348,20 @@ def user_update_view(request, user_id):
             
             # Mettre à jour le profil selon le rôle
             if user.is_student():
-                student_form = StudentUpdateForm(
+                profile_form = StudentUpdateForm(
                     request.POST, 
                     instance=user.student_profile
                 )
-                if student_form.is_valid():
-                    student_form.save()
+                if profile_form.is_valid():
+                    profile_form.save()
             
             elif user.is_professor():
-                professor_form = ProfessorUpdateForm(
+                profile_form = ProfessorUpdateForm(
                     request.POST, 
                     instance=user.professor_profile
                 )
-                if professor_form.is_valid():
-                    professor_form.save()
+                if profile_form.is_valid():
+                    profile_form.save()
             
             messages.success(request, 'Utilisateur modifié avec succès.')
             return redirect('accounts:user_list')
@@ -368,7 +369,6 @@ def user_update_view(request, user_id):
         form = UserUpdateForm(instance=user)
         
         # Charger le bon formulaire de profil
-        profile_form = None
         if user.is_student():
             profile_form = StudentUpdateForm(instance=user.student_profile)
         elif user.is_professor():
