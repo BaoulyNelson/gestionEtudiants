@@ -155,4 +155,27 @@
     <i class="fas fa-info-circle"></i> Aucun cours trouvé.
 </div>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const yearSelect = document.querySelector('select[name="year_level"]');
+    const deptSelect = document.querySelector('select[name="department"]');
+
+    function toggleDepartment() {
+        if (yearSelect.value === "1") {
+            deptSelect.disabled = true;
+            deptSelect.value = ""; // Réinitialise le choix
+        } else {
+            deptSelect.disabled = false;
+        }
+    }
+
+    // Exécuter au chargement
+    toggleDepartment();
+
+    // Réagir à tout changement d’année
+    yearSelect.addEventListener('change', toggleDepartment);
+});
+</script>
+
 {% endblock %}

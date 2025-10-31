@@ -17,6 +17,7 @@ urlpatterns = [
     path('sections/create/', views.section_create_view, name='section_create'),
     path('sections/create/<int:course_id>/', views.section_create_view, name='section_create_for_course'),
     path('sections/<int:section_id>/update/', views.section_update_view, name='section_update'),
+    path('sections/<int:pk>/delete/', views.section_delete_view, name='section_delete'),
     path('sections/<int:section_id>/toggle-open/', views.section_toggle_open_view, name='section_toggle_open'),
     
     # Mes cours

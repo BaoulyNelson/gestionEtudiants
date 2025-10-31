@@ -85,6 +85,10 @@
                             <a href="{% url 'courses:section_detail' section.id %}" class="btn btn-sm btn-info">
                                 <i class="fas fa-eye"></i>
                             </a>
+                                <a href="{% url 'courses:section_update' section.id %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> 
+                            </a>
+
                         </td>
                     </tr>
                     {% endfor %}

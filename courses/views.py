@@ -8,36 +8,41 @@ from .models import Course, CourseSection
 from .forms import CourseForm, CourseSectionForm
 from accounts.views import is_admin
 
-
 @login_required
 def course_list_view(request):
     """Liste des cours"""
     courses = Course.objects.filter(is_active=True).select_related('department')
-    
+
     # Filtres
     department = request.GET.get('department')
     year_level = request.GET.get('year_level')
     search = request.GET.get('search')
-    
-    if department:
-        courses = courses.filter(department__code=department)
-    
+
+    # --- Logique de filtrage ---
     if year_level:
         courses = courses.filter(year_level=year_level)
-    
+
+        # Si c'est l'année préparatoire (1), on ignore tout filtre de département
+        if year_level == "1":
+            courses = courses.filter(department__isnull=True)
+        elif department:
+            courses = courses.filter(department__code=department)
+    elif department:
+        courses = courses.filter(department__code=department)
+
     if search:
         courses = courses.filter(
             Q(code__icontains=search) |
             Q(name__icontains=search)
         )
-    
+
     # Pagination
     paginator = Paginator(courses, settings.PAGINATION_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     from departments.models import Department
-    
+
     context = {
         'page_obj': page_obj,
         'departments': Department.objects.all(),
@@ -46,7 +51,7 @@ def course_list_view(request):
         'current_year': year_level,
         'search_query': search,
     }
-    
+
     return render(request, 'courses/course_list.html', context)
 
 
@@ -154,6 +159,9 @@ def section_list_view(request):
     if request.user.is_professor():
         sections = sections.filter(professor=request.user.professor_profile)
     
+    # ⚡️ Ajout d'un ordre stable pour éviter le warning de pagination
+    sections = sections.order_by('year', 'semester', 'session', 'course__code', 'section_number')
+    
     # Pagination
     paginator = Paginator(sections, settings.PAGINATION_PER_PAGE)
     page_number = request.GET.get('page')
@@ -243,6 +251,20 @@ def section_update_view(request, section_id):
         'form': form,
         'section': section
     })
+
+@login_required
+@user_passes_test(is_admin)
+def section_delete_view(request, pk):
+    """Permet à un admin de supprimer une section"""
+    section = get_object_or_404(CourseSection, pk=pk)
+
+    if request.method == "POST":
+        course_id = section.course.id  # Pour rediriger après suppression
+        section.delete()
+        messages.success(request, f"La section {section} a été supprimée avec succès.")
+        return redirect('courses:course_detail', pk=course_id)
+
+    return render(request, 'courses/section_confirm_delete.html', {'section': section})
 
 
 @login_required

@@ -1,96 +1,468 @@
 <!-- ========== templates/courses/section_detail.html ========== -->
 {% extends 'base.html' %}
-{% block title %}Détail Section - FASCH{% endblock %}
+{% load static %}
+{% block title %}{{ section.course.code }}-{{ section.section_number }} - FASCH{% endblock %}
+
 {% block authenticated_content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Cours</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' section.course.id %}">{{ section.course.code }}</a></li>
+        <li class="breadcrumb-item active">Section {{ section.section_number }}</li>
+    </ol>
+</nav>
+
+<!-- Header Section -->
 <div class="row mb-4">
     <div class="col-12">
-        <h2><i class="fas fa-clipboard-list"></i> {{ section.course.code }}-{{ section.section_number }}</h2>
-        <p class="text-muted">{{ section.course.name }}</p>
+        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="display-6 fw-bold mb-2">
+                            <i class="fas fa-layer-group me-2"></i>
+                            {{ section.course.code }}-{{ section.section_number }}
+                        </h1>
+                        <h4 class="mb-3 opacity-90">{{ section.course.name }}</h4>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-light text-primary px-3 py-2">
+                                <i class="fas fa-book-open me-1"></i> {{ section.course.credits }} crédits
+                            </span>
+                            <span class="badge {% if section.is_open %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2">
+                                <i class="fas fa-{% if section.is_open %}lock-open{% else %}lock{% endif %} me-1"></i>
+                                {% if section.is_open %}Inscriptions ouvertes{% else %}Inscriptions fermées{% endif %}
+                            </span>
+                            <span class="badge {% if section.is_full %}bg-danger{% else %}bg-info{% endif %} px-3 py-2">
+                                <i class="fas fa-users me-1"></i>
+                                {{ section.get_enrolled_count }}/{{ section.max_students }} étudiants
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        {% if user.is_staff or user.is_superuser %}
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i> Actions
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'courses:section_update' section.id %}">
+                                        <i class="fas fa-edit text-primary"></i> Modifier
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'courses:section_create' %}?course={{ section.course.id }}">
+                                        <i class="fas fa-plus text-success"></i> Nouvelle section
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Informations de la section</h5>
+    <!-- Colonne principale -->
+    <div class="col-lg-8 mb-4">
+        
+        <!-- Informations générales -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-info-circle text-primary me-2"></i>
+                    Informations de la section
+                </h5>
             </div>
-            <div class="card-body">
-                <div class="row">
+            <div class="card-body p-4">
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <p><strong><i class="fas fa-user"></i> Professeur:</strong><br>{{ section.professor.user.get_full_name }}</p>
-                        <p><strong><i class="fas fa-calendar"></i> Horaire:</strong><br>
-                            {{ section.get_day_of_week_display }} : {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
-                        </p>
-                        <p><strong><i class="fas fa-door-open"></i> Salle:</strong> {{ section.room|default:"Non assignée" }}</p>
+                        <div class="info-item mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box bg-primary bg-opacity-10 text-primary rounded p-2 me-3">
+                                    <i class="fas fa-chalkboard-teacher fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Professeur</small>
+                                    <strong class="d-block">{{ section.professor.user.get_full_name }}</strong>
+                                    <small class="text-muted">{{ section.professor.user.email }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box bg-success bg-opacity-10 text-success rounded p-2 me-3">
+                                    <i class="fas fa-calendar-day fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Horaire</small>
+                                    <strong class="d-block">{{ section.get_day_of_week_display }}</strong>
+                                    <span class="badge bg-success bg-opacity-10 text-success">
+                                        {{ section.start_time|time:"H:i" }} - {{ section.end_time|time:"H:i" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box bg-info bg-opacity-10 text-info rounded p-2 me-3">
+                                    <i class="fas fa-door-open fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Salle</small>
+                                    <strong class="d-block">{{ section.room|default:"Non assignée" }}</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="col-md-6">
-                        <p><strong><i class="fas fa-calendar-alt"></i> Session:</strong> {{ section.get_session_display }}</p>
-                        <p><strong><i class="fas fa-leaf"></i> Semestre:</strong> {{ section.get_semester_display }} {{ section.year }}</p>
-                        <p><strong><i class="fas fa-users"></i> Capacité:</strong> 
-                            <span class="badge {% if section.is_full %}bg-danger{% else %}bg-success{% endif %}">
-                                {{ section.get_enrolled_count }}/{{ section.max_students }}
-                            </span>
-                        </p>
-                        <p><strong><i class="fas fa-toggle-on"></i> Statut:</strong>
-                            {% if section.is_open %}
-                                <span class="badge bg-success">Ouvert</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Fermé</span>
-                            {% endif %}
-                        </p>
+                        <div class="info-item mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box bg-warning bg-opacity-10 text-warning rounded p-2 me-3">
+                                    <i class="fas fa-calendar-alt fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Période académique</small>
+                                    <strong class="d-block">{{ section.get_session_display }}</strong>
+                                    <small class="text-muted">{{ section.get_semester_display }} {{ section.year }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box {% if section.is_full %}bg-danger{% else %}bg-success{% endif %} bg-opacity-10 {% if section.is_full %}text-danger{% else %}text-success{% endif %} rounded p-2 me-3">
+                                    <i class="fas fa-users fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Capacité</small>
+                                    <strong class="d-block">{{ section.get_enrolled_count }}/{{ section.max_students }} étudiants</strong>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar {% if section.is_full %}bg-danger{% else %}bg-success{% endif %}" 
+                                             style="width: {{ section.get_enrolled_count|floatformat:0 }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-box {% if section.is_open %}bg-success{% else %}bg-secondary{% endif %} bg-opacity-10 {% if section.is_open %}text-success{% else %}text-secondary{% endif %} rounded p-2 me-3">
+                                    <i class="fas fa-toggle-{% if section.is_open %}on{% else %}off{% endif %} fa-lg"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Statut d'inscription</small>
+                                    <span class="badge {% if section.is_open %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2">
+                                        {% if section.is_open %}Ouvert{% else %}Fermé{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Liste des étudiants -->
         {% if can_view_students and enrollments %}
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="mb-0">Étudiants inscrits ({{ enrollments.count }})</h5>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-user-graduate text-primary me-2"></i>
+                        Étudiants inscrits
+                        <span class="badge bg-primary ms-2">{{ enrollments.count }}</span>
+                    </h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" onclick="exportStudentList()">
+                            <i class="fas fa-download"></i> Exporter
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="printStudentList()">
+                            <i class="fas fa-print"></i> Imprimer
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
+                {% if enrollments %}
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th>Numéro</th>
-                                <th>Nom</th>
+                                <th class="ps-4">#</th>
+                                <th>Numéro étudiant</th>
+                                <th>Nom complet</th>
                                 <th>Email</th>
                                 <th>Date d'inscription</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for enrollment in enrollments %}
                             <tr>
-                                <td>{{ enrollment.student.student_number }}</td>
-                                <td>{{ enrollment.student.user.get_full_name }}</td>
-                                <td>{{ enrollment.student.user.email }}</td>
-                                <td>{{ enrollment.enrollment_date|date:"d/m/Y" }}</td>
+                                <td class="ps-4">{{ forloop.counter }}</td>
+                                <td>
+                                    <strong class="text-primary">{{ enrollment.student.student_number }}</strong>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary text-white me-2">
+                                            {{ enrollment.student.user.first_name|first }}{{ enrollment.student.user.last_name|first }}
+                                        </div>
+                                        <span>{{ enrollment.student.user.get_full_name }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:{{ enrollment.student.user.email }}" class="text-decoration-none">
+                                        {{ enrollment.student.user.email }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="text-muted">
+                                        <i class="far fa-calendar me-1"></i>
+                                        {{ enrollment.enrollment_date|date:"d/m/Y" }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'students:student_detail' enrollment.student.id %}" 
+                                       class="btn btn-sm btn-outline-primary" title="Voir le profil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucun étudiant inscrit pour le moment</p>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endif %}
     </div>
 
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Cours</h5>
+    <!-- Colonne latérale -->
+    <div class="col-lg-4">
+        
+        <!-- Informations du cours -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-book text-primary me-2"></i>
+                    À propos du cours
+                </h5>
             </div>
-            <div class="card-body">
-                <p><strong>{{ section.course.name }}</strong></p>
-                <p><small class="text-muted">{{ section.course.description|truncatewords:20 }}</small></p>
-                <p><strong>Crédits:</strong> {{ section.course.credits }}</p>
-                <a href="{% url 'courses:course_detail' section.course.id %}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-eye"></i> Voir le cours
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3">{{ section.course.name }}</h6>
+                <p class="text-muted small mb-3">{{ section.course.description|truncatewords:30 }}</p>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Code:</span>
+                    <strong>{{ section.course.code }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Crédits:</span>
+                    <strong>{{ section.course.credits }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Département:</span>
+                    <strong>{{ section.course.department.name }}</strong>
+                </div>
+                
+                <a href="{% url 'courses:course_detail' section.course.id %}" class="btn btn-primary w-100">
+                    <i class="fas fa-eye me-2"></i> Voir le cours complet
                 </a>
+            </div>
+        </div>
+
+        <!-- Statistiques rapides -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>
+                    Statistiques
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="stat-item mb-3 pb-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block">Taux de remplissage</small>
+                            <h4 class="mb-0 fw-bold">
+                                {{ section.get_enrolled_count|floatformat:0 }}%
+                            </h4>
+                        </div>
+                        <div class="icon-box bg-primary bg-opacity-10 text-primary rounded p-3">
+                            <i class="fas fa-percentage fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-item mb-3 pb-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block">Places disponibles</small>
+                            <h4 class="mb-0 fw-bold">
+                                {{ section.max_students|add:"-"|add:section.get_enrolled_count }}
+                            </h4>
+                        </div>
+                        <div class="icon-box bg-success bg-opacity-10 text-success rounded p-3">
+                            <i class="fas fa-chair fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block">Heures de cours</small>
+                            <h4 class="mb-0 fw-bold">3h/semaine</h4>
+                        </div>
+                        <div class="icon-box bg-info bg-opacity-10 text-info rounded p-3">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        {% if user.is_staff or user.is_superuser %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-bolt text-primary me-2"></i>
+                    Actions rapides
+                </h5>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'courses:section_update' section.id %}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-2"></i> Modifier la section
+                    </a>
+                    <button class="btn btn-outline-success" onclick="toggleSectionStatus()">
+                        <i class="fas fa-toggle-on me-2"></i> 
+                        {% if section.is_open %}Fermer{% else %}Ouvrir{% endif %} les inscriptions
+                    </button>
+                    <a href="#" class="btn btn-outline-info">
+                        <i class="fas fa-file-export me-2"></i> Exporter la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Confirmer la suppression
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette section ?</p>
+                <p class="text-danger mb-0">
+                    <strong>Attention :</strong> Cette action est irréversible et supprimera toutes les inscriptions associées.
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="POST" action="{% url 'courses:section_delete' section.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i> Supprimer
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #3b82f6 100%);
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.info-item {
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+}
+
+.stat-item h4 {
+    color: var(--bs-primary);
+}
+
+@media (max-width: 768px) {
+    .icon-box {
+        width: 40px;
+        height: 40px;
+    }
+}
+</style>
+
+<script>
+function exportStudentList() {
+    // Implémentation de l'export
+    alert('Exportation en cours...');
+}
+
+function printStudentList() {
+    window.print();
+}
+
+function toggleSectionStatus() {
+    if (confirm('Êtes-vous sûr de vouloir modifier le statut des inscriptions ?')) {
+        // Implémentation AJAX pour changer le statut
+        alert('Statut modifié avec succès');
+    }
+}
+</script>
+
 {% endblock %}

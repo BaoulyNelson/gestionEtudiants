@@ -28,6 +28,8 @@ class CourseAdmin(admin.ModelAdmin):
     
     actions = ['activate_courses', 'deactivate_courses', 'duplicate_course']
     
+    # --- BADGES D’AFFICHAGE ---
+
     def credits_badge(self, obj):
         return format_html(
             '<span style="background-color: #ffc107; color: black; padding: 3px 10px; border-radius: 3px;">{} crédits</span>',
@@ -56,6 +58,8 @@ class CourseAdmin(admin.ModelAdmin):
         return format_html('<span style="color: red; font-size: 18px;">✗</span>')
     is_active_display.short_description = 'Actif'
     
+    # --- ACTIONS ---
+
     def activate_courses(self, request, queryset):
         updated = queryset.update(is_active=True)
         self.message_user(request, f'{updated} cours activé(s).')
@@ -65,6 +69,14 @@ class CourseAdmin(admin.ModelAdmin):
         updated = queryset.update(is_active=False)
         self.message_user(request, f'{updated} cours désactivé(s).')
     deactivate_courses.short_description = "✗ Désactiver les cours"
+
+    # --- FILTRAGE SPÉCIAL POUR NIVEAU 1 ---
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Si l'URL contient year_level__exact=1 → on ne garde que les cours sans département
+        if request.GET.get('year_level__exact') == '1':
+            qs = qs.filter(department__isnull=True)
+        return qs
 
 
 @admin.register(CourseSection)

@@ -3,13 +3,26 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, Student, Professor, Admin
 
 
+
+# 🧩 1. Définir les actions
+@admin.action(description="Définir le genre sur Masculin")
+def set_gender_masculin(modeladmin, request, queryset):
+    queryset.update(gender='M')
+
+@admin.action(description="Définir le genre sur Féminin")
+def set_gender_feminin(modeladmin, request, queryset):
+    queryset.update(gender='F')
+
+
+# 🧩 2. Étendre ton UserAdmin existant
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ['email', 'first_name', 'last_name', 'role', 'gender', 'phone_number', 'is_active', 'created_at']
     list_filter = ['role', 'is_active', 'is_staff']
     search_fields = ['email', 'first_name', 'last_name', 'phone_number']
     ordering = ['-created_at']
-    
+    actions = [set_gender_masculin, set_gender_feminin]  # ✅ ajouter ici
+
     fieldsets = (
         ('Informations de connexion', {
             'fields': ('email', 'password')
