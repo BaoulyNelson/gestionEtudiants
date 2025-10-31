@@ -9,8 +9,15 @@
             Vous pouvez vous inscrire à un maximum de 8 cours par session.<br>
             <strong>⚠️ Seuls les cours de votre niveau actuel et de votre département sont affichés.</strong>
         </p>
-              <p class="text-muted">
-            Département : <strong>{{ request.user.student_profile.department.name }}</strong> |
+        <p class="text-muted">
+            Département : 
+            <strong>
+                {% if request.user.student_profile.department %}
+                    {{ request.user.student_profile.department.name }}
+                {% else %}
+                    Préparatoire
+                {% endif %}
+            </strong> |
             Niveau : <strong>{{ request.user.student_profile.get_current_year_display }}</strong>
         </p>
     </div>
@@ -38,9 +45,11 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3 d-flex align-items-end"> <button type="submit" class="btn btn-primary w-100"> <i class="fas fa-search"></i> Filtrer </button> </div>
-
-     
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </div>
         </form>
     </div>
 </div>

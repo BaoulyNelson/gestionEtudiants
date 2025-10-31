@@ -3,12 +3,17 @@
 {% block title %}Toutes les notes - FASCH{% endblock %}
 
 {% block authenticated_content %}
+
 <div class="row mb-4">
-    <div class="col-12">
-        <h2><i class="fas fa-trophy"></i> Gestion des notes</h2>
+    <div class="col-md-6">
+        <h2 class="text-center"><i class="fas fa-file-alt"></i> Gestion des notes</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'grades:professor_sections' %}" class="btn btn-primary">
+            <i class="fas fa-pen"></i> Créer une Note
+        </a>
     </div>
 </div>
-
 <div class="card mb-3">
     <div class="card-body">
         <h6>Légende des notes</h6>
@@ -54,9 +59,7 @@
     </div>
 </div>
 <div class="d-flex flex-column flex-md-row gap-3 mt-3">
-  <a href="{% url 'grades:professor_sections' %}" class="btn btn-success">
-    <i class="fas fa-plus-circle me-2"></i> Créer une Note
-  </a>
+
 
   <a href="{% url 'grades:admin_grade_export' %}" class="btn btn-info">
     <i class="fas fa-file-download me-2"></i> Exporter CSV

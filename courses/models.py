@@ -93,11 +93,18 @@ class CourseSection(models.Model):
     created_at = models.DateTimeField('Date de création', auto_now_add=True)
     updated_at = models.DateTimeField('Date de modification', auto_now=True)
     
+   
     class Meta:
         verbose_name = 'Section de cours'
         verbose_name_plural = 'Sections de cours'
         ordering = ['course__code', 'section_number']
-        unique_together = ['course', 'section_number', 'session', 'semester', 'year']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['course', 'section_number', 'professor', 'session', 'semester', 'year'],
+                name='unique_course_section_per_professor'
+            )
+        ]
+
     
     def __str__(self):
         return f"{self.course.code}-{self.section_number} ({self.get_session_display()})"

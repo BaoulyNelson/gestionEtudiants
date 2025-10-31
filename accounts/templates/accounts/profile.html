@@ -51,7 +51,18 @@
             <div class="card-header"><i class="fas fa-graduation-cap"></i> Informations académiques</div>
             <div class="card-body">
                 <p><strong>Numéro étudiant :</strong> {{ student.student_number }}</p>
+                <p><strong>Email :</strong> {{ user.email }}</p>
                 <p><strong>Département :</strong> {{ student.department.name|default:"Non assigné" }}</p>
+                <p><strong>Genre :</strong> 
+                {% if user.gender == 'F' %}
+                    Féminin
+                {% elif user.gender == 'M' %}
+                    Masculin
+                {% else %}
+                    Non spécifié
+                {% endif %}
+                </p>
+
                 <p><strong>Année :</strong> {{ student.get_current_year_display }}</p>
                 <p><strong>Date d'inscription :</strong> {{ student.enrollment_date|date:"d/m/Y" }}</p>
             </div>
@@ -61,7 +72,17 @@
             <div class="card-header"><i class="fas fa-chalkboard-teacher"></i> Informations professionnelles</div>
             <div class="card-body">
                 <p><strong>ID Professeur :</strong> {{ professor.professor_id }}</p>
+                <p><strong>Email :</strong> {{ user.email }}</p>
                 <p><strong>Département :</strong> {{ professor.department.name|default:"Non assigné" }}</p>
+                <p><strong>Genre :</strong> 
+                {% if user.gender == 'F' %}
+                    Féminin
+                {% elif user.gender == 'M' %}
+                    Masculin
+                {% else %}
+                    Non spécifié
+                {% endif %}
+                </p>
                 <p><strong>Spécialisation :</strong> {{ professor.specialization|default:"Non renseignée" }}</p>
                 <p><strong>Date d'embauche :</strong> {{ professor.hire_date|date:"d/m/Y" }}</p>
             </div>

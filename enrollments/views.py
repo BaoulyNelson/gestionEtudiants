@@ -24,15 +24,24 @@ from .models import Enrollment
 @login_required
 @user_passes_test(is_student)
 def available_sections_view(request):
-    """Liste les sections disponibles pour l'inscription de l'étudiant connecté."""
-    student = request.user.student_profile  # profil étudiant relié à l'utilisateur
+    student = request.user.student_profile
 
-    # 🔹 Base : sections ouvertes correspondant au niveau + département de l’étudiant
-    sections = CourseSection.objects.filter(
-        is_open=True,
-        course__year_level=student.current_year,            # même niveau d’étude
-        course__department=student.department               # même département
-    ).select_related('course', 'professor__user')
+    # 🔹 Base : sections ouvertes correspondant au niveau et au département (si existant)
+    if student.department:
+        sections = CourseSection.objects.filter(
+            is_open=True,
+            course__year_level=student.current_year,
+            course__department=student.department
+        )
+    else:
+        # Étudiants préparatoires : sections sans département
+        sections = CourseSection.objects.filter(
+            is_open=True,
+            course__year_level=student.current_year,
+            course__department__isnull=True
+        )
+
+    sections = sections.select_related('course', 'professor__user')
 
     # 🔹 Exclure les cours déjà suivis ou en cours d’inscription
     enrolled_course_ids = student.enrollments.filter(
@@ -57,7 +66,6 @@ def available_sections_view(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # 🔹 Contexte rendu au template
     context = {
         'page_obj': page_obj,
         'session_choices': CourseSection.SESSION_CHOICES,
@@ -69,9 +77,6 @@ def available_sections_view(request):
 
 
 # ========== SOLUTION 1 : Corriger la vue (Recommandé) ==========
-
-
-
 @login_required
 @user_passes_test(is_student)
 def enroll_view(request, section_id):
