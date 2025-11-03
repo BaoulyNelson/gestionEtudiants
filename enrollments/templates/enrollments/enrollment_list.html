@@ -73,7 +73,7 @@
                         <th style="width: 8%;" class="text-center">Section</th>
                         <th style="width: 12%;" class="text-center">Session</th>
                         <th style="width: 12%;" class="text-center">Statut</th>
-                        <th style="width: 15%;">Date inscription</th>
+                        <th style="width: 15%;">Professeur</th>
                         <th style="width: 10%;" class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -151,8 +151,13 @@
                             <!-- Date inscription -->
                             <td>
                                 <small>
-                                    <i class="fas fa-calendar-alt text-muted"></i> 
-                                    {{ enrollment.enrollment_date|date:"d/m/Y H:i" }}
+                                    <i class="fas fa-user-alt text-muted"></i> 
+                           
+                                {% if enrollment.course_section.professor %}
+                                    {{ enrollment.course_section.professor.user.get_full_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
                                 </small>
                             </td>
                             
@@ -170,7 +175,15 @@
                                        title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
                                     {% endif %}
+                                    <!-- Bouton Ajouter note -->
+                                    <a href="{% url 'grades:professor_grade_entry' enrollment.course_section.id %}?enrollment={{ enrollment.id }}" 
+                                    class="btn btn-sm btn-primary" 
+                                    title="Ajouter note">
+                                        ➕
+                                    </a>
+
                                 </div>
                             </td>
                         </tr>

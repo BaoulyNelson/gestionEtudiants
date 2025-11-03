@@ -465,3 +465,10 @@ def student_list_view(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'dashboards/liste_etudiants.html', {'page_obj': page_obj, 'search': search})
+
+
+
+
+def student_detail(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    return render(request, 'accounts/student_detail.html', {'student': student})

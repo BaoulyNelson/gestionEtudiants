@@ -143,6 +143,9 @@ class Grade(models.Model):
         """Recalculer la note finale avant de sauvegarder"""
         self.calculate_final_grade()
         super().save(*args, **kwargs)
+        
+        
+        
     
     def is_passing(self):
         """Vérifie si l'étudiant a réussi le cours"""

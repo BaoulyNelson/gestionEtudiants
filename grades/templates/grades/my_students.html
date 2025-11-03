@@ -99,7 +99,7 @@
                                 <td>Section {{ course_info.section.section_number }}</td>
                                 <td class="text-center">{{ course_info.course.credits }}</td>
                                 <td class="text-center">
-                                    <a href="{% url 'grades:grade_entry' course_info.section.id %}" 
+                                    <a href="{% url 'grades:professor_grade_entry' course_info.section.id %}" 
                                        class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i> Noter
                                     </a>

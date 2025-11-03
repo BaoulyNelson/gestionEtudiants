@@ -1,5 +1,5 @@
 import csv
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -14,6 +14,7 @@ from utils.roles import is_admin, is_professor, is_student
 from accounts.models import User, Student
 from departments.models import Department
 from collections import defaultdict
+from django.db.models import Case, When, IntegerField
 
 
 @login_required
@@ -33,6 +34,7 @@ def professor_sections_view(request):
     return render(request, 'grades/professor_sections.html', context)
 
 
+
 @login_required
 @user_passes_test(is_professor)
 def grade_entry_view(request, section_id):
@@ -45,11 +47,26 @@ def grade_entry_view(request, section_id):
         if section.professor != request.user.professor_profile:
             messages.error(request, "Vous n'avez pas accès à cette section.")
             return redirect('grades:professor_sections')
+        
+    # 🔹 Récupérer l'ID d'inscription passé dans l'URL (ex: ?enrollment=38)
+    enrollment_id = request.GET.get('enrollment')
     
     # Récupérer tous les étudiants inscrits
     enrollments = section.enrollments.filter(
         status='ENROLLED'
-    ).select_related('student__user').order_by('student__student_number')
+    ).select_related('student__user')
+    
+    if enrollment_id:
+        enrollments = enrollments.order_by(
+            Case(
+                When(id=enrollment_id, then=0),
+                default=1,
+                output_field=IntegerField(),
+            ),
+            'student__student_number'
+        )
+    else:
+        enrollments = enrollments.order_by('student__student_number')
     
     if request.method == 'POST':
         # Déterminer qui enregistre les notes
@@ -121,6 +138,7 @@ def grade_entry_view(request, section_id):
             'enrollment': enrollment,
             'grade': grade
         })
+    
     
     context = {
         'section': section,
@@ -255,10 +273,10 @@ def grade_list_view(request):
             pass
     
     # Trier par étudiant puis par cours
-    grades_qs = grades_qs.order_by(
-        'enrollment__student__student_number',
-        'enrollment__course_section__course__code'
-    )
+
+    # Trier par date de création décroissante (plus récent en premier)
+    grades_qs = grades_qs.order_by('-created_at')
+
     
     # Convertir en liste pour grouper
     all_grades = list(grades_qs)
@@ -902,13 +920,53 @@ def students_gpa_view(request):
 
 
 
+
 @login_required
-@user_passes_test(is_admin)
+@user_passes_test(is_admin)  # Vérifie que l'utilisateur est admin ou superuser
 def grade_edit(request, grade_id):
     """Modifier une note existante"""
-    
+
     grade = get_object_or_404(Grade, id=grade_id)
-    
+
+    if request.method == 'POST':
+        form = GradeForm(request.POST, instance=grade)
+        if form.is_valid():
+            grade = form.save(commit=False)
+
+            # 🔹 Gestion du champ graded_by
+            if request.user.is_superuser:
+                # Pour un superuser, on peut utiliser le professeur de la section
+                if grade.enrollment.course_section.professor:
+                    grade.graded_by = grade.enrollment.course_section.professor
+                else:
+                    grade.graded_by = None  # Aucun professeur attribué
+            else:
+                # Pour les professeurs normaux
+                grade.graded_by = request.user.professor_profile
+
+            grade.save()
+            messages.success(request, 'Note mise à jour avec succès.')
+            return redirect('grades:admin_grade_list')
+    else:
+        form = GradeForm(instance=grade)
+
+    context = {
+        'form': form,
+        'grade': grade,
+        'action': 'Modifier'
+    }
+    return render(request, 'grades/grade_form.html', context)
+
+
+@login_required
+@user_passes_test(is_professor)
+def grade_edit_professor(request, grade_id):
+    grade = get_object_or_404(Grade, id=grade_id)
+
+    # Vérifier que le professeur est bien celui de la section
+    if grade.enrollment.course_section.professor.user != request.user:
+        return HttpResponseForbidden("Vous n'avez pas la permission de modifier cette note.")
+
     if request.method == 'POST':
         form = GradeForm(request.POST, instance=grade)
         if form.is_valid():
@@ -916,16 +974,11 @@ def grade_edit(request, grade_id):
             grade.graded_by = request.user.professor_profile
             grade.save()
             messages.success(request, 'Note mise à jour avec succès')
-            return redirect('grades:admin_grade_list')
+            return redirect('grades:professor_grade_entry', section_id=grade.enrollment.course_section.id)
     else:
         form = GradeForm(instance=grade)
-    
-    context = {
-        'form': form,
-        'grade': grade,
-        'action': 'Modifier'
-    }
-    return render(request, 'grades/grade_form.html', context)
+
+    return render(request, 'grades/grade_form.html', {'form': form, 'grade': grade, 'action': 'Modifier'})
 
 
 @login_required
@@ -946,71 +999,84 @@ def grade_delete(request, grade_id):
     return render(request, 'grades/grade_confirm_delete.html', context)
 
 
+
 @login_required
 @user_passes_test(is_admin)
 def grade_bulk_entry(request):
-    """Saisie en masse des notes pour une section"""
-    
+    """Saisie en masse des notes pour une section (superuser)"""
+
     section_id = request.GET.get('section_id')
     section = None
     enrollments = []
-    
+
+    # 🔹 Si une section est sélectionnée
     if section_id:
-        from courses.models import CourseSection
         section = get_object_or_404(CourseSection, id=section_id)
-        
-        # Récupérer toutes les inscriptions actives
+
+        # Récupérer toutes les inscriptions actives pour cette section
         enrollments = Enrollment.objects.filter(
             course_section=section,
             status='ENROLLED'
         ).select_related('student__user').order_by('student__student_number')
-        
-        # Créer ou récupérer les grades
+
+        # Déterminer graded_by pour superuser : utiliser le professeur de la section si présent
+        graded_by = section.professor if section.professor else None
+
+        # Créer ou récupérer les grades existants
         for enrollment in enrollments:
             Grade.objects.get_or_create(
                 enrollment=enrollment,
-                defaults={'graded_by': request.user.professor_profile}
+                defaults={'graded_by': graded_by}
             )
-    
+
+    # 🔹 POST : traitement des notes en masse
     if request.method == 'POST':
-        # Traiter les notes en masse
         updated_count = 0
+
+        graded_by = section.professor if section and section.professor else None
+
         for key, value in request.POST.items():
             if key.startswith('grade_'):
-                grade_id = key.split('_')[1]
-                component = key.split('_')[2]
-                
+                # Format attendu : grade_<grade_id>_<component>
+                parts = key.split('_')
+                if len(parts) < 3:
+                    continue
+                grade_id, component = parts[1], parts[2]
+
                 try:
                     grade = Grade.objects.get(id=grade_id)
                     if value:
                         setattr(grade, component, float(value))
-                        grade.graded_by = request.user.professor_profile
+                        grade.graded_by = graded_by
                         grade.save()
                         updated_count += 1
                 except (Grade.DoesNotExist, ValueError):
                     pass
-        
+
         messages.success(request, f'{updated_count} note(s) mise(s) à jour')
-        return redirect('grades:admin_grade_bulk_entry') + f'?section_id={section_id}'
-    
-    # Récupérer les grades existants
+        return redirect(f'/grades/bulk-entry/?section_id={section_id}')
+
+    # 🔹 Préparer les grades pour l'affichage
+    grades_dict = {}
     if section:
         grades = Grade.objects.filter(
             enrollment__course_section=section
         ).select_related('enrollment__student__user')
-        
-        # Créer un dictionnaire enrollment_id -> grade
         grades_dict = {g.enrollment_id: g for g in grades}
-    else:
-        grades_dict = {}
+
     for enrollment in enrollments:
         enrollment.grade = grades_dict.get(enrollment.id)
+
+    # 🔹 Lister toutes les sections pour le superuser (sélecteur)
+    all_sections = CourseSection.objects.all().order_by('course__code', 'section_number')
+
     context = {
         'section': section,
         'enrollments': enrollments,
         'grades_dict': grades_dict,
+        'all_sections': all_sections,
     }
-    
+
     return render(request, 'grades/grade_bulk_entry.html', context)
 
 

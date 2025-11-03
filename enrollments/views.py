@@ -18,6 +18,13 @@ from collections import defaultdict
 from .models import Enrollment
 
 
+from django.utils import timezone
+from .models import Enrollment, EnrollmentHistory
+from courses.models import CourseSection
+from accounts.models import Student
+from utils.roles import is_admin
+
+
 
 
 
@@ -278,7 +285,6 @@ def enrollment_list_view(request):
     
     # Ordonner par étudiant puis par date (plus récent en premier)
     enrollments_qs = enrollments_qs.order_by(
-        'student__student_number',
         '-enrollment_date'
     )
     
@@ -344,11 +350,6 @@ def enrollment_list_view(request):
 
 
 # ========== VERSION ALTERNATIVE AVEC DICTIONNAIRE ==========
-
-# ========== VERSION ULTRA-OPTIMISÉE AVEC ANNOTATE ==========
-
-
-
 @login_required
 @user_passes_test(is_admin)
 def enrollment_update_status_view(request, enrollment_id):
@@ -413,16 +414,6 @@ def enrollment_history_view(request, enrollment_id):
 
 
 # ========== Ajouter ces vues dans enrollments/views.py ==========
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-from .models import Enrollment, EnrollmentHistory
-from courses.models import CourseSection
-from accounts.models import Student
-from utils.roles import is_admin
 
 
 @login_required

@@ -3,7 +3,23 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Count, Q
 from .models import Course, CourseSection, Prerequisite
+from django import forms
 
+
+# ---- FORMULAIRE POUR L’ACTION ----
+class CreateSectionForm(forms.Form):
+    section_number = forms.CharField(label="Numéro de section", initial="A")
+    day_of_week = forms.ChoiceField(
+        choices=CourseSection.DAYS_CHOICES,
+        label="Jour de la semaine"
+    )
+    start_time = forms.TimeField(label="Heure de début", initial="08:00")
+    end_time = forms.TimeField(label="Heure de fin", initial="10:00")
+    room = forms.CharField(label="Salle", required=False)
+    session = forms.ChoiceField(choices=CourseSection.SESSION_CHOICES, label="Session")
+    semester = forms.ChoiceField(choices=CourseSection.SEMESTER_CHOICES, label="Semestre")
+    year = forms.IntegerField(label="Année académique", initial=2025)
+    max_students = forms.IntegerField(label="Capacité", initial=30)
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
@@ -26,7 +42,9 @@ class CourseAdmin(admin.ModelAdmin):
         }),
     )
     
-    actions = ['activate_courses', 'deactivate_courses', 'duplicate_course']
+    actions = ['activate_courses', 'deactivate_courses', 'duplicate_course', 'create_global_section']
+    
+
     
     # --- BADGES D’AFFICHAGE ---
 
@@ -77,31 +95,54 @@ class CourseAdmin(admin.ModelAdmin):
         if request.GET.get('year_level__exact') == '1':
             qs = qs.filter(department__isnull=True)
         return qs
+    
+    
+    def create_global_section(self, request, queryset):
+        created = 0
+        for course in queryset:
+            # Vérifie qu’il n’existe pas déjà une section “globale” pour ce cours
+            if not CourseSection.objects.filter(course=course, section_number='G').exists():
+                CourseSection.objects.create(
+                    course=course,
+                    section_number='G',  # ou "1" selon ta logique
+                    professor=None,      # à remplir plus tard
+                    day_of_week='Lundi',   # ou None selon ton modèle
+                    start_time='07:00:00',
+                    end_time='10:00:00',
+                    session='2',         # exemple
+                    semester='1',        # idem
+                    year=2025,
+                    max_students=30,
+                    is_open=True,
+                )
+                created += 1
+
+        self.message_user(request, f'{created} section(s) globale(s) créée(s).')
+    create_global_section.short_description = "➕ Créer une section globale pour les cours sélectionnés"
+
 
 
 @admin.register(CourseSection)
 class CourseSectionAdmin(admin.ModelAdmin):
     list_display = ['section_display', 'course', 'professor_name', 'schedule_display', 
                     'session_badge', 'enrollment_status', 'is_open_display']
-    list_filter = ['session', 'semester', 'year', 'day_of_week', 'is_open', 'course__department']
+    
+    # Ajout d'un filtre sur le niveau d'étude
+    list_filter = [
+        'session', 'semester', 'year', 'day_of_week', 'is_open', 'course__department',
+        'course__year_level'  # <-- filtre par niveau d'étude
+    ]
+    
     search_fields = ['course__code', 'course__name', 'section_number', 'professor__user__last_name']
     raw_id_fields = ['course', 'professor']
     ordering = ['course__code', 'section_number']
     list_per_page = 20
     
     fieldsets = (
-        ('📚 Cours', {
-            'fields': ('course', 'section_number', 'professor')
-        }),
-        ('🕐 Horaire', {
-            'fields': ('day_of_week', 'start_time', 'end_time', 'room')
-        }),
-        ('📅 Période académique', {
-            'fields': ('session', 'semester', 'year')
-        }),
-        ('👥 Capacité et statut', {
-            'fields': ('max_students', 'is_open')
-        }),
+        ('📚 Cours', {'fields': ('course', 'section_number', 'professor')}),
+        ('🕐 Horaire', {'fields': ('day_of_week', 'start_time', 'end_time', 'room')}),
+        ('📅 Période académique', {'fields': ('session', 'semester', 'year')}),
+        ('👥 Capacité et statut', {'fields': ('max_students', 'is_open')}),
     )
     
     actions = ['open_sections', 'close_sections', 'increase_capacity']
@@ -109,6 +150,7 @@ class CourseSectionAdmin(admin.ModelAdmin):
     def section_display(self, obj):
         return f"{obj.course.code}-{obj.section_number}"
     section_display.short_description = 'Section'
+
     
     def professor_name(self, obj):
         if obj.professor:

@@ -1,5 +1,3 @@
-
-
 {% extends 'base.html' %}
 
 {% block title %}Récapitulatif des notes - FASCH{% endblock %}
@@ -14,8 +12,8 @@
         </p>
     </div>
     <div class="col-md-4 text-end">
-        <a href="{% url 'grades:grade_entry' section.id %}" class="btn btn-warning">
-            <i class="fas fa-edit"></i> Modifier les notes
+        <a href="{% url 'grades:professor_grade_entry' section.id %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Modifier toutes les notes
         </a>
         <button onclick="window.print()" class="btn btn-secondary">
             <i class="fas fa-print"></i> Imprimer
@@ -36,7 +34,16 @@
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body text-center">
-                <h3>{% for item in enrollment_grades %}{% if item.grade and item.grade.final_grade %}{{ forloop.counter }}{% endif %}{% endfor %}</h3>
+                <h3>
+                    {% with graded_count=0 %}
+                        {% for item in enrollment_grades %}
+                            {% if item.grade and item.grade.final_grade %}
+                                {% widthratio graded_count 1 1 as temp %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ graded_count }}
+                    {% endwith %}
+                </h3>
                 <p class="mb-0">Notes saisies</p>
             </div>
         </div>
@@ -45,15 +52,14 @@
         <div class="card bg-warning text-white">
             <div class="card-body text-center">
                 <h3>
-                    {% widthratio enrollment_grades|length|add:0 1 1 as total %}
-                    {% with notees=0 %}
+                    {% with graded_count=0 %}
                         {% for item in enrollment_grades %}
                             {% if item.grade and item.grade.final_grade %}
-                                {% widthratio 1 1 1 as notees %}
+                                {% widthratio graded_count 1 1 as temp %}
                             {% endif %}
                         {% endfor %}
+                        {{ enrollment_grades|length|add:"-0" }}
                     {% endwith %}
-                    {{ enrollment_grades|length|add:"-1" }}
                 </h3>
                 <p class="mb-0">En attente</p>
             </div>
@@ -62,16 +68,7 @@
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body text-center">
-                <h3>
-                    {% with total=0 count=0 %}
-                        {% for item in enrollment_grades %}
-                            {% if item.grade and item.grade.final_grade %}
-                                {% widthratio item.grade.final_grade 1 1 as val %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endwith %}
-                    -
-                </h3>
+                <h3>-</h3>
                 <p class="mb-0">Moyenne</p>
             </div>
         </div>
@@ -95,6 +92,7 @@
                         <th class="text-center">Note Finale</th>
                         <th class="text-center">Lettre</th>
                         <th>Commentaires</th>
+                        <th class="text-center no-print">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,35 +103,35 @@
                         
                         {% if item.grade %}
                             <td class="text-center">
-                                {% if item.grade.midterm_exam %}
+                                {% if item.grade.midterm_exam is not None %}
                                     <span class="badge bg-light text-dark">{{ item.grade.midterm_exam }}</span>
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if item.grade.final_exam %}
+                                {% if item.grade.final_exam is not None %}
                                     <span class="badge bg-light text-dark">{{ item.grade.final_exam }}</span>
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if item.grade.assignments %}
+                                {% if item.grade.assignments is not None %}
                                     <span class="badge bg-light text-dark">{{ item.grade.assignments }}</span>
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if item.grade.participation %}
+                                {% if item.grade.participation is not None %}
                                     <span class="badge bg-light text-dark">{{ item.grade.participation }}</span>
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if item.grade.project %}
+                                {% if item.grade.project is not None %}
                                     <span class="badge bg-light text-dark">{{ item.grade.project }}</span>
                                 {% else %}
                                     <span class="text-muted">-</span>
@@ -169,11 +167,27 @@
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
+                            <td class="text-center no-print">
+                                <a href="{% url 'grades:professor_grade_edit' item.grade.id %}" 
+                                   class="btn btn-sm btn-outline-primary" 
+                                   title="Modifier les notes de cet étudiant">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
                         {% else %}
                             <td class="text-center" colspan="7">
                                 <span class="badge bg-secondary">Non noté</span>
                             </td>
                             <td>-</td>
+      
+                            <td class="text-center no-print">
+                                <a href="{% url 'grades:professor_grade_entry' item.enrollment.course_section.id %}?enrollment={{ item.enrollment.id }}" 
+                                class="btn btn-sm btn-outline-success" 
+                                title="Ajouter les notes">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+
+                            </td>
                         {% endif %}
                     </tr>
                     {% endfor %}
@@ -184,7 +198,11 @@
 </div>
 
 <style media="print">
-    .btn, .sidebar, .navbar, footer { display: none !important; }
-    .content-wrapper { padding: 0 !important; }
+    .btn, .sidebar, .navbar, footer, .no-print { 
+        display: none !important; 
+    }
+    .content-wrapper { 
+        padding: 0 !important; 
+    }
 </style>
 {% endblock %}

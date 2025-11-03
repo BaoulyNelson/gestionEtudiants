@@ -23,6 +23,8 @@ urlpatterns = [
     path('users/<int:user_id>/reset-password/', views.reset_password_view, name='reset_password'),
     path('professors/', views.professor_list_view, name='professor_list'),
     path('students/', views.student_list_view, name='student_list'),
+    path('student/<int:pk>/', views.student_detail, name='student_detail'),
+
 
     
      # Changement de mot de passe (utilisateur connecté)

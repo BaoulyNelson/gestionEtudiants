@@ -30,7 +30,13 @@
         <small>{{ prof.professor_profile.user.get_full_name }}</small>
 
         <td>{{ prof.email }}</td>
-        <td>{{ prof.is_active }}</td>
+        <td>
+          {% if prof.is_active %}
+              <span class="badge bg-success">Actif</span>
+          {% else %}
+              <span class="badge bg-secondary">Inactif</span>
+          {% endif %}
+      </td>
         <td>{{ prof.professor_profile.department.name }}</td>
         <td>{{ prof.professor_profile.specialization }}</td>
         <td>{{ prof.phone_number }}</td>

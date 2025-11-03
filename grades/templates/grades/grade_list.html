@@ -141,6 +141,12 @@
                                    title="Voir détails">
                                     <i class="fas fa-eye"></i>
                                 </a>
+
+                                    <a href="{% url 'grades:admin_grade_edit' grade.id %}" 
+                                    class="btn btn-sm btn-warning" 
+                                    title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                             </td>
                         </tr>
                         {% endfor %}

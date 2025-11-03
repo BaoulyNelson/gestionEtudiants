@@ -61,7 +61,7 @@ class User(AbstractUser):
         'Téléphone', 
         validators=[phone_regex], 
         max_length=17, 
-        blank=True,unique=True
+        blank=True,unique=True,null=True
     )
     
     address = models.TextField('Adresse', blank=True)

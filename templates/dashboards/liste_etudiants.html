@@ -17,6 +17,7 @@
         <th>Étudiant</th>
         <th>Département</th>
         <th>Email</th>
+        <th>Statut</th>
         <th>Niveau</th>
         <th>Téléphone</th>
 
@@ -33,6 +34,13 @@
 
         <td>{{ etu.student_profile.department.name }}</td>
         <td>{{ etu.email }}</td>
+                <td>
+          {% if etu.is_active %}
+              <span class="badge bg-success">Actif</span>
+          {% else %}
+              <span class="badge bg-secondary">Inactif</span>
+          {% endif %}
+      </td>
         <td>{{ etu.student_profile.get_current_year_display }}</td>
         <td>{{ etu.phone_number }}</td>
 
