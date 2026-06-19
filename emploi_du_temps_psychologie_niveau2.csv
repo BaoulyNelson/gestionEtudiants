@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,PSY201,Statistique II,Hugues,CADET,Psychologie,Niveau II,session1
+LUNDI,07:00,10:00,PSY205,Psychologie de l'éducation,Roseline,PIERRE-LOUIS,Psychologie,Niveau II,session2
+LUNDI,10:00,13:00,PSY202,Méthodologie II,Sénèque,DORIVAL,Psychologie,Niveau II,session1
+LUNDI,10:00,13:00,PSY207,Évaluation de l'intelligence,Edwige,LABORDE,Psychologie,Niveau II,session2
+LUNDI,13:00,16:00,PSY203,Psychopathologie I,Clarissa,PIERRE,Psychologie,Niveau II,session1
+LUNDI,13:00,16:00,PSY208,Neuropsychologie I,Jean Luc,TONDREAU,Psychologie,Niveau II,session2
+MARDI,07:00,10:00,PSY204,Psychopathologie II,Marlène,SAINT-HILAIRE,Psychologie,Niveau II,session1
+MARDI,07:00,10:00,PSY210,Développement psychosocial de l'individu,Gérard,VOLTAIRE,Psychologie,Niveau II,session2
+MARDI,10:00,13:00,PSY206,Introduction à la Psychanalyse,Mireille,HYPPOLITE,Psychologie,Niveau II,session1
+MARDI,10:00,13:00,PSY209,Neuropsychologie II,Jean Luc,TONDREAU,Psychologie,Niveau II,session2
+MARDI,13:00,16:00,PSY211,Évaluation des troubles de l'apprentissage,Edwige,LABORDE,Psychologie,Niveau II,session1
+MARDI,13:00,16:00,PSY212,Théorie et pratiques de stage I,Garry,METELLUS,Psychologie,Niveau II,session2
+MERCREDI,07:00,10:00,PSY208,Neuropsychologie I,Jean Luc,TONDREAU,Psychologie,Niveau II,session1
+MERCREDI,07:00,10:00,PSY201,Statistique II,Hugues,CADET,Psychologie,Niveau II,session2
+MERCREDI,10:00,13:00,PSY203,Psychopathologie I,Clarissa,PIERRE,Psychologie,Niveau II,session2
+MERCREDI,10:00,13:00,PSY206,Introduction à la Psychanalyse,Mireille,HYPPOLITE,Psychologie,Niveau II,session2
+MERCREDI,13:00,16:00,PSY209,Neuropsychologie II,Jean Luc,TONDREAU,Psychologie,Niveau II,session1
+MERCREDI,13:00,16:00,PSY205,Psychologie de l'éducation,Roseline,PIERRE-LOUIS,Psychologie,Niveau II,session1
+JEUDI,07:00,10:00,PSY210,Développement psychosocial de l'individu,Gérard,VOLTAIRE,Psychologie,Niveau II,session1
+JEUDI,07:00,10:00,PSY204,Psychopathologie II,Marlène,SAINT-HILAIRE,Psychologie,Niveau II,session2
+JEUDI,10:00,13:00,PSY211,Évaluation des troubles de l'apprentissage,Edwige,LABORDE,Psychologie,Niveau II,session2
+JEUDI,10:00,13:00,PSY207,Évaluation de l'intelligence,Edwige,LABORDE,Psychologie,Niveau II,session1
+JEUDI,13:00,16:00,PSY202,Méthodologie II,Sénèque,DORIVAL,Psychologie,Niveau II,session2
+JEUDI,13:00,16:00,PSY212,Théorie et pratiques de stage I,Garry,METELLUS,Psychologie,Niveau II,session1
+VENDREDI,07:00,10:00,PSY206,Introduction à la Psychanalyse,Mireille,HYPPOLITE,Psychologie,Niveau II,session2
+VENDREDI,07:00,10:00,PSY211,Évaluation des troubles de l'apprentissage,Edwige,LABORDE,Psychologie,Niveau II,session2
+VENDREDI,10:00,13:00,PSY203,Psychopathologie I,Clarissa,PIERRE,Psychologie,Niveau II,session1
+VENDREDI,10:00,13:00,PSY210,Développement psychosocial de l'individu,Gérard,VOLTAIRE,Psychologie,Niveau II,session2
+VENDREDI,13:00,16:00,PSY204,Psychopathologie II,Marlène,SAINT-HILAIRE,Psychologie,Niveau II,session2
+VENDREDI,13:00,16:00,PSY201,Statistique II,Hugues,CADET,Psychologie,Niveau II,session2
+SAMEDI,07:00,10:00,PSY207,Évaluation de l'intelligence,Edwige,LABORDE,Psychologie,Niveau II,session2
+SAMEDI,07:00,10:00,PSY202,Méthodologie II,Sénèque,DORIVAL,Psychologie,Niveau II,session2
+SAMEDI,10:00,13:00,PSY208,Neuropsychologie I,Jean Luc,TONDREAU,Psychologie,Niveau II,session2
+SAMEDI,10:00,13:00,PSY205,Psychologie de l'éducation,Roseline,PIERRE-LOUIS,Psychologie,Niveau II,session2
+SAMEDI,13:00,16:00,PSY209,Neuropsychologie II,Jean Luc,TONDREAU,Psychologie,Niveau II,session2
+SAMEDI,13:00,16:00,PSY212,Théorie et pratiques de stage I,Garry,METELLUS,Psychologie,Niveau II,session2

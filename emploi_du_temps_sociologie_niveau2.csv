@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,SOC-STA2,Statistique II,Hugues,CADET,Sociologie,Niveau II,session1
+LUNDI,07:00,10:00,SOC-TSO2,Théories Sociologiques II,Sénèque,DORIVAL,Sociologie,Niveau II,session2
+LUNDI,10:00,13:00,SOC-MET2,Méthodologie II,Edwige,LABORDE,Sociologie,Niveau II,session1
+LUNDI,10:00,13:00,SOC-CRI2,Criminologie,Garry,METELLUS,Sociologie,Niveau II,session2
+LUNDI,13:00,16:00,SOC-FSH2,Formation Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau II,session1
+LUNDI,13:00,16:00,SOC-PSO2,Psychologie Sociale,Mireille,HYPPOLITE,Sociologie,Niveau II,session2
+MARDI,07:00,10:00,SOC-HAL2,Histoire de l'Amérique Latine,Claudette,FRANÇOIS,Sociologie,Niveau II,session1
+MARDI,07:00,10:00,SOC-SRU2,Sociologie Rurale,Gérard,VOLTAIRE,Sociologie,Niveau II,session2
+MARDI,10:00,13:00,SOC-TEC2,Théories Économiques,Réginald,CASIMIR,Sociologie,Niveau II,session1
+MARDI,10:00,13:00,SOC-SPO1,Sociologie Politique I,Lionel,SAINT-FORT,Sociologie,Niveau II,session2
+MARDI,13:00,16:00,SOC-TSO2,Théories Sociologiques II,Sénèque,DORIVAL,Sociologie,Niveau II,session1
+MARDI,13:00,16:00,SOC-FSH2,Formation Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau II,session2
+MERCREDI,07:00,10:00,SOC-STA2,Statistique II,Hugues,CADET,Sociologie,Niveau II,session2
+MERCREDI,07:00,10:00,SOC-CRI2,Criminologie,Garry,METELLUS,Sociologie,Niveau II,session1
+MERCREDI,10:00,13:00,SOC-MET2,Méthodologie II,Edwige,LABORDE,Sociologie,Niveau II,session2
+MERCREDI,10:00,13:00,SOC-HAL2,Histoire de l'Amérique Latine,Claudette,FRANÇOIS,Sociologie,Niveau II,session2
+MERCREDI,13:00,16:00,SOC-PSO2,Psychologie Sociale,Mireille,HYPPOLITE,Sociologie,Niveau II,session1
+MERCREDI,13:00,16:00,SOC-TEC2,Théories Économiques,Réginald,CASIMIR,Sociologie,Niveau II,session2
+JEUDI,07:00,10:00,SOC-SRU2,Sociologie Rurale,Gérard,VOLTAIRE,Sociologie,Niveau II,session1
+JEUDI,07:00,10:00,SOC-MET2,Méthodologie II,Edwige,LABORDE,Sociologie,Niveau II,session2
+JEUDI,10:00,13:00,SOC-SPO1,Sociologie Politique I,Lionel,SAINT-FORT,Sociologie,Niveau II,session1
+JEUDI,10:00,13:00,SOC-STA2,Statistique II,Hugues,CADET,Sociologie,Niveau II,session2
+JEUDI,13:00,16:00,SOC-CRI2,Criminologie,Garry,METELLUS,Sociologie,Niveau II,session2
+JEUDI,13:00,16:00,SOC-TSO2,Théories Sociologiques II,Sénèque,DORIVAL,Sociologie,Niveau II,session2
+VENDREDI,07:00,10:00,SOC-FSH2,Formation Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau II,session2
+VENDREDI,07:00,10:00,SOC-TEC2,Théories Économiques,Réginald,CASIMIR,Sociologie,Niveau II,session2
+VENDREDI,10:00,13:00,SOC-PSO2,Psychologie Sociale,Mireille,HYPPOLITE,Sociologie,Niveau II,session2
+VENDREDI,10:00,13:00,SOC-SRU2,Sociologie Rurale,Gérard,VOLTAIRE,Sociologie,Niveau II,session2
+VENDREDI,13:00,16:00,SOC-HAL2,Histoire de l'Amérique Latine,Claudette,FRANÇOIS,Sociologie,Niveau II,session2
+VENDREDI,13:00,16:00,SOC-SPO1,Sociologie Politique I,Lionel,SAINT-FORT,Sociologie,Niveau II,session2
+SAMEDI,07:00,10:00,SOC-TSO2,Théories Sociologiques II,Sénèque,DORIVAL,Sociologie,Niveau II,session2
+SAMEDI,07:00,10:00,SOC-PSO2,Psychologie Sociale,Mireille,HYPPOLITE,Sociologie,Niveau II,session2
+SAMEDI,10:00,13:00,SOC-SRU2,Sociologie Rurale,Gérard,VOLTAIRE,Sociologie,Niveau II,session2
+SAMEDI,10:00,13:00,SOC-CRI2,Criminologie,Garry,METELLUS,Sociologie,Niveau II,session2
+SAMEDI,13:00,16:00,SOC-SPO1,Sociologie Politique I,Lionel,SAINT-FORT,Sociologie,Niveau II,session2
+SAMEDI,13:00,16:00,SOC-MET2,Méthodologie II,Edwige,LABORDE,Sociologie,Niveau II,session2

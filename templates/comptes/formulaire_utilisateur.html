@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}{{ titre }} - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h2><i class="fas fa-user-edit"></i> {{ titre }}</h2>
+    {% if utilisateur_obj %}
+      <p class="text-muted">{{ utilisateur_obj.afficher_role_par_genre }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <h5 class="mb-3"><i class="fas fa-user"></i> Informations de base</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.first_name.id_for_label }}" class="form-label">Prénom *</label>
+          {{ formulaire.first_name }}
+          {% if formulaire.first_name.errors %}<div class="text-danger">{{ formulaire.first_name.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.last_name.id_for_label }}" class="form-label">Nom *</label>
+          {{ formulaire.last_name }}
+          {% if formulaire.last_name.errors %}<div class="text-danger">{{ formulaire.last_name.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.email.id_for_label }}" class="form-label">Email *</label>
+          {{ formulaire.email }}
+          {% if formulaire.email.errors %}<div class="text-danger">{{ formulaire.email.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.genre.id_for_label }}" class="form-label">Genre *</label>
+          {{ formulaire.genre }}
+          {% if formulaire.genre.errors %}<div class="text-danger">{{ formulaire.genre.errors }}</div>{% endif %}
+        </div>
+        {% if not utilisateur_obj %}  {# Champ rôle uniquement à la création #}
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.role.id_for_label }}" class="form-label">Rôle *</label>
+          {{ formulaire.role }}
+          {% if formulaire.role.errors %}<div class="text-danger">{{ formulaire.role.errors }}</div>{% endif %}
+        </div>
+        {% endif %}
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.numero_telephone.id_for_label }}" class="form-label">Téléphone</label>
+          {{ formulaire.numero_telephone }}
+          {% if formulaire.numero_telephone.errors %}<div class="text-danger">{{ formulaire.numero_telephone.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.date_naissance.id_for_label }}" class="form-label">Date de naissance</label>
+          {{ formulaire.date_naissance }}
+        </div>
+        <div class="col-12 mb-3">
+          <label for="{{ formulaire.adresse.id_for_label }}" class="form-label">Adresse</label>
+          {{ formulaire.adresse }}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.photo_profil.id_for_label }}" class="form-label">Photo de profil</label>
+          {{ formulaire.photo_profil }}
+          {% if utilisateur_obj.photo_profil %}
+            <img src="{{ utilisateur_obj.photo_profil.url }}" class="img-thumbnail mt-2" style="max-width:120px">
+          {% endif %}
+        </div>
+        <div class="col-md-6 mb-3 d-flex align-items-end">
+          <div class="form-check">
+            {{ formulaire.is_active }}
+            <label class="form-check-label" for="{{ formulaire.is_active.id_for_label }}">Compte actif</label>
+          </div>
+        </div>
+      </div>
+
+      {# Formulaire de profil (étudiant / professeur / admin) #}
+      {% if formulaire_profil %}
+      <hr class="my-4">
+      {% if utilisateur_obj.est_etudiant %}
+        <h5 class="mb-3"><i class="fas fa-graduation-cap"></i> Informations Étudiant</h5>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Département</label>
+            {{ formulaire_profil.departement }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Niveau d'études</label>
+            {{ formulaire_profil.niveau }}
+          </div>
+        </div>
+      {% elif utilisateur_obj.est_professeur %}
+        <h5 class="mb-3"><i class="fas fa-chalkboard-teacher"></i> Informations Professeur</h5>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Département</label>
+            {{ formulaire_profil.departement }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Spécialité</label>
+            {{ formulaire_profil.specialite }}
+          </div>
+        </div>
+      {% endif %}
+      {% endif %}
+
+      <hr class="my-4">
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> {{ bouton }}
+        </button>
+        <a href="{% url 'comptes:liste_utilisateurs' %}" class="btn btn-secondary">
+          <i class="fas fa-times"></i> Annuler
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

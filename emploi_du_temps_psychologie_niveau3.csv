@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,PSY301,Psychologie clinique,Clarissa,PIERRE,Psychologie,Niveau III,session1
+LUNDI,07:00,10:00,PSY305,Comportement organisationnel,Garry,METELLUS,Psychologie,Niveau III,session2
+LUNDI,10:00,13:00,PSY302,Atelier de mémoire,Sénèque,DORIVAL,Psychologie,Niveau III,session1
+LUNDI,10:00,13:00,PSY306,Psychothérapies,Mireille,HYPPOLITE,Psychologie,Niveau III,session2
+LUNDI,13:00,16:00,PSY303,Déontologie du métier de psychologue,Jean Luc,TONDREAU,Psychologie,Niveau III,session1
+LUNDI,13:00,16:00,PSY307,Enfants inadaptés,Roseline,PIERRE-LOUIS,Psychologie,Niveau III,session2
+MARDI,07:00,10:00,PSY304,Techniques projectives I,Marlène,SAINT-HILAIRE,Psychologie,Niveau III,session1
+MARDI,07:00,10:00,PSY308,Entretien clinique,Edwige,LABORDE,Psychologie,Niveau III,session2
+MARDI,10:00,13:00,PSY305,Comportement organisationnel,Garry,METELLUS,Psychologie,Niveau III,session1
+MARDI,10:00,13:00,PSY309,Théorie et pratiques de stage II,Gérard,VOLTAIRE,Psychologie,Niveau III,session2
+MARDI,13:00,16:00,PSY310,Psychologie communautaire,Hugues,CADET,Psychologie,Niveau III,session1
+MARDI,13:00,16:00,PSY304,Techniques projectives I,Marlène,SAINT-HILAIRE,Psychologie,Niveau III,session2
+MERCREDI,07:00,10:00,PSY311,Techniques projectives II,Claudette,FRANÇOIS,Psychologie,Niveau III,session1
+MERCREDI,07:00,10:00,PSY301,Psychologie clinique,Clarissa,PIERRE,Psychologie,Niveau III,session2
+MERCREDI,10:00,13:00,PSY306,Psychothérapies,Mireille,HYPPOLITE,Psychologie,Niveau III,session1
+MERCREDI,10:00,13:00,PSY303,Déontologie du métier de psychologue,Jean Luc,TONDREAU,Psychologie,Niveau III,session2
+MERCREDI,13:00,16:00,PSY307,Enfants inadaptés,Roseline,PIERRE-LOUIS,Psychologie,Niveau III,session1
+MERCREDI,13:00,16:00,PSY302,Atelier de mémoire,Sénèque,DORIVAL,Psychologie,Niveau III,session2
+JEUDI,07:00,10:00,PSY308,Entretien clinique,Edwige,LABORDE,Psychologie,Niveau III,session1
+JEUDI,07:00,10:00,PSY311,Techniques projectives II,Claudette,FRANÇOIS,Psychologie,Niveau III,session2
+JEUDI,10:00,13:00,PSY309,Théorie et pratiques de stage II,Gérard,VOLTAIRE,Psychologie,Niveau III,session1
+JEUDI,10:00,13:00,PSY310,Psychologie communautaire,Hugues,CADET,Psychologie,Niveau III,session2
+JEUDI,13:00,16:00,PSY311,Techniques projectives II,Claudette,FRANÇOIS,Psychologie,Niveau III,session1
+JEUDI,13:00,16:00,PSY307,Enfants inadaptés,Roseline,PIERRE-LOUIS,Psychologie,Niveau III,session2
+VENDREDI,07:00,10:00,PSY302,Atelier de mémoire,Sénèque,DORIVAL,Psychologie,Niveau III,session1
+VENDREDI,07:00,10:00,PSY306,Psychothérapies,Mireille,HYPPOLITE,Psychologie,Niveau III,session2
+VENDREDI,10:00,13:00,PSY304,Techniques projectives I,Marlène,SAINT-HILAIRE,Psychologie,Niveau III,session1
+VENDREDI,10:00,13:00,PSY308,Entretien clinique,Edwige,LABORDE,Psychologie,Niveau III,session2
+VENDREDI,13:00,16:00,PSY309,Théorie et pratiques de stage II,Gérard,VOLTAIRE,Psychologie,Niveau III,session2
+VENDREDI,13:00,16:00,PSY305,Comportement organisationnel,Garry,METELLUS,Psychologie,Niveau III,session2
+SAMEDI,07:00,10:00,PSY310,Psychologie communautaire,Hugues,CADET,Psychologie,Niveau III,session2
+SAMEDI,07:00,10:00,PSY303,Déontologie du métier de psychologue,Jean Luc,TONDREAU,Psychologie,Niveau III,session2
+SAMEDI,10:00,13:00,PSY301,Psychologie clinique,Clarissa,PIERRE,Psychologie,Niveau III,session2
+SAMEDI,10:00,13:00,PSY311,Techniques projectives II,Claudette,FRANÇOIS,Psychologie,Niveau III,session2
+SAMEDI,13:00,16:00,PSY309,Théorie et pratiques de stage II,Gérard,VOLTAIRE,Psychologie,Niveau III,session2
+SAMEDI,13:00,16:00,PSY310,Psychologie communautaire,Hugues,CADET,Psychologie,Niveau III,session2

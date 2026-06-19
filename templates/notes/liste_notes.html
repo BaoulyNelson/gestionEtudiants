@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des notes – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .notes-list-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .notes-list-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notes-list-header-center { flex: 1; text-align: center; }
+  .notes-list-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .notes-list-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .notes-list-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .notes-list-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .notes-list-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .notes-list-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .notes-list-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .notes-list-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── Sous-titres de section ── */
+  .notes-list-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 14px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Légende ── */
+  .legende-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+  .legende-list li { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Badge mention (cohérent avec les autres templates) ── */
+  .mention-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+  }
+  .mention-A { background: #d4edda; color: #155724; }
+  .mention-B { background: #d1ecf1; color: #0c5460; }
+  .mention-C { background: #fff3cd; color: #856404; }
+  .mention-D { background: #ffe5d0; color: #7d3c0a; }
+  .mention-F { background: #f8d7da; color: #721c24; }
+
+  /* ── Tableau ── */
+  .notes-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: Arial, sans-serif;
+  }
+  .notes-list-table thead tr {
+    background-color: #1a3a6b;
+    color: #fff;
+  }
+  .notes-list-table thead th {
+    padding: 10px 14px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .notes-list-table thead th.center,
+  .notes-list-table tbody td.center { text-align: center; }
+  .notes-list-table tbody tr { border-bottom: 1px solid #ddd; }
+  .notes-list-table tbody tr:nth-child(even) { background-color: #f7f9fc; }
+  .notes-list-table tbody tr:hover td { background-color: #eef2f8 !important; }
+  .notes-list-table tbody td { padding: 9px 14px; color: #333; vertical-align: middle; }
+  .notes-list-table .separator-row td {
+    height: 8px;
+    background: #f1f3f5 !important;
+    border: none;
+    padding: 0;
+  }
+
+  /* ── Pagination ── */
+  .notes-list-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .notes-list-pagination a,
+  .notes-list-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #1a3a6b;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #1a3a6b;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .notes-list-pagination a:hover { background: #e8eef7; }
+  .notes-list-pagination .active-page {
+    background: #1a3a6b;
+    color: #fff;
+    border-color: #1a3a6b;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .notes-list-header { flex-direction: column; align-items: center; text-align: center; }
+    .notes-list-header-right { text-align: center; }
+    .notes-list-header-right p { justify-content: center; }
+    .notes-list-table { font-size: 12px; }
+    .notes-list-table thead th,
+    .notes-list-table tbody td { padding: 7px 8px; }
+  }
+
+  @media print {
+    .notes-list-actions, .navbar, .sidebar, footer, .btn { display: none !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="notes-list-header">
+
+  <div class="notes-list-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="notes-list-header-center">
+    <div class="notes-list-header-univ">Université d'État d'Haïti</div>
+    <div class="notes-list-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="notes-list-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="notes-list-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="notes-list-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="notes-list-doc-title">
+  <i class="fas fa-file-alt me-2" style="color:#1a3a6b;"></i>Gestion des notes
+</div>
+
+<!-- ── Actions ── -->
+<div class="d-flex justify-content-between align-items-center mb-4 notes-list-actions flex-wrap gap-2">
+  <div class="d-flex gap-2">
+    <a href="{% url 'notes:exporter_notes' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="fas fa-file-download me-1"></i> Exporter CSV
+    </a>
+  </div>
+  <a href="{% url 'notes:sections_professeur' %}" class="btn btn-primary btn-sm">
+    <i class="fas fa-pen me-1"></i> Créer une note
+  </a>
+</div>
+
+<!-- ── Légende ── -->
+<div class="card mb-4">
+  <div class="card-body py-3">
+    <div class="notes-list-section-title mb-3">Légende des mentions</div>
+    <ul class="legende-list">
+      <li><span class="mention-badge mention-A">Excellent</span> 90 – 100</li>
+      <li><span class="mention-badge mention-B">Très bien</span> 80 – 89</li>
+      <li><span class="mention-badge mention-C">Bien</span> 70 – 79</li>
+      <li><span class="mention-badge mention-D">Passable</span> 60 – 69</li>
+      <li><span class="mention-badge mention-F">Échec</span> 0 – 59</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ── Filtres ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="notes-list-section-title mb-3"><i class="fas fa-filter me-1"></i> Filtrer</div>
+    <form method="get" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Numéro étudiant</label>
+        <input type="text" name="numero_etudiant" class="form-control"
+               placeholder="Rechercher…" value="{{ request.GET.numero_etudiant }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Code cours</label>
+        <input type="text" name="code_cours" class="form-control"
+               placeholder="Ex : PSY101" value="{{ request.GET.code_cours }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Note min</label>
+        <input type="number" name="note_min" class="form-control"
+               min="0" max="100" value="{{ request.GET.note_min }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Note max</label>
+        <input type="number" name="note_max" class="form-control"
+               min="0" max="100" value="{{ request.GET.note_max }}">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-search"></i> Filtrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Tableau ── -->
+<div class="card">
+  <div class="card-body">
+    {% if groupes %}
+    <div style="width:100%;overflow-x:auto;">
+      <table class="notes-list-table">
+        <thead>
+          <tr>
+            <th>Étudiant</th>
+            <th>Cours</th>
+            <th class="center">Section</th>
+            <th class="center">Note / 100</th>
+            <th class="center">Mention</th>
+            <th>Professeur</th>
+            <th class="center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for groupe in groupes %}
+            {% for note in groupe.notes %}
+            <tr>
+              {% if forloop.first %}
+              <td rowspan="{{ groupe.total }}" style="background:#f7f9fc;">
+                <strong style="color:#1a3a6b;">{{ groupe.etudiant.numero_etudiant }}</strong><br>
+                <span>{{ groupe.etudiant.utilisateur.get_full_name }}</span>
+                {% if groupe.total > 1 %}
+                  <br><small class="text-muted"><i class="fas fa-book-open"></i> {{ groupe.total }} cours</small>
+                {% endif %}
+              </td>
+              {% endif %}
+
+              <td>
+                <strong>{{ note.inscription.section_cours.cours.code }}</strong><br>
+                <small class="text-muted">{{ note.inscription.section_cours.cours.nom|truncatewords:5 }}</small>
+              </td>
+
+              <td class="center">
+                <span class="badge bg-secondary">{{ note.inscription.section_cours.numero_section }}</span>
+              </td>
+
+              <td class="center">
+                {% if note.note_finale is not None %}
+                  <strong style="font-size:15px;{% if note.note_finale >= 60 %}color:#155724{% else %}color:#721c24{% endif %}">
+                    {{ note.note_finale|floatformat:2 }}
+                  </strong>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+
+          <td class="center">
+            {% if note and note.mention %}
+              <span class="mention-badge {{ note.classe_mention }}">{{ note.mention }}</span>
+            {% else %}
+              <span class="mention-badge mention-EA">En attente</span>
+            {% endif %}
+          </td>
+
+              <td>
+                <small>{{ note.note_par.utilisateur.get_full_name|default:"—" }}</small>
+              </td>
+
+              <td class="center" style="white-space:nowrap;">
+                <a href="{% url 'notes:detail_note' note.id %}"
+                   class="btn btn-sm btn-outline-secondary" title="Voir détails">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="{% url 'notes:modifier_note_admin' note.id %}"
+                   class="btn btn-sm btn-outline-warning" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+
+            {% if not forloop.last %}
+            <tr class="separator-row"><td colspan="7"></td></tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Pagination ── -->
+    {% if page_obj.has_other_pages %}
+    {% with q=request.GET %}
+    <nav class="notes-list-pagination" aria-label="Pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if q.numero_etudiant %}&numero_etudiant={{ q.numero_etudiant }}{% endif %}{% if q.code_cours %}&code_cours={{ q.code_cours }}{% endif %}{% if q.note_min %}&note_min={{ q.note_min }}{% endif %}{% if q.note_max %}&note_max={{ q.note_max }}{% endif %}">
+          <i class="fas fa-angle-double-left"></i>
+        </a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if q.numero_etudiant %}&numero_etudiant={{ q.numero_etudiant }}{% endif %}{% if q.code_cours %}&code_cours={{ q.code_cours }}{% endif %}{% if q.note_min %}&note_min={{ q.note_min }}{% endif %}{% if q.note_max %}&note_max={{ q.note_max }}{% endif %}">
+          <i class="fas fa-angle-left"></i>
+        </a>
+      {% endif %}
+
+      <span class="active-page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if q.numero_etudiant %}&numero_etudiant={{ q.numero_etudiant }}{% endif %}{% if q.code_cours %}&code_cours={{ q.code_cours }}{% endif %}{% if q.note_min %}&note_min={{ q.note_min }}{% endif %}{% if q.note_max %}&note_max={{ q.note_max }}{% endif %}">
+          <i class="fas fa-angle-right"></i>
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if q.numero_etudiant %}&numero_etudiant={{ q.numero_etudiant }}{% endif %}{% if q.code_cours %}&code_cours={{ q.code_cours }}{% endif %}{% if q.note_min %}&note_min={{ q.note_min }}{% endif %}{% if q.note_max %}&note_max={{ q.note_max }}{% endif %}">
+          <i class="fas fa-angle-double-right"></i>
+        </a>
+      {% endif %}
+    </nav>
+    {% endwith %}
+    {% endif %}
+
+    {% else %}
+    <p style="text-align:center;color:#999;font-style:italic;padding:24px 0;">
+      <i class="fas fa-info-circle me-1"></i> Aucune note trouvée.
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord - Étudiant{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt"></i> Tableau de bord - {{ user.get_role_display }}</h2>
+        <p class="text-muted">Bienvenue,{{ user.get_role_display }} {{ user.get_full_name }}</p>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card primary">
+            <i class="fas fa-book fa-3x mb-2"></i>
+            <h3>{{ total_courses }}</h3>
+            <p>Cours actuels</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card success">
+            <i class="fas fa-check-circle fa-3x mb-2"></i>
+            <h3>{{ completed_courses }}</h3>
+            <p>Cours complétés</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card warning">
+            <i class="fas fa-star fa-3x mb-2"></i>
+            <h3>{{ gpa|floatformat:2 }}</h3>
+            <p>Moyenne (GPA)</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card info">
+            <i class="fas fa-graduation-cap fa-3x mb-2"></i>
+            <h3>{{ user.profil_etudiant.niveau }}</h3>
+            <p>Niveau d'études</p>
+        </div>
+    </div>
+</div>
+
+<!-- Mes cours actuels -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-book"></i> Mes cours actuels</h5>
+            </div>
+            <div class="card-body">
+                {% if active_inscriptions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Nom du cours</th>
+                                    <th>Professeur</th>
+                                    <th>Horaire</th>
+                                    <th>Salle</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inscription in active_inscriptions %}
+                                <tr>
+                                    <td><strong>{{ inscription.section_cours.cours.code }}</strong></td>
+                                    <td>{{ inscription.section_cours.cours.nom }}</td>
+                                    <td>
+                                        <i class="fas fa-user"></i>
+                                        {{ inscription.section_cours.professeur.utilisateur.get_full_name }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            {{ inscription.section_cours.get_jour_semaine_display }}
+                                        </span>
+                                        {{ inscription.section_cours.heure_debut|time:"H:i" }} - 
+                                        {{ inscription.section_cours.heure_fin|time:"H:i" }}
+                                    </td>
+                                    <td>{{ inscription.section_cours.salle|default:"N/A" }}</td>
+                                    <td>
+                                        <a href="{% url 'cours:detail_section' inscription.section_cours.id %}" 
+                                           class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> Voir
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Vous n'êtes inscrit à aucun cours pour le moment.
+                        <a href="{% url 'inscriptions:sections_disponibles' %}" class="alert-link">
+                            Voir les cours disponibles
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Liens rapides -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-plus-circle fa-3x text-primary mb-3"></i>
+                <h5>S'inscrire aux cours</h5>
+                <p class="text-muted">Consulter et s'inscrire aux sections disponibles</p>
+                <a href="{% url 'inscriptions:sections_disponibles' %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i> Accéder
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                <h5>Mes notes</h5>
+                <p class="text-muted">Consulter mes notes et évaluations</p>
+                <a href="{% url 'notes:mes_notes' %}" class="btn btn-warning text-white">
+                    <i class="fas fa-arrow-right"></i> Accéder
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-file-alt fa-3x text-success mb-3"></i>
+                <h5>Relevé de notes</h5>
+                <p class="text-muted">Télécharger mon relevé de notes complet</p>
+                <a href="{% url 'notes:releve_notes' %}" class="btn btn-success">
+                    <i class="fas fa-arrow-right"></i> Accéder
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

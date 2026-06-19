@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% block title %}{% if est_etudiant %}Mes Cours{% else %}Mes Sections{% endif %} – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .cours-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .cours-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cours-header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .cours-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .cours-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .cours-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .cours-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .cours-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .cours-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .cours-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .cours-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  @media (max-width: 768px) {
+    .cours-header { flex-direction: column; align-items: center; text-align: center; }
+    .cours-header-right { text-align: center; }
+    .cours-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="cours-header">
+
+  <div class="cours-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="cours-header-center">
+    <div class="cours-header-univ">Université d'État d'Haïti</div>
+    <div class="cours-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="cours-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="cours-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="cours-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="cours-doc-title">
+  <i class="fas fa-book me-2" style="color:#1a3a6b;"></i>
+  {% if est_etudiant %}Mes Cours{% else %}Mes Sections{% endif %}
+</div>
+
+<!-- ══════════════ VUE ÉTUDIANT ══════════════ -->
+{% if est_etudiant %}
+<div class="card">
+  <div class="card-body">
+    {% if inscriptions %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Cours</th>
+            <th>Section</th>
+            <th>Professeur</th>
+            <th>Horaire</th>
+            <th>Salle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inscription in inscriptions %}
+          <tr>
+            <td>
+              <strong>{{ inscription.section_cours.cours.code }}</strong><br>
+              <small class="text-muted">{{ inscription.section_cours.cours.nom }}</small>
+            </td>
+            <td>
+              <span class="badge bg-secondary">{{ inscription.section_cours.numero_section }}</span>
+            </td>
+            <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name }}</td>
+            <td>
+              <span class="badge bg-primary">{{ inscription.section_cours.get_jour_semaine_display }}</span><br>
+              <small>{{ inscription.section_cours.heure_debut|time:"H:i" }} - {{ inscription.section_cours.heure_fin|time:"H:i" }}</small>
+            </td>
+            <td>{{ inscription.section_cours.salle|default:"N/A" }}</td>
+            <td>
+              <a href="{% url 'cours:detail_section' inscription.section_cours.id %}"
+                 class="btn btn-sm btn-info">
+                <i class="fas fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i> Vous n'êtes inscrit à aucun cours.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══════════════ VUE PROFESSEUR ══════════════ -->
+{% elif est_professeur %}
+<div class="card">
+  <div class="card-body">
+    {% if sections %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Cours</th>
+            <th>Section</th>
+            <th>Horaire</th>
+            <th>Étudiants</th>
+            <th>Département</th>
+            <th>Salle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for section in sections %}
+          <tr>
+            <td>
+              <strong>{{ section.cours.code }}</strong><br>
+              <small class="text-muted">{{ section.cours.nom }}</small>
+            </td>
+            <td>
+              <span class="badge bg-secondary">{{ section.numero_section }}</span>
+            </td>
+            <td>
+              <span class="badge bg-primary">{{ section.get_jour_semaine_display }}</span><br>
+              <small>{{ section.heure_debut|time:"H:i" }} - {{ section.heure_fin|time:"H:i" }}</small>
+            </td>
+            <td>
+              <span class="badge bg-success">{{ section.nb_inscrits }}/{{ section.capacite_max }}</span>
+            </td>
+                        {# ← colonne manquante #}
+            <td>
+              {{ section.cours.departement.nom|default:"—" }}
+            </td>
+            <td>{{ section.salle|default:"N/A" }}</td>
+
+            <td>
+              <a href="{% url 'cours:detail_section' section.id %}"
+                 class="btn btn-sm btn-info">
+                <i class="fas fa-eye"></i>
+              </a>
+              <a href="{% url 'notes:saisie_notes_professeur' section.id %}"
+                 class="btn btn-sm btn-warning">
+                <i class="fas fa-edit"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i> Vous n'avez aucune section assignée.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

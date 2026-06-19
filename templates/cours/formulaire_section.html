@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% block title %}{% if section %}Modifier{% else %}Créer{% endif %} une section – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .section-form-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .section-form-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-form-header-center { flex: 1; text-align: center; }
+  .section-form-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .section-form-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .section-form-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .section-form-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .section-form-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .section-form-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .section-form-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .section-form-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── Sous-titres de section ── */
+  .section-form-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .section-form-header { flex-direction: column; align-items: center; text-align: center; }
+    .section-form-header-right { text-align: center; }
+    .section-form-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="section-form-header">
+
+  <div class="section-form-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="section-form-header-center">
+    <div class="section-form-header-univ">Université d'État d'Haïti</div>
+    <div class="section-form-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="section-form-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="section-form-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="section-form-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="section-form-doc-title">
+  <i class="fas fa-clipboard-list me-2" style="color:#1a3a6b;"></i>
+  {% if section %}Modifier{% else %}Créer{% endif %} une section
+  {% if cours %}
+    <div style="font-size:13px;font-weight:400;letter-spacing:1px;color:#555;margin-top:6px;font-style:italic;">
+      {{ cours.code }} – {{ cours.nom }}
+    </div>
+  {% endif %}
+</div>
+
+<!-- ── Formulaire ── -->
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- Informations de base -->
+      <div class="section-form-section-title mb-3">
+        <i class="fas fa-info-circle me-1"></i> Informations de base
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.cours.id_for_label }}" class="form-label">Cours *</label>
+          {{ formulaire.cours }}
+          {% if formulaire.cours.errors %}
+            <div class="text-danger">{{ formulaire.cours.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="{{ formulaire.numero_section.id_for_label }}" class="form-label">Numéro de section *</label>
+          {{ formulaire.numero_section }}
+          {% if formulaire.numero_section.errors %}
+            <div class="text-danger">{{ formulaire.numero_section.errors }}</div>
+          {% endif %}
+          <small class="form-text text-muted">Ex : 01, 02, A, B</small>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="{{ formulaire.professeur.id_for_label }}" class="form-label">Professeur *</label>
+          {{ formulaire.professeur }}
+          {% if formulaire.professeur.errors %}
+            <div class="text-danger">{{ formulaire.professeur.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Horaire -->
+      <div class="section-form-section-title mb-3">
+        <i class="fas fa-calendar-alt me-1"></i> Horaire
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.jour_semaine.id_for_label }}" class="form-label">Jour de la semaine *</label>
+          {{ formulaire.jour_semaine }}
+          {% if formulaire.jour_semaine.errors %}
+            <div class="text-danger">{{ formulaire.jour_semaine.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.heure_debut.id_for_label }}" class="form-label">Heure de début *</label>
+          {{ formulaire.heure_debut }}
+          {% if formulaire.heure_debut.errors %}
+            <div class="text-danger">{{ formulaire.heure_debut.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.heure_fin.id_for_label }}" class="form-label">Heure de fin *</label>
+          {{ formulaire.heure_fin }}
+          {% if formulaire.heure_fin.errors %}
+            <div class="text-danger">{{ formulaire.heure_fin.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ formulaire.salle.id_for_label }}" class="form-label">Salle</label>
+        {{ formulaire.salle }}
+        {% if formulaire.salle.errors %}
+          <div class="text-danger">{{ formulaire.salle.errors }}</div>
+        {% endif %}
+        <small class="form-text text-muted">Ex : A101, B205</small>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Période académique -->
+      <div class="section-form-section-title mb-3">
+        <i class="fas fa-calendar-check me-1"></i> Période académique
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.session.id_for_label }}" class="form-label">Session *</label>
+          {{ formulaire.session }}
+          {% if formulaire.session.errors %}
+            <div class="text-danger">{{ formulaire.session.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.semestre.id_for_label }}" class="form-label">Semestre *</label>
+          {{ formulaire.semestre }}
+          {% if formulaire.semestre.errors %}
+            <div class="text-danger">{{ formulaire.semestre.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="{{ formulaire.annee.id_for_label }}" class="form-label">Année académique *</label>
+          {{ formulaire.annee }}
+          {% if formulaire.annee.errors %}
+            <div class="text-danger">{{ formulaire.annee.errors }}</div>
+          {% endif %}
+          <small class="form-text text-muted">Ex : 2024</small>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Capacité et statut -->
+      <div class="section-form-section-title mb-3">
+        <i class="fas fa-users me-1"></i> Capacité et statut
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.capacite_max.id_for_label }}" class="form-label">Nombre maximum d'étudiants *</label>
+          {{ formulaire.capacite_max }}
+          {% if formulaire.capacite_max.errors %}
+            <div class="text-danger">{{ formulaire.capacite_max.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-check mt-4">
+            {{ formulaire.est_ouverte }}
+            <label class="form-check-label" for="{{ formulaire.est_ouverte.id_for_label }}">
+              Section ouverte aux inscriptions
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> {% if section %}Enregistrer{% else %}Créer la section{% endif %}
+        </button>
+        <a href="{% url 'cours:liste_sections' %}" class="btn btn-secondary">
+          <i class="fas fa-times"></i> Annuler
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

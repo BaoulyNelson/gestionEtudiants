@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+{% block title %}Inscriptions Étudiants – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête université ── */
+  .insc-univ-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .insc-univ-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .insc-univ-header-center { flex: 1; text-align: center; }
+  .insc-univ-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .insc-univ-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .insc-univ-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .insc-univ-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .insc-univ-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .insc-univ-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .insc-univ-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  @media (max-width: 768px) {
+    .insc-univ-header { flex-direction: column; align-items: center; text-align: center; }
+    .insc-univ-header-right { text-align: center; }
+    .insc-univ-header-right p { justify-content: center; }
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; padding: 32px 16px; }
+
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 { font-size: 1.9rem; font-weight: 700; color: #1a2540; letter-spacing: -0.5px; margin: 0; }
+  .page-header p  { font-size: 0.92rem; color: #6b7a99; margin-top: 4px; }
+
+  /* ─── Toolbar ─── */
+  .insc-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 20px;
+  }
+  .insc-filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .insc-filter-select {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid #d5dce8; border-radius: 8px;
+    padding: 8px 14px; font-size: 0.85rem; color: #1a2540;
+    cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    text-decoration: none;
+  }
+
+  .insc-action-group { display: flex; align-items: center; gap: 10px; }
+
+  .btn-insc-outline {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;
+    background: #fff; border: 1px solid #d5dce8; color: #1a2540;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05); text-decoration: none; cursor: pointer;
+  }
+  .btn-insc-outline:hover { background: #f5f7fa; color: #1a2540; }
+
+  .btn-insc-primary {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+    background: #1e4fd8; color: #fff; border: none;
+    box-shadow: 0 2px 8px rgba(30,79,216,.25); text-decoration: none; cursor: pointer;
+  }
+  .btn-insc-primary:hover { background: #1a42b8; color: #fff; }
+
+  /* ─── Filter modal/dropdown (réutilise le form existant caché) ─── */
+  .filter-form-card {
+    background:#fff; border-radius:12px; border:1px solid #e8edf5;
+    box-shadow:0 2px 10px rgba(0,0,0,.07); padding:16px 20px; margin-bottom:18px;
+  }
+  .filter-form-card .row { row-gap: 10px; }
+  .filter-form-card label { font-size:.8rem; font-weight:600; color:#6b7a99; margin-bottom:4px; display:block; }
+  .filter-form-card .form-select,
+  .filter-form-card .form-control {
+    font-size:.875rem; border-radius:8px; border:1px solid #d5dce8;
+    padding:7px 12px; background:#fff; color:#1a2540;
+  }
+  .filter-form-card .form-select:focus,
+  .filter-form-card .form-control:focus { border-color:#1e4fd8; box-shadow:0 0 0 3px rgba(30,79,216,.1); }
+
+  /* ─── Card principale ─── */
+  .insc-card {
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden;
+  }
+
+  /* ─── Groupe étudiant ─── */
+  .student-group { border-bottom: 2px solid #eef2f7; }
+  .student-group:last-child { border-bottom: none; }
+
+  .student-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 22px 12px;
+  }
+  .student-avatar {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, #d0e0ff 0%, #a8c0f5 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .9rem; color: #1e4fd8;
+  }
+  .student-info h3 { font-size: .95rem; font-weight: 700; color: #1a2540; margin: 0; line-height: 1.3; }
+  .student-info p  { font-size: .78rem; color: #6b7a99; margin: 0; }
+
+  /* ─── Sous-tableau cours ─── */
+  .courses-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid #eef2f7;
+  }
+  .courses-table { width: 100%; min-width: 580px; border-collapse: collapse; }
+  .courses-table thead tr { background: #f7f9fc; }
+  .courses-table th {
+    padding: 9px 18px; font-size: .74rem; font-weight: 600; color: #6b7a99;
+    text-transform: uppercase; letter-spacing: .05em; text-align: left;
+    border-bottom: 1px solid #e8edf5; white-space: nowrap;
+  }
+  .courses-table td {
+    padding: 12px 18px; font-size: .875rem; color: #1a2540;
+    border-bottom: 1px solid #f0f3f8; vertical-align: middle;
+  }
+  .courses-table tr:last-child td { border-bottom: none; }
+  .courses-table tbody tr:hover td { background: #f9fbff; }
+
+  .course-name { display: flex; align-items: center; gap: 10px; }
+  .course-icon {
+    width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0;
+    background: #deeaff; color: #1e4fd8;
+    display: flex; align-items: center; justify-content: center; font-size: .8rem;
+  }
+  .course-label { font-weight: 600; color: #1e4fd8; font-size: .875rem; }
+  .course-sub   { font-size: .75rem; color: #6b7a99; }
+
+  /* ─── Badges statut ─── */
+  .badge-insc      { background:#d4f4e2; color:#1a7a45; }
+  .badge-abandonne { background:#fde0e0; color:#c0291f; }
+  .badge-complete  { background:#ddeeff; color:#1358b8; }
+  .badge-echoue    { background:#fff4cc; color:#9a7000; }
+  .badge-attente   { background:#ffe5cc; color:#b85a00; }
+
+  .statut-badge {
+    display:inline-block; padding:4px 11px; border-radius:20px;
+    font-size:.76rem; font-weight:600; white-space:nowrap;
+  }
+
+  /* ─── Actions ─── */
+  .action-btns { display:flex; gap:5px; align-items:center; justify-content:center; }
+  .btn-action {
+    width:30px; height:30px; border-radius:7px; border:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:.8rem; cursor:pointer; text-decoration:none; transition:opacity .15s;
+  }
+  .btn-action:hover { opacity:.8; }
+  .btn-action-info    { background:#e0f3ff; color:#0a6ebd; }
+  .btn-action-warning { background:#fff3cd; color:#9a7000; }
+  .btn-action-primary { background:#deeaff; color:#1e4fd8; }
+
+  /* ─── Stats footer ─── */
+  .stats-footer {
+    display:flex; gap:24px; align-items:center; justify-content:center;
+    padding:16px 22px; background:#f7f9fc; border-top:1px solid #e8edf5;
+  }
+  .stat-pill {
+    display:flex; align-items:center; gap:8px;
+    background:#fff; border:1px solid #e8edf5; border-radius:10px;
+    padding:10px 20px; box-shadow:0 1px 4px rgba(0,0,0,.05);
+  }
+  .stat-pill .num { font-size:1.3rem; font-weight:700; color:#1a2540; }
+  .stat-pill .lbl { font-size:.78rem; color:#6b7a99; }
+
+  /* ─── Pagination ─── */
+  .insc-pagination { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:16px 22px; border-top:1px solid #e8edf5; }
+  .pagination-info { font-size:.84rem; color:#6b7a99; }
+  .pag-btns { display:flex; gap:4px; }
+  .pag-btn {
+    min-width:34px; height:34px; padding:0 8px; border-radius:8px;
+    border:1px solid #d5dce8; background:#fff; font-size:.84rem; color:#4a5a7a;
+    display:inline-flex; align-items:center; justify-content:center;
+    text-decoration:none; font-weight:500; cursor:pointer; transition:all .12s;
+  }
+  .pag-btn:hover  { background:#f0f4ff; border-color:#a8c0f5; color:#1e4fd8; }
+  .pag-btn.active { background:#1e4fd8; border-color:#1e4fd8; color:#fff; }
+  .pag-btn.disabled { pointer-events:none; opacity:.4; }
+
+  @media(max-width:700px){
+    .insc-toolbar { flex-direction:column; align-items:flex-start; }
+    .courses-table th, .courses-table td { padding:9px 10px; }
+    .student-header { padding:12px 12px 10px; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<div class="page-wrapper">
+
+  <!-- ── En-tête université ── -->
+  <div class="insc-univ-header">
+
+    <div class="insc-univ-header-left">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+             style="height:80px;object-fit:contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+      {% endif %}
+    </div>
+
+    <div class="insc-univ-header-center">
+      <div class="insc-univ-header-univ">Université d'État d'Haïti</div>
+      <div class="insc-univ-header-faculty">{{ site.nom_complet }}</div>
+      {% if site.slogan %}
+        <div class="insc-univ-header-slogan">{{ site.slogan }}</div>
+      {% endif %}
+    </div>
+
+    <div class="insc-univ-header-right">
+      {% if site.adresse_ligne1 %}
+        <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+      {% endif %}
+      {% if site.telephone %}
+        <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+      {% endif %}
+      {% if site.email %}
+        <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+      {% endif %}
+      {% if site.lien_facebook %}
+        <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="insc-univ-header-divider"></div>
+
+  <!-- En-tête page -->
+  <div class="page-header">
+    <h1>Liste des Inscriptions Étudiants</h1>
+    <p>Visualisez et gérez les inscriptions de vos étudiants.</p>
+  </div>
+
+  <!-- ── Toolbar ── -->
+  <div class="insc-toolbar">
+    <div class="insc-filter-group">
+      <button class="insc-filter-select" type="button"
+              data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false">
+        <i class="fas fa-sliders-h"></i> Filtrer
+        {% if request.GET.statut or request.GET.session or request.GET.semestre or request.GET.numero_etudiant %}
+          <span class="badge bg-primary rounded-pill ms-1" style="font-size:.65rem;">
+            actif
+          </span>
+        {% endif %}
+        <i class="fas fa-chevron-down" style="font-size:.7rem; color:#6b7a99;"></i>
+      </button>
+    </div>
+
+    <div class="insc-action-group">
+      <a href="?{% if request.GET.statut %}statut={{ request.GET.statut }}&{% endif %}{% if request.GET.session %}session={{ request.GET.session }}&{% endif %}export=csv"
+         class="btn-insc-outline">
+        <i class="fas fa-download"></i> Exporter
+      </a>
+      {% if user.is_superuser or user.est_administrateur %}
+      <a href="{% url 'inscriptions:creer_inscription' %}" class="btn-insc-primary">
+        <i class="fas fa-plus"></i> Ajouter Inscription
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── Panneau filtres (collapse) ── -->
+  <div class="collapse {% if request.GET.statut or request.GET.session or request.GET.semestre or request.GET.numero_etudiant %}show{% endif %}" id="filterPanel">
+    <div class="filter-form-card mb-3">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-2 col-6">
+          <label>Statut</label>
+          <select name="statut" class="form-select">
+            <option value="">Tous</option>
+            {% for value, label in choix_statut %}
+              <option value="{{ value }}" {% if request.GET.statut == value %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2 col-6">
+          <label>Session</label>
+          <select name="session" class="form-select">
+            <option value="">Toutes</option>
+            <option value="SESSION_1" {% if request.GET.session == 'SESSION_1' %}selected{% endif %}>Session 1</option>
+            <option value="SESSION_2" {% if request.GET.session == 'SESSION_2' %}selected{% endif %}>Session 2</option>
+          </select>
+        </div>
+        <div class="col-md-2 col-6">
+          <label>Semestre</label>
+          <select name="semestre" class="form-select">
+            <option value="">Tous</option>
+            <option value="FALL"   {% if request.GET.semestre == 'FALL'   %}selected{% endif %}>Automne</option>
+            <option value="SPRING" {% if request.GET.semestre == 'SPRING' %}selected{% endif %}>Printemps</option>
+            <option value="SUMMER" {% if request.GET.semestre == 'SUMMER' %}selected{% endif %}>Été</option>
+          </select>
+        </div>
+        <div class="col-md-4 col-6">
+          <label>Numéro étudiant</label>
+          <input type="text" name="numero_etudiant" class="form-control"
+                 placeholder="Rechercher..." value="{{ request.GET.numero_etudiant }}">
+        </div>
+        <div class="col-md-2 col-12 d-flex gap-2">
+          <button type="submit" class="btn-insc-primary flex-fill" style="justify-content:center;">
+            <i class="fas fa-search"></i> Filtrer
+          </button>
+          <a href="{% url 'inscriptions:liste_inscriptions' %}" class="btn-insc-outline" title="Réinitialiser">
+            <i class="fas fa-times"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Carte principale ── -->
+  <div class="insc-card">
+
+    {% if groupes %}
+
+      {% for student_data in groupes %}
+      <div class="student-group">
+
+        <!-- En-tête étudiant -->
+        <div class="student-header">
+          <div class="student-avatar">
+            {{ student_data.etudiant.utilisateur.first_name|slice:":1" }}{{ student_data.etudiant.utilisateur.last_name|slice:":1" }}
+          </div>
+          <div class="student-info">
+            <h3>{{ student_data.etudiant.utilisateur.get_full_name }}</h3>
+            <p>{{ student_data.etudiant.utilisateur.email }}
+              &nbsp;·&nbsp;
+              <strong>{{ student_data.etudiant.numero_etudiant }}</strong>
+              {% if student_data.nb_inscrits %}
+                &nbsp;·&nbsp; <span style="color:#1a7a45;"><i class="fas fa-check-circle"></i> {{ student_data.nb_inscrits }} actif(s)</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <!-- Sous-tableau des cours -->
+        <div class="courses-table-wrap">
+        <table class="courses-table">
+          <thead>
+            <tr>
+              <th style="width:33%">Cours</th>
+              <th style="width:10%">Section</th>
+              <th style="width:20%">Session</th>
+              <th style="width:16%">Statut</th>
+              <th style="width:14%">Professeur</th>
+              <th style="width:7%" class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for inscription in student_data.inscriptions %}
+            <tr>
+              <!-- Cours -->
+              <td>
+                <div class="course-name">
+                  <div class="course-icon">
+                    <i class="fas fa-book-open"></i>
+                  </div>
+                  <div>
+                    <div class="course-label">{{ inscription.section_cours.cours.nom|truncatewords:4 }}</div>
+                    <div class="course-sub">{{ inscription.section_cours.cours.code }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Section -->
+              <td>{{ inscription.section_cours.numero_section }}</td>
+
+              <!-- Session -->
+              <td>
+                {{ inscription.section_cours.get_semestre_display }} {{ inscription.section_cours.annee }}
+              </td>
+
+              <!-- Statut -->
+              <td>
+                {% if inscription.statut == 'INSCRIT' %}
+                  <span class="statut-badge badge-insc"><i class="fas fa-check-circle"></i> Inscrit</span>
+                {% elif inscription.statut == 'ABANDONNE' %}
+                  <span class="statut-badge badge-abandonne"><i class="fas fa-times-circle"></i> Abandonné</span>
+                  {% if inscription.date_abandon %}
+                    <div style="font-size:.72rem;color:#6b7a99;margin-top:2px;">{{ inscription.date_abandon|date:"d/m/Y" }}</div>
+                  {% endif %}
+                {% elif inscription.statut == 'COMPLETE' %}
+                  <span class="statut-badge badge-complete"><i class="fas fa-graduation-cap"></i> Complété</span>
+                {% elif inscription.statut == 'ECHOUE' %}
+                  <span class="statut-badge badge-echoue"><i class="fas fa-exclamation-triangle"></i> Échoué</span>
+                {% else %}
+                  <span class="statut-badge badge-attente">{{ inscription.get_statut_display }}</span>
+                {% endif %}
+              </td>
+
+              <!-- Professeur -->
+              <td>
+                <small>
+                  {% if inscription.section_cours.professeur %}
+                    {{ inscription.section_cours.professeur.utilisateur.get_full_name }}
+                  {% else %}
+                    <span style="color:#6b7a99;">N/A</span>
+                  {% endif %}
+                </small>
+              </td>
+
+              <!-- Actions -->
+              <td>
+                <div class="action-btns">
+                  <a href="{% url 'inscriptions:historique_inscription' inscription.id %}"
+                     class="btn-action btn-action-info" title="Historique">
+                    <i class="fas fa-history"></i>
+                  </a>
+                  {% if user.is_superuser or user.est_administrateur %}
+                  <a href="{% url 'inscriptions:modifier_inscription' inscription.id %}"
+                     class="btn-action btn-action-warning" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  {% endif %}
+                  <a href="{% url 'notes:saisie_notes_professeur' inscription.section_cours.id %}?enrollment={{ inscription.id }}"
+                     class="btn-action btn-action-primary" title="Ajouter note">
+                    <i class="fas fa-plus"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div><!-- /courses-table-wrap -->
+
+      </div>
+      {% endfor %}
+
+      <!-- Stats -->
+      {% if total_etudiants or total_inscriptions %}
+      <div class="stats-footer">
+        <div class="stat-pill">
+          <i class="fas fa-users fa-lg" style="color:#1e4fd8;"></i>
+          <div>
+            <div class="num">{{ total_etudiants }}</div>
+            <div class="lbl">Étudiant(s)</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <i class="fas fa-clipboard-list fa-lg" style="color:#1a7a45;"></i>
+          <div>
+            <div class="num">{{ total_inscriptions }}</div>
+            <div class="lbl">Inscription(s)</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+     <div class="mt-4">
+  {% include 'partials/pagination.html' %}
+</div>
+
+    {% else %}
+      <div style="padding:48px; text-align:center; color:#6b7a99;">
+        <i class="fas fa-inbox fa-3x mb-3" style="color:#d5dce8;display:block;margin-bottom:12px;"></i>
+        Aucune inscription trouvée.
+        <br><a href="{% url 'inscriptions:liste_inscriptions' %}" style="color:#1e4fd8;font-size:.85rem;">Réinitialiser les filtres</a>
+      </div>
+    {% endif %}
+
+  </div><!-- /insc-card -->
+
+</div><!-- /page-wrapper -->
+{% endblock %}

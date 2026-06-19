@@ -1,0 +1,35 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,COM101,Introduction à la communication,Romel,RODNEY,Communication Sociale,Niveau I,session1
+LUNDI,10:00,13:00,COM102,Introduction à la sociologie,Pierre,DANTÈS,Communication Sociale,Niveau I,session1
+LUNDI,10:00,13:00,COM111,Sémiologie,Lionel,SAINT-FORT,Communication Sociale,Niveau I,session2
+LUNDI,13:00,16:00,COM105,Français II,Nadège,THERMIDOR,Communication Sociale,Niveau I,session1
+LUNDI,13:00,16:00,COM107,Anglais,James,MENTOR,Communication Sociale,Niveau I,session2
+MARDI,07:00,10:00,COM103,Statistique I,Hugues,CADET,Communication Sociale,Niveau I,session1
+MARDI,07:00,10:00,COM108,Anthropologie,Roseline,PIERRE-LOUIS,Communication Sociale,Niveau I,session2
+MARDI,10:00,13:00,COM104,Méthodologie I,Edwige,LABORDE,Communication Sociale,Niveau I,session1
+MARDI,10:00,13:00,COM112,Théories de la communication I,Frantz,BEAUVAIS,Communication Sociale,Niveau I,session2
+MARDI,13:00,16:00,COM109,Communication graphique I,Oldy Joël,AUGUSTE,Communication Sociale,Niveau I,session1
+MARDI,13:00,16:00,COM106,Créole II,Kerlande,MOISE,Communication Sociale,Niveau I,session2
+MERCREDI,07:00,10:00,COM110,Journalisme I,Jean Pharès,JEROME,Communication Sociale,Niveau I,session1
+MERCREDI,07:00,10:00,COM103,Statistique I,Hugues,CADET,Communication Sociale,Niveau I,session2
+MERCREDI,10:00,13:00,COM101,Introduction à la communication,Romel,RODNEY,Communication Sociale,Niveau I,session2
+MERCREDI,10:00,13:00,COM104,Méthodologie I,Edwige,LABORDE,Communication Sociale,Niveau I,session2
+MERCREDI,13:00,16:00,COM111,Sémiologie,Lionel,SAINT-FORT,Communication Sociale,Niveau I,session1
+MERCREDI,13:00,16:00,COM108,Anthropologie,Roseline,PIERRE-LOUIS,Communication Sociale,Niveau I,session1
+JEUDI,07:00,10:00,COM112,Théories de la communication I,Frantz,BEAUVAIS,Communication Sociale,Niveau I,session1
+JEUDI,07:00,10:00,COM105,Français II,Nadège,THERMIDOR,Communication Sociale,Niveau I,session2
+JEUDI,10:00,13:00,COM110,Journalisme I,Jean Pharès,JEROME,Communication Sociale,Niveau I,session2
+JEUDI,10:00,13:00,COM107,Anglais,James,MENTOR,Communication Sociale,Niveau I,session1
+JEUDI,13:00,16:00,COM102,Introduction à la sociologie,Pierre,DANTÈS,Communication Sociale,Niveau I,session2
+JEUDI,13:00,16:00,COM109,Communication graphique I,Oldy Joël,AUGUSTE,Communication Sociale,Niveau I,session2
+VENDREDI,07:00,10:00,COM106,Créole II,Kerlande,MOISE,Communication Sociale,Niveau I,session1
+VENDREDI,10:00,13:00,COM103,Statistique I,Hugues,CADET,Communication Sociale,Niveau I,session1
+VENDREDI,10:00,13:00,COM102,Introduction à la sociologie,Pierre,DANTÈS,Communication Sociale,Niveau I,session2
+VENDREDI,13:00,16:00,COM104,Méthodologie I,Edwige,LABORDE,Communication Sociale,Niveau I,session2
+VENDREDI,13:00,16:00,COM112,Théories de la communication I,Frantz,BEAUVAIS,Communication Sociale,Niveau I,session2
+SAMEDI,07:00,10:00,COM108,Anthropologie,Roseline,PIERRE-LOUIS,Communication Sociale,Niveau I,session2
+SAMEDI,07:00,10:00,COM105,Français II,Nadège,THERMIDOR,Communication Sociale,Niveau I,session1
+SAMEDI,10:00,13:00,COM110,Journalisme I,Jean Pharès,JEROME,Communication Sociale,Niveau I,session2
+SAMEDI,10:00,13:00,COM106,Créole II,Kerlande,MOISE,Communication Sociale,Niveau I,session2
+SAMEDI,13:00,16:00,COM101,Introduction à la communication,Marie,BEAUCHAMP,Communication Sociale,Niveau I,session2
+SAMEDI,13:00,16:00,COM109,Communication graphique I,Oldy Joël,AUGUSTE,Communication Sociale,Niveau I,session2

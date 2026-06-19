@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,TS-PS3,Politique Sociale,Réginald,CASIMIR,Travail Social,Niveau III,session1
+LUNDI,07:00,10:00,TS-SU3,Sociologie Urbaine,Gérard,VOLTAIRE,Travail Social,Niveau III,session2
+LUNDI,10:00,13:00,TS-PS3-2,Planification Sociale,Sénèque,DORIVAL,Travail Social,Niveau III,session1
+LUNDI,10:00,13:00,TS-SD3,Sociologie du Développement,Pierre,DANTÈS,Travail Social,Niveau III,session2
+LUNDI,13:00,16:00,TS-SS3,Sécurité Sociale,Lionel,SAINT-FORT,Travail Social,Niveau III,session1
+LUNDI,13:00,16:00,TS-SP3,Sociologie Politique,Sénèque,DORIVAL,Travail Social,Niveau III,session2
+MARDI,07:00,10:00,TS-AG3,Administration et Gestion des Services Sociaux,Edwige,LABORDE,Travail Social,Niveau III,session1
+MARDI,07:00,10:00,TS-D3,Démographie,Hugues,CADET,Travail Social,Niveau III,session2
+MARDI,10:00,13:00,TS-TP3,Travail Social et Problèmes Sociaux Actuels,Garry,METELLUS,Travail Social,Niveau III,session1
+MARDI,10:00,13:00,TS-DE3,Déontologie du Travail Social,Jean Luc,TONDREAU,Travail Social,Niveau III,session2
+MARDI,13:00,16:00,TS-TPPS3,Théories et Pratiques en Service Social,Mireille,HYPPOLITE,Travail Social,Niveau III,session1
+MARDI,13:00,16:00,TS-AM3,Atelier de Mémoire,Edwige,LABORDE,Travail Social,Niveau III,session2
+MERCREDI,07:00,10:00,TS-SD3,Sociologie du Développement,Pierre,DANTÈS,Travail Social,Niveau III,session1
+MERCREDI,07:00,10:00,TS-PS3,Politique Sociale,Réginald,CASIMIR,Travail Social,Niveau III,session2
+MERCREDI,10:00,13:00,TS-SP3,Sociologie Politique,Sénèque,DORIVAL,Travail Social,Niveau III,session1
+MERCREDI,10:00,13:00,TS-TP3,Travail Social et Problèmes Sociaux Actuels,Garry,METELLUS,Travail Social,Niveau III,session2
+MERCREDI,13:00,16:00,TS-D3,Démographie,Hugues,CADET,Travail Social,Niveau III,session1
+MERCREDI,13:00,16:00,TS-SS3,Sécurité Sociale,Lionel,SAINT-FORT,Travail Social,Niveau III,session2
+JEUDI,07:00,10:00,TS-SI3,Stage Institutionnel,Roseline,PIERRE-LOUIS,Travail Social,Niveau III,session1
+JEUDI,07:00,10:00,TS-AG3,Administration et Gestion des Services Sociaux,Edwige,LABORDE,Travail Social,Niveau III,session2
+JEUDI,10:00,13:00,TS-AM3,Atelier de Mémoire,Edwige,LABORDE,Travail Social,Niveau III,session1
+JEUDI,10:00,13:00,TS-TPPS3,Théories et Pratiques en Service Social,Mireille,HYPPOLITE,Travail Social,Niveau III,session2
+JEUDI,13:00,16:00,TS-DE3,Déontologie du Travail Social,Jean Luc,TONDREAU,Travail Social,Niveau III,session1
+JEUDI,13:00,16:00,TS-PS3-2,Planification Sociale,Sénèque,DORIVAL,Travail Social,Niveau III,session2
+VENDREDI,07:00,10:00,TS-AG3,Administration et Gestion des Services Sociaux,Edwige,LABORDE,Travail Social,Niveau III,session1
+VENDREDI,07:00,10:00,TS-SI3,Stage Institutionnel,Roseline,PIERRE-LOUIS,Travail Social,Niveau III,session2
+VENDREDI,10:00,13:00,TS-SS3,Sécurité Sociale,Lionel,SAINT-FORT,Travail Social,Niveau III,session1
+VENDREDI,10:00,13:00,TS-SP3,Sociologie Politique,Sénèque,DORIVAL,Travail Social,Niveau III,session2
+VENDREDI,13:00,16:00,TS-TPPS3,Théories et Pratiques en Service Social,Mireille,HYPPOLITE,Travail Social,Niveau III,session1
+VENDREDI,13:00,16:00,TS-D3,Démographie,Hugues,CADET,Travail Social,Niveau III,session2
+SAMEDI,07:00,10:00,TS-SU3,Sociologie Urbaine,Gérard,VOLTAIRE,Travail Social,Niveau III,session1
+SAMEDI,07:00,10:00,TS-DE3,Déontologie du Travail Social,Jean Luc,TONDREAU,Travail Social,Niveau III,session2
+SAMEDI,10:00,13:00,TS-PS3,Politique Sociale,Réginald,CASIMIR,Travail Social,Niveau III,session2
+SAMEDI,10:00,13:00,TS-AM3,Atelier de Mémoire,Edwige,LABORDE,Travail Social,Niveau III,session2
+SAMEDI,13:00,16:00,TS-SI3,Stage Institutionnel,Roseline,PIERRE-LOUIS,Travail Social,Niveau III,session2
+SAMEDI,13:00,16:00,TS-SD3,Sociologie du Développement,Pierre,DANTÈS,Travail Social,Niveau III,session2

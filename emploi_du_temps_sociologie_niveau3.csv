@@ -1,0 +1,50 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,SOC-SCO2,Sociologie de la Communication,Lionel,SAINT-FORT,Sociologie,Niveau III,session1
+LUNDI,07:00,10:00,SOC-SPO2,Sociologie Politique II,Sénèque,DORIVAL,Sociologie,Niveau III,session2
+LUNDI,10:00,13:00,SOC-SRE3,Sociologie de la Religion,Dérynx,PETIT JEAN,Sociologie,Niveau III,session1
+LUNDI,10:00,13:00,SOC-SED3,Sociologie de l'Éducation,Roseline,PIERRE-LOUIS,Sociologie,Niveau III,session2
+LUNDI,13:00,16:00,SOC-CSH3,Culture et Société en Haïti,Claudette,FRANÇOIS,Sociologie,Niveau III,session1
+LUNDI,13:00,16:00,SOC-STR3,Sociologie du Travail,Garry,METELLUS,Sociologie,Niveau III,session2
+MARDI,07:00,10:00,SOC-SOR3,Sociologie des Organisations,Réginald,CASIMIR,Sociologie,Niveau III,session1
+MARDI,07:00,10:00,SOC-SCO2,Sociologie de la Communication,Lionel,SAINT-FORT,Sociologie,Niveau III,session2
+MARDI,10:00,13:00,SOC-ASO3,Animation Sociale,Mireille,HYPPOLITE,Sociologie,Niveau III,session1
+MARDI,10:00,13:00,SOC-SRE3,Sociologie de la Religion,Dérynx,PETIT JEAN,Sociologie,Niveau III,session2
+MARDI,13:00,16:00,SOC-TSO3,Théories Sociologiques III,Sénèque,DORIVAL,Sociologie,Niveau III,session1
+MARDI,13:00,16:00,SOC-SOR3,Sociologie des Organisations,Réginald,CASIMIR,Sociologie,Niveau III,session2
+MERCREDI,07:00,10:00,SOC-SUR3,Sociologie Urbaine,Gérard,VOLTAIRE,Sociologie,Niveau III,session1
+MERCREDI,07:00,10:00,SOC-ASO3,Animation Sociale,Mireille,HYPPOLITE,Sociologie,Niveau III,session2
+MERCREDI,10:00,13:00,SOC-SPO2,Sociologie Politique II,Sénèque,DORIVAL,Sociologie,Niveau III,session1
+MERCREDI,10:00,13:00,SOC-CSH3,Culture et Société en Haïti,Claudette,FRANÇOIS,Sociologie,Niveau III,session2
+MERCREDI,13:00,16:00,SOC-SED3,Sociologie de l'Éducation,Roseline,PIERRE-LOUIS,Sociologie,Niveau III,session1
+MERCREDI,13:00,16:00,SOC-SUR3,Sociologie Urbaine,Gérard,VOLTAIRE,Sociologie,Niveau III,session2
+JEUDI,07:00,10:00,SOC-STR3,Sociologie du Travail,Garry,METELLUS,Sociologie,Niveau III,session1
+JEUDI,07:00,10:00,SOC-TSO3,Théories Sociologiques III,Sénèque,DORIVAL,Sociologie,Niveau III,session2
+JEUDI,10:00,13:00,SOC-SOR3,Sociologie des Organisations,Réginald,CASIMIR,Sociologie,Niveau III,session1
+JEUDI,10:00,13:00,SOC-SCO2,Sociologie de la Communication,Lionel,SAINT-FORT,Sociologie,Niveau III,session2
+JEUDI,13:00,16:00,SOC-ASO3,Animation Sociale,Mireille,HYPPOLITE,Sociologie,Niveau III,session1
+JEUDI,13:00,16:00,SOC-SPO2,Sociologie Politique II,Sénèque,DORIVAL,Sociologie,Niveau III,session2
+VENDREDI,07:00,10:00,SOC-TSO3,Théories Sociologiques III,Sénèque,DORIVAL,Sociologie,Niveau III,session1
+VENDREDI,07:00,10:00,SOC-SED3,Sociologie de l'Éducation,Roseline,PIERRE-LOUIS,Sociologie,Niveau III,session2
+VENDREDI,10:00,13:00,SOC-SRE3,Sociologie de la Religion,Dérynx,PETIT JEAN,Sociologie,Niveau III,session2
+VENDREDI,10:00,13:00,SOC-STR3,Sociologie du Travail,Garry,METELLUS,Sociologie,Niveau III,session2
+VENDREDI,13:00,16:00,SOC-SUR3,Sociologie Urbaine,Gérard,VOLTAIRE,Sociologie,Niveau III,session2
+VENDREDI,13:00,16:00,SOC-CSH3,Culture et Société en Haïti,Claudette,FRANÇOIS,Sociologie,Niveau III,session2
+SAMEDI,07:00,10:00,SOC-SOR3,Sociologie des Organisations,Réginald,CASIMIR,Sociologie,Niveau III,session2
+SAMEDI,07:00,10:00,SOC-STR3,Sociologie du Travail,Garry,METELLUS,Sociologie,Niveau III,session2
+SAMEDI,10:00,13:00,SOC-TSO3,Théories Sociologiques III,Sénèque,DORIVAL,Sociologie,Niveau III,session2
+SAMEDI,10:00,13:00,SOC-ASO3,Animation Sociale,Mireille,HYPPOLITE,Sociologie,Niveau III,session2
+SAMEDI,13:00,16:00,SOC-SUR3,Sociologie Urbaine,Gérard,VOLTAIRE,Sociologie,Niveau III,session2
+SAMEDI,13:00,16:00,SOC-SED3,Sociologie de l'Éducation,Roseline,PIERRE-LOUIS,Sociologie,Niveau III,session2
+LUNDI,07:00,10:00,SOC-EPI4,Épistémologie,Jean,DESROSIERS,Sociologie,Niveau III,session1
+MARDI,10:00,13:00,SOC-SCO4,Sociologie Contemporaine I,Marie,PIERRE,Sociologie,Niveau III,session1
+MERCREDI,13:16,11:00,SOC-DEM4,Démographie,Lucien,JOSEPH,Sociologie,Niveau III,session1
+JEUDI,07:00,10:00,SOC-EPO4,Économie Politique,Carline,LOUIS,Sociologie,Niveau III,session1
+VENDREDI,10:00,13:00,SOC-EGP4,Élaboration et Gestion de Projet,Patrick,JEAN-BAPTISTE,Sociologie,Niveau III,session1
+SAMEDI,13:00,16:00,SOC-SDE4,Sociologie du Développement,Nadine,FRANCOIS,Sociologie,Niveau III,session2
+LUNDI,07:00,10:00,SOC-SMS4,Sociologie des Mouvements Sociaux,Wilner,ALEXANDRE,Sociologie,Niveau III,session2
+MARDI,10:00,13:00,SOC-PPO4,Philosophie Politique,Roseline,PIERRE-LOUIS,Sociologie,Niveau III,session2
+MERCREDI,13:00,16:00,SOC-AME4,Atelier de Mémoire,Jacques,SAINTIL,Sociologie,Niveau III,session2
+JEUDI,07:00,10:00,SOC-SPR4,Stage Professionnel,Claudette,MICHEL,Sociologie,Niveau III,session2
+VENDREDI,10:00,13:00,SOC-PSO4,Politique Sociale,René,LAFORTUNE,Sociologie,Niveau III,session2
+SAMEDI,13:00,16:00,SOC-CSC4,Culture et Société de la Caraïbe,Sonia,ETIENNE,Sociologie,Niveau III,session2
+LUNDI,07:00,10:00,SOC-INF4,Informatique,David,CHARLES,Sociologie,Niveau III,session1

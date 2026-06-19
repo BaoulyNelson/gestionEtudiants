@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% block title %}Statistiques du cours – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .stats-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .stats-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stats-header-center { flex: 1; text-align: center; }
+  .stats-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .stats-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .stats-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .stats-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .stats-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .stats-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .stats-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .stats-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 6px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+  .stats-doc-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+    margin-bottom: 28px;
+  }
+
+  /* ── Sous-titres de section ── */
+  .stats-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 18px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Cartes de statistiques ── */
+  .stats-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stats-kpi-card {
+    border: 1px solid #d0d8e8;
+    border-top: 4px solid #1a3a6b;
+    border-radius: 4px;
+    padding: 20px 16px;
+    text-align: center;
+    background: #fff;
+  }
+  .stats-kpi-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #777;
+    font-family: Arial, sans-serif;
+    margin-bottom: 8px;
+  }
+  .stats-kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a3a6b;
+    font-family: "Georgia", serif;
+    line-height: 1;
+  }
+  .stats-kpi-value.na {
+    font-size: 20px;
+    color: #aaa;
+  }
+
+  /* ── Distribution ── */
+  .stats-dist-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .stats-dist-card {
+    border-radius: 4px;
+    padding: 18px 10px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .stats-dist-card .dist-count {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: "Georgia", serif;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stats-dist-card .dist-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .dist-A { background: #d4edda; color: #155724; }
+  .dist-B { background: #d1ecf1; color: #0c5460; }
+  .dist-C { background: #fff3cd; color: #856404; }
+  .dist-D { background: #ffe5d0; color: #7d3c0a; }
+  .dist-F { background: #f8d7da; color: #721c24; }
+
+  /* ── Barre de progression distribution ── */
+  .stats-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+  .stats-bar-label {
+    width: 90px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .stats-bar-track {
+    flex: 1;
+    background: #e9ecef;
+    border-radius: 3px;
+    height: 16px;
+    overflow: hidden;
+  }
+  .stats-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width .4s ease;
+  }
+  .fill-A { background: #28a745; }
+  .fill-B { background: #17a2b8; }
+  .fill-C { background: #ffc107; }
+  .fill-D { background: #fd7e14; }
+  .fill-F { background: #dc3545; }
+  .stats-bar-count {
+    width: 24px;
+    text-align: right;
+    color: #555;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .stats-header { flex-direction: column; align-items: center; text-align: center; }
+    .stats-header-right { text-align: center; }
+    .stats-header-right p { justify-content: center; }
+    .stats-kpi-grid { grid-template-columns: 1fr; }
+    .stats-dist-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .stats-dist-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media print {
+    .stats-actions, .navbar, .sidebar, footer, .btn { display: none !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="stats-header">
+
+  <div class="stats-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="stats-header-center">
+    <div class="stats-header-univ">Université d'État d'Haïti</div>
+    <div class="stats-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="stats-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="stats-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="stats-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="stats-doc-title">
+  <i class="fas fa-chart-bar me-2" style="color:#1a3a6b;"></i>Statistiques du cours
+</div>
+<div class="stats-doc-subtitle">
+  {{ section.cours.code }} – {{ section.cours.nom }} &nbsp;|&nbsp; Section {{ section.numero_section }}
+</div>
+
+<!-- ── KPI ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-section-title mb-3"><i class="fas fa-tachometer-alt me-1"></i> Indicateurs</div>
+    <div class="stats-kpi-grid">
+
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Moyenne du cours</div>
+        <div class="stats-kpi-value {% if not stats.moyenne %}na{% endif %}">
+          {% if stats.moyenne %}{{ stats.moyenne|floatformat:2 }}{% else %}N/A{% endif %}
+        </div>
+      </div>
+
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Étudiants notés</div>
+        <div class="stats-kpi-value">{{ stats.total|default:0 }}</div>
+      </div>
+
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Taux de réussite</div>
+        <div class="stats-kpi-value {% if not taux_reussite %}na{% endif %}">
+          {% if taux_reussite %}{{ taux_reussite|floatformat:0 }}%{% else %}N/A{% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Distribution ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-section-title mb-3"><i class="fas fa-layer-group me-1"></i> Distribution des mentions</div>
+
+    <!-- Cartes visuelles -->
+    <div class="stats-dist-grid mb-4">
+      <div class="stats-dist-card dist-A">
+        <div class="dist-count">{{ distribution.Excellent }}</div>
+        <div class="dist-label">Excellent</div>
+        <div style="font-size:11px;margin-top:3px;">90 – 100</div>
+      </div>
+      <div class="stats-dist-card dist-B">
+        <div class="dist-count">{{ distribution.Tres_bien }}</div>
+        <div class="dist-label">Très bien</div>
+        <div style="font-size:11px;margin-top:3px;">80 – 89</div>
+      </div>
+      <div class="stats-dist-card dist-C">
+        <div class="dist-count">{{ distribution.Bien }}</div>
+        <div class="dist-label">Bien</div>
+        <div style="font-size:11px;margin-top:3px;">70 – 79</div>
+      </div>
+      <div class="stats-dist-card dist-D">
+        <div class="dist-count">{{ distribution.Passable }}</div>
+        <div class="dist-label">Passable</div>
+        <div style="font-size:11px;margin-top:3px;">60 – 69</div>
+      </div>
+      <div class="stats-dist-card dist-F">
+        <div class="dist-count">{{ distribution.Echec }}</div>
+        <div class="dist-label">Échec</div>
+        <div style="font-size:11px;margin-top:3px;">0 – 59</div>
+      </div>
+    </div>
+
+    <!-- Barres de progression -->
+    {% if stats.total %}
+    {% with total=stats.total %}
+    <div class="stats-bar-row">
+      <div class="stats-bar-label" style="color:#155724;">Excellent</div>
+      <div class="stats-bar-track">
+        <div class="stats-bar-fill fill-A"
+             style="width:{% widthratio distribution.Excellent total 100 %}%"></div>
+      </div>
+      <div class="stats-bar-count">{{ distribution.Excellent }}</div>
+    </div>
+    <div class="stats-bar-row">
+      <div class="stats-bar-label" style="color:#0c5460;">Très bien</div>
+      <div class="stats-bar-track">
+        <div class="stats-bar-fill fill-B"
+             style="width:{% widthratio distribution.Tres_bien total 100 %}%"></div>
+      </div>
+      <div class="stats-bar-count">{{ distribution.Tres_bien }}</div>
+    </div>
+    <div class="stats-bar-row">
+      <div class="stats-bar-label" style="color:#856404;">Bien</div>
+      <div class="stats-bar-track">
+        <div class="stats-bar-fill fill-C"
+             style="width:{% widthratio distribution.Bien total 100 %}%"></div>
+      </div>
+      <div class="stats-bar-count">{{ distribution.Bien }}</div>
+    </div>
+    <div class="stats-bar-row">
+      <div class="stats-bar-label" style="color:#7d3c0a;">Passable</div>
+      <div class="stats-bar-track">
+        <div class="stats-bar-fill fill-D"
+             style="width:{% widthratio distribution.Passable total 100 %}%"></div>
+      </div>
+      <div class="stats-bar-count">{{ distribution.Passable }}</div>
+    </div>
+    <div class="stats-bar-row">
+      <div class="stats-bar-label" style="color:#721c24;">Échec</div>
+      <div class="stats-bar-track">
+        <div class="stats-bar-fill fill-F"
+             style="width:{% widthratio distribution.Echec total 100 %}%"></div>
+      </div>
+      <div class="stats-bar-count">{{ distribution.Echec }}</div>
+    </div>
+    {% endwith %}
+    {% else %}
+    <p style="text-align:center;color:#999;font-style:italic;font-family:Arial,sans-serif;">
+      Aucune donnée disponible pour afficher la distribution.
+    </p>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ── Actions ── -->
+<div class="stats-actions">
+  <a href="{% url 'notes:sections_professeur' %}" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left me-1"></i> Retour
+  </a>
+</div>
+
+{% endblock %}

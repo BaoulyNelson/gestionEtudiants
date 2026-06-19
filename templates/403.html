@@ -55,9 +55,9 @@
         <h2>Accès refusé</h2>
         <p>Vous n’avez pas la permission d’accéder à cette page.</p>
         {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}">Retour au tableau de bord</a>
+            <a href="{% url 'comptes:tableau_bord' %}">Retour au tableau de bord</a>
         {% else %}
-            <a href="{% url 'home' %}">Retour à l’accueil</a>
+            <a href="{% url 'accueil' %}">Retour à l’accueil</a>
         {% endif %}
     </div>
 </body>

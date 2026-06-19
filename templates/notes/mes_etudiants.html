@@ -1,0 +1,456 @@
+{% extends 'base.html' %}
+{% block title %}Mes étudiants – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .etudiants-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .etudiants-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .etudiants-header-center { flex: 1; text-align: center; }
+  .etudiants-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .etudiants-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .etudiants-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .etudiants-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .etudiants-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .etudiants-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .etudiants-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .etudiants-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── Sous-titre de section ── */
+  .etudiants-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 14px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Compteur total ── */
+  .etudiants-total {
+    font-size: 13px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;
+  }
+  .etudiants-total strong { color: #1a3a6b; }
+
+  /* ── Carte étudiant ── */
+  .etudiant-card {
+    border: 1px solid #d0d8e8;
+    border-left: 4px solid #1a3a6b;
+    border-radius: 4px;
+    background: #fff;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .etudiant-card-body {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* Infos principales */
+  .etudiant-info { flex: 2; min-width: 180px; font-family: Arial, sans-serif; }
+  .etudiant-nom {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a3a6b;
+    font-family: "Georgia", serif;
+    margin-bottom: 4px;
+  }
+  .etudiant-meta {
+    font-size: 12.5px;
+    color: #555;
+    margin: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .etudiant-meta i { color: #1a3a6b; width: 12px; }
+
+  /* KPI */
+  .etudiant-kpi {
+    flex: 1;
+    min-width: 90px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .etudiant-kpi-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .etudiant-kpi-value {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Georgia", serif;
+    line-height: 1;
+  }
+  .kpi-gpa-bon   { color: #155724; }
+  .kpi-gpa-moyen { color: #0c5460; }
+  .kpi-gpa-faible{ color: #856404; }
+  .kpi-gpa-zero  { color: #aaa; }
+
+  /* Bouton détail */
+  .etudiant-action {
+    flex-shrink: 0;
+  }
+
+  /* ── Tableau cours (collapse) ── */
+  .cours-collapse {
+    border-top: 1px solid #d0d8e8;
+    background: #f7f9fc;
+    padding: 14px 20px;
+  }
+  .cours-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+  }
+  .cours-table thead tr { background: #1a3a6b; color: #fff; }
+  .cours-table thead th {
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+  }
+  .cours-table thead th.center { text-align: center; }
+  .cours-table tbody tr { border-bottom: 1px solid #ddd; }
+  .cours-table tbody tr:nth-child(even) { background: #fff; }
+  .cours-table tbody td { padding: 8px 12px; color: #333; vertical-align: middle; }
+  .cours-table tbody td.center { text-align: center; }
+
+  /* ── Pagination ── */
+  .etudiants-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .etudiants-pagination a,
+  .etudiants-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #1a3a6b;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #1a3a6b;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .etudiants-pagination a:hover { background: #e8eef7; }
+  .etudiants-pagination .page-active {
+    background: #1a3a6b;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .etudiants-header { flex-direction: column; align-items: center; text-align: center; }
+    .etudiants-header-right { text-align: center; }
+    .etudiants-header-right p { justify-content: center; }
+    .etudiant-card-body { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .etudiant-kpi { text-align: left; }
+  }
+
+  @media print {
+    .etudiants-actions, .navbar, .sidebar, footer, .btn { display: none !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="etudiants-header">
+
+  <div class="etudiants-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="etudiants-header-center">
+    <div class="etudiants-header-univ">Université d'État d'Haïti</div>
+    <div class="etudiants-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="etudiants-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="etudiants-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="etudiants-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="etudiants-doc-title">
+  <i class="fas fa-users me-2" style="color:#1a3a6b;"></i>Mes étudiants
+</div>
+
+<!-- ── Filtre de recherche ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="etudiants-section-title mb-3">
+      <i class="fas fa-search me-1"></i> Rechercher
+    </div>
+    <form method="get" class="row g-3 etudiants-actions">
+      <div class="col-md-8">
+        <input type="text" name="recherche" class="form-control"
+               placeholder="Nom ou numéro étudiant…"
+               value="{{ recherche }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-search"></i> Filtrer
+        </button>
+      </div>
+      {% if recherche %}
+      <div class="col-md-2">
+        <a href="?" class="btn btn-outline-secondary w-100">
+          <i class="fas fa-times"></i> Réinitialiser
+        </a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<!-- ── Compteur ── -->
+<p class="etudiants-total">
+  <strong>{{ total_etudiants }}</strong>
+  étudiant{% if total_etudiants > 1 %}s{% endif %} trouvé{% if total_etudiants > 1 %}s{% endif %}
+  {% if recherche %} pour « <em>{{ recherche }}</em> »{% endif %}
+</p>
+
+<!-- ── Liste ── -->
+{% if page_obj.object_list %}
+
+  {% for donnee in page_obj %}
+  <div class="etudiant-card">
+
+    <!-- Ligne principale -->
+<div class="etudiant-card-body">
+
+      <!-- Identité -->
+      <div class="etudiant-info">
+        <div class="etudiant-nom">{{ donnee.etudiant.utilisateur.get_full_name }}</div>
+        <div class="etudiant-meta">
+          <i class="fas fa-id-card"></i>
+          {{ donnee.etudiant.numero_etudiant }}
+        </div>
+        <div class="etudiant-meta">
+          <i class="fas fa-envelope"></i>
+          {{ donnee.etudiant.utilisateur.email }}
+        </div>
+        <div class="etudiant-meta">
+          <i class="fas fa-building"></i>
+          {{ donnee.etudiant.departement.nom|default:"—" }}
+        </div>
+        <div class="etudiant-meta">
+          <i class="fas fa-layer-group"></i>
+          {{ donnee.etudiant.get_niveau_display }}
+        </div>
+      </div>
+
+      <!-- Moyenne /100 -->
+      <div class="etudiant-kpi">
+        <div class="etudiant-kpi-label">Moyenne</div>
+        <div class="etudiant-kpi-value
+          {% if donnee.moyenne >= 80 %}kpi-gpa-bon
+          {% elif donnee.moyenne >= 60 %}kpi-gpa-moyen
+          {% elif donnee.moyenne > 0 %}kpi-gpa-faible
+          {% else %}kpi-gpa-zero{% endif %}">
+          {% if donnee.moyenne %}{{ donnee.moyenne|floatformat:1 }}{% else %}—{% endif %}
+        </div>
+      </div>
+
+      <!-- Nb cours -->
+      <div class="etudiant-kpi">
+        <div class="etudiant-kpi-label">Cours</div>
+        <div class="etudiant-kpi-value" style="color:#1a3a6b;">
+          {{ donnee.cours|length }}
+        </div>
+      </div>
+
+      <!-- Crédits -->
+      <div class="etudiant-kpi">
+        <div class="etudiant-kpi-label">Crédits</div>
+        <div class="etudiant-kpi-value" style="color:#555;">
+          {{ donnee.total_credits }}
+        </div>
+      </div>
+
+      <!-- Bouton -->
+      <div class="etudiant-action">
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm"
+                data-bs-toggle="collapse"
+                data-bs-target="#cours-{{ donnee.etudiant.id }}"
+                aria-expanded="false">
+          <i class="fas fa-book-open me-1"></i> Cours
+        </button>
+      </div>
+
+    </div><!-- /.etudiant-card-body -->
+
+    <!-- Cours inscrits (collapse) -->
+    <div class="collapse cours-collapse" id="cours-{{ donnee.etudiant.id }}">
+      <div class="etudiants-section-title mb-3">
+        <i class="fas fa-list me-1"></i> Cours inscrits
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="cours-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Matière</th>
+              <th class="center">Section</th>
+              <th class="center">Crédits</th>
+              <th class="center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for info_cours in donnee.cours %}
+            <tr>
+              <td><strong>{{ info_cours.cours.code }}</strong></td>
+              <td>{{ info_cours.cours.nom }}</td>
+              <td class="center">
+                <span class="badge bg-secondary">{{ info_cours.section.numero_section }}</span>
+              </td>
+              <td class="center">{{ info_cours.cours.credits }}</td>
+              <td class="center">
+                <a href="{% url 'notes:saisie_notes_professeur' info_cours.section.id %}"
+                   class="btn btn-sm btn-outline-warning">
+                  <i class="fas fa-edit me-1"></i> Noter
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" style="text-align:center;color:#999;font-style:italic;padding:12px;">
+                Aucun cours.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /.etudiant-card -->
+  {% endfor %}
+
+<div class="mt-4">
+  {% include 'partials/pagination.html' %}
+</div>
+
+{% else %}
+  <p style="text-align:center;color:#999;font-style:italic;font-family:Arial,sans-serif;padding:40px 0;">
+    <i class="fas fa-info-circle me-1"></i>
+    {% if recherche %}
+      Aucun étudiant trouvé pour « {{ recherche }} ».
+    {% else %}
+      Aucun étudiant inscrit dans vos sections pour le moment.
+    {% endif %}
+  </p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% block title %}Mon Profil – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .profil-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .profil-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .profil-header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .profil-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .profil-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .profil-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .profil-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .profil-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .profil-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .profil-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .profil-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  @media (max-width: 768px) {
+    .profil-header { flex-direction: column; align-items: center; text-align: center; }
+    .profil-header-right { text-align: center; }
+    .profil-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="profil-header">
+
+  <div class="profil-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="profil-header-center">
+    <div class="profil-header-univ">Université d'État d'Haïti</div>
+    <div class="profil-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="profil-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="profil-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="profil-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="profil-doc-title">
+  <i class="fas fa-user-circle me-2" style="color:#1a3a6b;"></i>
+  Mon Profil
+</div>
+
+
+
+<!-- ── Formulaire ── -->
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="row">
+
+  <!-- ══ Colonne gauche : photo + infos modifiables ══ -->
+  <div class="col-md-4">
+
+    <!-- Photo & nom -->
+    <div class="card text-center mb-3">
+      <div class="card-body">
+        {% if user.photo_profil %}
+          <img src="{{ user.photo_profil.url }}" class="rounded-circle mb-3"
+               style="width:150px;height:150px;object-fit:cover;">
+        {% else %}
+          <div class="rounded-circle bg-primary text-white d-inline-flex
+                      align-items-center justify-content-center mb-3"
+               style="width:150px;height:150px;font-size:4rem;">
+            {{ user.first_name.0 }}{{ user.last_name.0 }}
+          </div>
+        {% endif %}
+        <h4>{{ user.get_full_name }}</h4>
+        <p class="text-muted">{{ user.get_role_display }}</p>
+
+        <div class="mt-2">
+          {{ form.photo_profil }}
+          {% if form.photo_profil.errors %}
+            <div class="text-danger small mt-1">{{ form.photo_profil.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations personnelles -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-user"></i> Informations personnelles
+      </div>
+      <div class="card-body">
+
+        <div class="mb-3">
+          <label class="form-label">Genre</label>
+          {{ form.genre }}
+          {% if form.genre.errors %}
+            <div class="text-danger small mt-1">{{ form.genre.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Téléphone</label>
+          {{ form.numero_telephone }}
+          {% if form.numero_telephone.errors %}
+            <div class="text-danger small mt-1">{{ form.numero_telephone.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Adresse</label>
+          {{ form.adresse }}
+          {% if form.adresse.errors %}
+            <div class="text-danger small mt-1">{{ form.adresse.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Date de naissance</label>
+          {{ form.date_naissance }}
+          {% if form.date_naissance.errors %}
+            <div class="text-danger small mt-1">{{ form.date_naissance.errors }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+      <div class="card-footer text-end">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> Enregistrer
+        </button>
+      </div>
+    </div>
+
+    <a href="{% url 'comptes:changer_mot_de_passe' %}"
+       class="btn btn-outline-secondary w-100 mt-2">
+      <i class="fas fa-key"></i> Changer mon mot de passe
+    </a>
+  </div>
+
+  <!-- ══ Colonne droite : profil académique/professionnel (lecture seule) ══ -->
+  <div class="col-md-8">
+
+    {% if user.est_administrateur %}
+    <!-- ── Administrateur ── -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-shield-alt"></i> Informations administratives
+      </div>
+      <div class="card-body">
+        <p><strong>Email :</strong> {{ user.email }}</p>
+        {% if administrateur %}
+          <p><strong>ID Administrateur :</strong> {{ administrateur.identifiant_administrateur }}</p>
+          <p><strong>Poste :</strong> {{ administrateur.poste|default:"Non renseigné" }}</p>
+        {% else %}
+          <p class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            Compte superutilisateur — aucun profil administrateur associé.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% elif user.est_etudiant %}
+    <!-- ── Étudiant ── -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-graduation-cap"></i> Informations académiques
+      </div>
+      <div class="card-body">
+        <p><strong>Email :</strong> {{ user.email }}</p>
+        <p><strong>Numéro étudiant :</strong> {{ etudiant.numero_etudiant }}</p>
+        <p><strong>Département :</strong> {{ etudiant.departement.nom|default:"Non assigné" }}</p>
+        <p><strong>Niveau :</strong> {{ etudiant.get_niveau_display }}</p>
+        <p><strong>Date d'inscription :</strong> {{ etudiant.date_inscription|date:"d/m/Y" }}</p>
+      </div>
+    </div>
+
+    <!-- Carte étudiante -->
+    <div class="card border-0 shadow-soft mt-4">
+      <div class="card-body p-4">
+        <h5 class="font-crimson fw-bold text-primary mb-3">
+          <i class="bi bi-person-badge me-2"></i>Carte Étudiante
+        </h5>
+        <p class="text-muted small mb-4">
+          Téléchargez votre carte étudiante officielle
+          {{ site.nom_etablissement|default:"FASCH" }} / UEH.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="{% url 'comptes:badge_pdf' %}" class="btn btn-primary">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Télécharger PDF
+          </a>
+          <a href="{% url 'comptes:badge_png' %}" class="btn btn-outline-primary">
+            <i class="bi bi-image me-2"></i>Télécharger PNG
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% elif user.est_professeur %}
+    <!-- ── Professeur ── -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chalkboard-teacher"></i> Informations professionnelles
+      </div>
+      <div class="card-body">
+        <p><strong>Email :</strong> {{ user.email }}</p>
+        <p><strong>Code Professeur :</strong> {{ professeur.identifiant_professeur }}</p>
+        <p><strong>Département :</strong> {{ professeur.departement.nom|default:"Non assigné" }}</p>
+        <p><strong>Spécialisation :</strong> {{ professeur.specialite|default:"Non renseignée" }}</p>
+        <p><strong>Date d'embauche :</strong> {{ professeur.date_embauche|date:"d/m/Y" }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+</form>
+
+{% endblock %}

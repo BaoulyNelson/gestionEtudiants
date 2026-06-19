@@ -1,0 +1,696 @@
+{%extends 'base_public.html' %}
+<!-- Custom Styles -->
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-dark: #1e293b;
+    --secondary: #7c3aed;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  body {
+    font-family: "Crimson Text", serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--background);
+  }
+
+  .font-playfair {
+    font-family: "Playfair Display", serif;
+  }
+  .font-crimson {
+    font-family: "Crimson Text", serif;
+  }
+
+  .bg-primary {
+    background-color: var(--primary) !important;
+  }
+  .bg-primary-900 {
+    background: linear-gradient(
+      135deg,
+      var(--primary-dark) 0%,
+      var(--primary) 100%
+    ) !important;
+  }
+  .bg-primary-100 {
+    background-color: rgba(30, 58, 138, 0.1) !important;
+  }
+  .bg-primary-50 {
+    background-color: rgba(30, 58, 138, 0.05) !important;
+  }
+  .bg-secondary {
+    background-color: var(--secondary) !important;
+  }
+  .bg-secondary-100 {
+    background-color: rgba(124, 58, 237, 0.1) !important;
+  }
+  .bg-secondary-50 {
+    background-color: rgba(124, 58, 237, 0.05) !important;
+  }
+  .bg-accent {
+    background-color: var(--accent) !important;
+  }
+  .bg-accent-100 {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+  }
+  .bg-accent-50 {
+    background-color: rgba(245, 158, 11, 0.05) !important;
+  }
+  .bg-accent-200 {
+    border-color: rgba(245, 158, 11, 0.2) !important;
+  }
+  .bg-success {
+    background-color: var(--success) !important;
+  }
+  .bg-success-100 {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+  }
+  .bg-success-50 {
+    background-color: rgba(16, 185, 129, 0.05) !important;
+  }
+  .bg-surface {
+    background-color: var(--surface) !important;
+  }
+  .bg-background {
+    background-color: var(--background) !important;
+  }
+
+  .text-primary {
+    color: var(--primary) !important;
+  }
+  .text-secondary {
+    color: var(--secondary) !important;
+  }
+  .text-accent {
+    color: var(--accent) !important;
+  }
+  .text-success {
+    color: var(--success) !important;
+  }
+
+  .btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-primary-custom:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+  }
+
+  .btn-secondary-custom {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-secondary-custom:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft) !important;
+  }
+  .shadow-medium {
+    box-shadow: var(--shadow-medium) !important;
+  }
+  .shadow-large {
+    box-shadow: var(--shadow-large) !important;
+  }
+
+  .dept-nav-btn {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: white;
+  }
+
+  .dept-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dept-nav-btn.active {
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .cours-year {
+    transition: all 0.3s ease;
+  }
+
+  .cours-year:hover {
+    transform: translateX(4px);
+  }
+
+  .year-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .year-content.show {
+    max-height: 300px;
+  }
+
+  .year-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .year-arrow.rotated {
+    transform: rotate(180deg);
+  }
+
+  .career-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .career-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-large) !important;
+  }
+
+  .faculty-card {
+    transition: all 0.3s ease;
+  }
+
+  .faculty-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .faculty-card img {
+    transition: all 0.3s ease;
+  }
+
+  .faculty-card:hover img {
+    box-shadow: var(--shadow-large);
+    transform: scale(1.05);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hero-bg {
+    transition: opacity 1s ease-in-out;
+  }
+
+  .departement-content {
+    display: none;
+  }
+
+  .departement-content.active {
+    display: block;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1e40af;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dept-nav-btn {
+      padding: 12px !important;
+    }
+
+    .dept-nav-btn .display-6 {
+      font-size: 1rem !important;
+    }
+
+    .cours-year .flex-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* Badge customization */
+  .badge-custom {
+    padding: 4px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Icon sizes */
+  .icon-lg {
+    font-size: 2rem;
+  }
+  .icon-md {
+    font-size: 1.25rem;
+  }
+  .icon-sm {
+    font-size: 0.875rem;
+  }
+</style>
+
+{%block public_content %}
+{% load static %}
+
+{# ... tout le CSS existant, inchangé ... #}
+
+
+<!-- Hero Section -->
+<section class="position-relative text-white overflow-hidden" style="min-height: 80vh;">
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+  <div class="position-absolute top-0 start-0 w-100 h-100">
+    <img id="dept-hero-bg"
+         src="{{ dept_actif.get_image_hero }}"
+         alt="{{ dept_actif.nom }}"
+         class="w-100 h-100 object-fit-cover"
+         style="transition: opacity 0.6s;">
+  </div>
+
+  <div class="container position-relative d-flex flex-column justify-content-center align-items-center text-center h-100">
+    <div class="mb-5">
+      <h1 class="display-3 fw-bold mb-3">Explorez Nos Programmes d'Excellence</h1>
+      <p class="lead text-white-50 mb-0">Quatre départements, une mission : former les leaders des sciences humaines en Haïti</p>
+    </div>
+
+    <!-- Boutons de navigation générés dynamiquement -->
+    <div class="row row-cols-2 row-cols-md-4 g-3 w-100 justify-content-center">
+      {% for dep in departements %}
+      <div class="col">
+        <button onclick="showDepartment('{{ dep.slug }}')"
+                data-slug="{{ dep.slug }}"
+                data-image="{{ dep.get_image_hero }}"
+                class="dept-nav-btn btn w-100 text-center p-4 rounded text-white
+                       {% if dep.slug == slug_actif %}active{% endif %}"
+                style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);backdrop-filter:blur(5px);">
+          <div class="fs-3 mb-2">{{ dep.emoji }}</div>
+          <div class="fw-semibold">{{ dep.nom }}</div>
+          <div class="small opacity-75">{{ dep.slogan }}</div>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- Contenu des départements — une seule boucle -->
+<div class="container py-5">
+  {% for dep in departements %}
+  <div id="{{ dep.slug }}-content"
+       class="departement-content {% if dep.slug == slug_actif %}active{% endif %}">
+
+    <div class="row g-5 mb-5">
+      <!-- Colonne principale -->
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="display-4 fw-bold font-crimson text-{{ dep.couleur }} mb-4">
+            Département de {{ dep.nom }}
+          </h2>
+          <p class="lead text-muted mb-4">{{ dep.description }}</p>
+
+          <!-- Spécialités (badges) -->
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            {% for spec in dep.get_specialites_liste %}
+            <span class="badge bg-{{ dep.couleur }}-100 text-{{ dep.couleur }} badge-custom">
+              {{ spec }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Cours par année (depuis la BDD) -->
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h4 font-crimson fw-bold text-{{ dep.couleur }} mb-4">
+              Parcours Académique
+            </h3>
+            {% for cours in dep.cours.all|dictsort:"annee" %}
+            <div class="cours-year" data-year="{{ dep.slug }}-{{ forloop.counter }}">
+              <div class="d-flex justify-content-between align-items-center p-4 bg-{{ dep.couleur }}-50 rounded cursor-pointer"
+                   onclick="toggleYear('{{ dep.slug }}-{{ forloop.counter }}')">
+                <div>
+                  <h4 class="fw-semibold text-{{ dep.couleur }} mb-1">{{ cours.titre }}</h4>
+                  <p class="small text-muted mb-0">{{ cours.description|truncatewords:10 }}</p>
+                </div>
+                <i class="bi bi-chevron-down text-{{ dep.couleur }} year-arrow icon-md"></i>
+              </div>
+              <div class="year-content mt-2 ms-4">
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded">
+                  <div class="bg-{{ dep.couleur }} rounded-circle" style="width:8px;height:8px;"></div>
+                  <span class="small">{{ cours.titre }}</span>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-muted small">Aucun cours enregistré pour ce département.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Corps professoral -->
+        <div class="mb-5">
+          <h3 class="h3 font-crimson fw-bold text-{{ dep.couleur }} mb-5 text-center">
+            Notre Corps Professoral
+          </h3>
+          <div class="row g-4 justify-content-center">
+            {% for prof in dep.professeurs_actifs|slice:":3" %}
+            <div class="col-md-4 text-center faculty-card">
+              <div class="position-relative mb-3">
+                {% if prof.utilisateur.photo %}
+                <img src="{{ prof.utilisateur.photo.url }}"
+                     alt="{{ prof.utilisateur.get_full_name }}"
+                     class="rounded-circle mx-auto shadow-medium"
+                     style="width:96px;height:96px;object-fit:cover;">
+                {% else %}
+                <div class="rounded-circle mx-auto bg-{{ dep.couleur }}-100 d-flex align-items-center justify-content-center shadow-medium"
+                     style="width:96px;height:96px;">
+                  <i class="bi bi-person-fill text-{{ dep.couleur }} fs-2"></i>
+                </div>
+                {% endif %}
+              </div>
+              <h4 class="font-crimson fw-bold text-primary mb-1">
+                {{ prof.utilisateur.get_full_name }}
+              </h4>
+              <p class="small text-{{ dep.couleur }} fw-semibold mb-2">
+                {% if prof == dep.chef_departement %}Directeur du Département{% else %}Professeur{% endif %}
+              </p>
+              <p class="small text-muted mb-3">{{ prof.specialite|default:"" }}</p>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">Aucun professeur enregistré.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+
+        <!-- Conditions d'admission -->
+        <div class="card shadow-soft mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-{{ dep.couleur }} mb-4">
+              Conditions d'Admission
+            </h3>
+            <ul class="space-y-2 small list-unstyled">
+              {% for condition in dep.get_conditions_liste %}
+              <li class="d-flex align-items-start gap-2 mb-2">
+                <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0 icon-sm"></i>
+                <span>{{ condition }}</span>
+              </li>
+              {% empty %}
+              <li class="text-muted">Conditions à venir.</li>
+              {% endfor %}
+            </ul>
+            <a href="{% url 'admissions:centre_admissions' %}"
+               class="btn btn-primary-custom w-100 mt-3">
+              Postuler Maintenant
+            </a>
+          </div>
+        </div>
+
+        <!-- Statistiques clés -->
+        <div class="card bg-{{ dep.couleur }}-50 mb-4">
+          <div class="card-body p-4">
+            <h3 class="h5 font-crimson fw-bold text-{{ dep.couleur }} mb-4">
+              Statistiques Clés
+            </h3>
+            <div class="row text-center g-3">
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-{{ dep.couleur }}">
+                  {{ dep.nb_etudiants_affiche|default:dep.obtenir_total_etudiants }}
+                </div>
+                <div class="small text-muted">Étudiants Actifs</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-secondary">{{ dep.taux_reussite }}</div>
+                <div class="small text-muted">Taux de Réussite</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-3 fw-bold text-success">{{ dep.taux_insertion }}</div>
+                <div class="small text-muted">Insertion Pro</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date limite inscription -->
+        {% if dep.date_limite_inscription %}
+        <div class="card border-accent-200 mb-4">
+          <div class="card-body p-4 bg-accent-50">
+            <h3 class="h5 font-crimson fw-bold text-accent mb-2">Date Limite</h3>
+            <p class="small text-muted mb-2">Inscriptions {{ dep.date_limite_inscription|date:"Y" }}</p>
+            <div class="fs-4 fw-bold text-accent mb-2">
+              {{ dep.date_limite_inscription|date:"d F Y" }}
+            </div>
+            <p class="small text-muted mb-0">Places limitées - Inscrivez-vous tôt</p>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Call to Action — inchangé -->
+<section class="bg-primary text-white py-5">
+  <div class="container text-center">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <h2 class="display-3 fw-bold font-playfair mb-4">Prêt à Choisir Votre Parcours ?</h2>
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+          <a href="{% url 'admissions:centre_admissions' %}" class="btn btn-secondary-custom btn-lg px-5 py-3">
+            Commencer Votre Candidature
+          </a>
+          <a href="{% url 'comptes:tableau_bord' %}"
+             class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none">
+            Accès Portail Étudiant
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Données des départements injectées depuis Django
+const deptData = {
+  {% for dep in departements %}
+  "{{ dep.slug }}": {
+    image:   "{{ dep.get_image_hero|escapejs }}",
+    nom:     "{{ dep.nom|escapejs }}",
+  },
+  {% endfor %}
+};
+
+function showDepartment(slug) {
+  // Mise à jour des boutons nav
+  document.querySelectorAll('.dept-nav-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.closest('.dept-nav-btn').classList.add('active');
+
+  // Mise à jour de l'image hero
+  if (deptData[slug]) {
+    const img = document.getElementById('dept-hero-bg');
+    img.style.opacity = '0';
+    setTimeout(() => {
+      img.src = deptData[slug].image;
+      img.style.opacity = '1';
+    }, 300);
+  }
+
+  // Affichage du contenu
+  document.querySelectorAll('.departement-content').forEach(el => {
+    el.classList.remove('active');
+  });
+  const target = document.getElementById(slug + '-content');
+  if (target) target.classList.add('active');
+
+  // Mise à jour de l'URL sans rechargement
+  const url = new URL(window.location);
+  url.searchParams.set('dept', slug);
+  window.history.pushState({}, '', url);
+}
+
+function toggleYear(id) {
+  const el      = document.querySelector(`[data-year="${id}"]`);
+  const content = el.querySelector('.year-content');
+  const arrow   = el.querySelector('.year-arrow');
+  const isOpen  = content.classList.contains('show');
+  content.classList.toggle('show', !isOpen);
+  arrow.classList.toggle('rotated', !isOpen);
+}
+</script>
+
+
+<script>
+  // Department navigation and content switching
+  const departments = {
+    psychology: {
+      image:
+        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pexels.com/photos/8923962/pexels-photo-8923962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    },
+    sociology: {
+      image:
+        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2832&auto=format&fit=crop",
+      fallback:
+        "https://images.pixabay.com/photo/2017/07/31/11/21/people-2557396_1280.jpg",
+    },
+    "social-work": {
+      image:
+        "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    },
+    communication: {
+      image:
+        "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2940&auto=format&fit=crop",
+      fallback:
+        "https://images.pixabay.com/photo/2016/02/01/00/56/news-1172463_1280.jpg",
+    },
+  };
+
+  function showDepartment(dept) {
+    // Update navigation buttons
+    document.querySelectorAll(".dept-nav-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      btn.classList.add("shadow-sm");
+    });
+    event.target.closest(".dept-nav-btn").classList.add("active");
+    event.target.closest(".dept-nav-btn").classList.remove("shadow-sm");
+
+    // Update hero background
+    const heroBg = document.getElementById("dept-hero-bg");
+    heroBg.src = departments[dept].image;
+    heroBg.onerror = function () {
+      this.src = departments[dept].fallback;
+      this.onerror = null;
+    };
+
+    // Show/hide content sections
+    document.querySelectorAll(".departement-content").forEach((content) => {
+      content.classList.remove("active");
+    });
+    document.getElementById(dept + "-content").classList.add("active");
+
+    // Update page title
+    const titles = {
+      psychology: "Département de Psychologie - FASCH",
+      sociology: "Département de Sociologie - FASCH",
+      "social-work": "Département de Travail Social - FASCH",
+      communication: "Département de Communication - FASCH",
+    };
+    document.title = titles[dept] || "Programmes Départementaux - FASCH";
+  }
+
+  // Course year toggle functionality
+  function toggleYear(year) {
+    const yearElement = document.querySelector(`[data-year="${year}"]`);
+    const content = yearElement.querySelector(".year-content");
+    const arrow = yearElement.querySelector(".year-arrow");
+
+    if (content.classList.contains("show")) {
+      content.classList.remove("show");
+      arrow.classList.remove("rotated");
+    } else {
+      content.classList.add("show");
+      arrow.classList.add("rotated");
+    }
+  }
+
+  // Smooth scrolling for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    });
+  });
+
+  // Initialize page
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show psychology department by default
+    showDepartment("psychology");
+
+    // Add animation to career cards
+    const careerCards = document.querySelectorAll(".career-card");
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    careerCards.forEach((card) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = "all 0.6s ease";
+      observer.observe(card);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,COM201,Linguistique et communication,Sénèque,DORIVAL,Communication Sociale,Niveau II,session1
+LUNDI,07:00,10:00,COM207,Communication graphique II,Oldy Joël,AUGUSTE,Communication Sociale,Niveau II,session2
+LUNDI,10:00,13:00,COM202,Théorie de la communication II,Frantz,BEAUVAIS,Communication Sociale,Niveau II,session1
+LUNDI,10:00,13:00,COM210,Psychologie sociale,Mireille,HYPPOLITE,Communication Sociale,Niveau II,session2
+LUNDI,13:00,16:00,COM203,Statistique II,Hugues,CADET,Communication Sociale,Niveau II,session1
+LUNDI,13:00,16:00,COM209,Dramaturgie,Garry,METELLUS,Communication Sociale,Niveau II,session2
+MARDI,07:00,10:00,COM204,Méthodologie II,Edwige,LABORDE,Communication Sociale,Niveau II,session1
+MARDI,07:00,10:00,COM208,Analyse du discours,Lionel,SAINT-FORT,Communication Sociale,Niveau II,session2
+MARDI,10:00,13:00,COM205,Journalisme II,Jean Pharès,JEROME,Communication Sociale,Niveau II,session1
+MARDI,10:00,13:00,COM211,Appréciation de l'art,Claudette,FRANÇOIS,Communication Sociale,Niveau II,session2
+MARDI,13:00,16:00,COM206,Communication orale,Nadège,THERMIDOR,Communication Sociale,Niveau II,session1
+MARDI,13:00,16:00,COM212,Cours optionnel,Réginald,CASIMIR,Communication Sociale,Niveau II,session2
+MERCREDI,07:00,10:00,COM210,Psychologie sociale,Mireille,HYPPOLITE,Communication Sociale,Niveau II,session1
+MERCREDI,07:00,10:00,COM201,Linguistique et communication,Sénèque,DORIVAL,Communication Sociale,Niveau II,session2
+MERCREDI,10:00,13:00,COM209,Dramaturgie,Garry,METELLUS,Communication Sociale,Niveau II,session1
+MERCREDI,10:00,13:00,COM204,Méthodologie II,Edwige,LABORDE,Communication Sociale,Niveau II,session2
+MERCREDI,13:00,16:00,COM207,Communication graphique II,Oldy Joël,AUGUSTE,Communication Sociale,Niveau II,session1
+MERCREDI,13:00,16:00,COM205,Journalisme II,Jean Pharès,JEROME,Communication Sociale,Niveau II,session2
+JEUDI,07:00,10:00,COM208,Analyse du discours,Lionel,SAINT-FORT,Communication Sociale,Niveau II,session1
+JEUDI,07:00,10:00,COM203,Statistique II,Hugues,CADET,Communication Sociale,Niveau II,session2
+JEUDI,10:00,13:00,COM211,Appréciation de l'art,Claudette,FRANÇOIS,Communication Sociale,Niveau II,session1
+JEUDI,10:00,13:00,COM202,Théorie de la communication II,Frantz,BEAUVAIS,Communication Sociale,Niveau II,session2
+JEUDI,13:00,16:00,COM212,Cours optionnel,Réginald,CASIMIR,Communication Sociale,Niveau II,session1
+JEUDI,13:00,16:00,COM206,Communication orale,Nadège,THERMIDOR,Communication Sociale,Niveau II,session2
+VENDREDI,07:00,10:00,COM205,Journalisme II,Jean Pharès,JEROME,Communication Sociale,Niveau II,session1
+VENDREDI,07:00,10:00,COM206,Communication orale,Nadège,THERMIDOR,Communication Sociale,Niveau II,session2
+VENDREDI,10:00,13:00,COM201,Linguistique et communication,Sénèque,DORIVAL,Communication Sociale,Niveau II,session2
+VENDREDI,10:00,13:00,COM208,Analyse du discours,Lionel,SAINT-FORT,Communication Sociale,Niveau II,session2
+VENDREDI,13:00,16:00,COM203,Statistique II,Hugues,CADET,Communication Sociale,Niveau II,session2
+VENDREDI,13:00,16:00,COM210,Psychologie sociale,Mireille,HYPPOLITE,Communication Sociale,Niveau II,session2
+SAMEDI,07:00,10:00,COM202,Théorie de la communication II,Frantz,BEAUVAIS,Communication Sociale,Niveau II,session2
+SAMEDI,07:00,10:00,COM204,Méthodologie II,Edwige,LABORDE,Communication Sociale,Niveau II,session2
+SAMEDI,10:00,13:00,COM209,Dramaturgie,Garry,METELLUS,Communication Sociale,Niveau II,session2
+SAMEDI,10:00,13:00,COM211,Appréciation de l'art,Claudette,FRANÇOIS,Communication Sociale,Niveau II,session2
+SAMEDI,13:00,16:00,COM207,Communication graphique II,Oldy Joël,AUGUSTE,Communication Sociale,Niveau II,session2
+SAMEDI,13:00,16:00,COM212,Cours optionnel,Réginald,CASIMIR,Communication Sociale,Niveau II,session2

@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% block title %}Mes Inscriptions – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .inscriptions-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .inscriptions-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .inscriptions-header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .inscriptions-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .inscriptions-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .inscriptions-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .inscriptions-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .inscriptions-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .inscriptions-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .inscriptions-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .inscriptions-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  @media (max-width: 768px) {
+    .inscriptions-header { flex-direction: column; align-items: center; text-align: center; }
+    .inscriptions-header-right { text-align: center; }
+    .inscriptions-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="inscriptions-header">
+
+  <div class="inscriptions-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="inscriptions-header-center">
+    <div class="inscriptions-header-univ">Université d'État d'Haïti</div>
+    <div class="inscriptions-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="inscriptions-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="inscriptions-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="inscriptions-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="inscriptions-doc-title">
+  <i class="fas fa-clipboard-check me-2" style="color:#1a3a6b;"></i>
+  Mes Inscriptions
+</div>
+
+<!-- ── Cartes statistiques ── -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card text-center bg-primary text-white">
+      <div class="card-body">
+        <h3>{{ total_enrolled }}</h3>
+        <p class="mb-0">Cours actifs</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center bg-success text-white">
+      <div class="card-body">
+        <h3>{{ total_completed }}</h3>
+        <p class="mb-0">Cours complétés</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center bg-danger text-white">
+      <div class="card-body">
+        <h3>{{ total_dropped }}</h3>
+        <p class="mb-0">Cours abandonnés</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <a href="{% url 'inscriptions:sections_disponibles' %}"
+       class="btn btn-warning btn-lg w-100 h-100 d-flex align-items-center justify-content-center">
+      <div>
+        <i class="fas fa-plus-circle fa-2x mb-2"></i>
+        <p class="mb-0">Nouvelle inscription</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ── Tableau avec onglets ── -->
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      {% for value, label in status_choices %}
+      <li class="nav-item">
+        <a class="nav-link {% if current_status == value %}active{% endif %}"
+           href="?status={{ value }}">
+          {{ label }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card-body">
+    {% if inscriptions %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Cours</th>
+            <th>Section</th>
+            <th>Professeur</th>
+            <th>Horaire</th>
+            <th>Session</th>
+            <th>Date d'inscription</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inscription in inscriptions %}
+          <tr>
+            <td>
+              <strong>{{ inscription.section_cours.cours.code }}</strong><br>
+              <small class="text-muted">{{ inscription.section_cours.cours.nom }}</small>
+            </td>
+            <td>
+              <span class="badge bg-secondary">{{ inscription.section_cours.numero_section }}</span>
+            </td>
+            <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name }}</td>
+            <td>
+              <span class="badge bg-primary">{{ inscription.section_cours.get_jour_semaine_display }}</span><br>
+              <small>{{ inscription.section_cours.heure_debut|time:"H:i" }} - {{ inscription.section_cours.heure_fin|time:"H:i" }}</small>
+            </td>
+            <td><small>{{ inscription.section_cours.get_session_display }}</small></td>
+            <td>{{ inscription.date_inscription|date:"d/m/Y" }}</td>
+            <td>
+              <a href="{% url 'cours:detail_section' inscription.section_cours.id %}"
+                 class="btn btn-sm btn-info" title="Détails">
+                <i class="fas fa-eye"></i>
+              </a>
+              {% if inscription.statut == 'INSCRIT' %}
+              <a href="{% url 'inscriptions:abandonner' inscription.id %}"
+                 class="btn btn-sm btn-danger"
+                 title="Abandonner"
+                 onclick="return confirm('Voulez-vous vraiment abandonner ce cours ?')">
+                <i class="fas fa-times"></i>
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i> Aucune inscription trouvée.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

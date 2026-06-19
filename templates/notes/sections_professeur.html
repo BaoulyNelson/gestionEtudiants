@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %}Mes sections – Notes – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .saisie-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .saisie-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .saisie-header-center { flex: 1; text-align: center; }
+  .saisie-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .saisie-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .saisie-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .saisie-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .saisie-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .saisie-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .saisie-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .saisie-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 4px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+  .saisie-doc-subtitle {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 768px) {
+    .saisie-header { flex-direction: column; align-items: center; text-align: center; }
+    .saisie-header-right { text-align: center; }
+    .saisie-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="saisie-header">
+
+  <div class="saisie-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="saisie-header-center">
+    <div class="saisie-header-univ">Université d'État d'Haïti</div>
+    <div class="saisie-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="saisie-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="saisie-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="saisie-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="saisie-doc-title">
+  <i class="fas fa-edit me-2" style="color:#1a3a6b;"></i>
+  Saisie des notes – Mes sections
+</div>
+<p class="saisie-doc-subtitle">
+  Sélectionnez une section pour saisir ou consulter les notes
+</p>
+
+<!-- ── Liste des sections ── -->
+{% if sections %}
+<div class="row">
+  {% for section in sections %}
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          <span class="badge bg-light text-dark">{{ section.cours.code }}</span>
+          {{ section.cours.nom }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          <small class="text-muted">Section {{ section.numero_section }}</small>
+        </p>
+
+        <div class="row mt-3">
+          <div class="col-6">
+            <p class="mb-2">
+              <small>
+                <i class="fas fa-calendar"></i> {{ section.get_jour_semaine_display }}
+              </small>
+            </p>
+            <p class="mb-2">
+              <small>
+                <i class="fas fa-clock"></i> {{ section.heure_debut|time:"H:i" }} - {{ section.heure_fin|time:"H:i" }}
+              </small>
+            </p>
+          </div>
+          <div class="col-6">
+            <p class="mb-2">
+              <small>
+                <i class="fas fa-door-open"></i> Salle: {{ section.salle|default:"N/A" }}
+              </small>
+            </p>
+            <p class="mb-2">
+              <small>
+                <i class="fas fa-users"></i> Étudiants:
+                <span class="badge bg-{% if section.enrolled_count >= section.capacite_max %}danger{% else %}success{% endif %}">
+                  {{ section.nb_inscrits }}
+                </span>
+              </small>
+            </p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="d-grid gap-2">
+          <a href="{% url 'notes:saisie_notes_professeur' section.id %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Saisir / Modifier les notes
+          </a>
+          <a href="{% url 'notes:recap_notes' section.id %}" class="btn btn-info">
+            <i class="fas fa-eye"></i> Voir toutes les notes
+          </a>
+          <a href="{% url 'notes:statistiques_cours' section.id %}" class="btn btn-success">
+            <i class="fas fa-chart-bar"></i> Statistiques
+          </a>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        <small>
+          <i class="fas fa-calendar-alt"></i>
+          {{ section.get_session_display }} - {{ section.get_semestre_display }} {{ section.year }}
+        </small>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+  <i class="fas fa-info-circle"></i> Vous n'avez aucune section assignée pour le moment.
+</div>
+{% endif %}
+
+<!-- ── Aide rapide ── -->
+<div class="card mt-4 bg-light">
+  <div class="card-body">
+    <h5><i class="fas fa-question-circle"></i> Aide rapide</h5>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <h6><i class="fas fa-edit text-warning"></i> Saisir / Modifier les notes</h6>
+        <p class="small">Utilisez ce bouton pour entrer ou modifier les notes de vos étudiants. Vous pouvez saisir chaque composante (examen, travaux, etc.) et la note finale sera calculée automatiquement.</p>
+      </div>
+      <div class="col-md-4">
+        <h6><i class="fas fa-eye text-info"></i> Voir toutes les notes</h6>
+        <p class="small">Consultez un récapitulatif complet de toutes les notes déjà saisies pour cette section. Mode lecture seule avec possibilité d'impression.</p>
+      </div>
+      <div class="col-md-4">
+        <h6><i class="fas fa-chart-bar text-success"></i> Statistiques</h6>
+        <p class="small">Visualisez les statistiques de performance de la section : moyenne, distribution des notes, taux de réussite, etc.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,TS-TSI2,Travail Social Individuel,Edwige,LABORDE,Travail Social,Niveau II,session1
+LUNDI,07:00,10:00,TS-STAT2,Statistique II,Hugues,CADET,Travail Social,Niveau II,session2
+LUNDI,10:00,13:00,TS-TSG2,Travail Social de Groupe,Garry,METELLUS,Travail Social,Niveau II,session1
+LUNDI,10:00,13:00,TS-METH2,Méthodologie II,Sénèque,DORIVAL,Travail Social,Niveau II,session2
+LUNDI,13:00,16:00,TS-TSC2,Travail Social Communautaire,Mireille,HYPPOLITE,Travail Social,Niveau II,session1
+LUNDI,13:00,16:00,TS-EPI2,Épistémologie,Jean Luc,TONDREAU,Travail Social,Niveau II,session2
+MARDI,07:00,10:00,TS-STAT1,Statistique I,Hugues,CADET,Travail Social,Niveau II,session1
+MARDI,07:00,10:00,TS-CRI2,Criminologie,Garry,METELLUS,Travail Social,Niveau II,session2
+MARDI,10:00,13:00,TS-METH1,Méthodologie I,Sénèque,DORIVAL,Travail Social,Niveau II,session1
+MARDI,10:00,13:00,TS-SO2,Sociologie des Organisations,Réginald,CASIMIR,Travail Social,Niveau II,session2
+MARDI,13:00,16:00,TS-IS2,Introduction à la Sociologie,Pierre,DANTÈS,Travail Social,Niveau II,session1
+MARDI,13:00,16:00,TS-SR2,Sociologie Rurale,Gérard,VOLTAIRE,Travail Social,Niveau II,session2
+MERCREDI,07:00,10:00,TS-VI2,Visites Institutionnelles,Roseline,PIERRE-LOUIS,Travail Social,Niveau II,session1
+MERCREDI,07:00,10:00,TS-HES2,Histoire Économique et Sociale d'Haïti,Dérynx,PETIT JEAN,Travail Social,Niveau II,session2
+MERCREDI,10:00,13:00,TS-AS2,Animation Sociale,Marlène,SAINT-HILAIRE,Travail Social,Niveau II,session1
+MERCREDI,10:00,13:00,TS-HPH2,Histoire de la Pensée Sociale Haïtienne,Claudette,FRANÇOIS,Travail Social,Niveau II,session2
+MERCREDI,13:00,16:00,TS-LS2,Législation Sociale,Lionel,SAINT-FORT,Travail Social,Niveau II,session1
+MERCREDI,13:00,16:00,TS-CSH2,Culture et Société en Haïti,Nadège,THERMIDOR,Travail Social,Niveau II,session2
+JEUDI,07:00,10:00,TS-FR2,Français II,Nadège,THERMIDOR,Travail Social,Niveau II,session1
+JEUDI,07:00,10:00,TS-TSI2,Travail Social Individuel,Edwige,LABORDE,Travail Social,Niveau II,session2
+JEUDI,10:00,13:00,TS-ANG2,Anglais,James,MENTOR,Travail Social,Niveau II,session1
+JEUDI,10:00,13:00,TS-TSG2,Travail Social de Groupe,Garry,METELLUS,Travail Social,Niveau II,session2
+JEUDI,13:00,16:00,TS-ESP2,Espagnol,James,MENTOR,Travail Social,Niveau II,session1
+JEUDI,13:00,16:00,TS-TSC2,Travail Social Communautaire,Mireille,HYPPOLITE,Travail Social,Niveau II,session2
+VENDREDI,07:00,10:00,TS-CSC2,Culture et Société dans la Caraïbe,Claudette,FRANÇOIS,Travail Social,Niveau II,session1
+VENDREDI,07:00,10:00,TS-AS2,Animation Sociale,Marlène,SAINT-HILAIRE,Travail Social,Niveau II,session2
+VENDREDI,10:00,13:00,TS-CRI2,Criminologie,Garry,METELLUS,Travail Social,Niveau II,session1
+VENDREDI,10:00,13:00,TS-LS2,Législation Sociale,Lionel,SAINT-FORT,Travail Social,Niveau II,session2
+VENDREDI,13:00,16:00,TS-HES2,Histoire Économique et Sociale d'Haïti,Dérynx,PETIT JEAN,Travail Social,Niveau II,session1
+VENDREDI,13:00,16:00,TS-VI2,Visites Institutionnelles,Roseline,PIERRE-LOUIS,Travail Social,Niveau II,session2
+SAMEDI,07:00,10:00,TS-SO2,Sociologie des Organisations,Réginald,CASIMIR,Travail Social,Niveau II,session1
+SAMEDI,07:00,10:00,TS-HPH2,Histoire de la Pensée Sociale Haïtienne,Claudette,FRANÇOIS,Travail Social,Niveau II,session2
+SAMEDI,10:00,13:00,TS-SR2,Sociologie Rurale,Gérard,VOLTAIRE,Travail Social,Niveau II,session1
+SAMEDI,10:00,13:00,TS-CSC2,Culture et Société dans la Caraïbe,Claudette,FRANÇOIS,Travail Social,Niveau II,session2
+SAMEDI,13:00,16:00,TS-EPI2,Épistémologie,Jean Luc,TONDREAU,Travail Social,Niveau II,session1
+SAMEDI,13:00,16:00,TS-FR2,Français II,Nadège,THERMIDOR,Travail Social,Niveau II,session2

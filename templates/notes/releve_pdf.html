@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 13px;
+    color: #222;
+    margin: 0;
+  }
+
+  /* ── En-tête ── */
+  .releve-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 14px;
+  }
+  .releve-header-left { min-width: 80px; }
+  .releve-header-left img { height: 70px; object-fit: contain; }
+  .releve-header-center { flex: 1; text-align: center; }
+  .releve-header-univ {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: #555;
+    font-family: Arial, sans-serif; margin-bottom: 4px;
+  }
+  .releve-header-faculty {
+    font-size: 18px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #1a3a6b;
+    font-family: "Georgia", serif; margin-bottom: 5px;
+  }
+  .releve-header-slogan {
+    font-size: 10px; color: #777; font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .releve-header-right {
+    text-align: right; font-size: 10.5px;
+    color: #555; font-family: Arial, sans-serif; min-width: 160px;
+  }
+  .releve-header-right p { margin: 2px 0; }
+
+  .releve-header-divider {
+    border: none; border-top: 2.5px solid #1a3a6b; margin: 10px 0 18px;
+  }
+
+  /* ── Titre ── */
+  .releve-doc-title {
+    text-align: center; font-size: 16px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; color: #111;
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #ccc;
+  }
+
+  /* ── Infos étudiant ── */
+  .releve-student-info { margin-bottom: 20px; }
+  .releve-student-info p { font-size: 13px; margin: 4px 0; color: #222; }
+
+  /* ── Période ── */
+  .releve-periode { margin-bottom: 22px; }
+  .releve-periode-title {
+    font-size: 11px; font-weight: 700; color: #1a3a6b;
+    text-transform: uppercase; letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b; padding-left: 8px; margin-bottom: 8px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Tableau ── */
+  .releve-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 4px; }
+  .releve-table thead tr { background-color: #1a3a6b; color: #fff; }
+  .releve-table thead th {
+    padding: 8px 10px; font-weight: 700; text-align: left;
+    font-family: Arial, sans-serif; font-size: 11px;
+  }
+  .releve-table thead th.center,
+  .releve-table tbody td.center { text-align: center; }
+  .releve-table tbody tr { border-bottom: 1px solid #ddd; }
+  .releve-table tbody tr:nth-child(even) { background-color: #f7f9fc; }
+  .releve-table tbody td { padding: 7px 10px; color: #333; }
+
+  /* ── Badges mention ── */
+  .mention-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; font-family: Arial, sans-serif;
+  }
+  .mention-A { background: #d4edda; color: #155724; }
+  .mention-B { background: #d1ecf1; color: #0c5460; }
+  .mention-C { background: #fff3cd; color: #856404; }
+  .mention-D { background: #ffe5d0; color: #7d3c0a; }
+  .mention-F { background: #f8d7da; color: #721c24; }
+
+  /* ── Synthèse ── */
+  .releve-synthese {
+    border-top: 1px solid #ccc; padding-top: 14px; margin-top: 8px;
+  }
+  .releve-synthese p { font-size: 13px; margin: 5px 0; color: #222; }
+  .gpa-val { font-size: 16px; font-weight: 700; color: #1a3a6b; }
+
+  /* ── Pied ── */
+  .releve-footer {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-top: 40px;
+  }
+  .releve-seal {
+    width: 90px; height: 90px; border: 3px solid #1a3a6b; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; color: #1a3a6b; font-size: 8px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px; padding: 10px;
+    font-family: Arial, sans-serif; line-height: 1.4; overflow: hidden;
+  }
+  .releve-signature { text-align: center; }
+  .releve-signature p { font-size: 11px; font-style: italic; color: #555; margin-bottom: 8px; }
+  .releve-signature img { height: 45px; object-fit: contain; display: block; margin: 0 auto 6px; }
+  .releve-signature-line {
+    border-top: 1px solid #333; width: 170px; margin: 0 auto;
+    padding-top: 4px; font-size: 10px; color: #777; font-family: Arial, sans-serif;
+  }
+  .releve-date {
+    text-align: right; font-size: 10.5px; color: #777;
+    font-family: Arial, sans-serif; margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- En-tête -->
+  <div class="releve-header">
+    <div class="releve-header-left">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}">
+      {% endif %}
+    </div>
+    <div class="releve-header-center">
+      <div class="releve-header-univ">Université d'État d'Haïti</div>
+      <div class="releve-header-faculty">{{ site.nom_complet }}</div>
+      {% if site.slogan %}
+        <div class="releve-header-slogan">{{ site.slogan }}</div>
+      {% endif %}
+    </div>
+    <div class="releve-header-right">
+      {% if site.adresse_ligne1 %}<p>{{ site.adresse_ligne1 }}</p>{% endif %}
+      {% if site.telephone %}<p>Tél : {{ site.telephone }}</p>{% endif %}
+      {% if site.email %}<p>{{ site.email }}</p>{% endif %}
+    </div>
+  </div>
+  <div class="releve-header-divider"></div>
+
+  <!-- Titre -->
+  <div class="releve-doc-title">Relevé de Notes</div>
+
+  <!-- Date d'édition -->
+  <div class="releve-date">Date d'édition : {{ now|date:"d F Y" }}</div>
+
+  <!-- Infos étudiant -->
+  <div class="releve-student-info">
+    <p><strong>Nom :</strong> {{ etudiant.utilisateur.get_full_name }}</p>
+    <p><strong>Numéro d'étudiant :</strong> {{ etudiant.numero_etudiant }}</p>
+    <p><strong>Département :</strong> {{ etudiant.departement.nom|default:"—" }}</p>
+    <p><strong>Niveau :</strong> {{ etudiant.get_niveau_display }}</p>
+  </div>
+
+  <!-- Tableaux par période -->
+  {% for periode, cours_liste in periodes %}
+  <div class="releve-periode">
+    <div class="releve-periode-title">
+      Année {{ periode.0 }} — Semestre {{ periode.1 }}
+    </div>
+    <table class="releve-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Matière</th>
+          <th class="center">Crédits</th>
+          <th class="center">Note / 100</th>
+          <th class="center">Mention</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cours_liste %}
+        {% with cours=item.inscription.section_cours.cours note=item.note %}
+        <tr>
+          <td><strong>{{ cours.code }}</strong></td>
+          <td>{{ cours.nom }}</td>
+          <td class="center">{{ cours.credits }}</td>
+          <td class="center"><strong>{{ note.note_finale|floatformat:0 }}</strong></td>
+          <td class="center">
+            {% if note.note_finale >= 90 %}
+              <span class="mention-badge mention-A">Excellent</span>
+            {% elif note.note_finale >= 80 %}
+              <span class="mention-badge mention-B">Très bien</span>
+            {% elif note.note_finale >= 70 %}
+              <span class="mention-badge mention-C">Bien</span>
+            {% elif note.note_finale >= 60 %}
+              <span class="mention-badge mention-D">Passable</span>
+            {% else %}
+              <span class="mention-badge mention-F">Échec</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endwith %}
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;color:#999;font-style:italic;padding:12px;">
+            Aucune note pour cette période.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% empty %}
+  <p style="text-align:center;color:#999;font-style:italic;margin:30px 0;">
+    Aucun résultat académique disponible.
+  </p>
+  {% endfor %}
+
+  <!-- Synthèse -->
+  <div class="releve-synthese">
+    <p><strong>Moyenne Générale :</strong> <span class="gpa-val">{{ moyenne_generale|floatformat:0 }} / 100</span></p>
+    <p><strong>Crédits obtenus :</strong> {{ credits_cumules }}</p>
+    <p><strong>Mention :</strong> {{ mention_generale }}</p>
+    <p><strong>Nombre de cours :</strong> {{ total_cours }}</p>
+  </div>
+
+  <!-- Pied -->
+  <div class="releve-footer">
+    <div class="releve-seal">
+      {% if site.cachet_officiel %}
+        <img src="{{ site.cachet_officiel.url }}"
+             style="width:100%;height:100%;object-fit:contain;">
+      {% else %}
+        Faculté<br>des Sciences<br>───<br>Humaines
+      {% endif %}
+    </div>
+    <div class="releve-signature">
+      <p>{{ site.titre_directeur_etudes|default:"Le Directeur des Études" }}</p>
+      {% if site.signature_directeur %}
+        <img src="{{ site.signature_directeur.url }}">
+      {% else %}
+        <div style="height:45px;"></div>
+      {% endif %}
+      <div class="releve-signature-line">
+        {{ site.nom_directeur_etudes|default:"Signature &amp; Cachet" }}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<div class="etablissement-header">
+  <div class="etablissement-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="etablissement-header-center">
+    <div class="etablissement-header-univ">Université d'État d'Haïti</div>
+    <div class="etablissement-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="etablissement-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="etablissement-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<hr class="etablissement-header-divider">

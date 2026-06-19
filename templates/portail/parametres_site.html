@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Paramètres du site – FASCH{% endblock %}
+
+{% block extra_css %}
+<style>
+  .settings-page {
+    margin: 0 auto 40px;
+  }
+  .settings-section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  .settings-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .settings-section-title i { color: var(--primary); }
+  .form-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+  .btn-save {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-save:hover { background: var(--primary-dark); }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+<div class="settings-page">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="mb-0"><i class="fas fa-cog me-2" style="color:var(--primary)"></i>Paramètres du site</h2>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle me-2"></i>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+ <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <!-- Infos générales -->
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <i class="fas fa-university"></i> Informations générales
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Nom abrégé</label>
+          {{ form.nom_etablissement }}
+          {% if form.nom_etablissement.errors %}<div class="text-danger small mt-1">{{ form.nom_etablissement.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Nom complet</label>
+          {{ form.nom_complet }}
+          {% if form.nom_complet.errors %}<div class="text-danger small mt-1">{{ form.nom_complet.errors }}</div>{% endif %}
+        </div>
+        <div class="col-12">
+          <label class="form-label">Slogan</label>
+          {{ form.slogan }}
+          {% if form.slogan.errors %}<div class="text-danger small mt-1">{{ form.slogan.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Année de fondation</label>
+          {{ form.annee_fondation }}
+          {% if form.annee_fondation.errors %}<div class="text-danger small mt-1">{{ form.annee_fondation.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Année copyright</label>
+          {{ form.annee_copyright }}
+          {% if form.annee_copyright.errors %}<div class="text-danger small mt-1">{{ form.annee_copyright.errors }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+
+      <!-- section Identité visuelle -->
+  <div class="settings-section">
+    <div class="settings-section-title">
+      <i class="fas fa-image"></i> Identité visuelle
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Logo principal</label>
+        {% if site.logo %}
+          <div class="mb-2">
+            <img src="{{ site.logo.url }}" style="height:60px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px;">
+          </div>
+        {% endif %}
+        {{ form.logo }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Logo petit (topbar)</label>
+        {% if site.logo_small %}
+          <div class="mb-2">
+            <img src="{{ site.logo_small.url }}" style="height:40px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px;">
+          </div>
+        {% endif %}
+        {{ form.logo_small }}
+      </div>
+    </div>
+  </div>
+  <!-- section Signature officielle -->
+  <div class="settings-section">
+    <div class="settings-section-title">
+      <i class="fas fa-pen-nib"></i> Signature officielle
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Titre</label>
+        {{ form.titre_directeur_etudes }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Nom du signataire</label>
+        {{ form.nom_directeur_etudes }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Image de signature</label>
+        {% if site.signature_directeur %}
+          <div class="mb-2">
+            <img src="{{ site.signature_directeur.url }}" style="height:50px;object-fit:contain;">
+          </div>
+        {% endif %}
+        {{ form.signature_directeur }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Cachet officiel</label>
+        {% if site.cachet_officiel %}
+          <div class="mb-2">
+            <img src="{{ site.cachet_officiel.url }}" style="height:50px;object-fit:contain;">
+          </div>
+        {% endif %}
+        {{ form.cachet_officiel }}
+      </div>
+    </div>
+  </div>
+    <!-- Contact -->
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <i class="fas fa-map-marker-alt"></i> Contact
+      </div>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Adresse</label>
+          {{ form.adresse_ligne1 }}
+          {% if form.adresse_ligne1.errors %}<div class="text-danger small mt-1">{{ form.adresse_ligne1.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Téléphone</label>
+          {{ form.telephone }}
+          {% if form.telephone.errors %}<div class="text-danger small mt-1">{{ form.telephone.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Réseaux sociaux -->
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <i class="fas fa-share-alt"></i> Réseaux sociaux
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label"><i class="fab fa-twitter me-1"></i>Twitter</label>
+          {{ form.lien_twitter }}
+          {% if form.lien_twitter.errors %}<div class="text-danger small mt-1">{{ form.lien_twitter.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label"><i class="fab fa-facebook me-1"></i>Facebook</label>
+          {{ form.lien_facebook }}
+          {% if form.lien_facebook.errors %}<div class="text-danger small mt-1">{{ form.lien_facebook.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label"><i class="fab fa-linkedin me-1"></i>LinkedIn</label>
+          {{ form.lien_linkedin }}
+          {% if form.lien_linkedin.errors %}<div class="text-danger small mt-1">{{ form.lien_linkedin.errors }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end">
+      <button type="submit" class="btn-save">
+        <i class="fas fa-save me-2"></i>Enregistrer les paramètres
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

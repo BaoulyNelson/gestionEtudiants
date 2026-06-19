@@ -1,0 +1,162 @@
+<!-- ========== templates/inscriptions/enrollment_update.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Modifier inscription - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-edit"></i> Modifier l'inscription</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'inscriptions:liste_inscriptions' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-info-circle"></i> Informations de l'inscription
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 30%;">Étudiant:</th>
+                        <td>
+                            <strong>{{ inscription.etudiant.numero_etudiant }}</strong><br>
+                            {{ inscription.etudiant.utilisateur.get_full_name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Cours:</th>
+                        <td>
+                            <strong>{{ inscription.section_cours.cours.code }}</strong><br>
+                            {{ inscription.section_cours.cours.nom }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Section:</th>
+                        <td>{{ inscription.section_cours.numero_section }}</td>
+                    </tr>
+                    <tr>
+                        <th>Horaire:</th>
+                        <td>
+                            {{ inscription.section_cours.get_jour_semaine_display }}
+                            {{ inscription.section_cours.heure_debut|time:"H:i" }} - 
+                            {{ inscription.section_cours.heure_fin|time:"H:i" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Professeur:</th>
+                        <td>
+                            {% if inscription.section_cours.professeur %}
+                                {{ inscription.section_cours.professeur.utilisateur.get_full_name }}
+                            {% else %}
+                                <span class="text-muted">Non assigné</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Session:</th>
+                        <td>
+                            {{ inscription.section_cours.get_session_display }} - 
+                            {{ inscription.section_cours.get_semestre_display }} 
+                            {{ inscription.section_cours.annee }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date d'inscription:</th>
+                        <td>{{ inscription.date_inscription|date:"d/m/Y à H:i" }}</td>
+                    </tr>
+                    {% if inscription.date_abandon %}
+                    <tr>
+                        <th>Date d'abandon:</th>
+                        <td class="text-danger">{{ inscription.date_abandon|date:"d/m/Y à H:i" }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <i class="fas fa-edit"></i> Modifier le statut
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">
+                            Statut actuel: 
+                            <strong>
+                                {% if inscription.statut == 'INSCRIT' %}
+                                    <span class="badge bg-success">{{ inscription.get_statut_display }}</span>
+                                {% elif inscription.statut == 'ABANDONNE' %}
+                                    <span class="badge bg-danger">{{ inscription.get_statut_display }}</span>
+                                {% elif inscription.statut == 'COMPLETE' %}
+                                    <span class="badge bg-primary">{{ inscription.get_statut_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ inscription.get_statut_display }}</span>
+                                {% endif %}
+                            </strong>
+                        </label>
+                        <select name="status" id="status" class="form-select" required>
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if value == inscription.statut %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Raison du changement</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="3" 
+                                  placeholder="Expliquez pourquoi vous modifiez ce statut..."></textarea>
+                        <small class="text-muted">Cette information sera enregistrée dans l'historique.</small>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Attention:</strong> Cette action sera enregistrée dans l'historique.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Enregistrer le changement
+                        </button>
+                        <a href="{% url 'inscriptions:historique_inscription' inscription.id %}" 
+                           class="btn btn-info">
+                            <i class="fas fa-history"></i> Voir l'historique
+                        </a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'inscriptions:supprimer_inscription' inscription.id %}" 
+                           class="btn btn-danger"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette inscription ?');">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('status').addEventListener('change', function() {
+    const currentStatus = '{{ inscription.statut }}';
+    const newStatus = this.value;
+    
+    if (currentStatus !== newStatus) {
+        document.getElementById('reason').focus();
+    }
+});
+</script>
+
+{% endblock %}

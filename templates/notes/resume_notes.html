@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block title %}Récapitulatif des notes - FASCH{% endblock %}
+
+{% block authenticated_content %}
+<div class="container mt-4">
+
+  {% include 'partials/entete_etablissement.html' %}
+
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2><i class="fas fa-clipboard-check"></i> Récapitulatif des notes</h2>
+      <p class="text-muted">
+        <strong>{{ section.cours.code }} - {{ section.cours.nom }}</strong><br>
+        Section {{ section.numero_section }} | {{ section.get_session_display }}
+        {{ section.get_semestre_display }} {{ section.annee }}
+      </p>
+    </div>
+    <div class="col-md-4 text-end">
+      <a href="{% url 'notes:saisie_notes_professeur' section.id %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Modifier toutes les notes
+      </a>
+      <button onclick="window.print()" class="btn btn-secondary">
+        <i class="fas fa-print"></i> Imprimer
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Statistiques ── -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body text-center">
+          <h3>{{ inscription_notes|length }}</h3>
+          <p class="mb-0">Étudiants inscrits</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body text-center">
+          <h3>{{ nb_notes_saisies }}</h3>
+          <p class="mb-0">Notes saisies</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body text-center">
+          <h3>{{ nb_en_attente }}</h3>
+          <p class="mb-0">En attente</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body text-center">
+          <h3>
+            {% if moyenne_section %}
+              {{ moyenne_section|floatformat:2 }}
+            {% else %}
+              -
+            {% endif %}
+          </h3>
+          <p class="mb-0">Moyenne</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tableau des notes ── -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Numéro</th>
+              <th>Nom complet</th>
+              <th class="text-center">Examen Mi-Parcours<br><small>(25%)</small></th>
+              <th class="text-center">Examen Final<br><small>(35%)</small></th>
+              <th class="text-center">Travaux<br><small>(20%)</small></th>
+              <th class="text-center">Participation<br><small>(10%)</small></th>
+              <th class="text-center">Projet<br><small>(10%)</small></th>
+              <th class="text-center">Note Finale</th>
+              <th class="text-center">Mention</th>
+              <th>Commentaires</th>
+              <th class="text-center no-print">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in inscription_notes %}
+            <tr>
+              <td><strong>{{ item.inscription.etudiant.numero_etudiant }}</strong></td>
+              <td>{{ item.inscription.etudiant.utilisateur.get_full_name }}</td>
+
+              {% if item.note %}
+                <td class="text-center">
+                  {% if item.note.examen_mi_parcours is not None %}
+                    <span class="badge bg-light text-dark">{{ item.note.examen_mi_parcours }}</span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.examen_final is not None %}
+                    <span class="badge bg-light text-dark">{{ item.note.examen_final }}</span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.travaux is not None %}
+                    <span class="badge bg-light text-dark">{{ item.note.travaux }}</span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.participation is not None %}
+                    <span class="badge bg-light text-dark">{{ item.note.participation }}</span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.projet is not None %}
+                    <span class="badge bg-light text-dark">{{ item.note.projet }}</span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.note_finale %}
+                    <strong class="h5 {% if item.note.note_finale >= 60 %}text-success{% else %}text-danger{% endif %}">
+                      {{ item.note.note_finale|floatformat:2 }}
+                    </strong>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if item.note.mention %}
+                    <span class="badge {{ item.note.classe_mention }}">
+                      {{ item.note.mention }}
+                    </span>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if item.note.commentaires %}
+                    <small>{{ item.note.commentaires|truncatewords:5 }}</small>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center no-print">
+                  <a href="{% url 'notes:modifier_note_professeur' item.note.id %}"
+                     class="btn btn-sm btn-outline-primary"
+                     title="Modifier les notes de cet étudiant">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                </td>
+
+              {% else %}
+                <td class="text-center" colspan="7">
+                  <span class="badge bg-secondary">Non noté</span>
+                </td>
+                <td>-</td>
+                <td class="text-center no-print">
+                  <a href="{% url 'notes:saisie_notes_professeur' item.inscription.section_cours.id %}"
+                     class="btn btn-sm btn-outline-success"
+                     title="Ajouter les notes">
+                    <i class="fas fa-plus"></i>
+                  </a>
+                </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style media="print">
+  .btn, .sidebar, .navbar, footer, .no-print {
+    display: none !important;
+  }
+  .content-wrapper {
+    padding: 0 !important;
+  }
+</style>
+
+{% endblock %}

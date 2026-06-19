@@ -1,0 +1,167 @@
+departement,niveau,code,cours,credits,optionnel
+Préparatoire,Préparatoire,MC101,Monde Caraïbe,3,non
+Préparatoire,Préparatoire,DROIT101,Introduction au Droit,3,non
+Préparatoire,Préparatoire,ECO101,Introduction à l'Économie,3,non
+Préparatoire,Préparatoire,HH101,Histoire d'Haïti,3,non
+Préparatoire,Préparatoire,MATH101,Mathématiques,3,non
+Préparatoire,Préparatoire,PHIL101,Philosophie,3,non
+Préparatoire,Préparatoire,OT101,Organisation du Travail Intellectuel,3,non
+Préparatoire,Préparatoire,SH101,Introduction aux Sciences Humaines,3,non
+Préparatoire,Préparatoire,HIPS101,Histoire des Idées Politiques et Sociales,3,non
+Préparatoire,Préparatoire,FR101,Français I : expression écrite et orale,3,non
+Préparatoire,Préparatoire,CREO101,Créole : expression écrite et orale,3,non
+Communication Sociale,Niveau I,COM101,Introduction à la communication,3,non
+Communication Sociale,Niveau I,COM102,Introduction à la sociologie,3,non
+Communication Sociale,Niveau I,COM103,Statistique I,3,non
+Communication Sociale,Niveau I,COM104,Méthodologie I,3,non
+Communication Sociale,Niveau I,COM105,Français II,3,non
+Communication Sociale,Niveau I,COM106,Créole II,3,non
+Communication Sociale,Niveau I,COM107,Anglais,3,non
+Communication Sociale,Niveau I,COM108,Anthropologie,3,non
+Communication Sociale,Niveau I,COM109,Communication graphique I,3,non
+Communication Sociale,Niveau I,COM110,Journalisme I,3,non
+Communication Sociale,Niveau I,COM111,Sémiologie,3,non
+Communication Sociale,Niveau I,COM112,Théories de la communication I,3,non
+Communication Sociale,Niveau II,COM201,Linguistique et communication,3,non
+Communication Sociale,Niveau II,COM202,Théorie de la communication II,3,non
+Communication Sociale,Niveau II,COM203,Statistique II,3,non
+Communication Sociale,Niveau II,COM204,Méthodologie II,3,non
+Communication Sociale,Niveau II,COM205,Journalisme II,3,non
+Communication Sociale,Niveau II,COM206,Communication orale,3,non
+Communication Sociale,Niveau II,COM207,Communication graphique II,3,non
+Communication Sociale,Niveau II,COM208,Analyse du discours,3,non
+Communication Sociale,Niveau II,COM209,Dramaturgie,3,non
+Communication Sociale,Niveau II,COM210,Psychologie sociale,3,non
+Communication Sociale,Niveau II,COM211,Appréciation de l'art,3,non
+Communication Sociale,Niveau II,COM212,Cours optionnel,3,oui
+Communication Sociale,Niveau III,COM301,Atelier de mémoire,3,non
+Communication Sociale,Niveau III,COM302,Sociologie de la communication,3,non
+Communication Sociale,Niveau III,COM303,Communication audiovisuelle,3,non
+Communication Sociale,Niveau III,COM304,Gestion de la communication et des réseaux,3,non
+Communication Sociale,Niveau III,COM305,Stratégie de communication (publicité),3,non
+Communication Sociale,Niveau III,COM306,Relations publiques,3,non
+Communication Sociale,Niveau III,COM307,Communication et éthique,3,non
+Communication Sociale,Niveau III,COM308,Écriture en communication,3,non
+Communication Sociale,Niveau III,COM309,Communication sonore,3,non
+Communication Sociale,Niveau III,COM310,Cours optionnel,3,oui
+Psychologie,Niveau I,PSY101,Statistique I,3,non
+Psychologie,Niveau I,PSY102,Expression écrite/orale Français II,3,non
+Psychologie,Niveau I,PSY103,Psychologie de l'apprentissage,3,non
+Psychologie,Niveau I,PSY104,Introduction à la Psychologie,3,non
+Psychologie,Niveau I,PSY105,Biologie,3,non
+Psychologie,Niveau I,PSY106,Psychologie sociale,3,non
+Psychologie,Niveau I,PSY107,Psychométrie,3,non
+Psychologie,Niveau I,PSY108,Introduction à la Psychiatrie,3,non
+Psychologie,Niveau I,PSY109,Théorie de la personnalité,3,non
+Psychologie,Niveau I,PSY110,Psychologie génétique,3,non
+Psychologie,Niveau I,PSY111,Psychologie du travail,3,non
+Psychologie,Niveau I,PSY112,Psychologie expérimentale,3,non
+Psychologie,Niveau I,PSY113,Méthodologie I,3,non
+Psychologie,Niveau I,PSY114,Génétique,3,non
+Psychologie,Niveau II,PSY201,Statistique II,3,non
+Psychologie,Niveau II,PSY202,Méthodologie II,3,non
+Psychologie,Niveau II,PSY203,Psychopathologie I,3,non
+Psychologie,Niveau II,PSY204,Psychopathologie II,3,non
+Psychologie,Niveau II,PSY205,Psychologie de l'éducation,3,non
+Psychologie,Niveau II,PSY206,Introduction à la Psychanalyse,3,non
+Psychologie,Niveau II,PSY207,Évaluation de l'intelligence,3,non
+Psychologie,Niveau II,PSY208,Neuropsychologie I,3,non
+Psychologie,Niveau II,PSY209,Neuropsychologie II,3,non
+Psychologie,Niveau II,PSY210,Développement psychosocial de l'individu,3,non
+Psychologie,Niveau II,PSY211,Évaluation des troubles de l'apprentissage,3,non
+Psychologie,Niveau II,PSY212,Théorie et pratiques de stage I,3,non
+Psychologie,Niveau III,PSY301,Psychologie clinique,3,non
+Psychologie,Niveau III,PSY302,Atelier de mémoire,3,non
+Psychologie,Niveau III,PSY303,Déontologie du métier de psychologue,3,non
+Psychologie,Niveau III,PSY304,Techniques projectives I,3,non
+Psychologie,Niveau III,PSY305,Comportement organisationnel,3,non
+Psychologie,Niveau III,PSY306,Psychothérapies,3,non
+Psychologie,Niveau III,PSY307,Enfants inadaptés,3,non
+Psychologie,Niveau III,PSY308,Entretien clinique,3,non
+Psychologie,Niveau III,PSY309,Théorie et pratiques de stage II,3,non
+Psychologie,Niveau III,PSY310,Psychologie communautaire,3,non
+Psychologie,Niveau III,PSY311,Techniques projectives II,3,non
+Sociologie,Niveau I,SOC-ISO1,Introduction à la Sociologie,3,non
+Sociologie,Niveau I,SOC-ACU1,Anthropologie Culturelle,3,non
+Sociologie,Niveau I,SOC-ANG1,Anglais / Espagnol,2,non
+Sociologie,Niveau I,SOC-EEOF1,Expression Écrite et Orale Français,3,non
+Sociologie,Niveau I,SOC-MET1,Méthodologie I,3,non
+Sociologie,Niveau I,SOC-STA1,Statistique I,3,non
+Sociologie,Niveau I,SOC-PSH1,Pensée Sociale Haïtienne,3,non
+Sociologie,Niveau I,SOC-GEC1,Géographie Économique,3,non
+Sociologie,Niveau I,SOC-TSO1,Théories Sociologiques I,3,non
+Sociologie,Niveau II,SOC-STA2,Statistique II,3,non
+Sociologie,Niveau II,SOC-MET2,Méthodologie II,3,non
+Sociologie,Niveau II,SOC-FSH2,Formation Sociale Haïtienne,3,non
+Sociologie,Niveau II,SOC-HAL2,Histoire de l'Amérique Latine,2,non
+Sociologie,Niveau II,SOC-TEC2,Théories Économiques,3,non
+Sociologie,Niveau II,SOC-PSO2,Psychologie Sociale,3,non
+Sociologie,Niveau II,SOC-CRI2,Criminologie,3,non
+Sociologie,Niveau II,SOC-TSO2,Théories Sociologiques II,3,non
+Sociologie,Niveau II,SOC-SRU2,Sociologie Rurale,3,non
+Sociologie,Niveau II,SOC-SPO1,Sociologie Politique I,3,non
+Sociologie,Niveau III,SOC-SCO2,Sociologie de la Communication,3,non
+Sociologie,Niveau III,SOC-SRE3,Sociologie de la Religion,3,non
+Sociologie,Niveau III,SOC-CSH3,Culture et Société en Haïti,2,non
+Sociologie,Niveau III,SOC-SOR3,Sociologie des Organisations,3,non
+Sociologie,Niveau III,SOC-ASO3,Animation Sociale,3,non
+Sociologie,Niveau III,SOC-TSO3,Théories Sociologiques III,3,non
+Sociologie,Niveau III,SOC-SUR3,Sociologie Urbaine,3,non
+Sociologie,Niveau III,SOC-SPO2,Sociologie Politique II,3,non
+Sociologie,Niveau III,SOC-SED3,Sociologie de l'Éducation,3,non
+Sociologie,Niveau III,SOC-STR3,Sociologie du Travail,3,non
+Sociologie,Niveau III,SOC-EPI4,Épistémologie,3,non
+Sociologie,Niveau III,SOC-SCO4,Sociologie Contemporaine I,3,non
+Sociologie,Niveau III,SOC-DEM4,Démographie,3,non
+Sociologie,Niveau III,SOC-EPO4,Économie Politique,3,non
+Sociologie,Niveau III,SOC-EGP4,Élaboration et Gestion de Projet,3,non
+Sociologie,Niveau III,SOC-SDE4,Sociologie du Développement,3,non
+Sociologie,Niveau III,SOC-SMS4,Sociologie des Mouvements Sociaux,3,non
+Sociologie,Niveau III,SOC-PPO4,Philosophie Politique,3,non
+Sociologie,Niveau III,SOC-AME4,Atelier de Mémoire,3,non
+Sociologie,Niveau III,SOC-SPR4,Stage Professionnel,4,non
+Sociologie,Niveau III,SOC-PSO4,Politique Sociale,3,non
+Sociologie,Niveau III,SOC-CSC4,Culture et Société de la Caraïbe,2,non
+Sociologie,Niveau III,SOC-INF4,Informatique,0,non
+Travail Social,Niveau I,TS-FPS1,Fondements Philosophiques du Service Social,3,non
+Travail Social,Niveau I,TS-MIS1,Méthodologie de l'Intervention en Travail Social,3,non
+Travail Social,Niveau I,TS-PSO1,Psychologie Sociale,3,non
+Travail Social,Niveau I,TS-DPI1,Développement Psychosocial de l'Individu,3,non
+Travail Social,Niveau I,TS-AC1,Anthropologie Culturelle,3,non
+Travail Social,Niveau I,TS-IM1,Informations Médicales,3,non
+Travail Social,Niveau I,TS-PATH1,Psychopathologie,3,non
+Travail Social,Niveau II,TS-TSI2,Travail Social Individuel,3,non
+Travail Social,Niveau II,TS-TSG2,Travail Social de Groupe,3,non
+Travail Social,Niveau II,TS-TSC2,Travail Social Communautaire,3,non
+Travail Social,Niveau II,TS-STAT1,Statistique I,3,non
+Travail Social,Niveau II,TS-METH1,Méthodologie I,3,non
+Travail Social,Niveau II,TS-IS2,Introduction à la Sociologie,3,non
+Travail Social,Niveau II,TS-VI2,Visites Institutionnelles,3,non
+Travail Social,Niveau II,TS-AS2,Animation Sociale,3,non
+Travail Social,Niveau II,TS-LS2,Législation Sociale,3,non
+Travail Social,Niveau II,TS-CRI2,Criminologie,3,non
+Travail Social,Niveau II,TS-HES2,Histoire Économique et Sociale d'Haïti,3,non
+Travail Social,Niveau II,TS-HPH2,Histoire de la Pensée Sociale Haïtienne,3,non
+Travail Social,Niveau II,TS-SO2,Sociologie des Organisations,3,non
+Travail Social,Niveau II,TS-CSH2,Culture et Société en Haïti,3,non
+Travail Social,Niveau II,TS-CSC2,Culture et Société dans la Caraïbe,3,non
+Travail Social,Niveau II,TS-EPI2,Épistémologie,3,non
+Travail Social,Niveau II,TS-SR2,Sociologie Rurale,3,non
+Travail Social,Niveau II,TS-METH2,Méthodologie II,3,non
+Travail Social,Niveau II,TS-STAT2,Statistique II,3,non
+Travail Social,Niveau II,TS-FR2,Français II,3,non
+Travail Social,Niveau II,TS-ESP2,Espagnol,3,non
+Travail Social,Niveau II,TS-ANG2,Anglais,3,non
+Travail Social,Niveau III,TS-PS3,Politique Sociale,3,non
+Travail Social,Niveau III,TS-PS3-2,Planification Sociale,3,non
+Travail Social,Niveau III,TS-SS3,Sécurité Sociale,3,non
+Travail Social,Niveau III,TS-AG3,Administration et Gestion des Services Sociaux,3,non
+Travail Social,Niveau III,TS-TP3,Travail Social et Problèmes Sociaux Actuels,3,non
+Travail Social,Niveau III,TS-TPPS3,Théories et Pratiques en Service Social,3,non
+Travail Social,Niveau III,TS-SU3,Sociologie Urbaine,3,non
+Travail Social,Niveau III,TS-SD3,Sociologie du Développement,3,non
+Travail Social,Niveau III,TS-SP3,Sociologie Politique,3,non
+Travail Social,Niveau III,TS-D3,Démographie,3,non
+Travail Social,Niveau III,TS-DE3,Déontologie du Travail Social,3,non
+Travail Social,Niveau III,TS-AM3,Atelier de Mémoire,3,non
+Travail Social,Niveau III,TS-SI3,Stage Institutionnel,3,non

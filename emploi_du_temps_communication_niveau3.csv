@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,COM301,Atelier de mémoire,Edwige,LABORDE,Communication Sociale,Niveau III,session1
+LUNDI,07:00,10:00,COM305,Stratégie de communication (publicité),Réginald,CASIMIR,Communication Sociale,Niveau III,session2
+LUNDI,10:00,13:00,COM302,Sociologie de la communication,Sénèque,DORIVAL,Communication Sociale,Niveau III,session1
+LUNDI,10:00,13:00,COM306,Relations publiques,Nadège,THERMIDOR,Communication Sociale,Niveau III,session2
+LUNDI,13:00,16:00,COM303,Communication audiovisuelle,Ernst,VILAIRE,Communication Sociale,Niveau III,session1
+LUNDI,13:00,16:00,COM307,Communication et éthique,Jean Pharès,JEROME,Communication Sociale,Niveau III,session2
+MARDI,07:00,10:00,COM304,Gestion de la communication et des réseaux,Garry,METELLUS,Communication Sociale,Niveau III,session1
+MARDI,07:00,10:00,COM308,Écriture en communication,Lionel,SAINT-FORT,Communication Sociale,Niveau III,session2
+MARDI,10:00,13:00,COM305,Stratégie de communication (publicité),Réginald,CASIMIR,Communication Sociale,Niveau III,session1
+MARDI,10:00,13:00,COM309,Communication sonore,Claudette,FRANÇOIS,Communication Sociale,Niveau III,session2
+MARDI,13:00,16:00,COM306,Relations publiques,Nadège,THERMIDOR,Communication Sociale,Niveau III,session1
+MARDI,13:00,16:00,COM310,Cours optionnel,Mireille,HYPPOLITE,Communication Sociale,Niveau III,session2
+MERCREDI,07:00,10:00,COM307,Communication et éthique,Jean Pharès,JEROME,Communication Sociale,Niveau III,session1
+MERCREDI,07:00,10:00,COM301,Atelier de mémoire,Edwige,LABORDE,Communication Sociale,Niveau III,session2
+MERCREDI,10:00,13:00,COM308,Écriture en communication,Lionel,SAINT-FORT,Communication Sociale,Niveau III,session1
+MERCREDI,10:00,13:00,COM302,Sociologie de la communication,Sénèque,DORIVAL,Communication Sociale,Niveau III,session2
+MERCREDI,13:00,16:00,COM309,Communication sonore,Claudette,FRANÇOIS,Communication Sociale,Niveau III,session1
+MERCREDI,13:00,16:00,COM303,Communication audiovisuelle,Ernst,VILAIRE,Communication Sociale,Niveau III,session2
+JEUDI,07:00,10:00,COM310,Cours optionnel,Mireille,HYPPOLITE,Communication Sociale,Niveau III,session1
+JEUDI,07:00,10:00,COM304,Gestion de la communication et des réseaux,Garry,METELLUS,Communication Sociale,Niveau III,session2
+JEUDI,10:00,13:00,COM301,Atelier de mémoire,Edwige,LABORDE,Communication Sociale,Niveau III,session1
+JEUDI,10:00,13:00,COM306,Relations publiques,Nadège,THERMIDOR,Communication Sociale,Niveau III,session2
+JEUDI,13:00,16:00,COM302,Sociologie de la communication,Sénèque,DORIVAL,Communication Sociale,Niveau III,session1
+JEUDI,13:00,16:00,COM305,Stratégie de communication (publicité),Réginald,CASIMIR,Communication Sociale,Niveau III,session2
+VENDREDI,07:00,10:00,COM303,Communication audiovisuelle,Ernst,VILAIRE,Communication Sociale,Niveau III,session1
+VENDREDI,07:00,10:00,COM307,Communication et éthique,Jean Pharès,JEROME,Communication Sociale,Niveau III,session2
+VENDREDI,10:00,13:00,COM304,Gestion de la communication et des réseaux,Garry,METELLUS,Communication Sociale,Niveau III,session1
+VENDREDI,10:00,13:00,COM308,Écriture en communication,Lionel,SAINT-FORT,Communication Sociale,Niveau III,session2
+VENDREDI,13:00,16:00,COM309,Communication sonore,Claudette,FRANÇOIS,Communication Sociale,Niveau III,session1
+VENDREDI,13:00,16:00,COM310,Cours optionnel,Mireille,HYPPOLITE,Communication Sociale,Niveau III,session2
+SAMEDI,07:00,10:00,COM305,Stratégie de communication (publicité),Réginald,CASIMIR,Communication Sociale,Niveau III,session1
+SAMEDI,07:00,10:00,COM309,Communication sonore,Claudette,FRANÇOIS,Communication Sociale,Niveau III,session2
+SAMEDI,10:00,13:00,COM306,Relations publiques,Nadège,THERMIDOR,Communication Sociale,Niveau III,session1
+SAMEDI,10:00,13:00,COM303,Communication audiovisuelle,Ernst,VILAIRE,Communication Sociale,Niveau III,session2
+SAMEDI,13:00,16:00,COM307,Communication et éthique,Jean Pharès,JEROME,Communication Sociale,Niveau III,session2
+SAMEDI,13:00,16:00,COM304,Gestion de la communication et des réseaux,Garry,METELLUS,Communication Sociale,Niveau III,session2

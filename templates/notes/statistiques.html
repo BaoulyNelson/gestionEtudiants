@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+{% block title %}Statistiques des notes – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .stats-notes-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .stats-notes-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stats-notes-header-center { flex: 1; text-align: center; }
+  .stats-notes-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .stats-notes-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .stats-notes-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .stats-notes-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .stats-notes-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .stats-notes-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .stats-notes-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .stats-notes-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── Sous-titres de section ── */
+  .stats-notes-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── KPI globaux ── */
+  .stats-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 0;
+  }
+  .stats-kpi-card {
+    border: 1px solid #d0d8e8;
+    border-top: 4px solid #1a3a6b;
+    border-radius: 4px;
+    padding: 18px 14px;
+    text-align: center;
+    background: #fff;
+  }
+  .stats-kpi-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    font-family: Arial, sans-serif;
+    margin-bottom: 8px;
+  }
+  .stats-kpi-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a3a6b;
+    font-family: "Georgia", serif;
+    line-height: 1;
+  }
+  .stats-kpi-value.na { color: #bbb; font-size: 18px; }
+
+  /* ── Distribution mentions ── */
+  .dist-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .dist-card {
+    border-radius: 4px;
+    padding: 14px 8px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .dist-card .dist-count {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Georgia", serif;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .dist-card .dist-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 2px;
+  }
+  .dist-card .dist-pct {
+    font-size: 11px;
+    opacity: .75;
+  }
+  .dist-A { background: #d4edda; color: #155724; }
+  .dist-B { background: #d1ecf1; color: #0c5460; }
+  .dist-C { background: #fff3cd; color: #856404; }
+  .dist-D { background: #ffe5d0; color: #7d3c0a; }
+  .dist-F { background: #f8d7da; color: #721c24; }
+
+  /* Barres distribution */
+  .dist-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+  .dist-bar-label { width: 90px; font-weight: 700; flex-shrink: 0; }
+  .dist-bar-track {
+    flex: 1;
+    background: #e9ecef;
+    border-radius: 3px;
+    height: 14px;
+    overflow: hidden;
+  }
+  .dist-bar-fill { height: 100%; border-radius: 3px; }
+  .fill-A { background: #28a745; }
+  .fill-B { background: #17a2b8; }
+  .fill-C { background: #ffc107; }
+  .fill-D { background: #fd7e14; }
+  .fill-F { background: #dc3545; }
+  .dist-bar-pct { width: 40px; text-align: right; color: #666; font-size: 12px; flex-shrink: 0; }
+
+  /* ── Tableaux ── */
+  .fasch-table-wrapper { width: 100%; overflow-x: auto; }
+  .fasch-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: Arial, sans-serif;
+  }
+  .fasch-table thead tr { background-color: #1a3a6b; color: #fff; }
+  .fasch-table thead th {
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  .fasch-table thead th.center,
+  .fasch-table tbody td.center { text-align: center; }
+  .fasch-table tbody tr { border-bottom: 1px solid #ddd; }
+  .fasch-table tbody tr:nth-child(even) { background-color: #f7f9fc; }
+  .fasch-table tbody tr:hover td { background-color: #eef2f8 !important; }
+  .fasch-table tbody td { padding: 9px 14px; color: #333; vertical-align: middle; }
+
+  /* Rang */
+  .rang-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 12px;
+    font-family: "Georgia", serif;
+  }
+  .rang-1 { background: #d4a017; color: #fff; }
+  .rang-2 { background: #9e9e9e; color: #fff; }
+  .rang-3 { background: #cd7f32; color: #fff; }
+  .rang-autre { background: #e8eef7; color: #1a3a6b; }
+
+  /* Badge niveau */
+  .niveau-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    background: #e8eef7;
+    color: #1a3a6b;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .stats-notes-header { flex-direction: column; align-items: center; text-align: center; }
+    .stats-notes-header-right { text-align: center; }
+    .stats-notes-header-right p { justify-content: center; }
+    .stats-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .dist-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media print {
+    .navbar, .sidebar, footer, .btn { display: none !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="stats-notes-header">
+  <div class="stats-notes-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+  <div class="stats-notes-header-center">
+    <div class="stats-notes-header-univ">Université d'État d'Haïti</div>
+    <div class="stats-notes-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="stats-notes-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+  <div class="stats-notes-header-right">
+    {% if site.adresse_ligne1 %}<p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>{% endif %}
+    {% if site.telephone %}<p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>{% endif %}
+    {% if site.email %}<p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>{% endif %}
+    {% if site.lien_facebook %}<p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>{% endif %}
+  </div>
+</div>
+
+<div class="stats-notes-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="stats-notes-doc-title">
+  <i class="fas fa-chart-bar me-2" style="color:#1a3a6b;"></i>Statistiques des notes
+</div>
+
+<!-- ══════════════════════════════
+     KPI GLOBAUX
+     contexte : stats.total, stats.moyenne, stats.maximum, stats.minimum
+════════════════════════════════ -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-notes-section-title mb-3">
+      <i class="fas fa-tachometer-alt me-1"></i> Indicateurs globaux
+    </div>
+    <div class="stats-kpi-grid">
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Notes enregistrées</div>
+        <div class="stats-kpi-value">{{ stats.total|default:0 }}</div>
+      </div>
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Moyenne générale</div>
+        <div class="stats-kpi-value {% if not stats.moyenne %}na{% endif %}">
+          {% if stats.moyenne %}{{ stats.moyenne|floatformat:2 }}{% else %}—{% endif %}
+        </div>
+      </div>
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Note maximale</div>
+        <div class="stats-kpi-value {% if not stats.maximum %}na{% endif %}">
+          {% if stats.maximum %}{{ stats.maximum|floatformat:2 }}{% else %}—{% endif %}
+        </div>
+      </div>
+      <div class="stats-kpi-card">
+        <div class="stats-kpi-label">Note minimale</div>
+        <div class="stats-kpi-value {% if not stats.minimum %}na{% endif %}">
+          {% if stats.minimum %}{{ stats.minimum|floatformat:2 }}{% else %}—{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     DISTRIBUTION DES MENTIONS
+     contexte : distribution.A/B/C/D/F  |  pourcentages.A/B/C/D/F
+════════════════════════════════ -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-notes-section-title mb-3">
+      <i class="fas fa-layer-group me-1"></i> Distribution des mentions
+    </div>
+
+    <!-- Cartes visuelles -->
+    <div class="dist-grid mb-4">
+      <div class="dist-card dist-A">
+        <div class="dist-count">{{ distribution.Excellent }}</div>
+        <div class="dist-label">Excellent</div>
+        <div class="dist-pct">{{ pourcentages.Excellent|floatformat:1 }}%</div>
+      </div>
+      <div class="dist-card dist-B">
+        <div class="dist-count">{{ distribution.Tres_bien }}</div>
+        <div class="dist-label">Très bien</div>
+        <div class="dist-pct">{{ pourcentages.Tres_bien|floatformat:1 }}%</div>
+      </div>
+      <div class="dist-card dist-C">
+        <div class="dist-count">{{ distribution.Bien }}</div>
+        <div class="dist-label">Bien</div>
+        <div class="dist-pct">{{ pourcentages.Bien|floatformat:1 }}%</div>
+      </div>
+      <div class="dist-card dist-D">
+        <div class="dist-count">{{ distribution.Passable }}</div>
+        <div class="dist-label">Passable</div>
+        <div class="dist-pct">{{ pourcentages.Passable|floatformat:1 }}%</div>
+      </div>
+      <div class="dist-card dist-F">
+        <div class="dist-count">{{ distribution.Echec }}</div>
+        <div class="dist-label">Échec</div>
+        <div class="dist-pct">{{ pourcentages.Echec|floatformat:1 }}%</div>
+      </div>
+    </div>
+
+    <!-- Barres -->
+    {% if stats.total %}
+    <div class="dist-bar-row">
+      <div class="dist-bar-label" style="color:#155724;">Excellent</div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill fill-A" style="width:{{ pourcentages.Excellent|floatformat:0 }}%"></div>
+      </div>
+      <div class="dist-bar-pct">{{ pourcentages.Excellent|floatformat:1 }}%</div>
+    </div>
+    <div class="dist-bar-row">
+      <div class="dist-bar-label" style="color:#0c5460;">Très bien</div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill fill-B" style="width:{{ pourcentages.Tres_bien|floatformat:0 }}%"></div>
+      </div>
+      <div class="dist-bar-pct">{{ pourcentages.Tres_bien|floatformat:1 }}%</div>
+    </div>
+    <div class="dist-bar-row">
+      <div class="dist-bar-label" style="color:#856404;">Bien</div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill fill-C" style="width:{{ pourcentages.Bien|floatformat:0 }}%"></div>
+      </div>
+      <div class="dist-bar-pct">{{ pourcentages.Bien|floatformat:1 }}%</div>
+    </div>
+    <div class="dist-bar-row">
+      <div class="dist-bar-label" style="color:#7d3c0a;">Passable</div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill fill-D" style="width:{{ pourcentages.Passable|floatformat:0 }}%"></div>
+      </div>
+      <div class="dist-bar-pct">{{ pourcentages.Passable|floatformat:1 }}%</div>
+    </div>
+    <div class="dist-bar-row">
+      <div class="dist-bar-label" style="color:#721c24;">Échec</div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill fill-F" style="width:{{ pourcentages.Echec|floatformat:0 }}%"></div>
+      </div>
+      <div class="dist-bar-pct">{{ pourcentages.Echec|floatformat:1 }}%</div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     STATS PAR DÉPARTEMENT
+     contexte : stats_departements → liste de dicts {nom, total, moyenne}
+     ⚠ Pas de niveau ici — c'est une agrégation par département
+════════════════════════════════ -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-notes-section-title mb-3">
+      <i class="fas fa-building me-1"></i> Par département
+    </div>
+    {% if stats_departements %}
+    <div class="fasch-table-wrapper">
+      <table class="fasch-table">
+        <thead>
+          <tr>
+            <th>Département</th>
+            <th class="center">Notes saisies</th>
+            <th class="center">Moyenne</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for dept in stats_departements %}
+          <tr>
+            <td><strong>{{ dept.nom }}</strong></td>
+            <td class="center">{{ dept.total }}</td>
+            <td class="center">
+              <strong style="font-family:'Georgia',serif;
+                {% if dept.moyenne >= 80 %}color:#155724
+                {% elif dept.moyenne >= 70 %}color:#0c5460
+                {% elif dept.moyenne >= 60 %}color:#856404
+                {% else %}color:#721c24{% endif %}">
+                {{ dept.moyenne|floatformat:2 }}
+              </strong>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align:center;color:#999;font-style:italic;padding:16px 0;">
+      Aucune donnée par département.
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     TOP 10 ÉTUDIANTS
+     contexte : top_etudiants → queryset Etudiant annoté avec .moyenne
+     ✅ niveau disponible ici via etudiant.get_niveau_display
+════════════════════════════════ -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="stats-notes-section-title mb-3">
+      <i class="fas fa-star me-1"></i> Top 10 étudiants
+    </div>
+    {% if top_etudiants %}
+    <div class="fasch-table-wrapper">
+      <table class="fasch-table">
+        <thead>
+          <tr>
+            <th class="center" style="width:55px;">Rang</th>
+            <th>Étudiant</th>
+            <th class="center">Niveau</th>       {# ✅ disponible ici #}
+            <th>Département</th>
+            <th class="center">Moyenne / 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for etudiant in top_etudiants %}
+          <tr>
+            <td class="center">
+              <span class="rang-badge
+                {% if forloop.counter == 1 %}rang-1
+                {% elif forloop.counter == 2 %}rang-2
+                {% elif forloop.counter == 3 %}rang-3
+                {% else %}rang-autre{% endif %}">
+                {{ forloop.counter }}
+              </span>
+            </td>
+            <td>
+              <strong style="color:#1a3a6b;">{{ etudiant.utilisateur.get_full_name }}</strong><br>
+              <small style="color:#888;font-family:Arial,sans-serif;">{{ etudiant.numero_etudiant }}</small>
+            </td>
+            <td class="center">
+              <span class="niveau-badge">{{ etudiant.get_niveau_display }}</span>
+            </td>
+            <td>{{ etudiant.departement.nom|default:"—" }}</td>
+            <td class="center">
+              <strong style="font-size:15px;font-family:'Georgia',serif;
+                {% if etudiant.moyenne >= 80 %}color:#155724
+                {% elif etudiant.moyenne >= 70 %}color:#0c5460
+                {% elif etudiant.moyenne >= 60 %}color:#856404
+                {% else %}color:#721c24{% endif %}">
+                {{ etudiant.moyenne|floatformat:2 }}
+              </strong>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align:center;color:#999;font-style:italic;padding:16px 0;">
+      Aucun étudiant avec des notes disponibles.
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── Actions ── -->
+<div class="mb-4">
+  <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+    <i class="fas fa-print me-1"></i> Imprimer
+  </button>
+</div>
+
+{% endblock %}

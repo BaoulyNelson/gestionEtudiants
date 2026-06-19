@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,PSY101,Statistique I,Hugues,CADET,Psychologie,Niveau I,session1
+LUNDI,07:00,10:00,PSY104,Introduction à la Psychologie,Marlène,SAINT-HILAIRE,Psychologie,Niveau I,session2
+LUNDI,10:00,13:00,PSY102,Expression écrite/orale Français II,Nadège,THERMIDOR,Psychologie,Niveau I,session1
+LUNDI,10:00,13:00,PSY107,Psychométrie,Edwige,LABORDE,Psychologie,Niveau I,session2
+LUNDI,13:00,16:00,PSY103,Psychologie de l'apprentissage,Roseline,PIERRE-LOUIS,Psychologie,Niveau I,session1
+LUNDI,13:00,16:00,PSY110,Psychologie génétique,Gérard,VOLTAIRE,Psychologie,Niveau I,session2
+MARDI,07:00,10:00,PSY105,Biologie,Ernst,VILAIRE,Psychologie,Niveau I,session1
+MARDI,07:00,10:00,PSY113,Méthodologie I,Sénèque,DORIVAL,Psychologie,Niveau I,session2
+MARDI,10:00,13:00,PSY106,Psychologie sociale,Mireille,HYPPOLITE,Psychologie,Niveau I,session1
+MARDI,10:00,13:00,PSY109,Théorie de la personnalité,Clarissa,PIERRE,Psychologie,Niveau I,session2
+MARDI,13:00,16:00,PSY108,Introduction à la Psychiatrie,Jean Luc,TONDREAU,Psychologie,Niveau I,session1
+MARDI,13:00,16:00,PSY111,Psychologie du travail,Garry,METELLUS,Psychologie,Niveau I,session2
+MERCREDI,07:00,10:00,PSY112,Psychologie expérimentale,Claudette,FRANÇOIS,Psychologie,Niveau I,session1
+MERCREDI,07:00,10:00,PSY105,Biologie,Ernst,VILAIRE,Psychologie,Niveau I,session2
+MERCREDI,10:00,13:00,PSY114,Génétique,Hubermane,CIGUINO,Psychologie,Niveau I,session1
+MERCREDI,10:00,13:00,PSY103,Psychologie de l'apprentissage,Roseline,PIERRE-LOUIS,Psychologie,Niveau I,session2
+MERCREDI,13:00,16:00,PSY101,Statistique I,Hugues,CADET,Psychologie,Niveau I,session2
+MERCREDI,13:00,16:00,PSY106,Psychologie sociale,Mireille,HYPPOLITE,Psychologie,Niveau I,session2
+JEUDI,07:00,10:00,PSY104,Introduction à la Psychologie,Marlène,SAINT-HILAIRE,Psychologie,Niveau I,session1
+JEUDI,07:00,10:00,PSY112,Psychologie expérimentale,Claudette,FRANÇOIS,Psychologie,Niveau I,session2
+JEUDI,10:00,13:00,PSY107,Psychométrie,Edwige,LABORDE,Psychologie,Niveau I,session1
+JEUDI,10:00,13:00,PSY111,Psychologie du travail,Garry,METELLUS,Psychologie,Niveau I,session1
+JEUDI,13:00,16:00,PSY113,Méthodologie I,Sénèque,DORIVAL,Psychologie,Niveau I,session1
+JEUDI,13:00,16:00,PSY108,Introduction à la Psychiatrie,Jean Luc,TONDREAU,Psychologie,Niveau I,session2
+VENDREDI,07:00,10:00,PSY110,Psychologie génétique,Gérard,VOLTAIRE,Psychologie,Niveau I,session1
+VENDREDI,07:00,10:00,PSY102,Expression écrite/orale Français II,Nadège,THERMIDOR,Psychologie,Niveau I,session2
+VENDREDI,10:00,13:00,PSY109,Théorie de la personnalité,Clarissa,PIERRE,Psychologie,Niveau I,session1
+VENDREDI,10:00,13:00,PSY114,Génétique,Hubermane,CIGUINO,Psychologie,Niveau I,session2
+VENDREDI,13:00,16:00,PSY111,Psychologie du travail,Garry,METELLUS,Psychologie,Niveau I,session2
+VENDREDI,13:00,16:00,PSY109,Théorie de la personnalité,Clarissa,PIERRE,Psychologie,Niveau I,session2
+SAMEDI,07:00,10:00,PSY106,Psychologie sociale,Mireille,HYPPOLITE,Psychologie,Niveau I,session2
+SAMEDI,07:00,10:00,PSY113,Méthodologie I,Sénèque,DORIVAL,Psychologie,Niveau I,session2
+SAMEDI,10:00,13:00,PSY112,Psychologie expérimentale,Claudette,FRANÇOIS,Psychologie,Niveau I,session2
+SAMEDI,10:00,13:00,PSY110,Psychologie génétique,Gérard,VOLTAIRE,Psychologie,Niveau I,session2
+SAMEDI,13:00,16:00,PSY114,Génétique,Hubermane,CIGUINO,Psychologie,Niveau I,session2
+SAMEDI,13:00,16:00,PSY102,Expression écrite/orale Français II,Nadège,THERMIDOR,Psychologie,Niveau I,session2

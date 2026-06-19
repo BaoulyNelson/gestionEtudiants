@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% block title %}Relevé de notes – FASCH{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Page document ── */
+  .releve-page {
+    background: #fff;
+    margin: 0 auto 40px;
+    padding: 55px 65px;
+    box-shadow: 0 4px 28px rgba(0,0,0,.15);
+    border: 1px solid #e0e0e0;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── En-tête ── */
+  .releve-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .releve-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .releve-header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .releve-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .releve-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .releve-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .releve-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .releve-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .releve-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .releve-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .releve-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* ── Infos étudiant ── */
+  .releve-student-info {
+    margin-bottom: 28px;
+  }
+  .releve-student-info p {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #222;
+  }
+
+  /* ── Bloc période ── */
+  .releve-periode {
+    margin-bottom: 30px;
+  }
+  .releve-periode-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 10px;
+  }
+
+  /* ── Tableau ── */
+  .releve-table-wrapper { width: 100%; overflow-x: auto; }
+  .releve-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+  }
+  .releve-table thead tr {
+    background-color: #1a3a6b;
+    color: #fff;
+  }
+  .releve-table thead th {
+    padding: 10px 14px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    text-align: left;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+  .releve-table thead th.center,
+  .releve-table tbody td.center { text-align: center; }
+  .releve-table tbody tr { border-bottom: 1px solid #ddd; }
+  .releve-table tbody tr:nth-child(even) { background-color: #f7f9fc; }
+  .releve-table tbody td { padding: 9px 14px; color: #333; }
+
+  /* ── Badges mention ── */
+  .mention-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+  }
+  .mention-A { background: #d4edda; color: #155724; }
+  .mention-B { background: #d1ecf1; color: #0c5460; }
+  .mention-C { background: #fff3cd; color: #856404; }
+  .mention-D { background: #ffe5d0; color: #7d3c0a; }
+  .mention-F { background: #f8d7da; color: #721c24; }
+
+  /* ── Synthèse ── */
+  .releve-synthese {
+    border-top: 1px solid #ccc;
+    padding-top: 18px;
+    margin-top: 10px;
+  }
+  .releve-synthese p { font-size: 14px; margin-bottom: 6px; color: #222; }
+  .releve-synthese .gpa-val { font-size: 18px; font-weight: 700; color: #1a3a6b; }
+
+  /* ── Pied ── */
+  .releve-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 50px;
+  }
+  .releve-seal {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #1a3a6b;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #1a3a6b;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    padding: 12px;
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+    overflow: hidden;
+  }
+  .releve-signature { text-align: center; }
+  .releve-signature p {
+    font-size: 12.5px;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  .releve-signature-line {
+    border-top: 1px solid #333;
+    width: 190px;
+    margin: 0 auto;
+    padding-top: 5px;
+    font-size: 11px;
+    color: #777;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Barre d'actions ── */
+  .releve-actions {
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  @media print {
+    .releve-actions,
+    .topbar,
+    .sidebar,
+    .bottom-nav-bar,
+    .mobile-typewriter-bar { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .releve-page {
+      box-shadow: none !important;
+      border: none !important;
+      margin: 0 !important;
+      padding: 20px 30px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .releve-page { padding: 25px 16px; }
+    .releve-header { flex-direction: column; align-items: center; text-align: center; }
+    .releve-header-right { text-align: center; }
+    .releve-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- Boutons d'action -->
+<div class="releve-actions">
+  <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+    <i class="fas fa-print me-1"></i>Imprimer
+  </button>
+  <a href="{% url 'notes:telecharger_releve' %}" class="btn btn-primary btn-sm">
+    <i class="fas fa-download me-1"></i>Télécharger PDF
+  </a>
+</div>
+
+<!-- ══════════════ PAGE DOCUMENT ══════════════ -->
+<div class="releve-page">
+
+  <!-- En-tête université -->
+  <div class="releve-header">
+    <div class="releve-header-left">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+             style="height:80px;object-fit:contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+      {% endif %}
+    </div>
+
+    <div class="releve-header-center">
+      <div class="releve-header-univ">Université d'État d'Haïti</div>
+      <div class="releve-header-faculty">{{ site.nom_complet }}</div>
+      {% if site.slogan %}
+        <div class="releve-header-slogan">{{ site.slogan }}</div>
+      {% endif %}
+    </div>
+
+    <div class="releve-header-right">
+      {% if site.adresse_ligne1 %}
+        <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+      {% endif %}
+      {% if site.telephone %}
+        <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+      {% endif %}
+      {% if site.email %}
+        <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+      {% endif %}
+      {% if site.lien_facebook %}
+        <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="releve-header-divider"></div>
+
+  <!-- Titre -->
+  <div class="releve-doc-title">Relevé de Notes</div>
+
+  <!-- Informations étudiant -->
+  <div class="releve-student-info">
+    <p><strong>Nom :</strong>&nbsp; {{ etudiant.utilisateur.get_full_name }}</p>
+    <p><strong>Numéro d'étudiant :</strong>&nbsp; {{ etudiant.numero_etudiant }}</p>
+    <p><strong>Département :</strong>&nbsp; {{ etudiant.departement.nom|default:"—" }}</p>
+    <p><strong>Niveau :</strong>&nbsp; {{ etudiant.get_niveau_display }}</p>
+  </div>
+
+  <!-- ── Tableaux par période ── -->
+  {% for periode, cours_liste in periodes %}
+  <div class="releve-periode">
+    <div class="releve-periode-title">
+      Année {{ periode.0 }} — Semestre {{ periode.1 }}
+    </div>
+    <div class="releve-table-wrapper">
+      <table class="releve-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Matière</th>
+            <th class="center">Crédits</th>
+            <th class="center">Note / 100</th>
+            <th class="center">Mention</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cours_liste %}
+          {% with cours=item.inscription.section_cours.cours note=item.note %}
+          <tr>
+            <td><strong>{{ cours.code }}</strong></td>
+            <td>{{ cours.nom }}</td>
+            <td class="center">{{ cours.credits }}</td>
+            <td class="center"><strong>{{ note.note_finale|floatformat:0 }}</strong></td>
+            <td class="center">
+              {% if note.note_finale >= 90 %}
+                <span class="mention-badge mention-A">Excellent</span>
+              {% elif note.note_finale >= 80 %}
+                <span class="mention-badge mention-B">Très bien</span>
+              {% elif note.note_finale >= 70 %}
+                <span class="mention-badge mention-C">Bien</span>
+              {% elif note.note_finale >= 60 %}
+                <span class="mention-badge mention-D">Passable</span>
+              {% else %}
+                <span class="mention-badge mention-F">Échec</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endwith %}
+          {% empty %}
+          <tr>
+            <td colspan="5" style="text-align:center;color:#999;font-style:italic;padding:14px;">
+              Aucune note pour cette période.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% empty %}
+  <p style="text-align:center;color:#999;font-style:italic;margin:40px 0;">
+    Aucun résultat académique disponible.
+  </p>
+  {% endfor %}
+
+  <!-- ── Synthèse ── -->
+  <div class="releve-synthese">
+    <p><strong>Moyenne Générale :</strong> <span class="gpa-val">{{ moyenne_generale|floatformat:0 }} / 100</span></p>
+    <p><strong>Crédits obtenus :</strong> {{ credits_cumules }}</p>
+    <p><strong>Mention :</strong> {{ mention_generale }}</p>
+    <p><strong>Nombre de cours :</strong> {{ total_cours }}</p>
+    <p><strong>Date d'édition :</strong> {% now "d F Y" %}</p>
+  </div>
+
+  <!-- ── Pied de page ── -->
+  <div class="releve-footer">
+    <div class="releve-seal">
+      {% if site.cachet_officiel %}
+        <img src="{{ site.cachet_officiel.url }}"
+             style="width:100%;height:100%;object-fit:contain;">
+      {% else %}
+        Faculté<br>des Sciences<br>───<br>Humaines
+      {% endif %}
+    </div>
+
+    <div class="releve-signature">
+      <p>{{ site.titre_directeur_etudes|default:"Le Directeur des Études" }}</p>
+      {% if site.signature_directeur %}
+        <img src="{{ site.signature_directeur.url }}"
+             style="height:50px;object-fit:contain;display:block;margin:0 auto 8px;">
+      {% else %}
+        <div style="height:50px;"></div>
+      {% endif %}
+      <div class="releve-signature-line">
+        {% if site.nom_directeur_etudes %}
+          {{ site.nom_directeur_etudes }}
+        {% else %}
+          Signature &amp; Cachet
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ══════════════ FIN PAGE ══════════════ -->
+
+{% endblock %}

@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Déconnexion — Gestion des Notes{% endblock %}
+
+{% block extra_css %}
+<style>
+.logout-container {
+  min-height: calc(100vh - var(--topbar-h));
+  display: flex;
+
+  padding: 2rem;
+  background: var(--page-bg);
+}
+
+.logout-card {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.logout-header {
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-dark)
+  );
+  padding: 2.5rem 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.logout-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-icon {
+  font-size: 2.8rem;
+  color: #fff;
+}
+
+.logout-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.logout-body {
+  padding: 2rem;
+  text-align: center;
+}
+
+.logout-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.info-box {
+  background: var(--primary-light);
+  border-left: 4px solid var(--primary);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.info-box p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.security-features {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.security-features h6 {
+  margin-bottom: 0.8rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.security-features li {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* 🔴 Bouton principal cohérent avec ton design system */
+.btn-logout {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  padding: 0.9rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-logout:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* 🔵 action secondaire propre */
+.btn-return {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.9rem 1.2rem;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-return:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+<div class="logout-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="logout-card mx-auto">
+                    <!-- En-tête avec animation -->
+                    <div class="logout-header">
+                        <div class="logout-icon-wrapper">
+                            <i class="fas fa-sign-out-alt logout-icon"></i>
+                        </div>
+                        <h2 class="logout-title">Déconnexion</h2>
+                    </div>
+
+                    <!-- Corps de la carte -->
+                    <div class="logout-body">
+                        <div class="logout-message">
+                            <p>
+                                Êtes-vous sûr(e) de vouloir <strong>vous déconnecter</strong> ?
+                            </p>
+                            <p>
+                                Vous devrez vous reconnecter pour accéder à nouveau à votre espace personnel.
+                            </p>
+                        </div>
+
+                        <!-- Info box -->
+                        <div class="info-box">
+                            <p>
+                                <i class="fas fa-info-circle"></i>
+                                Vos données sont automatiquement sauvegardées
+                            </p>
+                        </div>
+
+                        <!-- Fonctionnalités de sécurité -->
+                        <div class="security-features">
+                            <h6>
+                                <i class="fas fa-shield-alt"></i>
+                                Ce qui se passera :
+                            </h6>
+                            <ul>
+                                <li>Toutes vos modifications sont sauvegardées</li>
+                                <li>Votre session sera fermée en toute sécurité</li>
+                                <li>Vous pourrez vous reconnecter à tout moment</li>
+                            </ul>
+                        </div>
+
+                        <!-- Formulaire de déconnexion -->
+                        <form method="post" id="logoutForm">
+                            {% csrf_token %}
+                            <div class="button-group">
+                                <button type="submit" class="btn-logout" id="logoutBtn">
+                                    <i class="fas fa-check-circle"></i>
+                                    Oui, me déconnecter
+                                </button>
+                                <a href="{% url 'comptes:tableau_bord' %}" class="btn-return">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Non, revenir au tableau de bord
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+           
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('logoutForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Animation au chargement
+        const elements = document.querySelectorAll('.logout-message, .info-box, .security-features');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                el.style.transition = 'all 0.5s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 200 + (index * 150));
+        });
+
+        // Gestion de la soumission du formulaire
+        form.addEventListener('submit', function(e) {
+            // Désactiver le bouton et afficher le spinner
+            logoutBtn.classList.add('loading');
+            logoutBtn.innerHTML = '<i class="fas fa-spinner"></i> Déconnexion en cours...';
+            logoutBtn.disabled = true;
+        });
+
+        // Animation du bouton au survol
+        logoutBtn.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            icon.style.transform = 'rotate(180deg)';
+            icon.style.transition = 'transform 0.3s ease';
+        });
+
+        logoutBtn.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            icon.style.transform = 'rotate(0deg)';
+        });
+    });
+</script>
+{% endblock %}

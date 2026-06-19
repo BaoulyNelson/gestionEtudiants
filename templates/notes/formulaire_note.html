@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} une note{% endblock %}
+
+{% block authenticated_content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>
+                            {{ action }} une note
+                        </h5>
+                        <a href="{% url 'notes:liste_notes_admin' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    {% if note %}
+                    <div class="alert alert-info border-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Étudiant :</strong>
+                                    {{ note.inscription.etudiant.utilisateur.get_full_name }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Matricule :</strong>
+                                    {{ note.inscription.etudiant.numero_etudiant }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Cours :</strong>
+                                    {{ note.inscription.section_cours.cours.code }} -
+                                    {{ note.inscription.section_cours.cours.nom }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Section :</strong>
+                                    {{ note.inscription.section_cours.numero_section }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        {% if not note %}
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Inscription <span class="text-danger">*</span>
+                            </label>
+                            {{ form.inscription }}
+                            {% if form.inscription.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.inscription.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Sélectionnez l'étudiant et le cours pour lequel vous souhaitez créer une note
+                            </small>
+                        </div>
+                        {% endif %}
+
+                        <div class="border rounded p-3 mb-4">
+                            <h6 class="mb-3">
+                                <i class="fas fa-calculator me-2"></i>
+                                Composantes de la note
+                            </h6>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Examen de mi-parcours (25%)</label>
+                                    {{ form.examen_mi_parcours }}
+                                    {% if form.examen_mi_parcours.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.examen_mi_parcours.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Examen final (35%)</label>
+                                    {{ form.examen_final }}
+                                    {% if form.examen_final.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.examen_final.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Travaux (20%)</label>
+                                    {{ form.travaux }}
+                                    {% if form.travaux.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.travaux.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Participation (10%)</label>
+                                    {{ form.participation }}
+                                    {% if form.participation.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.participation.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Projet (10%)</label>
+                                    {{ form.projet }}
+                                    {% if form.projet.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.projet.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="alert alert-light border mb-0">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Les notes doivent être comprises entre 0 et 100. La note finale sera calculée automatiquement selon les pourcentages indiqués.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Commentaires (optionnel)
+                            </label>
+                            {{ form.commentaires }}
+                            {% if form.commentaires.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.commentaires.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Ajoutez des observations ou remarques sur la performance de l'étudiant
+                            </small>
+                        </div>
+
+                        {% if note and note.note_finale is not None %}
+                        <div class="alert alert-success border-success">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>
+                                        Note finale actuelle
+                                    </h6>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <h4 class="mb-0">
+                                        <span class="badge bg-gradient-primary px-4 py-2">
+                                            {{ note.note_finale|floatformat:2 }} / 100
+                                        </span>
+                                        <span class="badge
+                                            {% if note.mention == 'A' %}bg-success
+                                            {% elif note.mention == 'B' %}bg-info
+                                            {% elif note.mention == 'C' %}bg-warning text-dark
+                                            {% elif note.mention == 'D' %}bg-danger
+                                            {% elif note.mention == 'F' %}bg-dark
+                                            {% else %}bg-secondary{% endif %}
+                                            px-4 py-2 ms-2">
+                                            {{ note.mention|default:"-" }}
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'notes:liste_notes_admin' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control, .form-select {
+    border: 1px solid #d2d6da;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #cb0c9f;
+    box-shadow: 0 0 0 2px rgba(203, 12, 159, 0.1);
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% block title %}Détail de la note - FASCH{% endblock %}
+
+{% block authenticated_content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-star"></i> Détail de la note</h2>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-8">
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informations</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row mb-3">
+
+                    <div class="col-md-6">
+                        <p>
+                            <strong>Étudiant :</strong><br>
+                            {{ note.inscription.etudiant.utilisateur.get_full_name }}<br>
+                            <small class="text-muted">
+                                {{ note.inscription.etudiant.numero_etudiant }}
+                            </small>
+                        </p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p>
+                            <strong>Cours :</strong><br>
+                            {{ note.inscription.section_cours.cours.code }}
+                            -
+                            {{ note.inscription.section_cours.cours.nom }}<br>
+
+                            <small class="text-muted">
+                                Section {{ note.inscription.section_cours.numero_section }}
+                            </small>
+                        </p>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h6 class="mb-3">Détail des notes</h6>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <small class="text-muted">
+                                    Examen Mi-Parcours (25%)
+                                </small>
+                                <h4 class="mb-0">
+                                    {{ note.examen_mi_parcours|default:"-" }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <small class="text-muted">
+                                    Examen Final (35%)
+                                </small>
+                                <h4 class="mb-0">
+                                    {{ note.examen_final|default:"-" }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <small class="text-muted">
+                                    Travaux (20%)
+                                </small>
+                                <h4 class="mb-0">
+                                    {{ note.travaux|default:"-" }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <small class="text-muted">
+                                    Participation (10%)
+                                </small>
+                                <h4 class="mb-0">
+                                    {{ note.participation|default:"-" }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <small class="text-muted">
+                                    Projet (10%)
+                                </small>
+                                <h4 class="mb-0">
+                                    {{ note.projet|default:"-" }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h6>Note Finale</h6>
+                                <h2 class="mb-0">
+                                    {% if note.note_finale %}
+                                        {{ note.note_finale|floatformat:2 }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card
+                            {% if note.mention == 'A' %}bg-success
+                            {% elif note.mention == 'B' %}bg-primary
+                            {% elif note.mention == 'C' %}bg-info
+                            {% elif note.mention == 'D' %}bg-warning
+                            {% else %}bg-danger
+                            {% endif %}
+                            text-white">
+
+                            <div class="card-body text-center">
+                                <h6>Mention</h6>
+                                <h2 class="mb-0">
+                                    {{ note.mention|default:"-" }}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if note.commentaires %}
+                <hr>
+
+                <div class="mt-3">
+                    <h6>Commentaires du professeur</h6>
+
+                    <div class="alert alert-info">
+                        {{ note.commentaires|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h5 class="mb-0">Informations complémentaires</h5>
+            </div>
+
+            <div class="card-body">
+
+                <p>
+                    <strong>Noté par :</strong><br>
+
+                    {% if note.note_par %}
+                        {{ note.note_par.utilisateur.get_full_name }}
+                    {% else %}
+                        Non assigné
+                    {% endif %}
+                </p>
+
+                <p>
+                    <strong>Créée le :</strong><br>
+                    {{ note.cree_le|date:"d/m/Y H:i" }}
+                </p>
+
+                <p>
+                    <strong>Dernière modification :</strong><br>
+                    {{ note.modifie_le|date:"d/m/Y H:i" }}
+                </p>
+
+                <p>
+                    <strong>Statut :</strong><br>
+
+                    {% if note.note_finale is not None %}
+
+                        {% if note.note_finale >= 60 %}
+                            <span class="badge bg-success">
+                                Réussi
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                Échoué
+                            </span>
+                        {% endif %}
+
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            Non évalué
+                        </span>
+                    {% endif %}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% if historique %}
+
+        <div class="card mt-3">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Historique des modifications
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="list-group">
+
+                    {% for item in historique %}
+
+                    <div class="list-group-item">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <h6 class="mb-1">
+                                {{ item.composante }}
+                            </h6>
+
+                            <small class="text-muted">
+                                {{ item.modifie_le|date:"d/m/Y H:i" }}
+                            </small>
+
+                        </div>
+
+                        <p class="mb-1">
+                            <small>
+                                {{ item.ancienne_valeur|default:"-" }}
+                                →
+                                {{ item.nouvelle_valeur|default:"-" }}
+                            </small>
+                        </p>
+
+                        {% if item.raison %}
+                        <p class="mb-1">
+                            <small class="text-info">
+                                Motif : {{ item.raison }}
+                            </small>
+                        </p>
+                        {% endif %}
+
+                        <small class="text-muted">
+                            Par :
+
+                            {% if item.modifie_par %}
+                                {{ item.modifie_par.utilisateur.get_full_name }}
+                            {% else %}
+                                Système
+                            {% endif %}
+                        </small>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="mt-4">
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+{% endblock %}

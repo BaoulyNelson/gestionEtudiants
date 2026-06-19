@@ -85,32 +85,58 @@ staticfiles/
 
 ```
 fasch_university/
-├── venv/
-├── fasch_config/
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   └── asgi.py
-├── accounts/
-├── courses/
-├── enrollments/
-├── grades/
-├── departments/
+├── comptes/
+│   └── management/
+│       └── commands/
+├── departements/
+│   └── management/
+│       └── commands/
+│           └── charger_departements.py
+├── cours/
+├── inscriptions/
+├── notes/
 ├── templates/
+│   ├── comptes/
+│   │   ├── connexion.html
+│   │   ├── changer_mot_de_passe.html
+│   │   ├── profil.html
+│   │   ├── liste_utilisateurs.html
+│   │   ├── creer_utilisateur.html
+│   │   └── modifier_utilisateur.html
+│   ├── cours/
+│   │   ├── liste_cours.html
+│   │   ├── detail_cours.html
+│   │   ├── formulaire_cours.html
+│   │   ├── liste_sections.html
+│   │   ├── detail_section.html
+│   │   ├── formulaire_section.html
+│   │   └── mes_cours.html
+│   ├── inscriptions/
+│   │   ├── mes_inscriptions.html
+│   │   ├── sections_disponibles.html
+│   │   ├── liste_inscriptions.html
+│   │   └── historique_inscriptions.html
+│   ├── notes/
+│   │   ├── mes_notes.html
+│   │   ├── saisie_notes.html
+│   │   ├── liste_notes.html
+│   │   ├── detail_note.html
+│   │   ├── sections_professeur.html
+│   │   ├── releve_notes.html
+│   │   └── statistiques_cours.html
 │   ├── base.html
-│   ├── home.html
-│   └── ...
+│   ├── accueil.html
+│   ├── tableau_bord_etudiant.html
+│   ├── tableau_bord_professeur.html
+│   └── tableau_bord_administrateur.html
 ├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
 ├── media/
-├── data/
-│   └── (fichiers CSV)
-├── manage.py
-├── .env
-└── requirements.txt
+├── donnees/
+│   └── departements.csv
+└── configuration_fasch/
+    ├── settings.py
+    ├── urls.py
+    └── views.py
 ```
 
 ### 8. Appliquer les migrations
@@ -153,9 +179,7 @@ Pillow
 
 ```bash
 # Charger les données depuis CSV
-python manage.py load_departments
-python manage.py load_courses
-python manage.py load_students
+python manage.py import_emplois_du_temps . --annee 2026 --semestre AUTOMNE --dry-run
 ```
 
 ## Notes importantes
@@ -170,7 +194,7 @@ accounts/management/commands/
 ├── load_professors.py
 └── load_students.py
 
-courses/management/commands/
+cours/management/commands/
 ├── load_courses.py
 └── load_sections.py
 

@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% block title %}Catalogue des cours – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .catalogue-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .catalogue-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .catalogue-header-center { flex: 1; text-align: center; }
+  .catalogue-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .catalogue-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .catalogue-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .catalogue-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .catalogue-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .catalogue-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .catalogue-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .catalogue-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  @media (max-width: 768px) {
+    .catalogue-header { flex-direction: column; align-items: center; text-align: center; }
+    .catalogue-header-right { text-align: center; }
+    .catalogue-header-right p { justify-content: center; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="catalogue-header">
+
+  <div class="catalogue-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="catalogue-header-center">
+    <div class="catalogue-header-univ">Université d'État d'Haïti</div>
+    <div class="catalogue-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="catalogue-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="catalogue-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="catalogue-header-divider"></div>
+
+<!-- ── Titre + action ── -->
+<div class="row mb-4 align-items-center">
+  <div class="col-md-6">
+    <div class="catalogue-doc-title text-md-start" style="border:none;padding:0;margin:0;">
+      <i class="fas fa-book-open me-2" style="color:#1a3a6b;"></i>
+      Catalogue des cours
+    </div>
+  </div>
+  {% if user.est_administrateur %}
+  <div class="col-md-6 text-md-end mt-3 mt-md-0">
+    <a href="{% url 'cours:creer_cours' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Ajouter un cours
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ── Filtres ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Département</label>
+        <select name="departement" class="form-select">
+          <option value="">Tous les départements</option>
+          {% for dept in departements %}
+            <option value="{{ dept.code }}" {% if departement_actuel == dept.code %}selected{% endif %}>
+              {{ dept.nom }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Année d'études</label>
+        <select name="niveau" class="form-select">
+          <option value="">Toutes les années</option>
+          {% for value, label in choix_annee %}
+            <option value="{{ value }}" {% if niveau_actuel == value %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Recherche</label>
+        <input type="text" name="recherche" class="form-control" placeholder="Code ou nom du cours..."
+               value="{{ recherche|default:'' }}">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-search"></i> Filtrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Liste des cours ── -->
+{% if page_obj %}
+<div class="row">
+  {% for cours in page_obj %}
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h5 class="card-title">
+            <span class="badge bg-primary">{{ cours.code }}</span>
+            {{ cours.nom }}
+          </h5>
+        </div>
+
+        <p class="card-text text-muted">
+          {{ cours.description|truncatewords:20|default:"Pas de description" }}
+        </p>
+
+        <div class="row mt-3">
+          <div class="col-6">
+            <small class="text-muted">
+              <i class="fas fa-building"></i>
+              {{ cours.departement.nom|default:"Tronc commun" }}
+            </small>
+          </div>
+          <div class="col-6">
+            <small class="text-muted">
+              <i class="fas fa-layer-group"></i> {{ cours.get_niveau_display }}
+            </small>
+          </div>
+          <div class="col-6 mt-2">
+            <small class="text-muted">
+              <i class="fas fa-coins"></i> {{ cours.credits }} crédits
+            </small>
+          </div>
+          <div class="col-6 mt-2">
+            {% if cours.is_active %}
+              <span class="badge bg-success">Actif</span>
+            {% else %}
+              <span class="badge bg-secondary">Inactif</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <a href="{% url 'cours:detail_cours' cours.id %}" class="btn btn-sm btn-info">
+            <i class="fas fa-eye"></i> Détails
+          </a>
+          {% if user.est_administrateur %}
+            <a href="{% url 'cours:modifier_cours' cours.id %}" class="btn btn-sm btn-warning">
+              <i class="fas fa-edit"></i> Modifier
+            </a>
+            <a href="{% url 'cours:creer_section_pour_cours' cours.id %}" class="btn btn-sm btn-success">
+              <i class="fas fa-plus"></i> Ajouter section
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="mt-4">
+  {% include 'partials/pagination.html' %}
+</div>
+
+{% else %}
+<div class="alert alert-info">
+  <i class="fas fa-info-circle"></i> Aucun cours trouvé.
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const yearSelect = document.querySelector('select[name="year_level"]');
+  const deptSelect = document.querySelector('select[name="departement"]');
+
+  function toggleDepartment() {
+    if (yearSelect.value === "1") {
+      deptSelect.disabled = true;
+      deptSelect.value = ""; // Réinitialise le choix
+    } else {
+      deptSelect.disabled = false;
+    }
+  }
+
+  toggleDepartment();
+  yearSelect.addEventListener('change', toggleDepartment);
+});
+</script>
+
+{% endblock %}

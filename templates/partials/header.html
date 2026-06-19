@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-soft sticky-top" id="mainNav">
     <div class="container">
         <!-- Logo & texte -->
-        <a class="navbar-brand d-flex flex-column font-playfair fw-bold text-primary" href="{% url 'home' %}">
+        <a class="navbar-brand d-flex flex-column font-playfair fw-bold text-primary" href="{% url 'accueil' %}">
             <span class="fs-3 text-primary">UEH</span>
             <small class="text-muted fs-6">Faculté des Sciences Humaines</small>
         </a>
@@ -18,30 +18,38 @@
             <ul class="navbar-nav ms-auto align-items-lg-center">
 
                 <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'home' %}">Accueil</a>
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'accueil' %}">Accueil</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'departments:list' %}">Départements</a>
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'departements:liste_departements' %}">Départements</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'articles:list' %}">Actualités</a>
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'articles:liste_articles' %}">Actualités</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'admissions:admision_center' %}">Admissions</a>
+                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'admissions:centre_admissions' %}">Admissions</a>
                 </li>
 
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-primary fw-semibold px-3" href="#" id="userDropdown"
-                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i> {{ user.get_full_name }}
-                        </a>
+                    <a class="nav-link dropdown-toggle text-primary fw-semibold px-3 d-flex align-items-center gap-2"
+                    href="#" id="userDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.photo_profil %}
+                            <img src="{{ user.photo_profil.url }}" 
+                                class="rounded-circle"
+                                style="width: 32px; height: 32px; object-fit: cover;">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                        {{ user.get_full_name }}
+                    </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                <a class="dropdown-item" href="{% url 'comptes:profil' %}">
                                     <i class="fas fa-id-card me-1"></i> Mon Profil
                                 </a>
                             </li>
@@ -57,7 +65,7 @@
                             <li><hr class="dropdown-divider"></li>
 
                             <li>
-                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                <a class="dropdown-item" href="{% url 'comptes:deconnexion' %}">
                                     <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
                                 </a>
                             </li>
@@ -70,7 +78,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex align-items-center ms-3">
-                            <a href="{% url 'accounts:login' %}" class="btn btn-primary-custom btn-sm px-4 py-2 me-2">
+                            <a href="{% url 'comptes:connexion' %}" class="btn btn-primary-custom btn-sm px-4 py-2 me-2">
                                 Connexion
                             </a>
                         

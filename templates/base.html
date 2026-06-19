@@ -1,1449 +1,1599 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FASCH - Système de Gestion Universitaire{% endblock %}</title>
-    
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #3b82f6;
-            --primary-dark: #1d4ed8;
-            --secondary-color: #6b7280;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --info-color: #3b82f6;
-            --light-color: #f8fafc;
-            --dark-color: #1e293b;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --border-radius: 0.5rem;
-            --border-radius-lg: 0.75rem;
-            --border-radius-xl: 1rem;
-            --transition: all 0.2s ease-in-out;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    border-right: 1px solid #e2e8f0;
-    box-shadow: var(--shadow-lg);
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1040;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    /* Cachée par défaut sur mobile */
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-            
-        }
-
-        .sidebar.active {
-            transform: translateX(0);
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        .sidebar-header {
-            padding: 1.5rem 1.25rem 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .sidebar-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            color: white;
-        }
-
-        .sidebar-close {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.8);
-            padding: 0.25rem;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: none;
-        }
-
-        .sidebar-close:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-
-        .sidebar-menu-item {
-            margin: 0;
-        }
-
-        .sidebar-menu-link {
-            display: flex;
-            align-items: center;
-            padding: 0.875rem 1.25rem;
-            color: #475569;
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-            position: relative;
-        }
-
-        .sidebar-menu-link:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-            border-left-color: var(--primary-color);
-            transform: translateX(4px);
-        }
-
-        .sidebar-menu-link.active {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .sidebar-menu-icon {
-            width: 20px;
-            margin-right: 0.75rem;
-            font-size: 1.125rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .sidebar-menu-text {
-            font-weight: 500;
-            flex-grow: 1;
-        }
-
-        .sidebar-menu-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            min-height: 100vh;
-            transition: var(--transition);
-            margin-left: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .main-content.expanded {
-            margin-left: 280px;
-        }
-
-        /* Header Styles */
-        .app-header {
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-            padding: 0.75rem 0;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .mobile-menu-toggle {
-            background: none;
-            border: 1px solid #e2e8f0;
-            color: #6b7280;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            display: none;
-            transition: var(--transition);
-        }
-
-        .mobile-menu-toggle:hover {
-            background: #f1f5f9;
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-            padding: 0.5rem 0;
-        }
-
-        .logo i {
-            font-size: 1.75rem;
-            color: var(--primary-dark);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* Search Styles */
-        .search-container {
-            position: relative;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .search-input {
-            border: 2px solid #e2e8f0;
-            border-radius: var(--border-radius-lg);
-            padding: 0.75rem 1rem 0.75rem 3rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            background: #f8fafc;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .search-container button {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #6b7280;
-            z-index: 1;
-        }
-
-        .search-container button:hover {
-            color: var(--primary-color);
-        }
-
-        /* User Dropdown */
-        .user-dropdown {
-            position: relative;
-        }
-
-        .user-avatar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-            position: relative;
-            font-size: 1.125rem;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-md);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--danger-color);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .dropdown-menu {
-            border: none;
-            box-shadow: var(--shadow-xl);
-            border-radius: var(--border-radius-xl);
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-            min-width: 220px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .dropdown-header {
-            padding: 0.875rem 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: var(--transition);
-            color: #475569;
-            border-radius: 0.375rem;
-            margin: 0.125rem 0.5rem;
-        }
-
-        .dropdown-item:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-            transform: translateX(4px);
-        }
-
-        .dropdown-item i {
-            width: 16px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .dropdown-divider {
-            margin: 0.5rem 0;
-            border-color: #e2e8f0;
-        }
-
-        /* Content Body */
-        .content-body {
-            padding: 2rem;
-            flex-grow: 1;
-            min-height: calc(100vh - 200px);
-        }
-
-        @media (max-width: 768px) {
-            .content-body {
-                padding: 1rem;
-            }
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .quick-action-card {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: white;
-            border-radius: var(--border-radius-xl);
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid #e2e8f0;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quick-action-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-            transform: scaleX(0);
-            transition: var(--transition);
-        }
-
-        .quick-action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-
-        .quick-action-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .quick-action-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            flex-shrink: 0;
-            font-size: 1.25rem;
-        }
-
-        .quick-action-content h6 {
-            margin: 0 0 0.25rem 0;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .quick-action-content p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-
-        /* Messages */
-        .messages-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .alert {
-            border: none;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow);
-            padding: 1rem 1.25rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .alert-success {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            color: #065f46;
-            border: 1px solid #86efac;
-        }
-
-        .alert-danger {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        .alert-warning {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            color: #92400e;
-            border: 1px solid #fcd34d;
-        }
-
-        .alert-info {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            color: #1e40af;
-            border: 1px solid #93c5fd;
-        }
-
-        .btn-close {
-            filter: invert(0.5);
-            opacity: 0.7;
-            transition: var(--transition);
-        }
-
-        .btn-close:hover {
-            opacity: 1;
-        }
-
-        /* Mobile Search Toggle */
-        #mobileSearchToggle {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            color: #6b7280;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: var(--transition);
-        }
-
-        #mobileSearchToggle:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        /* Overlay */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1030;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .sidebar-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 991.98px) {
-            .main-content.expanded {
-                margin-left: 0;
-            }
-            
-            .sidebar {
-                width: 100%;
-                min-width: 100%;
-            }
-            
-            .mobile-menu-toggle {
-                display: flex;
-            }
-            
-            .sidebar-close {
-                display: block;
-            }
-            
-            .search-container.d-none.d-md-block {
-                display: none !important;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .content-body {
-                padding: 1rem;
-            }
-            
-            .app-header {
-                padding: 0.5rem 0;
-            }
-            
-            .header-content {
-                padding: 0 1rem;
-            }
-            
-            .logo {
-                font-size: 1.25rem;
-            }
-            
-            .logo i {
-                font-size: 1.5rem;
-            }
-            
-            .search-container {
-                max-width: none;
-                width: 100%;
-                margin: 0 0 1rem 0;
-            }
-            
-            .search-input {
-                padding: 0.625rem 1rem 0.625rem 2.75rem;
-                font-size: 1rem;
-            }
-            
-            .header-actions {
-                justify-content: flex-end;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .content-body {
-                padding: 0.75rem;
-            }
-            
-            .quick-action-card {
-                padding: 1.25rem;
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .quick-action-icon {
-                width: 48px;
-                height: 48px;
-                font-size: 1.125rem;
-            }
-            
-            .quick-action-content h6 {
-                font-size: 0.9375rem;
-            }
-            
-            .quick-action-content p {
-                font-size: 0.8125rem;
-            }
-        }
-
-        /* Admin Section Header */
-        .admin-section-header {
-            padding: 1rem 0;
-            border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 1.5rem;
-        }
-
-        .admin-section-title {
-            color: #6b7280;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Footer */
-        .app-footer {
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            padding: 1.5rem 2rem;
-            color: #6b7280;
-            font-size: 0.875rem;
-            text-align: center;
-        }
-
-        @media (max-width: 767.98px) {
-            .app-footer {
-                padding: 1rem;
-            }
-        }
-
-        /* Loading States */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        /* Focus Styles for Accessibility */
-        .btn:focus,
-        .form-control:focus,
-        .sidebar-menu-link:focus,
-        .user-avatar:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
-        /* High Contrast Mode Support */
-        @media (prefers-contrast: high) {
-            :root {
-                --border-color: #374151;
-                --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
-            }
-            
-            .sidebar-menu-link:hover {
-                background: #e5e7eb;
-            }
-        }
-
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Dark Mode Support (if needed) */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --light-color: #0f172a;
-                --dark-color: #f1f5f9;
-                --border-color: #334155;
-            }
-            
-            body {
-                background-color: #0f172a;
-                color: #f1f5f9;
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            .sidebar,
-            .sidebar-overlay,
-            .mobile-menu-toggle,
-            .search-container,
-            .header-actions .user-dropdown,
-            .app-footer {
-                display: none !important;
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-            }
-            
-            .content-body {
-                padding: 0;
-            }
-            
-            body {
-                background: white !important;
-            }
-        }
-    </style>
-    
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <!-- Mobile Menu Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <div class="d-flex min-vh-100">
-        <!-- Sidebar -->
-            <nav class="sidebar" id="sidebar">
-                <div class="sidebar-header d-flex justify-content-between align-items-center">
-                    <h3 class="sidebar-title mb-0">
-                        <i class="fas fa-graduation-cap me-2"></i>
-                        Menu
-                    </h3>
-                    <button class="sidebar-close d-md-none" id="sidebarClose">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-
-            <ul class="sidebar-menu">
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link active" href="{% url 'dashboard' %}">
-                        <i class="fas fa-tachometer-alt sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Tableau de bord</span>
-                    </a>
-                </li>
-
-                {% if user.is_student %}
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'courses:my_courses' %}">
-                        <i class="fas fa-book sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Mes Cours</span>
-                        <span class="sidebar-menu-badge">{{ course_count }}</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'enrollments:available_sections' %}">
-                        <i class="fas fa-plus-circle sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">S'inscrire</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'enrollments:my_enrollments' %}">
-                        <i class="fas fa-list sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Inscriptions</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:my_grades' %}">
-                        <i class="fas fa-star sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Notes</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:my_professors' %}">
-                        <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Professeurs</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:transcript' %}">
-                        <i class="fas fa-file-alt sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Relevé</span>
-                    </a>
-                </li>
-                {% endif %}
-
-                {% if user.is_professor %}
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'courses:my_courses' %}">
-                        <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Mes Sections</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:professor_sections' %}">
-                        <i class="fas fa-edit sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Saisie Notes</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'courses:section_list' %}">
-                        <i class="fas fa-list sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Sections</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:my_students' %}">
-                        <i class="fas fa-user-graduate sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Étudiants</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:palmares' %}">
-                        <i class="fas fa-trophy sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Palmarès</span>
-                    </a>
-                </li>
-                {% endif %}
-
-                {% if user.is_admin_user %}
-                <li class="sidebar-menu-item">
-                    <div class="admin-section-header">
-                        <h6 class="admin-section-title">
-                            <i class="fas fa-cog me-1"></i>Administration
-                        </h6>
-                    </div>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'accounts:user_list' %}">
-                        <i class="fas fa-users sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Utilisateurs</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'courses:course_list' %}">
-                        <i class="fas fa-book-open sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Cours</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'courses:section_list' %}">
-                        <i class="fas fa-clipboard-list sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Sections</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'enrollments:enrollment_list' %}">
-                        <i class="fas fa-user-check sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Inscriptions</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:admin_grade_list' %}">
-                        <i class="fas fa-trophy sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Notes</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'accounts:professor_list' %}">
-                        <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Professeurs</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'accounts:student_list' %}">
-                        <i class="fas fa-user-graduate sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">Étudiants</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link" href="{% url 'grades:students_gpa' %}">
-                        <i class="fas fa-star sidebar-menu-icon"></i>
-                        <span class="sidebar-menu-text">GPA des Étudiants</span>
-                    </a>
-                </li>
-                
-  
-
-
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link" href="{% url 'grades:admin_grade_bulk_entry' %}">
-                    <i class="fas fa-table sidebar-menu-icon"></i>
-                    <span class="sidebar-menu-text">Saisie en masse</span>
-                </a>
-            </li>
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link" href="{% url 'grades:admin_grade_statistics' %}">
-                    <i class="fas fa-chart-bar sidebar-menu-icon"></i>
-                    <span class="sidebar-menu-text">Statistiques</span>
-                </a>
-            </li>
-                {% endif %}
-            </ul>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="main-content d-flex flex-column flex-grow-1" id="mainContent">
-            <!-- Header -->
-            <header class="app-header">
-                <div class="container-fluid">
-                    <div class="header-content">
-                        <div class="logo-section">
-                            <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                                <i class="fas fa-bars"></i>
-                            </button>
-                            <a href="{% url 'dashboard' %}" class="logo">
-                                <i class="fas fa-university"></i>
-                                FASCH
-                            </a>
-                        </div>
-
-                        <div class="header-actions flex-grow-1 d-flex align-items-center justify-content-end">
-                            <!-- Search Form -->
-                            <form 
-                                method="get" 
-                                action="{% url 'portal:recherche_globale' %}" 
-                                class="search-container d-none d-md-flex position-relative me-3" 
-                                id="searchForm"
-                            >
-                                <input 
-                                    type="search" 
-                                    name="q" 
-                                    class="search-input form-control" 
-                                    placeholder="Rechercher cours, étudiants..."
-                                    autocomplete="off"
-                                >
-                                <button 
-                                    type="submit" 
-                                    class="position-absolute top-50 start-0 translate-middle-y ms-3"
-                                    aria-label="Rechercher"
-                                >
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </form>
-
-                            <!-- Mobile Search Toggle -->
-                            <button class="btn d-md-none me-2" id="mobileSearchToggle">
-                                <i class="fas fa-search"></i>
-                            </button>
-
-                            <!-- User Dropdown -->
-                            <div class="user-dropdown position-relative">
-                                <a href="#" class="user-avatar" id="userDropdown" 
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user"></i>
-                                    {% if notifications_non_lues and notifications_non_lues.count > 0 %}
-                                        <span class="notification-badge">{{ notifications_non_lues.count }}</span>
-                                    {% endif %}
-                                </a>
-
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li class="dropdown-header">
-                                        <i class="fas fa-user-circle"></i> {{ request.user.get_full_name }}
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    
-                                    <li>
-                                        <a class="dropdown-item d-flex justify-content-between align-items-center" 
-                                           href="{% url 'notifications:mes_notifications' %}">
-                                            <span><i class="fas fa-bell"></i> Notifications</span>
-                                            {% if notifications_non_lues and notifications_non_lues.count > 0 %}
-                                                <span class="badge bg-danger rounded-pill">{{ notifications_non_lues.count }}</span>
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                    
-                                    <li><hr class="dropdown-divider"></li>
-                                    
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">
-                                            <i class="fas fa-user-edit"></i> Mon Profil
-                                        </a>
-                                    </li>
-                                    
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'home' %}">
-                                            <i class="fas fa-home"></i> Accueil
-                                        </a>
-                                    </li>
-                                    
-                                    <li><hr class="dropdown-divider"></li>
-                                    
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
-                                            <i class="fas fa-sign-out-alt"></i> Déconnexion
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mobile Search Form -->
-                    <div class="container-fluid px-3 pb-3 d-md-none">
-                        <form 
-                            method="get" 
-                            action="{% url 'portal:recherche_globale' %}" 
-                            class="search-container position-relative d-none" 
-                            id="mobileSearchForm"
-                        >
-                            <input 
-                                type="search" 
-                                name="q" 
-                                class="search-input form-control" 
-                                placeholder="Rechercher cours, étudiants..."
-                                autocomplete="off"
-                            >
-                            <button 
-                                type="submit" 
-                                class="position-absolute top-50 start-0 translate-middle-y ms-3"
-                                aria-label="Rechercher"
-                            >
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <div class="flex-grow-1">
-                <!-- Messages -->
-                {% if messages %}
-                <div class="messages-container container-fluid px-4 pt-3">
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-triangle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                <!-- Content Body -->
-                <div class="content-body">
-                    {% if user.is_authenticated %}
-
-
-                    {% block authenticated_content %}{% endblock %}
-                    {% else %}
-                    {% block public_content %}{% endblock %}
-                    {% endif %}
-                </div>
-            </div>
-
-            {% include 'partials/footer.html' %}
-        </div>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<!-- jQuery (requis pour Select2) -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-  $(document).ready(function() {
-    $('select.form-select').select2({
-      placeholder: "Rechercher...",
-      allowClear: true,
-      width: '100%' // pour occuper toute la largeur du champ Bootstrap
-    });
-  });
-</script>
-
-    <!-- Custom JavaScript -->
-    <script>
-        (function() {
-            'use strict';
-
-            // DOM Elements
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const sidebarClose = document.getElementById('sidebarClose');
-            const mainContent = document.getElementById('mainContent');
-            const mobileSearchToggle = document.getElementById('mobileSearchToggle');
-            const mobileSearchForm = document.getElementById('mobileSearchForm');
-            const searchForm = document.getElementById('searchForm');
-
-            // Initialize on load
-            document.addEventListener('DOMContentLoaded', function() {
-                initializeDashboard();
-                setupEventListeners();
-                updateActiveMenuItem();
-                initializeSearch();
-            });
-
-function initializeDashboard() {
-    updateLayout();
-    
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(updateLayout, 150);
-    });
-
-    function updateLayout() {
-        const isDesktop = window.innerWidth >= 992;
-        
-        if (isDesktop) {
-            // Desktop: sidebar toujours visible
-            sidebar.classList.add('active');
-            mainContent.classList.add('expanded');
-            sidebarOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        } else {
-            // Mobile: fermer la sidebar
-            sidebar.classList.remove('active');
-            mainContent.classList.remove('expanded');
-            sidebarOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_description %}FASCH - Plateforme de gestion universitaire : inscriptions, notes, cours et profils étudiants/professeurs.{% endblock %}">
+  <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="theme-color" content="#0f2a5c">
+
+  <meta property="og:title" content="{% block og_title %}FASCH - Système de Gestion Universitaire{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Plateforme de gestion universitaire de la FASCH.{% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  {% block og_image %}{% endblock %}
+
+  <title>{% block title %}FASCH - Système de Gestion Universitaire{% endblock %}</title>
+
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+/* ══════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════ */
+:root {
+  --primary: #dc2626; /* Rouge principal */
+  --primary-dark: #b91c1c; /* Rouge foncé (hover boutons) */
+  --primary-light: rgba(
+    220,
+    38,
+    38,
+    0.08
+  ); /* Rouge très transparent (hover menu) */
+  --sidebar-w: 260px;
+  --topbar-h: 62px;
+  --page-bg: #f5f6fa; /* Fond gris très clair */
+  --card-bg: #ffffff;
+  --sidebar-bg: #ffffff; /* Sidebar blanche */
+  --topbar-bg: #ffffff; /* Topbar blanche */
+  --text-primary: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --danger: #dc2626;
 }
 
-            function setupEventListeners() {
-                // Mobile menu toggle
-                if (mobileMenuToggle) {
-                    mobileMenuToggle.addEventListener('click', toggleSidebar);
-                }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-                // Sidebar close button
-                if (sidebarClose) {
-                    sidebarClose.addEventListener('click', toggleSidebar);
-                }
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 14px;
+}
 
-                // Overlay click to close
-                if (sidebarOverlay) {
-                    sidebarOverlay.addEventListener('click', function(e) {
-                        if (e.target === sidebarOverlay) {
-                            toggleSidebar();
-                        }
-                    });
-                }
+a {
+  text-decoration: none;
+}
 
-                // Close sidebar on escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && sidebar.classList.contains('active')) {
-                        toggleSidebar();
-                    }
-                });
+/* ══════════════════════════════════════════
+   TOP NAVBAR
+══════════════════════════════════════════ */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  background: var(--topbar-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  z-index: 1050;
+  gap: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--border);
+}
 
-                // Prevent body scroll when sidebar is open on mobile
-                document.addEventListener('touchmove', preventBodyScroll, { passive: false });
+/* Brand */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+  min-width: var(--sidebar-w);
+  padding-right: 1rem;
+  flex-shrink: 0;
+}
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-icon i {
+  color: #fff;
+  font-size: 17px;
+}
 
-                // Close dropdown on outside click
-                document.addEventListener('click', function(e) {
-                    const dropdown = document.querySelector('.dropdown-menu');
-                    const dropdownToggle = document.getElementById('userDropdown');
-                    
-                    if (dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
-                        const bsDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                        if (bsDropdown) {
-                            bsDropdown.hide();
-                        }
-                    }
-                });
+/* Toggle mobile */
+.topbar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 20px;
+  padding: 4px 8px 4px 0;
+  display: none;
+}
+@media (min-width: 769px) {
+  .topbar-toggle {
+    display: block;
+  }
+}
 
-                // Close dropdown when clicking on items
-                document.addEventListener('click', function(e) {
-                    if (e.target.closest('.dropdown-item')) {
-                        const bsDropdown = bootstrap.Dropdown.getInstance(document.getElementById('userDropdown'));
-                        if (bsDropdown) {
-                            setTimeout(() => bsDropdown.hide(), 100);
-                        }
-                    }
-                });
-            }
+/* Center nav links */
+.topbar-nav {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  height: 100%;
+  gap: 2px;
+}
+.topbar-nav-link {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.topbar-nav-link:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+.topbar-nav-link.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
 
-            function toggleSidebar() {
-                const isActive = sidebar.classList.contains('active');
-                
-                if (isActive) {
-                    // Close sidebar
-                    sidebar.classList.remove('active');
-                    mainContent.classList.remove('expanded');
-                    sidebarOverlay.classList.remove('show');
-                    document.body.style.overflow = '';
-                } else {
-                    // Open sidebar
-                    sidebar.classList.add('active');
-                    mainContent.classList.add('expanded');
-                    sidebarOverlay.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                    
-                    // Focus first menu item for accessibility
-                    const firstMenuItem = sidebar.querySelector('.sidebar-menu-link');
-                    if (firstMenuItem) {
-                        firstMenuItem.focus();
-                    }
-                }
-            }
+/* Right actions */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+.topbar-notif {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 19px;
+  padding: 4px;
+  line-height: 1;
+}
+.topbar-notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -5px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.topbar-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.topbar-avatar i {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+.topbar-username {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+.topbar-username small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
 
-            function preventBodyScroll(e) {
-                const isMobile = window.innerWidth < 992;
-                const sidebarActive = sidebar.classList.contains('active');
-                
-                if (isMobile && sidebarActive && !sidebar.contains(e.target)) {
-                    e.preventDefault();
-                }
-            }
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1030;
+}
+.sidebar-overlay.show {
+  display: block;
+}
 
-            function updateActiveMenuItem() {
-                const currentPath = window.location.pathname;
-                const menuLinks = document.querySelectorAll('.sidebar-menu-link');
-                
-                menuLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    link.classList.remove('active');
-                    
-                    // Match exact path or path with trailing slash
-                    if (href === currentPath || href === currentPath + '/' || 
-                        currentPath.startsWith(href + '/')) {
-                        link.classList.add('active');
-                    }
-                });
-            }
+.sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1040;
+  border-right: 1px solid var(--border);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar::-webkit-scrollbar {
+  width: 3px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
 
-            function initializeSearch() {
-                // Mobile search toggle
-                if (mobileSearchToggle && mobileSearchForm) {
-                    mobileSearchToggle.addEventListener('click', function() {
-                        const isVisible = !mobileSearchForm.classList.contains('d-none');
-                        
-                        if (isVisible) {
-                            mobileSearchForm.classList.add('d-none');
-                            this.innerHTML = '<i class="fas fa-search"></i>';
-                        } else {
-                            mobileSearchForm.classList.remove('d-none');
-                            this.innerHTML = '<i class="fas fa-times"></i>';
-                            
-                            // Focus the search input
-                            const mobileSearchInput = mobileSearchForm.querySelector('input[type="search"]');
-                            if (mobileSearchInput) {
-                                setTimeout(() => mobileSearchInput.focus(), 100);
-                            }
-                        }
-                    });
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-title {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-close-btn {
+  display: none;
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
 
-                    // Close mobile search when clicking outside
-                    document.addEventListener('click', function(e) {
-                        if (!mobileSearchForm.contains(e.target) && 
-                            !mobileSearchToggle.contains(e.target) &&
-                            !mobileSearchForm.classList.contains('d-none')) {
-                            mobileSearchForm.classList.add('d-none');
-                            mobileSearchToggle.innerHTML = '<i class="fas fa-search"></i>';
-                        }
-                    });
-                }
+.sidebar-menu {
+  list-style: none;
+  padding: 6px 0;
+  margin: 0;
+}
 
-                // Search input enhancements
-                const searchInputs = document.querySelectorAll('.search-input');
-                searchInputs.forEach(input => {
-                    input.addEventListener('focus', function() {
-                        this.parentElement.classList.add('focused');
-                    });
-                    
-                    input.addEventListener('blur', function() {
-                        this.parentElement.classList.remove('focused');
-                    });
+.sidebar-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 20px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  border-radius: 0 8px 8px 0;
+  margin: 1px 8px 1px 0;
+  transition: all 0.15s;
+}
+.sidebar-menu-link i {
+  color: var(--text-muted);
+}
 
-                    // Debounced search
-                    let searchTimeout;
-                    input.addEventListener('input', function() {
-                        clearTimeout(searchTimeout);
-                        const query = this.value.trim();
-                        
-                        if (query.length > 2) {
-                            searchTimeout = setTimeout(() => {
-                                console.log('Searching for:', query);
-                                // Trigger search functionality here
-                            }, 300);
-                        }
-                    });
-                });
-            }
+.sidebar-menu-link:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+  border-left-color: rgba(220, 38, 38, 0.3);
+}
+.sidebar-menu-link:hover i {
+  color: var(--primary);
+}
 
-            // Utility Functions
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
+.sidebar-menu-link.active {
+  color: #fff;
+  background: var(--primary);
+  border-left-color: var(--primary-dark);
+  font-weight: 500;
+  border-radius: 8px;
+  margin: 1px 8px;
+}
+.sidebar-menu-link.active i {
+  color: #fff;
+}
 
-            // Auto-hide success messages
-            function initializeAlerts() {
-                const successAlerts = document.querySelectorAll('.alert-success');
-                successAlerts.forEach(alert => {
-                    // Don't auto-hide if it has important content
-                    if (!alert.classList.contains('alert-important')) {
-                        setTimeout(() => {
-                            const bsAlert = new bootstrap.Alert(alert);
-                            if (bsAlert) {
-                                bsAlert.close();
-                            }
-                        }, 6000);
-                    }
-                });
-            }
+.sidebar-menu-icon {
+  font-size: 15px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.sidebar-menu-badge {
+  margin-left: auto;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
 
-            // Initialize tooltips if present
-            function initializeTooltips() {
-                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                tooltipTriggerList.forEach(tooltipTriggerEl => {
-                    new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            }
+.admin-section-header {
+  padding: 16px 20px 4px;
+}
+.admin-section-title {
+  color: #9ca3af;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 6px 0;
+}
 
-            // Smooth scrolling for anchor links
-            function initializeSmoothScroll() {
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    });
-                });
-            }
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+.main-content {
+  margin-left: var(--sidebar-w);
+  padding-top: var(--topbar-h);
+  min-height: 100vh;
+}
+.content-body {
+  padding: 1.5rem;
+}
 
-            // Performance optimizations
-            function optimizePerformance() {
-                // Lazy load images if present
-                const images = document.querySelectorAll('img[data-src]');
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.src = img.dataset.src;
-                            img.classList.remove('lazy');
-                            observer.unobserve(img);
-                        }
-                    });
-                });
+/* ══════════════════════════════════════════
+   TOASTS
+══════════════════════════════════════════ */
+.toast-container {
+  z-index: 1100;
+}
+.toast {
+  min-width: 280px;
+}
 
-                images.forEach(img => imageObserver.observe(img));
+/* ══════════════════════════════════════════
+   BOTTOM NAV BAR — mobile only
+══════════════════════════════════════════ */
+.bottom-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  background: var(--sidebar-bg);
+  display: none;
+  align-items: stretch;
+  z-index: 1050;
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+}
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 10px;
+  gap: 3px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 6px 4px;
+  position: relative;
+  transition: color 0.15s;
+}
+.bn-item i {
+  font-size: 18px;
+}
+.bn-item.active,
+.bn-item:hover {
+  color: var(--primary);
+}
+.bn-item--center {
+  background: var(--primary);
+  color: #fff !important;
+  border-radius: 14px 14px 0 0;
+  margin: 0 4px;
+}
+.bn-item--center i,
+.bn-item--center:hover {
+  color: #fff;
+}
+.bn-badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 16px);
+  background: var(--primary);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 8px;
+}
 
-                // Reduce motion for save-data users
-                if ('connection' in navigator && navigator.connection.saveData) {
-                    document.documentElement.classList.add('reduced-motion');
-                }
-            }
+/* ══════════════════════════════════════════
+   BOTTOM SHEET — mobile
+══════════════════════════════════════════ */
+.bottom-sheet {
+  position: fixed;
+  bottom: 62px;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  border-radius: 16px 16px 0 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 1060;
+  transform: translateY(calc(100% + 62px));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+.bs-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 10px auto 6px;
+}
+.bs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.bs-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bs-close {
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-section-label {
+  padding: 12px 16px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.bs-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+.bs-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  color: var(--text-primary);
+  font-size: 13px;
+  background: var(--card-bg);
+  transition: background 0.15s;
+}
+.bs-link i {
+  color: var(--primary);
+  width: 16px;
+  font-size: 15px;
+}
+.bs-link:hover {
+  background: #fef2f2;
+}
+.bs-link--danger {
+  color: var(--danger);
+}
+.bs-link--danger i {
+  color: var(--danger);
+}
 
-            // Initialize all features
-            function initializeAll() {
-                initializeAlerts();
-                initializeTooltips();
-                initializeSmoothScroll();
-                optimizePerformance();
-            }
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1055;
+  display: none;
+}
+.bottom-sheet-overlay.show {
+  display: block;
+}
 
-            // Run initialization after DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initializeAll);
-            } else {
-                initializeAll();
-            }
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 991.98px) {
+  .topbar-toggle {
+    display: block;
+  }
+  .topbar-brand {
+    min-width: auto;
+  }
+  .topbar-nav {
+    display: none;
+  }
+  .topbar-username {
+    display: none;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    top: var(--topbar-h);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-close-btn {
+    display: flex;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .content-body {
+    padding: 1rem;
+    padding-bottom: 80px;
+  }
+  .bottom-nav-bar {
+    display: flex;
+  }
+}
 
-            // Log successful initialization
-            console.log('🎓 FASCH Dashboard - Professional Edition initialized successfully');
-            console.log('📱 Fully responsive design with modern UX patterns');
-            console.log('🎨 Designed with accessibility and performance in mind');
+/* ══════════════════════════════════════════
+   DROPDOWN OVERRIDES
+══════════════════════════════════════════ */
+.topbar .dropdown-menu {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-size: 13.5px;
+  min-width: 200px;
+}
+.topbar .dropdown-item {
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+.topbar .dropdown-item i {
+  width: 16px;
+  color: var(--text-muted);
+}
+.topbar .dropdown-item:hover {
+  background: #fef2f2;
+  color: var(--primary);
+}
+.topbar .dropdown-item:hover i {
+  color: var(--primary);
+}
+.topbar .dropdown-header {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 16px 6px;
+}
+.topbar .dropdown-divider {
+  margin: 4px 0;
+  border-color: var(--border);
+}
 
-        })();
-    </script>
+
+/* Style de base pour tous les toasts */
+.toast {
+  opacity: 0.95;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Style pour le conteneur des toasts */
+.toast-container {
+  max-width: 400px;
+}
+/* ── TOASTS STATUTS (mêmes couleurs que les badges) ─── */
+.toast-succes  { background: #d1fae5; color: #065f46; }
+.toast-echec   { background: #fee2e2; color: #991b1b; }
+.toast-attente { background: #fef3c7; color: #92400e; }
+.toast-info    { background: #dbeafe; color: #1e40af; }
+
+.toast-succes .btn-close,
+.toast-echec  .btn-close,
+.toast-attente .btn-close,
+.toast-info   .btn-close {
+  filter: none;  /* annule btn-close-white de Bootstrap */
+}
+/* Style pour le corps du toast */
+.toast-body {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Style pour les icônes */
+.toast-body i {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* Style pour le bouton de fermeture */
+.btn-close {
+  margin-left: 0.5rem;
+  opacity: 0.7;
+  filter: brightness(1.2);
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* ── Typewriter container ── */
+.topbar-typewriter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+}
+
+#typewriter-text {
+  font-size: 1.1rem;          /* ↑ plus grand possible dans 62px */
+  font-weight: 900;           /* maximum bold */
+  letter-spacing: 0.12em;     /* espacé = plus imposant */
+  text-transform: uppercase;  /* TOUT EN MAJUSCULES */
+  background: linear-gradient(90deg, #003F8A 0%, #003F8A 48%, #D01127 52%, #D01127 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 1;
+}
+
+/* Curseur clignotant */
+.typewriter-cursor {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #D01127;
+  -webkit-text-fill-color: #D01127;
+  animation: blink 0.75s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@media (max-width: 580px) {
+  .topbar-typewriter { display: none; }
+}
+/* ── Typewriter container ── */
+.topbar-typewriter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 45%;
+  overflow: hidden;
+}
+
+#typewriter-text {
+  font-size: 0.95rem;        /* ↑ plus grand */
+  font-weight: 700;          /* ↑ gras */
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #003F8A 0%, #003F8A 48%, #D01127 52%, #D01127 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 1;
+}
+
+/* Curseur clignotant — rouge haïtien */
+.typewriter-cursor {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #D01127;
+  -webkit-text-fill-color: #D01127;
+  animation: blink 0.75s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@media (max-width: 580px) {
+  .topbar-typewriter { display: none; }
+}
+
+/* ── Bannière typewriter mobile ── */
+.mobile-typewriter-bar {
+  position: fixed;
+  bottom: 62px;           /* juste au-dessus de la bottom nav (height: 62px) */
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(90deg, #003F8A 0%, #D01127 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  z-index: 1049;
+  overflow: hidden;
+  padding: 0 1rem;
+}
+
+#typewriter-text-mobile {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.typewriter-cursor-mobile {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: #ffffff;
+  animation: blink 0.75s step-end infinite;
+  /* réutilise le @keyframes blink déjà défini */
+}
+
+/* Compenser la hauteur de la bannière dans le contenu */
+@media (max-width: 991.98px) {
+  .content-body {
+    padding-bottom: 108px; /* 80px existant + 28px bannière */
+  }
+}
+
+/* ── BADGES STATUTS ──────────────────────────────────── */
+.badge-succes {
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-echec {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-attente {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-traitement {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+
+.etablissement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+}
+.etablissement-header-left {
+  flex-shrink: 0;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.etablissement-header-center { flex: 1; text-align: center; }
+.etablissement-header-univ {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 4px;
+  font-family: Arial, sans-serif;
+}
+.etablissement-header-faculty {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a3a6b;
+  margin-bottom: 6px;
+  font-family: "Georgia", serif;
+}
+.etablissement-header-slogan {
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+  font-family: Arial, sans-serif;
+}
+.etablissement-header-right {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 11.5px;
+  color: #555;
+  font-family: Arial, sans-serif;
+  min-width: 180px;
+}
+.etablissement-header-right p {
+  margin: 3px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.etablissement-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+.etablissement-header-divider {
+  border: none;
+  border-top: 2.5px solid #1a3a6b;
+  margin: 0 0 22px;
+}
+
+@media (max-width: 768px) {
+  .etablissement-header { flex-direction: column; align-items: center; text-align: center; }
+  .etablissement-header-right { text-align: center; }
+  .etablissement-header-right p { justify-content: center; }
+}
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+<!-- ══════════════════════════════════════════
+     TOP NAVBAR
+══════════════════════════════════════════ -->
+<header class="topbar">
+  <!-- Brand -->
+  <a href="{% url 'comptes:tableau_bord' %}" class="topbar-brand">
+    FASCH
+  </a>
+
+ <!-- ✦ Typewriter centré -->
+  <div class="topbar-typewriter" aria-live="polite" aria-label="Université d'État d'Haïti – Faculté des Sciences Humaines">
+    <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
+  </div>
+  <!-- Right actions -->
+  <div class="topbar-right">
+
+    <!-- Notifications -->
+    <div class="dropdown">
+      <button class="topbar-notif dropdown-toggle" data-bs-toggle="dropdown"
+              aria-expanded="false" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+        <span class="topbar-notif-badge">{{ notifications_non_lues.count }}</span>
+        {% endif %}
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" style="min-width:220px;">
+        <li><span class="dropdown-header">Notifications</span></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item" href="{% url 'notifications:mes_notifications' %}">
+            <i class="fas fa-bell"></i>
+            Voir toutes les notifications
+            {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+            <span class="badge bg-danger rounded-pill ms-auto">{{ notifications_non_lues.count }}</span>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- User dropdown -->
+    <div class="dropdown">
+      <a href="#" class="topbar-user dropdown-toggle"
+         data-bs-toggle="dropdown" aria-expanded="false" id="userDropdown">
+      <div class="topbar-avatar">
+          {% if request.user.photo_profil %}
+              <img src="{{ request.user.photo_profil.url }}" alt="Photo"
+                  style="width:100%;height:100%;object-fit:cover;">
+          {% else %}
+              <i class="fas fa-user"></i>
+          {% endif %}
+      </div>
+        <div class="topbar-username">
+  {{ request.user.get_full_name|default:request.user.username }}
+  <small>
+    {{ user.afficher_role_par_genre }}
+  </small>
+</div>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+        <li>
+          <span class="dropdown-header">
+            <i class="fas fa-user-circle"></i>
+            {{ request.user.get_full_name }}
+          </span>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item" href="{% url 'comptes:profil' %}">
+            <i class="fas fa-user-edit"></i> Mon Profil
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="{% url 'notifications:mes_notifications' %}">
+            <i class="fas fa-bell"></i> Notifications
+            {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+            <span class="badge bg-danger rounded-pill ms-auto">{{ notifications_non_lues.count }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="{% url 'accueil' %}">
+            <i class="fas fa-home"></i> Accueil
+          </a>
+        </li>
+{% if user.est_administrateur %}
+<li>
+  <a class="dropdown-item" href="{% url 'portail:parametres_site' %}">
+    <i class="fas fa-cog"></i> Paramètres du site
+  </a>
+</li>
+<li><hr class="dropdown-divider"></li>
+{% endif %}
+        <li>
+          <a class="dropdown-item text-danger" href="{% url 'comptes:deconnexion' %}">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /topbar-right -->
+</header>
+<!-- ══════════════════════════════════════════
+     SIDEBAR OVERLAY (mobile)
+══════════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<nav class="sidebar" id="sidebar" aria-label="Menu principal">
+
+  <div class="sidebar-header">
+    <div class="sidebar-title">
+      <i class="fas fa-graduation-cap"></i>
+      Menu
+    </div>
+    <button class="sidebar-close-btn" id="sidebarClose" aria-label="Fermer">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <ul class="sidebar-menu">
+
+    <!-- Tableau de bord — commun à tous -->
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_bord %}{% endblock %}"
+         href="{% url 'comptes:tableau_bord' %}">
+        <i class="fas fa-tachometer-alt sidebar-menu-icon"></i>
+        <span>Tableau de bord</span>
+      </a>
+    </li>
+
+    <!-- ── ÉTUDIANT ── -->
+    {% if user.est_etudiant %}
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_mes_cours %}{% endblock %}"
+         href="{% url 'cours:mes_cours' %}">
+        <i class="fas fa-book sidebar-menu-icon"></i>
+        <span>Mes Cours</span>
+        {% if course_count %}<span class="sidebar-menu-badge">{{ course_count }}</span>{% endif %}
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_inscrire %}{% endblock %}"
+         href="{% url 'inscriptions:sections_disponibles' %}">
+        <i class="fas fa-plus-circle sidebar-menu-icon"></i>
+        <span>S'inscrire</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_inscriptions %}{% endblock %}"
+         href="{% url 'inscriptions:mes_inscriptions' %}">
+        <i class="fas fa-list sidebar-menu-icon"></i>
+        <span>Inscriptions</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_notes %}{% endblock %}"
+         href="{% url 'notes:mes_notes' %}">
+        <i class="fas fa-star sidebar-menu-icon"></i>
+        <span>Notes</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_professeurs %}{% endblock %}"
+         href="{% url 'notes:mes_professeurs' %}">
+        <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
+        <span>Professeurs</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_releve %}{% endblock %}"
+         href="{% url 'notes:releve_notes' %}">
+        <i class="fas fa-file-alt sidebar-menu-icon"></i>
+        <span>Relevé</span>
+      </a>
+    </li>
+    {% endif %}
+
+<!-- ── PROFESSEUR ── -->
+{% if user.est_professeur %}
+<li>
+  <a class="sidebar-menu-link {% block sb_active_mes_sections %}{% endblock %}"
+     href="{% url 'cours:mes_cours' %}">
+    <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
+    <span>Mes Cours</span>
+  </a>
+</li>
+<li>
+  <a class="sidebar-menu-link {% block sb_active_etudiants_prof %}{% endblock %}"
+     href="{% url 'notes:mes_etudiants' %}">
+    <i class="fas fa-user-graduate sidebar-menu-icon"></i>
+    <span>Étudiants</span>
+  </a>
+</li>
+<li>
+  <a class="sidebar-menu-link {% block sb_active_palmares %}{% endblock %}"
+     href="{% url 'notes:palmares' %}">
+    <i class="fas fa-trophy sidebar-menu-icon"></i>
+    <span>Palmarès</span>
+  </a>
+</li>
+{% endif %}
+
+    <!-- ── ADMINISTRATEUR ── -->
+    {% if user.est_administrateur %}
+    <li><hr class="sidebar-divider"></li>
+    <li>
+      <div class="admin-section-header">
+        <p class="admin-section-title">
+          <i class="fas fa-cog"></i> Administration
+        </p>
+      </div>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_utilisateurs %}{% endblock %}"
+         href="{% url 'comptes:liste_utilisateurs' %}">
+        <i class="fas fa-users sidebar-menu-icon"></i>
+        <span>Utilisateurs</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_cours_admin %}{% endblock %}"
+         href="{% url 'cours:liste_cours' %}">
+        <i class="fas fa-book-open sidebar-menu-icon"></i>
+        <span>Cours</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_sections_admin %}{% endblock %}"
+         href="{% url 'cours:liste_sections' %}">
+        <i class="fas fa-clipboard-list sidebar-menu-icon"></i>
+        <span>Sections</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_inscriptions_admin %}{% endblock %}"
+         href="{% url 'inscriptions:liste_inscriptions' %}">
+        <i class="fas fa-user-check sidebar-menu-icon"></i>
+        <span>Inscriptions</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_notes_admin %}{% endblock %}"
+         href="{% url 'notes:liste_notes_admin' %}">
+        <i class="fas fa-trophy sidebar-menu-icon"></i>
+        <span>Notes</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_professeurs_admin %}{% endblock %}"
+         href="{% url 'comptes:liste_professeurs' %}">
+        <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
+        <span>Professeurs</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_etudiants_admin %}{% endblock %}"
+         href="{% url 'comptes:liste_etudiants' %}">
+        <i class="fas fa-user-graduate sidebar-menu-icon"></i>
+        <span>Étudiants</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_gpa %}{% endblock %}"
+         href="{% url 'notes:gpa_etudiants' %}">
+        <i class="fas fa-star sidebar-menu-icon"></i>
+        <span>Note des Étudiants</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_saisie_masse %}{% endblock %}"
+         href="{% url 'notes:saisie_notes_groupee' %}">
+        <i class="fas fa-table sidebar-menu-icon"></i>
+        <span>Saisie en masse</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_statistiques %}{% endblock %}"
+         href="{% url 'notes:statistiques_notes' %}">
+        <i class="fas fa-chart-bar sidebar-menu-icon"></i>
+        <span>Statistiques</span>
+      </a>
+    </li>
+    {% endif %}
+
+    <!-- ── Compte commun ── -->
+    <li><hr class="sidebar-divider"></li>
+    <li>
+      <a class="sidebar-menu-link {% block sb_active_profil %}{% endblock %}"
+         href="{% url 'comptes:profil' %}">
+        <i class="fas fa-user-edit sidebar-menu-icon"></i>
+        <span>Mon Profil</span>
+      </a>
+    </li>
+    <li>
+      <a class="sidebar-menu-link text-danger" href="{% url 'comptes:deconnexion' %}"
+         style="color:rgba(239,68,68,0.85)!important;">
+        <i class="fas fa-sign-out-alt sidebar-menu-icon"></i>
+        <span>Déconnexion</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<main class="main-content" id="mainContent">
+
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;margin-top:var(--topbar-h);">
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      {% with toast_class="toast-succes" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-check-circle me-2"></i>Succès : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% elif message.tags == 'danger' %}
+      {% with toast_class="toast-echec" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-exclamation-circle me-2"></i>Erreur : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% elif message.tags == 'warning' %}
+      {% with toast_class="toast-attente" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-exclamation-triangle me-2"></i>Attention : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% else %}
+      {% with toast_class="toast-info" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-info-circle me-2"></i>Info : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
+  <div class="content-body">
+    {% if user.is_authenticated %}
+      {% block authenticated_content %}{% endblock %}
+    {% else %}
+      {% block public_content %}{% endblock %}
+    {% endif %}
+  </div>
+
+</main>
+
+
+{% with current_view=request.resolver_match.view_name %}
+<!-- ✦ Bannière typewriter mobile — au-dessus de la bottom nav -->
+<div class="mobile-typewriter-bar d-lg-none">
+  <span id="typewriter-text-mobile"></span><span class="typewriter-cursor-mobile">|</span>
+</div>
+<!-- ══════════════════════════════════════════
+     BOTTOM NAV BAR — mobile uniquement
+══════════════════════════════════════════ -->
+<nav class="bottom-nav-bar d-lg-none" aria-label="Navigation principale">
+
+  <a href="{% url 'comptes:tableau_bord' %}" class="bn-item{% if current_view == 'comptes:tableau_bord' %} bn-item--center{% endif %}">
+    <i class="fas fa-tachometer-alt"></i>
+    <span>Tableau</span>
+  </a>
+
+  {% if user.est_etudiant %}
+  <a href="{% url 'cours:mes_cours' %}" class="bn-item{% if current_view == 'cours:mes_cours' %} bn-item--center{% endif %}">
+    <i class="fas fa-book"></i>
+    <span>Cours</span>
+  </a>
+  <a href="{% url 'inscriptions:sections_disponibles' %}" class="bn-item{% if current_view == 'inscriptions:sections_disponibles' %} bn-item--center{% endif %}">
+    <i class="fas fa-plus-circle"></i>
+    <span>Inscrire</span>
+  </a>
+  <a href="{% url 'notes:mes_notes' %}" class="bn-item{% if current_view == 'notes:mes_notes' %} bn-item--center{% endif %}">
+    <i class="fas fa-star"></i>
+    <span>Notes</span>
+  </a>
+
+  {% elif user.est_professeur %}
+  <a href="{% url 'cours:mes_cours' %}" class="bn-item{% if current_view == 'cours:mes_cours' %} bn-item--center{% endif %}">
+    <i class="fas fa-chalkboard-teacher"></i>
+    <span>Sections</span>
+  </a>
+  <a href="{% url 'notes:sections_professeur' %}" class="bn-item{% if current_view == 'notes:sections_professeur' %} bn-item--center{% endif %}">
+    <i class="fas fa-edit"></i>
+    <span>Notes</span>
+  </a>
+  <a href="{% url 'notes:mes_etudiants' %}" class="bn-item{% if current_view == 'notes:mes_etudiants' %} bn-item--center{% endif %}">
+    <i class="fas fa-user-graduate"></i>
+    <span>Étudiants</span>
+  </a>
+
+  {% elif user.est_administrateur %}
+  <a href="{% url 'comptes:liste_utilisateurs' %}" class="bn-item{% if current_view == 'comptes:liste_utilisateurs' %} bn-item--center{% endif %}">
+    <i class="fas fa-users"></i>
+    <span>Utilisateurs</span>
+  </a>
+  <a href="{% url 'cours:liste_cours' %}" class="bn-item{% if current_view == 'cours:liste_cours' %} bn-item--center{% endif %}">
+    <i class="fas fa-book-open"></i>
+    <span>Cours</span>
+  </a>
+  <a href="{% url 'notes:liste_notes_admin' %}" class="bn-item{% if current_view == 'notes:liste_notes_admin' %} bn-item--center{% endif %}">
+    <i class="fas fa-trophy"></i>
+    <span>Notes</span>
+  </a>
+
+  {% else %}
+  <a href="{% url 'portail:recherche_globale' %}" class="bn-item{% if current_view == 'portail:recherche_globale' %} bn-item--center{% endif %}">
+    <i class="fas fa-search"></i>
+    <span>Recherche</span>
+  </a>
+  <a href="{% url 'comptes:profil' %}" class="bn-item{% if current_view == 'comptes:profil' %} bn-item--center{% endif %}">
+    <i class="fas fa-user"></i>
+    <span>Profil</span>
+  </a>
+  <a href="{% url 'notifications:mes_notifications' %}" class="bn-item{% if current_view == 'notifications:mes_notifications' %} bn-item--center{% endif %}">
+    <i class="fas fa-bell"></i>
+    <span>Notifs</span>
+    {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+    <span class="bn-badge">{{ notifications_non_lues.count }}</span>
+    {% endif %}
+  </a>
+  {% endif %}
+
+  {# Le bouton "Plus" prend le style mis en avant dès que la page actuelle #}
+  {# ne correspond à aucun des items principaux ci-dessus (ex: pages       #}
+  {# accessibles uniquement via le bottom-sheet, comme /comptes/professeurs/) #}
+  <button
+    class="bn-item
+      {% if user.est_etudiant %}
+        {% if current_view != 'comptes:tableau_bord' and current_view != 'cours:mes_cours' and current_view != 'inscriptions:sections_disponibles' and current_view != 'notes:mes_notes' %}bn-item--center{% endif %}
+      {% elif user.est_professeur %}
+        {% if current_view != 'comptes:tableau_bord' and current_view != 'cours:mes_cours' and current_view != 'notes:sections_professeur' and current_view != 'notes:mes_etudiants' %}bn-item--center{% endif %}
+      {% elif user.est_administrateur %}
+        {% if current_view != 'comptes:tableau_bord' and current_view != 'comptes:liste_utilisateurs' and current_view != 'cours:liste_cours' and current_view != 'notes:liste_notes_admin' %}bn-item--center{% endif %}
+      {% else %}
+        {% if current_view != 'comptes:tableau_bord' and current_view != 'portail:recherche_globale' and current_view != 'comptes:profil' and current_view != 'notifications:mes_notifications' %}bn-item--center{% endif %}
+      {% endif %}"
+    id="btnBottomSheet" aria-label="Plus d'options">
+    {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+    <span class="bn-badge">{{ notifications_non_lues.count }}</span>
+    {% endif %}
+    <i class="fas fa-th-large"></i>
+    <span>Plus</span>
+  </button>
+
+</nav>
+{% endwith %}
+
+
+<!-- ══════════════════════════════════════════
+     BOTTOM SHEET "Plus" — mobile
+     (inchangé)
+══════════════════════════════════════════ -->
+<div class="bottom-sheet d-lg-none" id="bottomSheet">
+  <div class="bs-handle"></div>
+  <div class="bs-header">
+    <h6 class="bs-title">
+      <i class="fas fa-graduation-cap" style="color:var(--navy)"></i>
+      FASCH — Menu complet
+    </h6>
+    <button class="bs-close" id="closeBottomSheet" aria-label="Fermer">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  {% if user.est_etudiant %}
+  <div class="bs-section-label">Espace étudiant</div>
+  <div class="bs-links">
+    <a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link"><i class="fas fa-list"></i>Mes inscriptions</a>
+    <a href="{% url 'notes:mes_professeurs' %}" class="bs-link"><i class="fas fa-chalkboard-teacher"></i>Mes professeurs</a>
+    <a href="{% url 'notes:releve_notes' %}" class="bs-link"><i class="fas fa-file-alt"></i>Relevé de notes</a>
+  </div>
+
+  {% elif user.est_professeur %}
+  <div class="bs-section-label">Espace professeur</div>
+  <div class="bs-links">
+    <a href="{% url 'cours:liste_sections' %}" class="bs-link"><i class="fas fa-list"></i>Toutes les sections</a>
+    <a href="{% url 'notes:palmares' %}" class="bs-link"><i class="fas fa-trophy"></i>Palmarès</a>
+  </div>
+
+  {% elif user.est_administrateur %}
+  <div class="bs-section-label">Administration</div>
+  <div class="bs-links">
+    <a href="{% url 'cours:liste_sections' %}" class="bs-link"><i class="fas fa-clipboard-list"></i>Sections</a>
+    <a href="{% url 'inscriptions:liste_inscriptions' %}" class="bs-link"><i class="fas fa-user-check"></i>Inscriptions</a>
+    <a href="{% url 'comptes:liste_professeurs' %}" class="bs-link"><i class="fas fa-chalkboard-teacher"></i>Professeurs</a>
+    <a href="{% url 'comptes:liste_etudiants' %}" class="bs-link"><i class="fas fa-user-graduate"></i>Étudiants</a>
+    <a href="{% url 'notes:gpa_etudiants' %}" class="bs-link"><i class="fas fa-star"></i>GPA étudiants</a>
+    <a href="{% url 'notes:saisie_notes_groupee' %}" class="bs-link"><i class="fas fa-table"></i>Saisie en masse</a>
+    <a href="{% url 'notes:statistiques_notes' %}" class="bs-link"><i class="fas fa-chart-bar"></i>Statistiques</a>
+  </div>
+  {% endif %}
+
+  <div class="bs-section-label">Mon compte</div>
+  <div class="bs-links">
+    <a href="{% url 'notifications:mes_notifications' %}" class="bs-link">
+      <i class="fas fa-bell"></i>Notifications
+      {% if notifications_non_lues and notifications_non_lues.count > 0 %}
+      <span class="badge bg-danger rounded-pill ms-auto">{{ notifications_non_lues.count }}</span>
+      {% endif %}
+    </a>
+    <a href="{% url 'comptes:profil' %}" class="bs-link"><i class="fas fa-user-edit"></i>Mon profil</a>
+    <a href="{% url 'accueil' %}" class="bs-link"><i class="fas fa-home"></i>Accueil</a>
+    <a href="{% url 'comptes:deconnexion' %}" class="bs-link bs-link--danger"><i class="fas fa-sign-out-alt"></i>Déconnexion</a>
+  </div>
+</div>
+
+<div class="bottom-sheet-overlay d-lg-none" id="bottomSheetOverlay"></div>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  const PHRASES = [
+    "Université d'État d'Haïti",
+    "Faculté des Sciences Humaines",
+  ];
 
-document.getElementById('mobileSearchToggle').addEventListener('click', function() {
-  const form = document.getElementById('searchForm');
-  form.classList.toggle('d-none');
-  form.classList.toggle('d-block');
-});
+  const TYPE_SPEED  = 55;
+  const ERASE_SPEED = 30;
+  const PAUSE_AFTER = 1800;
+  const PAUSE_EMPTY = 400;
+
+  /* Lance une instance typewriter sur n'importe quel élément */
+  function startTypewriter(el) {
+    if (!el) return;
+    let phraseIdx = 0, charIdx = 0, erasing = false;
+
+    function tick() {
+      const phrase = PHRASES[phraseIdx];
+      if (!erasing) {
+        el.textContent = phrase.slice(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === phrase.length) {
+          erasing = true;
+          setTimeout(tick, PAUSE_AFTER);
+          return;
+        }
+        setTimeout(tick, TYPE_SPEED);
+      } else {
+        el.textContent = phrase.slice(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) {
+          erasing   = false;
+          phraseIdx = (phraseIdx + 1) % PHRASES.length;
+          setTimeout(tick, PAUSE_EMPTY);
+          return;
+        }
+        setTimeout(tick, ERASE_SPEED);
+      }
+    }
+    setTimeout(tick, 600);
+  }
+
+  /* ── Desktop : topbar centre ── */
+  startTypewriter(document.getElementById('typewriter-text'));
+
+  /* ── Mobile : bannière au-dessus de la bottom nav ── */
+  startTypewriter(document.getElementById('typewriter-text-mobile'));
+
+})();
+</script>
+
+<script>
+$(document).ready(function () {
+
+  /* ── Select2 ── */
+  $('select.form-select').select2({
+    placeholder: "Rechercher...",
+    allowClear: true,
+    width: '100%'
+  });
+
+  /* ── Sidebar mobile ── */
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const toggle   = document.getElementById('mobileMenuToggle');
+  const closeBtn = document.getElementById('sidebarClose');
+
+  function openSidebar()  { sidebar.classList.add('open');  overlay.classList.add('show'); }
+  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+
+  if (toggle)   toggle.addEventListener('click', openSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if (overlay)  overlay.addEventListener('click', closeSidebar);
+
+  /* ── Auto-mark active sidebar link ── */
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.sidebar-menu-link').forEach(function (link) {
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active');
+    }
+  });
+
+  /* ── Auto-mark active topbar nav link ── */
+  document.querySelectorAll('.topbar-nav-link').forEach(function (link) {
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active');
+    }
+  });
+
+  /* ── Bottom sheet ── */
+  const sheet         = document.getElementById('bottomSheet');
+  const sheetOverlay  = document.getElementById('bottomSheetOverlay');
+  const openBtn       = document.getElementById('btnBottomSheet');
+  const closeSheetBtn = document.getElementById('closeBottomSheet');
+
+  function openSheet()  { sheet.classList.add('open');  sheetOverlay.classList.add('show'); }
+  function closeSheet() { sheet.classList.remove('open'); sheetOverlay.classList.remove('show'); }
+
+  if (openBtn)       openBtn.addEventListener('click', openSheet);
+  if (closeSheetBtn) closeSheetBtn.addEventListener('click', closeSheet);
+  if (sheetOverlay)  sheetOverlay.addEventListener('click', closeSheet);
+
+  /* ── Auto-dismiss toasts ── */
+  document.querySelectorAll('.toast').forEach(function (el) {
+    setTimeout(function () {
+      var t = bootstrap.Toast.getOrCreateInstance(el);
+      t.hide();
+    }, 4500);
+  });
+
 });
 </script>
-    {% block extra_js %}{% endblock %}
+
+<script src="{% static 'js/base.js' %}"></script>
+{% block extra_js %}{% endblock %}
+
 </body>
 </html>

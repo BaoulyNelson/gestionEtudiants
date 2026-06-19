@@ -1,0 +1,37 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,SOC-ISO1,Introduction à la Sociologie,Pierre,DANTÈS,Sociologie,Niveau I,session1
+LUNDI,07:00,10:00,SOC-TSO1,Théories Sociologiques I,Sénèque,DORIVAL,Sociologie,Niveau I,session2
+LUNDI,10:00,13:00,SOC-ACU1,Anthropologie Culturelle,Roseline,PIERRE-LOUIS,Sociologie,Niveau I,session1
+LUNDI,10:00,13:00,SOC-STA1,Statistique I,Hugues,CADET,Sociologie,Niveau I,session2
+LUNDI,13:00,16:00,SOC-MET1,Méthodologie I,Edwige,LABORDE,Sociologie,Niveau I,session1
+LUNDI,13:00,16:00,SOC-PSH1,Pensée Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau I,session2
+MARDI,07:00,10:00,SOC-ANG1,Anglais / Espagnol,James,MENTOR,Sociologie,Niveau I,session1
+MARDI,07:00,10:00,SOC-GEC1,Géographie Économique,Gérard,VOLTAIRE,Sociologie,Niveau I,session2
+MARDI,10:00,13:00,SOC-EEOF1,Expression Écrite et Orale Français,Nadège,THERMIDOR,Sociologie,Niveau I,session1
+MARDI,10:00,13:00,SOC-ISO1,Introduction à la Sociologie,Pierre,DANTÈS,Sociologie,Niveau I,session2
+MARDI,13:00,16:00,SOC-TSO1,Théories Sociologiques I,Sénèque,DORIVAL,Sociologie,Niveau I,session1
+MARDI,13:00,16:00,SOC-ACU1,Anthropologie Culturelle,Roseline,PIERRE-LOUIS,Sociologie,Niveau I,session2
+MERCREDI,07:00,10:00,SOC-STA1,Statistique I,Hugues,CADET,Sociologie,Niveau I,session1
+MERCREDI,07:00,10:00,SOC-MET1,Méthodologie I,Edwige,LABORDE,Sociologie,Niveau I,session2
+MERCREDI,10:00,13:00,SOC-PSH1,Pensée Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau I,session1
+MERCREDI,10:00,13:00,SOC-ANG1,Anglais / Espagnol,James,MENTOR,Sociologie,Niveau I,session2
+MERCREDI,13:00,16:00,SOC-GEC1,Géographie Économique,Gérard,VOLTAIRE,Sociologie,Niveau I,session1
+MERCREDI,13:00,16:00,SOC-EEOF1,Expression Écrite et Orale Français,Nadège,THERMIDOR,Sociologie,Niveau I,session2
+JEUDI,07:00,10:00,SOC-ACU1,Anthropologie Culturelle,Roseline,PIERRE-LOUIS,Sociologie,Niveau I,session1
+JEUDI,07:00,10:00,SOC-PSH1,Pensée Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau I,session2
+JEUDI,10:00,13:00,SOC-ISO1,Introduction à la Sociologie,Pierre,DANTÈS,Sociologie,Niveau I,session2
+JEUDI,10:00,13:00,SOC-GEC1,Géographie Économique,Gérard,VOLTAIRE,Sociologie,Niveau I,session2
+JEUDI,13:00,16:00,SOC-STA1,Statistique I,Hugues,CADET,Sociologie,Niveau I,session2
+JEUDI,13:00,16:00,SOC-ANG1,Anglais / Espagnol,James,MENTOR,Sociologie,Niveau I,session2
+VENDREDI,07:00,10:00,SOC-MET1,Méthodologie I,Edwige,LABORDE,Sociologie,Niveau I,session2
+VENDREDI,07:00,10:00,SOC-TSO1,Théories Sociologiques I,Sénèque,DORIVAL,Sociologie,Niveau I,session2
+VENDREDI,10:00,13:00,SOC-EEOF1,Expression Écrite et Orale Français,Nadège,THERMIDOR,Sociologie,Niveau I,session2
+VENDREDI,10:00,13:00,SOC-ISO1,Introduction à la Sociologie,Pierre,DANTÈS,Sociologie,Niveau I,session1
+VENDREDI,13:00,16:00,SOC-GEC1,Géographie Économique,Gérard,VOLTAIRE,Sociologie,Niveau I,session1
+VENDREDI,13:00,16:00,SOC-ACU1,Anthropologie Culturelle,Roseline,PIERRE-LOUIS,Sociologie,Niveau I,session2
+SAMEDI,07:00,10:00,SOC-TSO1,Théories Sociologiques I,Sénèque,DORIVAL,Sociologie,Niveau I,session2
+SAMEDI,07:00,10:00,SOC-STA1,Statistique I,Hugues,CADET,Sociologie,Niveau I,session2
+SAMEDI,10:00,13:00,SOC-PSH1,Pensée Sociale Haïtienne,Dérynx,PETIT JEAN,Sociologie,Niveau I,session2
+SAMEDI,10:00,13:00,SOC-MET1,Méthodologie I,Edwige,LABORDE,Sociologie,Niveau I,session2
+SAMEDI,13:00,16:00,SOC-EEOF1,Expression Écrite et Orale Français,Nadège,THERMIDOR,Sociologie,Niveau I,session2
+SAMEDI,13:00,16:00,SOC-ANG1,Anglais / Espagnol,James,MENTOR,Sociologie,Niveau I,session2

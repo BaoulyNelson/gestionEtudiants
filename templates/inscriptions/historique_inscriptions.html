@@ -1,0 +1,92 @@
+<!-- ========== templates/inscriptions/enrollment_history.html ========== -->
+{% extends 'base.html' %}
+{% block title %}Historique d'inscription - FASCH{% endblock %}
+{% block authenticated_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-history"></i> Historique d'inscription</h2>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Détails de l'inscription</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Étudiant:</strong> {{ inscription.etudiant.utilisateur.get_full_name }} ({{ inscription.etudiant.numero_etudiant }})</p>
+                <p><strong>Cours:</strong> {{ inscription.section_cours.cours.code }} - {{ inscription.section_cours.cours.nom }}</p>
+                <p><strong>Section:</strong> {{ inscription.section_cours.numero_section }}</p>
+<p>
+    <strong>Horaire :</strong>
+    {{ inscription.section_cours.get_jour_semaine_display }}
+    {{ inscription.section_cours.heure_debut|time:"H:i" }}
+    - {{ inscription.section_cours.heure_fin|time:"H:i" }}
+    {% if inscription.section_cours.salle %}
+        | Salle {{ inscription.section_cours.salle }}
+    {% endif %}
+</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Professeur:</strong> {{ inscription.section_cours.professeur.utilisateur.get_full_name }}</p>
+                <p><strong>Statut actuel:</strong> 
+                    {% if inscription.statut == 'INSCRIT' %}
+                        <span class="badge bg-success">Inscrit</span>
+                    {% elif inscription.statut == 'ABANDONNE' %}
+                        <span class="badge bg-danger">Abandonné</span>
+                    {% elif inscription.statut == 'COMPLETE' %}
+                        <span class="badge bg-info">Complété</span>
+                    {% endif %}
+                </p>
+                <p><strong>Date d'inscription:</strong> {{ inscription.date_inscription|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Historique des modifications</h5>
+    </div>
+    <div class="card-body">
+        {% if history %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Ancien statut</th>
+                        <th>Nouveau statut</th>
+                        <th>Modifié par</th>
+                        <th>Raison</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td>{{ item.changed_at|date:"d/m/Y H:i" }}</td>
+                        <td><span class="badge bg-secondary">{{ item.previous_status }}</span></td>
+                        <td><span class="badge bg-primary">{{ item.new_status }}</span></td>
+                        <td>{{ item.changed_by.get_full_name|default:"Système" }}</td>
+                        <td>{{ item.reason|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Aucune modification enregistrée.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'inscriptions:mes_inscriptions' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+{% endblock %}
+

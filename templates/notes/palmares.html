@@ -1,0 +1,612 @@
+{% extends 'base.html' %}
+{% block title %}Palmarès – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .palmares-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .palmares-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .palmares-header-center { flex: 1; text-align: center; }
+  .palmares-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .palmares-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .palmares-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .palmares-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .palmares-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .palmares-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .palmares-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .palmares-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── Sous-titres de section ── */
+  .palmares-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a3a6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #1a3a6b;
+    padding-left: 10px;
+    margin-bottom: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* ── Bandeau section choisie ── */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #eef2fb;
+    border: 1.5px solid #1a3a6b;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-family: Arial, sans-serif;
+    font-size: 13.5px;
+    color: #1a3a6b;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .section-badge small {
+    font-weight: 400;
+    color: #555;
+    font-size: 12px;
+  }
+
+  /* ── Alerte sélection obligatoire ── */
+  .palmares-select-prompt {
+    text-align: center;
+    padding: 48px 24px;
+    color: #555;
+    font-family: Arial, sans-serif;
+  }
+  .palmares-select-prompt i {
+    font-size: 48px;
+    color: #1a3a6b;
+    opacity: 0.35;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .palmares-select-prompt h4 {
+    font-family: "Georgia", serif;
+    color: #1a3a6b;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .palmares-select-prompt p {
+    font-size: 13.5px;
+    color: #777;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  /* ── KPI ── */
+  .palmares-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .palmares-kpi-card {
+    border: 1px solid #d0d8e8;
+    border-top: 4px solid #1a3a6b;
+    border-radius: 4px;
+    padding: 16px 14px;
+    text-align: center;
+    background: #fff;
+  }
+  .palmares-kpi-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #777;
+    font-family: Arial, sans-serif;
+    margin-bottom: 8px;
+  }
+  .palmares-kpi-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a3a6b;
+    font-family: "Georgia", serif;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .palmares-kpi-sub {
+    font-size: 11.5px;
+    color: #777;
+    font-family: Arial, sans-serif;
+  }
+  .palmares-kpi-card.kpi-warning { border-top-color: #e67e22; }
+  .palmares-kpi-card.kpi-warning .palmares-kpi-value { color: #e67e22; }
+
+  /* ── Podium top 3 ── */
+  .palmares-podium {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .podium-card {
+    flex: 1;
+    min-width: 180px;
+    border-radius: 4px;
+    padding: 16px;
+    font-family: Arial, sans-serif;
+  }
+  .podium-card-1 { background: #fffbea; border: 2px solid #d4a017; }
+  .podium-card-2 { background: #f5f5f5; border: 2px solid #9e9e9e; }
+  .podium-card-3 { background: #fff3ee; border: 2px solid #cd7f32; }
+  .podium-medaille { font-size: 28px; margin-bottom: 6px; display: block; }
+  .podium-rang {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .podium-nom {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a3a6b;
+    font-family: "Georgia", serif;
+    margin-bottom: 2px;
+  }
+  .podium-matricule { font-size: 11.5px; color: #777; margin-bottom: 6px; }
+  .podium-note {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: "Georgia", serif;
+    color: #1a3a6b;
+  }
+
+  /* ── Mention badge ── */
+  .mention-palmares {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+  }
+  .mention-summa      { background: #d4edda; color: #155724; }
+  .mention-magna      { background: #d1ecf1; color: #0c5460; }
+  .mention-cum        { background: #d0e4ff; color: #003d8f; }
+  .mention-passable   { background: #e2e3e5; color: #41464b; }
+  .mention-insuffisant{ background: #f8d7da; color: #842029; }
+
+  /* ── Tableau ── */
+  .palmares-table-wrapper { width: 100%; overflow-x: auto; }
+  .palmares-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: Arial, sans-serif;
+  }
+  .palmares-table thead tr { background-color: #1a3a6b; color: #fff; }
+  .palmares-table thead th {
+    padding: 10px 14px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .palmares-table thead th.center,
+  .palmares-table tbody td.center { text-align: center; }
+  .palmares-table tbody tr { border-bottom: 1px solid #ddd; }
+  .palmares-table tbody tr:nth-child(even) { background-color: #f7f9fc; }
+  .palmares-table tbody tr:hover td { background-color: #eef2f8 !important; }
+  .palmares-table tbody td { padding: 9px 14px; color: #333; vertical-align: middle; }
+  .palmares-table tr.row-sans-note td { color: #aaa; font-style: italic; }
+
+  /* Rang badge */
+  .rang-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: "Georgia", serif;
+  }
+  .rang-1    { background: #d4a017; color: #fff; }
+  .rang-2    { background: #9e9e9e; color: #fff; }
+  .rang-3    { background: #cd7f32; color: #fff; }
+  .rang-autre{ background: #e8eef7; color: #1a3a6b; }
+  .rang-vide { background: #f1f1f1; color: #aaa; font-size: 16px; }
+
+  @media (max-width: 768px) {
+    .palmares-header { flex-direction: column; align-items: center; text-align: center; }
+    .palmares-header-right { text-align: center; }
+    .palmares-header-right p { justify-content: center; }
+    .palmares-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media print {
+    .palmares-actions, .btn, form { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="palmares-header">
+  <div class="palmares-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="palmares-header-center">
+    <div class="palmares-header-univ">Université d'État d'Haïti</div>
+    <div class="palmares-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="palmares-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="palmares-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="palmares-header-divider"></div>
+
+<!-- ── Titre ── -->
+<div class="palmares-doc-title">
+  <i class="fas fa-trophy me-2" style="color:#1a3a6b;"></i>Palmarès de Section
+</div>
+
+<!-- ── Formulaire de sélection ── -->
+<div class="card mb-4 palmares-actions">
+  <div class="card-body">
+    <div class="palmares-section-title mb-3">
+      <i class="fas fa-chalkboard-teacher me-1"></i>
+      Choisir une section
+      <span style="color:#dc3545;font-size:11px;font-weight:400;
+                   text-transform:none;letter-spacing:0;margin-left:8px;">
+        ← obligatoire
+      </span>
+    </div>
+    <form method="get" class="row g-3 align-items-end">
+
+      <div class="col-md-5">
+        <label class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
+        <select name="section" class="form-select" required
+                onchange="this.form.submit()">
+          <option value="">— Sélectionner une section —</option>
+          {% for s in sections %}
+          <option value="{{ s.id }}"
+            {% if id_section == s.id|stringformat:"s" %}selected{% endif %}>
+            {{ s.cours.code }} – {{ s.cours.nom }} &nbsp;|&nbsp;
+            Section {{ s.numero_section }} &nbsp;|&nbsp;
+            {{ s.get_semestre_display }} {{ s.annee }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if section_active %}
+      <div class="col-md-4">
+        <label class="form-label">Rechercher un étudiant</label>
+        <input type="text" name="recherche" class="form-control"
+               placeholder="Nom ou matricule…" value="{{ recherche }}">
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">
+          <i class="fas fa-search me-1"></i> Filtrer
+        </button>
+        <a href="{% url 'notes:palmares' %}?section={{ id_section }}"
+           class="btn btn-outline-secondary"
+           title="Effacer la recherche">
+          <i class="fas fa-times"></i>
+        </a>
+      </div>
+      {% endif %}
+
+    </form>
+  </div>
+</div>
+
+
+{% if not section_active %}
+<!-- ── Invite à choisir une section ── -->
+<div class="card">
+  <div class="card-body palmares-select-prompt">
+    <i class="fas fa-hand-point-up"></i>
+    <h4>Sélectionnez une section</h4>
+    <p>
+      Choisissez une section dans le menu ci-dessus pour afficher
+      le classement des étudiants de ce cours.
+    </p>
+  </div>
+</div>
+
+{% else %}
+<!-- ── Bandeau section choisie ── -->
+<div class="section-badge">
+  <i class="fas fa-chalkboard-teacher" style="font-size:18px;"></i>
+  <div>
+    <strong>{{ section_active.cours.code }} — {{ section_active.cours.nom }}</strong>
+    <small class="d-block">
+      Section {{ section_active.numero_section }}
+      &nbsp;·&nbsp; {{ section_active.get_semestre_display }} {{ section_active.annee }}
+      {% if section_active.cours.departement %}
+        &nbsp;·&nbsp; {{ section_active.cours.departement.nom }}
+      {% endif %}
+      &nbsp;·&nbsp; {{ section_active.cours.credits }} crédit{{ section_active.cours.credits|pluralize }}
+    </small>
+  </div>
+  <a href="{% url 'notes:palmares' %}"
+     class="btn btn-sm btn-outline-secondary ms-auto"
+     title="Changer de section">
+    <i class="fas fa-exchange-alt"></i>
+  </a>
+</div>
+
+{% if palmares %}
+
+<!-- ── KPI ── -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="palmares-kpi-grid">
+
+      <div class="palmares-kpi-card">
+        <div class="palmares-kpi-label">Étudiants inscrits</div>
+        <div class="palmares-kpi-value">{{ total_etudiants }}</div>
+      </div>
+
+      <div class="palmares-kpi-card">
+        <div class="palmares-kpi-label">Avec une note</div>
+        <div class="palmares-kpi-value">{{ nb_avec_note }}</div>
+        <div class="palmares-kpi-sub">sur {{ total_etudiants }}</div>
+      </div>
+
+      <div class="palmares-kpi-card">
+        <div class="palmares-kpi-label">Moyenne de section</div>
+        <div class="palmares-kpi-value">{{ moy_note|floatformat:1 }}</div>
+        <div class="palmares-kpi-sub">sur 100</div>
+      </div>
+
+      <div class="palmares-kpi-card {% if nb_sans_note > 0 %}kpi-warning{% endif %}">
+        <div class="palmares-kpi-label">Sans note</div>
+        <div class="palmares-kpi-value">{{ nb_sans_note }}</div>
+        {% if nb_sans_note > 0 %}
+          <div class="palmares-kpi-sub">notes manquantes</div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Podium top 3 (uniquement si ≥ 3 étudiants notés) ── -->
+{% if nb_avec_note >= 3 %}
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="palmares-section-title mb-3">
+      <i class="fas fa-medal me-1"></i> Podium
+    </div>
+    <div class="palmares-podium">
+      {% for d in palmares %}
+        {% if d.rang <= 3 and d.note %}
+        <div class="podium-card podium-card-{{ d.rang }}">
+          <span class="podium-medaille">
+            {% if d.rang == 1 %}🥇{% elif d.rang == 2 %}🥈{% else %}🥉{% endif %}
+          </span>
+          <div class="podium-rang">{{ d.rang }}ᵉ place</div>
+          <div class="podium-nom">{{ d.etudiant.utilisateur.get_full_name }}</div>
+          <div class="podium-matricule">{{ d.etudiant.numero_etudiant }}</div>
+          <div class="podium-note">
+            {{ d.note|floatformat:1 }}
+            <small style="font-size:13px;color:#888;">/ 100</small>
+          </div>
+          <div style="margin-top:8px;">
+            <span class="mention-palmares mention-{{ d.classe_mention }}">
+              {{ d.mention_palmares }}
+            </span>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── Tableau classement ── -->
+<div class="card">
+  <div class="card-body">
+    <div class="palmares-section-title mb-3">
+      <i class="fas fa-list-ol me-1"></i> Classement complet
+      <span style="font-weight:400;text-transform:none;letter-spacing:0;
+                   font-size:11.5px;color:#888;margin-left:8px;">
+        Trié par note finale du cours
+      </span>
+    </div>
+    <div class="palmares-table-wrapper">
+      <table class="palmares-table">
+        <thead>
+          <tr>
+            <th class="center" style="width:56px;">Rang</th>
+            <th>Étudiant</th>
+            <th class="center">Note /100</th>
+            <th class="center">Mention cours</th>
+            <th class="center">Mention palmarès</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in palmares %}
+          <tr {% if not d.note %}class="row-sans-note"{% endif %}>
+
+            <!-- Rang -->
+            <td class="center">
+              {% if d.note %}
+                <span class="rang-badge
+                  {% if d.rang == 1 %}rang-1
+                  {% elif d.rang == 2 %}rang-2
+                  {% elif d.rang == 3 %}rang-3
+                  {% else %}rang-autre{% endif %}">
+                  {{ d.rang }}
+                </span>
+              {% else %}
+                <span class="rang-badge rang-vide">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Identité -->
+            <td>
+              <strong style="color:#1a3a6b;">
+                {{ d.etudiant.utilisateur.get_full_name }}
+              </strong><br>
+              <small style="color:#777;font-family:Arial,sans-serif;">
+                {{ d.etudiant.numero_etudiant }}
+                {% if d.etudiant.departement %}
+                  &nbsp;|&nbsp; {{ d.etudiant.departement.nom }}
+                {% endif %}
+              </small>
+            </td>
+
+            <!-- Note -->
+            <td class="center">
+              {% if d.note %}
+                <strong style="font-size:16px;font-family:'Georgia',serif;
+                  {% if d.note >= 70 %}color:#155724
+                  {% elif d.note >= 60 %}color:#0c5460
+                  {% else %}color:#842029{% endif %}">
+                  {{ d.note|floatformat:1 }}
+                </strong>
+              {% else %}
+                <span style="color:#ccc;font-size:13px;">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Mention du cours (ex: A, B+, ...) -->
+            <td class="center">
+              {% if d.mention %}
+                <code style="font-size:13px;color:#1a3a6b;">{{ d.mention }}</code>
+              {% else %}
+                <span style="color:#ccc;">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Mention palmarès -->
+            <td class="center">
+              <span class="mention-palmares mention-{{ d.classe_mention }}">
+                {{ d.mention_palmares }}
+              </span>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<!-- Aucun étudiant dans cette section -->
+<div class="card">
+  <div class="card-body" style="text-align:center;padding:48px 24px;
+       color:#777;font-family:Arial,sans-serif;font-style:italic;">
+    <i class="fas fa-users-slash" style="font-size:36px;opacity:.3;
+       display:block;margin-bottom:12px;"></i>
+    {% if recherche %}
+      Aucun étudiant ne correspond à « <strong>{{ recherche }}</strong> » dans cette section.
+    {% else %}
+      Aucun étudiant inscrit dans cette section, ou aucune note saisie.
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% endif %}{# end section_active #}
+
+<!-- ── Actions impression ── -->
+{% if section_active and palmares %}
+<div class="mt-4 palmares-actions">
+  <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+    <i class="fas fa-print me-1"></i> Imprimer
+  </button>
+</div>
+{% endif %}
+
+{% endblock %}

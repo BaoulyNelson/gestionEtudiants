@@ -21,7 +21,7 @@ const heroSlides = [
     {
         image: (typeof staticBase !== 'undefined' ? staticBase : '/static/') + "images/faculte.png",
         title: "50 Ans d'Excellence en Sciences Humaines",
-        subtitle: "Formant les leaders de demain en psychologie, sociologie, travail social et communication depuis 1975"
+        subtitle: "Formant les leaders de demain en psychologie, sociologie, Travail Social et communication depuis 1975"
     },
     {
         image: (typeof staticBase !== 'undefined' ? staticBase : '/static/') + "images/fasch1.jpg",
@@ -103,7 +103,7 @@ function updateHeroContent() {
             <p class="lead fs-3 mb-5 opacity-90">${slide.subtitle}</p>
             <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
                 <a href="/accounts/login/" class="btn btn-secondary-custom btn-lg px-5 py-3">Commencer Votre Parcours</a>
-                <a href="/departments/" class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none transition-all">
+                <a href="/departements/" class="border-2 border-white text-white px-5 py-3 rounded fw-semibold text-decoration-none transition-all">
                     Explorer Nos Programmes
                 </a>
             </div>

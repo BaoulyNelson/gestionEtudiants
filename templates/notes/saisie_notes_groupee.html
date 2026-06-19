@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% block title %}Saisie groupée des notes – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── En-tête ── */
+  .recap-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .recap-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .recap-header-center { flex: 1; text-align: center; }
+  .recap-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .recap-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .recap-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .recap-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .recap-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .recap-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .recap-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .recap-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  @media (max-width: 768px) {
+    .recap-header { flex-direction: column; align-items: center; text-align: center; }
+    .recap-header-right { text-align: center; }
+    .recap-header-right p { justify-content: center; }
+  }
+
+  /* ── Impression ── */
+  @media print {
+    .btn, .sidebar, .navbar, footer, .no-print,
+    .topbar, .bottom-nav-bar, .mobile-typewriter-bar { display: none !important; }
+    .content-wrapper { padding: 0 !important; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- ── En-tête université ── -->
+<div class="recap-header">
+
+  <div class="recap-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+           style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
+
+  <div class="recap-header-center">
+    <div class="recap-header-univ">Université d'État d'Haïti</div>
+    <div class="recap-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="recap-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
+
+  <div class="recap-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="recap-header-divider"></div>
+<!-- ── Sélecteur de section ── -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <label class="form-label fw-bold">Choisir une section</label>
+    <select class="form-select" onchange="window.location='?section_id='+this.value">
+      <option value="">-- Sélectionner --</option>
+      {% for s in toutes_sections %}
+        <option value="{{ s.id }}" {% if section and s.id == section.id %}selected{% endif %}>
+          {{ s.cours.code }} – {{ s.cours.nom }} (S{{ s.numero_section }})
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+{% if section %}
+
+<!-- ── Infos section ── -->
+<div class="row mb-4">
+  <div class="col-12">
+    <h2><i class="fas fa-edit"></i> Saisie groupée des notes</h2>
+    <p class="text-muted">
+      <strong>{{ section.cours.code }} - {{ section.cours.nom }}</strong><br>
+      Section {{ section.numero_section }} | {{ section.get_session_display }}
+      {{ section.get_semestre_display }} {{ section.annee }}
+    </p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <strong>Pondérations :</strong>
+        Examen Mi-Parcours (25%), Examen Final (35%),
+        Travaux (20%), Participation (10%), Projet (10%)
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th style="width:15%;">Étudiant</th>
+              <th class="text-center">Examen Mi-Parcours<br><small>(25%)</small></th>
+              <th class="text-center">Examen Final<br><small>(35%)</small></th>
+              <th class="text-center">Travaux<br><small>(20%)</small></th>
+              <th class="text-center">Participation<br><small>(10%)</small></th>
+              <th class="text-center">Projet<br><small>(10%)</small></th>
+              <th class="text-center">Note Finale</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for inscription in inscriptions %}
+            <tr>
+              <td>
+                <strong>{{ inscription.etudiant.numero_etudiant }}</strong><br>
+                <small>{{ inscription.etudiant.utilisateur.get_full_name }}</small>
+              </td>
+
+              {% if inscription.note_obj %}
+                <!-- ↓ ID de la Note (pas de l'inscription) comme attendu par la vue admin -->
+                <td>
+                  <input type="number"
+                         name="note_{{ inscription.note_obj.id }}_examen_mi_parcours"
+                         class="form-control form-control-sm text-center"
+                         min="0" max="100" step="0.01"
+                         value="{{ inscription.note_obj.examen_mi_parcours|default_if_none:'' }}"
+                         placeholder="0-100">
+                </td>
+                <td>
+                  <input type="number"
+                         name="note_{{ inscription.note_obj.id }}_examen_final"
+                         class="form-control form-control-sm text-center"
+                         min="0" max="100" step="0.01"
+                         value="{{ inscription.note_obj.examen_final|default_if_none:'' }}"
+                         placeholder="0-100">
+                </td>
+                <td>
+                  <input type="number"
+                         name="note_{{ inscription.note_obj.id }}_travaux"
+                         class="form-control form-control-sm text-center"
+                         min="0" max="100" step="0.01"
+                         value="{{ inscription.note_obj.travaux|default_if_none:'' }}"
+                         placeholder="0-100">
+                </td>
+                <td>
+                  <input type="number"
+                         name="note_{{ inscription.note_obj.id }}_participation"
+                         class="form-control form-control-sm text-center"
+                         min="0" max="100" step="0.01"
+                         value="{{ inscription.note_obj.participation|default_if_none:'' }}"
+                         placeholder="0-100">
+                </td>
+                <td>
+                  <input type="number"
+                         name="note_{{ inscription.note_obj.id }}_projet"
+                         class="form-control form-control-sm text-center"
+                         min="0" max="100" step="0.01"
+                         value="{{ inscription.note_obj.projet|default_if_none:'' }}"
+                         placeholder="0-100">
+                </td>
+                <td class="text-center align-middle">
+                  {% if inscription.note_obj.note_finale %}
+                    <strong class="{% if inscription.note_obj.note_finale >= 60 %}text-success{% else %}text-danger{% endif %}">
+                      {{ inscription.note_obj.note_finale|floatformat:2 }}
+                    </strong>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+
+              {% else %}
+                <!-- Pas encore de note créée pour cet étudiant -->
+                <td colspan="6" class="text-center text-muted">
+                  <span class="badge bg-secondary">Note non initialisée</span>
+                </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> Enregistrer toutes les notes
+        </button>
+        <a href="{% url 'notes:saisie_notes_groupee' %}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Changer de section
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% else %}
+  <div class="alert alert-warning">
+    <i class="fas fa-arrow-up"></i> Sélectionnez une section pour commencer la saisie.
+  </div>
+{% endif %}
+
+{% include 'partials/pagination.html' %}
+
+{% endblock %}

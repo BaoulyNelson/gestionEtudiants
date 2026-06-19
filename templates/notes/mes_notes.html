@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% block title %}Mes Notes – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Page document ── */
+  .notes-page {
+    background: #fff;
+    margin: 0 auto 40px;
+    padding: 55px 65px;
+    box-shadow: 0 4px 28px rgba(0,0,0,.15);
+    border: 1px solid #e0e0e0;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* ── En-tête ── */
+  .notes-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+  }
+  .notes-header-left {
+    flex-shrink: 0;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notes-header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .notes-header-univ {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .notes-header-faculty {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    font-family: "Georgia", serif;
+  }
+  .notes-header-slogan {
+    font-size: 11px;
+    color: #777;
+    font-style: italic;
+    font-family: Arial, sans-serif;
+  }
+  .notes-header-right {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: #555;
+    font-family: Arial, sans-serif;
+    min-width: 180px;
+  }
+  .notes-header-right p {
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .notes-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+  .notes-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0 0 22px;
+  }
+
+  /* ── Titre document ── */
+  .notes-doc-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* ── Infos étudiant ── */
+  .notes-student-info { margin-bottom: 28px; }
+  .notes-student-info p { font-size: 14px; margin-bottom: 5px; color: #222; }
+
+  /* ── Tableau ── */
+  .notes-table-wrapper { width: 100%; overflow-x: auto; margin-bottom: 6px; }
+  .notes-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .notes-table thead tr { background-color: #1a3a6b; color: #fff; }
+  .notes-table thead th {
+    padding: 10px 14px; font-weight: 700; letter-spacing: .4px;
+    text-align: left; font-family: Arial, sans-serif; font-size: 13px; white-space: nowrap;
+  }
+  .notes-table thead th.center,
+  .notes-table tbody td.center { text-align: center; }
+  .notes-table tbody tr.main-row { border-bottom: 1px solid #ddd; }
+  .notes-table tbody tr.main-row:nth-child(4n+1) { background-color: #f7f9fc; }
+  .notes-table tbody td { padding: 9px 14px; color: #333; }
+
+  /* Badge mention */
+  .mention-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 700; font-family: Arial, sans-serif; white-space: nowrap;
+  }
+  .mention-A  { background: #d4edda; color: #155724; }
+  .mention-B  { background: #d1ecf1; color: #0c5460; }
+  .mention-C  { background: #fff3cd; color: #856404; }
+  .mention-D  { background: #ffe5d0; color: #7d3c0a; }
+  .mention-F  { background: #f8d7da; color: #721c24; }
+  .mention-EA { background: #e2e3e5; color: #41464b; }
+
+  /* Badge statut */
+  .statut-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 11.5px; font-weight: 700; font-family: Arial, sans-serif; white-space: nowrap;
+  }
+  .statut-INSCRIT  { background: #fff3cd; color: #856404; }
+  .statut-COMPLETE { background: #d4edda; color: #155724; }
+
+  /* Bouton détails */
+  .details-toggle-btn {
+    border: none; background: #eef1f7; color: #1a3a6b;
+    width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .details-toggle-btn:hover { background: #dde4f0; }
+  .details-toggle-btn i { font-size: 11px; transition: transform .2s ease; }
+  .details-toggle-btn[aria-expanded="true"] i { transform: rotate(180deg); }
+
+  /* Ligne détails */
+  .details-row td { background: #fbfcfe; padding: 14px 18px 18px 46px; }
+  .details-table {
+    width: 100%; max-width: 560px; border-collapse: collapse;
+    font-family: Arial, sans-serif; font-size: 12.5px;
+  }
+  .details-table th {
+    text-align: left; color: #1a3a6b; font-weight: 700;
+    padding: 5px 10px; border-bottom: 1.5px solid #1a3a6b;
+  }
+  .details-table td { padding: 5px 10px; color: #333; border-bottom: 1px solid #e3e6ec; }
+  .details-table tfoot td {
+    font-weight: 700; color: #1a3a6b;
+    border-top: 1.5px solid #1a3a6b; border-bottom: none;
+  }
+
+  /* ── Synthèse ── */
+  .notes-synthese { border-top: 1px solid #ccc; padding-top: 18px; margin-top: 10px; }
+  .notes-synthese p { font-size: 14px; margin-bottom: 6px; color: #222; }
+  .notes-synthese .gpa-val { font-size: 18px; font-weight: 700; color: #1a3a6b; }
+
+  /* ── Barre d'actions ── */
+  .notes-actions {
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .notes-page { padding: 25px 16px; }
+    .notes-header { flex-direction: column; align-items: center; text-align: center; }
+    .notes-header-right { text-align: center; }
+    .notes-header-right p { justify-content: center; }
+    .notes-doc-title { font-size: 15px; letter-spacing: 1.8px; }
+    .details-row td { padding: 12px 10px 16px 18px; }
+  }
+
+  @media print {
+    .notes-actions, .topbar, .sidebar, .bottom-nav-bar,
+    .mobile-typewriter-bar { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .notes-page { box-shadow: none; border: none; padding: 20px 30px; }
+    .details-toggle-btn { display: none !important; }
+    .details-row { display: table-row !important; }
+    .details-row td { padding: 8px 18px 14px 18px; }
+  }
+</style>
+{% endblock %}
+
+{% block authenticated_content %}
+
+<!-- Boutons d'action -->
+<div class="notes-actions">
+  <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+    <i class="fas fa-print me-1"></i>Imprimer
+  </button>
+</div>
+
+<!-- ══════════════ PAGE DOCUMENT ══════════════ -->
+<div class="notes-page">
+
+  <!-- ── En-tête université ── -->
+  <div class="notes-header">
+
+    <div class="notes-header-left">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+             style="height:80px;object-fit:contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+      {% endif %}
+    </div>
+
+    <div class="notes-header-center">
+      <div class="notes-header-univ">Université d'État d'Haïti</div>
+      <div class="notes-header-faculty">{{ site.nom_complet }}</div>
+      {% if site.slogan %}
+        <div class="notes-header-slogan">{{ site.slogan }}</div>
+      {% endif %}
+    </div>
+
+    <div class="notes-header-right">
+      {% if site.adresse_ligne1 %}
+        <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+      {% endif %}
+      {% if site.telephone %}
+        <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+      {% endif %}
+      {% if site.email %}
+        <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+      {% endif %}
+      {% if site.lien_facebook %}
+        <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="notes-header-divider"></div>
+
+  <!-- Titre -->
+  <div class="notes-doc-title">Mes Notes</div>
+
+  <!-- Informations étudiant -->
+  <div class="notes-student-info">
+    <p><strong>Nom :</strong>&nbsp; {{ etudiant.utilisateur.get_full_name }}</p>
+    <p><strong>Numéro d'étudiant :</strong>&nbsp; {{ etudiant.numero_etudiant }}</p>
+    <p><strong>Département :</strong>&nbsp; {{ etudiant.departement.nom|default:"—" }}</p>
+    <p><strong>Niveau :</strong>&nbsp; {{ etudiant.get_niveau_display }}</p>
+  </div>
+
+  <!-- ── Tableau des inscriptions ── -->
+  <div class="notes-table-wrapper">
+    <table class="notes-table">
+      <thead>
+        <tr>
+          <th class="center" style="width:34px;"></th>
+          <th>Code</th>
+          <th>Matière</th>
+          <th class="center">Crédits</th>
+          <th>Professeur</th>
+          <th class="center">Statut</th>
+          <th class="center">Note / 100</th>
+          <th class="center">Mention</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in inscription_notes %}
+        {% with inscription=item.inscription note=item.note cours=item.inscription.section_cours.cours %}
+        <tr class="main-row">
+          <td class="center">
+            {% if item.composantes %}
+            <button type="button" class="details-toggle-btn"
+                    onclick="toggleDetail(this, 'detail-{{ forloop.counter }}')"
+                    aria-expanded="false" aria-label="Afficher le détail des notes">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            {% endif %}
+          </td>
+          <td><strong>{{ cours.code }}</strong></td>
+          <td>{{ cours.nom }}</td>
+          <td class="center">{{ cours.credits }}</td>
+          <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name|default:"—" }}</td>
+          <td class="center">
+            <span class="statut-badge statut-{{ inscription.statut }}">
+              {{ inscription.get_statut_display }}
+            </span>
+          </td>
+          <td class="center">
+            <strong>
+              {% if note and note.note_finale is not None %}
+                {{ note.note_finale|floatformat:0 }}
+              {% else %}—{% endif %}
+            </strong>
+          </td>
+        <td class="center">
+          {% if note and note.mention %}
+            <span class="mention-badge {{ note.classe_mention }}">{{ note.mention }}</span>
+          {% else %}
+            <span class="mention-badge mention-EA">En attente</span>
+          {% endif %}
+        </td>
+        </tr>
+
+        {% if item.composantes %}
+        <tr class="details-row" id="detail-{{ forloop.counter }}" style="display:none;">
+          <td colspan="8">
+            <table class="details-table">
+              <thead>
+                <tr>
+                  <th>Composante</th>
+                  <th>Pondération</th>
+                  <th>Note obtenue</th>
+                  <th>Points pondérés</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in item.composantes %}
+                <tr>
+                  <td>{{ c.label }}</td>
+                  <td>{{ c.poids }} %</td>
+                  <td>{% if c.valeur is not None %}{{ c.valeur }} / 100{% else %}—{% endif %}</td>
+                  <td>{% if c.points is not None %}{{ c.points }} / {{ c.poids }}{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3">Note finale</td>
+                  <td>
+                    {% if note.note_finale is not None %}
+                      {{ note.note_finale|floatformat:0 }} / 100
+                    {% else %}—{% endif %}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </td>
+        </tr>
+        {% endif %}
+
+        {% endwith %}
+        {% empty %}
+        <tr>
+          <td colspan="8" style="text-align:center;color:#999;font-style:italic;padding:14px;">
+            Aucune inscription pour le moment.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Synthèse ── -->
+  <div class="notes-synthese">
+    <p><strong>Moyenne Générale :</strong>
+      <span class="gpa-val">
+        {% if moyenne is not None %}{{ moyenne }} / 100{% else %}—{% endif %}
+      </span>
+    </p>
+    <p><strong>Crédits cumulés :</strong> {{ total_credits }}</p>
+    <p><strong>Nombre de cours :</strong> {{ inscription_notes|length }}</p>
+  </div>
+
+</div>
+<!-- ══════════════ FIN PAGE ══════════════ -->
+
+<script>
+  function toggleDetail(btn, id) {
+    const row = document.getElementById(id);
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    row.style.display = expanded ? 'none' : 'table-row';
+    btn.setAttribute('aria-expanded', String(!expanded));
+  }
+</script>
+
+{% endblock %}

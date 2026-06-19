@@ -1,0 +1,36 @@
+jour,heure_debut,heure_fin,code_cours,cours,prenom_prof,nom_prof,departement,niveau,session
+LUNDI,07:00,10:00,HIPS101,Histoire des idées politiques et sociales,Simeon,FRANCOIS,Préparatoire,Préparatoire,session2
+LUNDI,07:00,10:00,DROIT101,Introduction au Droit,Chenet,Jean Baptiste,Préparatoire,Préparatoire,session1
+LUNDI,10:00,13:00,PHIL101,Philosophie,Janes,LOUIS,Préparatoire,Préparatoire,session2
+LUNDI,10:00,13:00,OT101,Organisation du Travail Intellectuel,Roosevelt,MILLARD,Préparatoire,Préparatoire,session1
+LUNDI,10:00,13:00,CREO101,Créole : expression écrite et orale,Kenson'n,Danjou,Préparatoire,Préparatoire,session1
+LUNDI,13:00,16:00,ECO101,Introduction à l'Économie,Yves,Barthélémy,Préparatoire,Préparatoire,session2
+MARDI,07:00,10:00,MATH101,Mathématiques,Jean Roy,FAUSTIN,Préparatoire,Préparatoire,session2
+MARDI,07:00,10:00,CREO101,Créole : expression écrite et orale,Job,SILVER,Préparatoire,Préparatoire,session1
+MARDI,07:00,10:00,OT101,Organisation du Travail Intellectuel,Roosevelt,Millard,Préparatoire,Préparatoire,session1
+MARDI,10:00,13:00,HIPS101,Histoire des idées politiques et sociales,Kenaz,BRUNIS,Préparatoire,Préparatoire,session2
+MARDI,13:00,16:00,DROIT101,Introduction au Droit,Julio,ELISNA,Préparatoire,Préparatoire,session1
+MARDI,13:00,16:00,OT101,Organisation du Travail Intellectuel,Julio,ELISNA,Préparatoire,Préparatoire,session1
+MERCREDI,07:00,10:00,MATH101,Mathématiques,Hubermane,CIGUINO,Préparatoire,Préparatoire,session2
+MERCREDI,07:00,10:00,HIPS101,Histoire des idées politiques et sociales,Chenet,Jean Baptiste,Préparatoire,Préparatoire,session2
+MERCREDI,10:00,13:00,DROIT101,Introduction au Droit,Charles,VORBE,Préparatoire,Préparatoire,session1
+MERCREDI,10:00,13:00,PHIL101,Philosophie,Kenaz,BRUNIS,Préparatoire,Préparatoire,session2
+MERCREDI,13:00,16:00,CREO101,Créole : expression écrite et orale,Jean Evrard,JEAN CHARLES,Préparatoire,Préparatoire,session1
+MERCREDI,13:00,16:00,HH101,Histoire d'Haïti,Dérynx,Petit Jean,Préparatoire,Préparatoire,session2
+JEUDI,07:00,10:00,ECO101,Introduction à l'Économie,Georges,LEGAGNEUR,Préparatoire,Préparatoire,session2
+JEUDI,07:00,10:00,FR101,Français I : expression écrite et orale,Murielle,ANTOINE,Préparatoire,Préparatoire,session1
+JEUDI,10:00,13:00,MC101,Monde Caraïbe,Hancy,PIERRE,Préparatoire,Préparatoire,session2
+JEUDI,10:00,13:00,FR101,Français I : expression écrite et orale,Etienne,OREMIL,Préparatoire,Préparatoire,session1
+JEUDI,13:00,16:00,DROIT101,Introduction au Droit,Jean Ronel,SISTANIS,Préparatoire,Préparatoire,session1
+VENDREDI,07:00,10:00,CREO101,Créole : expression écrite et orale,Max,LUBIN,Préparatoire,Préparatoire,session1
+VENDREDI,07:00,10:00,OT101,Organisation du Travail Intellectuel,Dominique,MUSCADIN,Préparatoire,Préparatoire,session1
+VENDREDI,10:00,13:00,MC101,Monde Caraïbe,Vosh,DATHUS,Préparatoire,Préparatoire,session2
+VENDREDI,10:00,13:00,MATH101,Mathématiques,Schmied Saint,FLEUR,Préparatoire,Préparatoire,session2
+VENDREDI,13:00,16:00,SH101,Introduction aux Sciences Humaines,Roosevelt,MILLARD,Préparatoire,Préparatoire,session1
+VENDREDI,13:00,16:00,OT101,Organisation du Travail Intellectuel,Roosevelt,MILLARD,Préparatoire,Préparatoire,session1
+VENDREDI,13:00,16:00,PHIL101,Philosophie,Janes,LOUIS,Préparatoire,Préparatoire,session2
+SAMEDI,07:00,10:00,HH101,Histoire d'Haïti,Simeon,FRANCOIS,Préparatoire,Préparatoire,session2
+SAMEDI,10:00,13:00,CREO101,Créole : expression écrite et orale,Kensley,BRUTUS,Préparatoire,Préparatoire,session1
+SAMEDI,10:00,13:00,HH101,Histoire d'Haïti,Emmanuel,MILORD,Préparatoire,Préparatoire,session2
+SAMEDI,10:00,13:00,MATH101,Mathématiques,Jérôme,Millard,Préparatoire,Préparatoire,session2
+SAMEDI,13:00,16:00,FR101,Français I : expression écrite et orale,Jean Luc,TONDREAU,Préparatoire,Préparatoire,session1

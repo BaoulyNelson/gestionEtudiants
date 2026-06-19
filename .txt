@@ -6,59 +6,55 @@
 
 ```
 fasch_university/
-├── accounts/
+├── comptes/
 │   └── management/
 │       └── commands/
-├── departments/
+├── departements/
 │   └── management/
 │       └── commands/
-│           └── load_departments.py
-├── courses/
-├── enrollments/
-├── grades/
+│           └── charger_departements.py
+├── cours/
+├── inscriptions/
+├── notes/
 ├── templates/
-│   ├── accounts/
-│   │   ├── login.html
-│   │   ├── change_password.html
-│   │   ├── profile.html
-│   │   ├── user_list.html
-│   │   ├── user_create.html
-│   │   └── user_update.html
-│   ├── courses/
-│   │   ├── course_list.html
-│   │   ├── course_detail.html
-│   │   ├── course_form.html
-│   │   ├── section_list.html
-│   │   ├── section_detail.html
-│   │   ├── section_form.html
-│   │   └── my_courses.html
-│   ├── enrollments/
-│   │   ├── my_enrollments.html
-│   │   ├── available_sections.html
-│   │   ├── enrollment_list.html
-│   │   └── enrollment_history.html
-│   ├── grades/
-│   │   ├── my_grades.html
-│   │   ├── grade_entry.html
-│   │   ├── grade_list.html
-│   │   ├── grade_detail.html
-│   │   ├── professor_sections.html
-│   │   ├── transcript.html
-│   │   └── course_statistics.html
+│   ├── comptes/
+│   │   ├── connexion.html
+│   │   ├── changer_mot_de_passe.html
+│   │   ├── profil.html
+│   │   ├── liste_utilisateurs.html
+│   │   ├── creer_utilisateur.html
+│   │   └── modifier_utilisateur.html
+│   ├── cours/
+│   │   ├── liste_cours.html
+│   │   ├── detail_cours.html
+│   │   ├── formulaire_cours.html
+│   │   ├── liste_sections.html
+│   │   ├── detail_section.html
+│   │   ├── formulaire_section.html
+│   │   └── mes_cours.html
+│   ├── inscriptions/
+│   │   ├── mes_inscriptions.html
+│   │   ├── sections_disponibles.html
+│   │   ├── liste_inscriptions.html
+│   │   └── historique_inscriptions.html
+│   ├── notes/
+│   │   ├── mes_notes.html
+│   │   ├── saisie_notes.html
+│   │   ├── liste_notes.html
+│   │   ├── detail_note.html
+│   │   ├── sections_professeur.html
+│   │   ├── releve_notes.html
+│   │   └── statistiques_cours.html
 │   ├── base.html
-│   ├── home.html
-│   ├── dashboard_student.html
-│   ├── dashboard_professor.html
-│   └── dashboard_admin.html
+│   ├── accueil.html
+│   ├── tableau_bord_etudiant.html
+│   ├── tableau_bord_professeur.html
+│   └── tableau_bord_administrateur.html
 ├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
 ├── media/
-│   └── profiles/
-├── data/
-│   └── departments.csv
-└── fasch_config/
+├── donnees/
+│   └── departements.csv
+└── configuration_fasch/
     ├── settings.py
     ├── urls.py
     └── views.py
@@ -98,7 +94,7 @@ DB_PORT=3306
 ```csv
 code,name,description
 PSYCHO,Psychologie,Département de Psychologie
-COMM,Communication sociale,Département de Communication sociale
+COMM,Communication Sociale,Département de Communication Sociale
 SOCIO,Sociologie,Département de Sociologie
 SERVSOC,Service social,Département de Service social
 ```
@@ -171,7 +167,7 @@ http://127.0.0.1:8000/accounts/login/           # Connexion
 http://127.0.0.1:8000/dashboard/                # Tableau de bord
 http://127.0.0.1:8000/admin/                    # Interface admin Django
 http://127.0.0.1:8000/accounts/users/           # Gestion utilisateurs (admin)
-http://127.0.0.1:8000/courses/                  # Liste des cours
+http://127.0.0.1:8000/cours/                  # Liste des cours
 http://127.0.0.1:8000/enrollments/available/    # Inscriptions (étudiant)
 http://127.0.0.1:8000/grades/my-grades/         # Mes notes (étudiant)
 http://127.0.0.1:8000/grades/professor/sections/ # Saisie notes (professeur)
