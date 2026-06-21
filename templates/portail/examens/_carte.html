@@ -1,0 +1,39 @@
+{% load static %}
+<div class="carte-examen" data-examen="{{ examen.id }}">
+  <div class="carte-examen-barre {{ statut_css }}"></div>
+
+  <div class="carte-examen-date">
+    <div class="date-jour">{{ examen.date|date:"d" }}</div>
+    <div class="date-mois">{{ examen.date|date:"M" }}</div>
+    <div class="date-annee">{{ examen.date|date:"Y" }}</div>
+  </div>
+
+  <div class="carte-examen-corps">
+    <div class="carte-examen-info">
+      <div class="carte-examen-titre">{{ examen.titre }}</div>
+      {% if examen.description %}
+        <div class="carte-examen-desc">{{ examen.description|truncatechars:100 }}</div>
+      {% endif %}
+    </div>
+    <div class="badge-statut {{ statut_css }}">
+      {% if statut_css == "en-cours" %}
+        <i class="fas fa-play-circle"></i> En cours
+      {% elif statut_css == "a-venir" %}
+        <i class="fas fa-clock"></i> À venir
+      {% elif statut_css == "termine" %}
+        <i class="fas fa-check-circle"></i> Terminé
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user.est_professeur or user.est_administrateur %}
+    <div class="carte-examen-actions">
+      <a href="{% url 'portail:modifier_examen' examen.id %}" class="btn-ico" title="Modifier">
+        <i class="fas fa-edit"></i>
+      </a>
+      <a href="{% url 'portail:supprimer_examen' examen.id %}" class="btn-ico danger" title="Supprimer">
+        <i class="fas fa-trash"></i>
+      </a>
+    </div>
+  {% endif %}
+</div>

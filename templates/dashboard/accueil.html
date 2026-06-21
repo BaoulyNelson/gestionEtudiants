@@ -1,0 +1,115 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load humanize %}
+{% block dash_titre %}Vue d'ensemble{% endblock %}
+{% block dash_contenu %}
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card stat-card--blue">
+      <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+      <div class="stat-body">
+        <div class="stat-number">{{ total_articles }}</div>
+        <div class="stat-label">Total articles</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card stat-card--green">
+      <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-body">
+        <div class="stat-number">{{ articles_publies }}</div>
+        <div class="stat-label">Publiés</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card stat-card--orange">
+      <div class="stat-icon"><i class="fas fa-pencil-alt"></i></div>
+      <div class="stat-body">
+        <div class="stat-number">{{ articles_brouillons }}</div>
+        <div class="stat-label">Brouillons</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card stat-card--purple">
+      <div class="stat-icon"><i class="fas fa-comments"></i></div>
+      <div class="stat-body">
+        <div class="stat-number">{{ total_commentaires }}</div>
+        <div class="stat-label">Commentaires</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Articles récents -->
+  <div class="col-lg-7">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h5 class="dash-card-title"><i class="fas fa-newspaper me-2"></i>Articles récents</h5>
+        <a href="{% url 'articles:dashboard_articles' %}" class="btn btn-sm btn-outline-primary">Tous</a>
+      </div>
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light"><tr>
+              <th>Titre</th><th>Catégorie</th><th>Statut</th><th>Date</th><th></th>
+            </tr></thead>
+            <tbody>
+              {% for art in articles_recents %}
+              <tr>
+                <td class="fw-medium">{{ art.titre|truncatechars:40 }}</td>
+                <td>{% if art.categorie %}<span class="badge" style="background:{{ art.categorie.couleur }}">{{ art.categorie.nom }}</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                <td>
+                  {% if art.status == 'publie' %}<span class="badge bg-success">Publié</span>
+                  {% elif art.status == 'brouillon' %}<span class="badge bg-secondary">Brouillon</span>
+                  {% else %}<span class="badge bg-warning text-dark">En révision</span>{% endif %}
+                </td>
+                <td class="text-muted small">{{ art.created_at|date:"j/m/Y" }}</td>
+                <td>
+                  <a href="{% url 'articles:dashboard_modifier_article' art.pk %}" class="btn btn-xs btn-outline-secondary"><i class="fas fa-edit"></i></a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center text-muted py-3">Aucun article</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commentaires récents -->
+  <div class="col-lg-5">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h5 class="dash-card-title"><i class="fas fa-comments me-2"></i>Commentaires récents</h5>
+        {% if is_gestionnaire %}<a href="{% url 'comments:dashboard_commentaires' %}" class="btn btn-sm btn-outline-primary">Tous</a>{% endif %}
+      </div>
+      <div class="dash-card-body p-0">
+        {% for c in commentaires_recents %}
+        <div class="dash-comment-item">
+          <div class="d-flex align-items-start gap-2">
+            <span class="author-avatar-xs author-initial flex-shrink-0">{{ c.auteur.get_full_name|default:c.auteur.username|first|upper }}</span>
+            <div class="flex-grow-1 min-w-0">
+              <div class="d-flex justify-content-between">
+                <strong class="small">{{ c.auteur.get_full_name|default:c.auteur.username }}</strong>
+                <small class="text-muted">{{ c.created_at|naturaltime }}</small>
+              </div>
+              <p class="small text-muted mb-1">{{ c.contenu|truncatechars:80 }}</p>
+              <a href="{{ c.article.get_absolute_url }}#commentaires" class="small text-primary">
+                Sur : {{ c.article.titre|truncatechars:35 }}
+              </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-3 small">Aucun commentaire</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

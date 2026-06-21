@@ -36,21 +36,21 @@
                             <div class="col-6">
                                 <p class="text-sm mb-2">
                                     <strong>Étudiant :</strong><br>
-                                    {{ grade.inscription.etudiant.utilisateur.get_full_name }}
+                                    {{ note.inscription.etudiant.utilisateur.get_full_name }}
                                 </p>
                                 <p class="text-sm mb-2">
                                     <strong>Matricule :</strong><br>
-                                    {{ grade.inscription.etudiant.numero_etudiant }}
+                                    {{ note.inscription.etudiant.numero_etudiant }}
                                 </p>
                             </div>
                             <div class="col-6">
                                 <p class="text-sm mb-2">
                                     <strong>Cours :</strong><br>
-                                    {{ grade.inscription.section_cours.cours.code }}
+                                    {{ note.inscription.section_cours.cours.code }}
                                 </p>
                                 <p class="text-sm mb-2">
                                     <strong>Section :</strong><br>
-                                    {{ grade.inscription.section_cours.numero_section }}
+                                    {{ note.inscription.section_cours.numero_section }}
                                 </p>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                             Noté par : {{ note.note_par.user.get_full_name }}
                             <br>
                             <i class="fas fa-clock me-1"></i>
-                            Le {{ grade.updated_at|date:"d/m/Y à H:i" }}
+                            Le {{ note.updated_at|date:"d/m/Y à H:i" }}
                         </p>
                         {% endif %}
                     </div>

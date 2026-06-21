@@ -9,6 +9,7 @@ urlpatterns = [
     path('section/<int:id_section>/recap/',       views.vue_recap_notes,            name='recap_notes'),
     path('section/<int:id_section>/saisie/',      views.vue_saisie_notes,           name='saisie_notes_professeur'),
     path('note/<int:id_note>/modifier-prof/',     views.modifier_note_professeur,   name='modifier_note_professeur'),
+    path('inscription/<int:id_inscription>/note/', views.saisie_modifier_note_professeur, name='saisie_modifier_note_professeur'),
     path('mes-etudiants/',                        views.vue_mes_etudiants,          name='mes_etudiants'),
     path('palmares/',                             views.vue_palmares,               name='palmares'),
 

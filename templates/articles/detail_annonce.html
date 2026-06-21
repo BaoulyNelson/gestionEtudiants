@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ annonce.titre }} – {{ site.nom_etablissement|default:"FASCH" }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bleu: #1a3a6b; --bleu-fonce: #122d56; --bleu-clair: #e8eef7;
+      --or: #c9a84c; --or-clair: #f7f0dc;
+      --blanc: #ffffff; --texte: #1e2535; --texte-doux: #6b7280;
+      --gris-ligne: #e5e7eb; --gris-bg: #f4f6fa;
+      --police-titre: 'Georgia', serif;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gris-bg); color: var(--texte); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .entete { background: var(--bleu); color: #fff; padding: 18px 40px; display: flex; align-items: center; gap: 14px; }
+    .entete-logo { height: 44px; width: auto; object-fit: contain; }
+    .entete-logo-icone { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--or); }
+    .entete-texte strong { display: block; font-family: var(--police-titre); font-size: 18px; }
+    .entete-texte span   { font-size: 11px; opacity: .7; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .fil-ariane { background: var(--blanc); border-bottom: 1px solid var(--gris-ligne); padding: 10px 40px; font-size: 13px; color: var(--texte-doux); }
+    .fil-ariane a { color: var(--bleu); text-decoration: none; }
+    .fil-ariane a:hover { text-decoration: underline; }
+    .fil-ariane span { margin: 0 6px; }
+
+    /* ── Hero annonce ── */
+    .annonce-hero {
+      background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-fonce) 100%);
+      color: #fff; padding: 48px 40px;
+      position: relative; overflow: hidden;
+    }
+    .annonce-hero::after {
+      content: ''; position: absolute; right: -80px; top: -80px;
+      width: 360px; height: 360px;
+      background: rgba(255,255,255,.04); border-radius: 50%;
+    }
+    .annonce-hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    .annonce-hero-icone {
+      width: 56px; height: 56px;
+      background: var(--or); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: var(--bleu-fonce);
+      margin-bottom: 20px;
+    }
+    .annonce-hero h1 { font-family: var(--police-titre); font-size: 2rem; line-height: 1.3; margin-bottom: 16px; max-width: 740px; }
+    .annonce-hero-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; opacity: .82; }
+    .annonce-hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .annonce-hero-meta i { color: var(--or); }
+
+    main { flex: 1; }
+    .page-detail { max-width: 1060px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+
+    .annonce-corps { display: flex; flex-direction: column; gap: 24px; }
+
+    .annonce-carte {
+      background: var(--blanc); border-radius: 14px; padding: 32px;
+      box-shadow: 0 2px 12px rgba(26,58,107,.07);
+    }
+    .annonce-carte-titre {
+      font-family: var(--police-titre); font-size: 1.1rem; color: var(--bleu);
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--or); display: inline-block;
+    }
+
+    .annonce-image { width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; display: block; }
+
+    .annonce-contenu { font-size: 15px; line-height: 1.85; color: var(--texte); }
+    .annonce-contenu p   { margin-bottom: 18px; }
+    .annonce-contenu h2  { font-family: var(--police-titre); color: var(--bleu); margin: 28px 0 12px; font-size: 1.2rem; }
+    .annonce-contenu ul, .annonce-contenu ol { padding-left: 24px; margin-bottom: 16px; }
+    .annonce-contenu li  { margin-bottom: 6px; }
+
+    /* ── Countdown date événement ── */
+    .countdown-bloc {
+      background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-fonce) 100%);
+      border-radius: 12px; padding: 24px; color: #fff; text-align: center;
+    }
+    .countdown-titre { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .7; margin-bottom: 16px; }
+    .countdown-chiffres { display: flex; justify-content: center; gap: 12px; }
+    .countdown-unite { text-align: center; }
+    .countdown-val {
+      font-family: var(--police-titre); font-size: 2rem; font-weight: 700;
+      background: rgba(255,255,255,.12); border-radius: 8px;
+      padding: 10px 14px; min-width: 56px; display: block; line-height: 1;
+    }
+    .countdown-label { font-size: 10px; opacity: .6; margin-top: 5px; text-transform: uppercase; letter-spacing: .8px; }
+    .countdown-sep { font-size: 1.8rem; font-weight: 700; opacity: .4; align-self: center; margin-top: -8px; }
+    .countdown-date-aff { font-size: 13px; opacity: .75; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .countdown-date-aff i { color: var(--or); }
+    .countdown-passe { font-size: 14px; opacity: .8; font-style: italic; }
+
+    /* Sidebar */
+    .annonce-sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-carte { background: var(--blanc); border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(26,58,107,.07); }
+    .sidebar-titre { font-family: var(--police-titre); font-size: 1rem; color: var(--bleu); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--or); display: inline-block; }
+
+    .info-liste { display: flex; flex-direction: column; gap: 14px; }
+    .info-ligne { display: flex; gap: 12px; font-size: 13px; }
+    .info-icone { width: 30px; height: 30px; background: var(--or-clair); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .info-icone i { font-size: 12px; color: var(--or); }
+    .info-label { font-size: 10px; color: var(--texte-doux); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 2px; }
+    .info-val   { font-size: 13px; color: var(--texte); font-weight: 500; }
+
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: background .2s; }
+    .btn-primaire   { background: var(--bleu); color: #fff; }
+    .btn-primaire:hover { background: var(--bleu-fonce); }
+    .btn-secondaire { background: var(--or-clair); color: var(--bleu-fonce); }
+    .btn-secondaire:hover { background: #e5d4a8; }
+
+    .annonce-recente { display: flex; gap: 12px; text-decoration: none; color: inherit; padding: 10px 0; border-bottom: 1px solid var(--gris-ligne); transition: color .2s; }
+    .annonce-recente:last-child { border-bottom: none; padding-bottom: 0; }
+    .annonce-recente:hover .ar-titre { color: var(--or); }
+    .ar-image { width: 52px; height: 52px; border-radius: 6px; background: var(--bleu); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .ar-image img { width: 100%; height: 100%; object-fit: cover; }
+    .ar-image i   { font-size: 16px; color: rgba(255,255,255,.3); }
+    .ar-titre { font-size: 13px; font-weight: 600; color: var(--bleu); line-height: 1.35; margin-bottom: 4px; }
+    .ar-date  { font-size: 11px; color: var(--texte-doux); }
+
+    .nav-retour { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--blanc); border-radius: 10px; text-decoration: none; color: var(--texte); box-shadow: 0 2px 8px rgba(26,58,107,.07); transition: box-shadow .2s, transform .2s; margin-top: 8px; }
+    .nav-retour:hover { box-shadow: 0 4px 16px rgba(26,58,107,.14); transform: translateY(-2px); }
+    .nav-retour i { color: var(--or); }
+    .nav-retour-label { font-size: 10px; color: var(--texte-doux); text-transform: uppercase; letter-spacing: 1px; }
+    .nav-retour-titre { font-weight: 600; color: var(--bleu); font-size: 13px; margin-top: 2px; }
+
+    footer { background: var(--bleu-fonce); color: rgba(255,255,255,.6); text-align: center; padding: 18px 20px; font-size: 13px; margin-top: auto; }
+    footer strong { color: #fff; }
+
+    @media (max-width: 900px) { .page-detail { grid-template-columns: 1fr; } .annonce-sidebar { order: -1; } }
+    @media (max-width: 640px) {
+      .entete { padding: 14px 20px; }
+      .fil-ariane { padding: 10px 20px; }
+      .annonce-hero { padding: 32px 20px; }
+      .annonce-hero h1 { font-size: 1.5rem; }
+      .annonce-carte { padding: 20px; }
+    }
+    /* 1. Empêcher le countdown de forcer la grille à déborder */
+.annonce-sidebar {
+  min-width: 0; /* neutralise le min-width:auto par défaut des grid items */
+}
+
+/* 2. Rendre le countdown lui-même responsive */
+.countdown-chiffres {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;       /* autorise le retour à la ligne si ça ne tient pas */
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .countdown-val {
+    min-width: 46px;
+    font-size: 1.5rem;
+    padding: 8px 10px;
+  }
+  .countdown-sep {
+    font-size: 1.4rem;
+  }
+}
+  </style>
+</head>
+<body>
+
+<div class="mt-4">
+  {% include 'partials/header.html' %}
+</div>
+
+  <nav class="fil-ariane">
+    <a href="{% url 'portail:accueil' %}">Accueil</a>
+    <span>›</span>
+    <a href="{% url 'articles:liste_annonces' %}">Annonces</a>
+    <span>›</span>
+    <strong>{{ annonce.titre|truncatechars:48 }}</strong>
+  </nav>
+
+  <div class="annonce-hero">
+    <div class="annonce-hero-inner">
+      <div class="annonce-hero-icone"><i class="fas fa-bullhorn"></i></div>
+      <h1>{{ annonce.titre }}</h1>
+      <div class="annonce-hero-meta">
+        <span><i class="fas fa-calendar-alt"></i> {{ annonce.date_publication|date:"d F Y" }}</span>
+        {% if annonce.organisateur %}<span><i class="fas fa-building"></i> {{ annonce.organisateur }}</span>{% endif %}
+        {% if annonce.lieu %}<span><i class="fas fa-map-marker-alt"></i> {{ annonce.lieu }}</span>{% endif %}
+        {% if annonce.date_evenement %}<span><i class="fas fa-flag"></i> Événement le {{ annonce.date_evenement|date:"d F Y" }}</span>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="page-detail">
+
+      <div class="annonce-corps">
+
+        {% if annonce.image %}
+          <div class="annonce-carte" style="padding:0;overflow:hidden;">
+            <img src="{{ annonce.image.url }}" alt="{{ annonce.titre }}" class="annonce-image">
+          </div>
+        {% endif %}
+
+        <div class="annonce-carte">
+          <h2 class="annonce-carte-titre">Détails de l'annonce</h2>
+          <div class="annonce-contenu">{{ annonce.contenu|linebreaks }}</div>
+        </div>
+
+        <a href="{% url 'articles:liste_annonces' %}" class="nav-retour">
+          <i class="fas fa-arrow-left"></i>
+          <div>
+            <div class="nav-retour-label">Retour</div>
+            <div class="nav-retour-titre">Toutes les annonces</div>
+          </div>
+        </a>
+      </div>
+
+      <aside class="annonce-sidebar">
+
+        {% if annonce.date_evenement %}
+          <div class="countdown-bloc" id="countdownBloc">
+            <div class="countdown-titre">Compte à rebours</div>
+            <div class="countdown-chiffres" id="countdownChiffres">
+              <div class="countdown-unite"><span class="countdown-val" id="cdJours">--</span><div class="countdown-label">Jours</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unite"><span class="countdown-val" id="cdHeures">--</span><div class="countdown-label">Heures</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unite"><span class="countdown-val" id="cdMinutes">--</span><div class="countdown-label">Min</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unite"><span class="countdown-val" id="cdSecondes">--</span><div class="countdown-label">Sec</div></div>
+            </div>
+            <div class="countdown-date-aff"><i class="fas fa-calendar-alt"></i> {{ annonce.date_evenement|date:"d F Y" }}</div>
+          </div>
+          <script>
+            (function() {
+              const cible = new Date("{{ annonce.date_evenement|date:'Y-m-d' }}T00:00:00");
+              function maj() {
+                const diff = cible - new Date();
+                const bloc = document.getElementById('countdownBloc');
+                if (diff <= 0) {
+                  document.getElementById('countdownChiffres').innerHTML =
+                    '<p class="countdown-passe" style="color:#fff;font-size:1.1rem;padding:12px 0"><i class="fas fa-check-circle" style="color:#4ade80;margin-right:8px"></i>Événement en cours !</p>';
+                  bloc.style.background = 'linear-gradient(135deg,#166534,#14532d)';
+                  return;
+                }
+                const j  = Math.floor(diff / 86400000);
+                const h  = Math.floor((diff % 86400000) / 3600000);
+                const m  = Math.floor((diff % 3600000)  / 60000);
+                const s  = Math.floor((diff % 60000)    / 1000);
+                document.getElementById('cdJours').textContent    = String(j).padStart(2,'0');
+                document.getElementById('cdHeures').textContent   = String(h).padStart(2,'0');
+                document.getElementById('cdMinutes').textContent  = String(m).padStart(2,'0');
+                document.getElementById('cdSecondes').textContent = String(s).padStart(2,'0');
+              }
+              maj();
+              setInterval(maj, 1000);
+            })();
+          </script>
+        {% endif %}
+
+        <div class="sidebar-carte">
+          <h3 class="sidebar-titre">Informations</h3>
+          <div class="info-liste">
+            <div class="info-ligne">
+              <div class="info-icone"><i class="fas fa-calendar-alt"></i></div>
+              <div><div class="info-label">Publié le</div><div class="info-val">{{ annonce.date_publication|date:"d F Y" }}</div></div>
+            </div>
+            {% if annonce.organisateur %}
+              <div class="info-ligne">
+                <div class="info-icone"><i class="fas fa-building"></i></div>
+                <div><div class="info-label">Organisateur</div><div class="info-val">{{ annonce.organisateur }}</div></div>
+              </div>
+            {% endif %}
+            {% if annonce.lieu %}
+              <div class="info-ligne">
+                <div class="info-icone"><i class="fas fa-map-marker-alt"></i></div>
+                <div><div class="info-label">Lieu</div><div class="info-val">{{ annonce.lieu }}</div></div>
+              </div>
+            {% endif %}
+            {% if annonce.date_evenement %}
+              <div class="info-ligne">
+                <div class="info-icone"><i class="fas fa-flag"></i></div>
+                <div><div class="info-label">Date de l'événement</div><div class="info-val">{{ annonce.date_evenement|date:"d F Y à H:i" }}</div></div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="sidebar-carte">
+          <h3 class="sidebar-titre">Partager</h3>
+          <div class="actions">
+            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !');" class="btn-action btn-secondaire">
+              <i class="fas fa-link"></i> Copier le lien
+            </button>
+            <button onclick="window.print()" class="btn-action btn-primaire">
+              <i class="fas fa-print"></i> Imprimer
+            </button>
+          </div>
+        </div>
+
+        {% if annonces_recentes %}
+          <div class="sidebar-carte">
+            <h3 class="sidebar-titre">Autres annonces</h3>
+            {% for a in annonces_recentes %}
+              <a href="{% url 'articles:detail_annonce' a.slug %}" class="annonce-recente">
+                <div class="ar-image">
+                  {% if a.image %}<img src="{{ a.image.url }}" alt="{{ a.titre }}">
+                  {% else %}<i class="fas fa-bullhorn"></i>{% endif %}
+                </div>
+                <div>
+                  <div class="ar-titre">{{ a.titre|truncatechars:50 }}</div>
+                  <div class="ar-date">{{ a.date_publication|date:"d M Y" }}</div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    © {% now "Y" %} <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong> –
+    {{ site.nom_complet|default:"Université d'État d'Haïti" }}
+  </footer>
+
+</body>
+</html>

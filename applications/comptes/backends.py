@@ -1,4 +1,3 @@
-# backends.py
 import re
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
@@ -9,8 +8,13 @@ UserModel = get_user_model()
 
 class AuthentificationUniverselle(ModelBackend):
     """
-    Authentification via email, numéro de téléphone ou numéro étudiant.
-    Gère les formats haïtiens : 509XXXXXXXX, +509XXXXXXXX, 8 chiffres seuls.
+    Authentification via email, numéro de téléphone ou numéro étudiant (CIN).
+
+    Distinction par longueur, sans ambiguïté possible :
+      - Téléphone haïtien : 8 chiffres locaux, ou 11 chiffres avec l'indicatif
+        509 (avec ou sans '+').
+      - Matricule étudiant (CIN / NINU) : exactement 10 chiffres.
+      - Email : contient '@'.
     """
 
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -18,27 +22,22 @@ class AuthentificationUniverselle(ModelBackend):
             return None
 
         identifiant = username.strip()
+        normalise = re.sub(r'[\s\-]', '', identifiant)
 
-        # ── Téléphone ──────────────────────────────────────────────
-        if re.match(r'^\+?\d[\d\s\-]+$', identifiant):
-            normalise = re.sub(r'[\s\-]', '', identifiant)
+        # ── Email ───────────────────────────────────────────────────
+        if '@' in identifiant:
+            lookup = Q(email__iexact=identifiant)
 
+        # ── Téléphone (8 chiffres locaux, ou 11 avec indicatif 509) ──
+        elif re.fullmatch(r'\+?509\d{8}', normalise) or re.fullmatch(r'\d{8}', normalise):
             if not normalise.startswith('+'):
                 if normalise.startswith('509') and len(normalise) == 11:
                     normalise = f'+{normalise}'
                 elif len(normalise) == 8:
-                    # Format local haïtien sans indicatif
                     normalise = f'+509{normalise}'
-                else:
-                    normalise = f'+{normalise}'
-
             lookup = Q(numero_telephone=normalise)
 
-        # ── Email ───────────────────────────────────────────────────
-        elif '@' in identifiant:
-            lookup = Q(email__iexact=identifiant)
-
-        # ── Numéro étudiant ─────────────────────────────────────────
+        # ── Numéro étudiant / CIN (10 chiffres, ou tout autre format) ─
         else:
             lookup = Q(profil_etudiant__numero_etudiant__iexact=identifiant)
 

@@ -1,0 +1,50 @@
+{% extends 'base_articles.html' %}
+{% load humanize %}
+{% block titre %}{{ categorie.nom }}{% endblock %}
+{% block contenu %}
+<div class="page-header" style="border-bottom:4px solid {{ categorie.couleur }}">
+  <div class="container-xxl px-3">
+    <span class="page-header-badge" style="background:{{ categorie.couleur }}">Catégorie</span>
+    <h1 class="page-header-title">{{ categorie.nom }}</h1>
+    {% if categorie.description %}<p class="page-header-desc">{{ categorie.description }}</p>{% endif %}
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a href="{% url 'articles:accueil' %}">Accueil</a></li>
+      <li class="breadcrumb-item active">{{ categorie.nom }}</li>
+    </ol></nav>
+  </div>
+</div>
+<div class="container-xxl px-3 py-5">
+  <div class="row g-4">
+    {% for article in articles %}
+    <div class="col-md-6 col-lg-4">
+      <article class="article-card h-100">
+        <a href="{{ article.get_absolute_url }}" class="article-card-img-link">
+          {% if article.image_principale %}<img src="{{ article.image_principale.url }}" alt="{{ article.titre }}" class="article-card-img">
+          {% else %}<div class="article-card-img article-card-img--placeholder"><i class="fas fa-newspaper fa-2x"></i></div>{% endif %}
+        </a>
+        <div class="article-card-body">
+          <h3 class="article-card-title"><a href="{{ article.get_absolute_url }}">{{ article.titre }}</a></h3>
+          <p class="article-card-excerpt">{{ article.extrait|truncatewords:18 }}</p>
+          <div class="article-card-footer">
+            <span class="author-avatar-xs author-initial">{{ article.auteur.get_full_name|default:article.auteur.username|first|upper }}</span>
+            <span class="ms-1 small">{{ article.auteur.get_full_name|default:article.auteur.username }}</span>
+            <span class="ms-auto small text-muted">{{ article.publie_le|date:"j F Y" }}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <p class="text-muted">Aucun article dans cette catégorie pour le moment.</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% if is_paginated %}
+  <nav class="mt-5"><ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>{% endif %}
+    <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+    {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>{% endif %}
+  </ul></nav>
+  {% endif %}
+</div>
+{% endblock %}

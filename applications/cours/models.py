@@ -110,8 +110,8 @@ class SectionCours(models.Model):
         ordering            = ['cours__code', 'numero_section']
         constraints = [
             models.UniqueConstraint(
-                fields=['cours', 'numero_section', 'professeur', 'session', 'semestre', 'annee'],
-                name='unicite_section_par_professeur',
+                fields=['cours', 'numero_section', 'session', 'semestre', 'annee'],
+                name='unicite_section_par_periode',
             )
         ]
 
@@ -129,8 +129,9 @@ class SectionCours(models.Model):
     # (app inscriptions) — il ne peut pas être renommé ici.
 
     def nombre_inscrits(self):
-        """Retourne le nombre d'étudiants actuellement inscrits"""
-        return self.inscriptions.filter(statut='INSCRIT').count()  # ← corrigé
+        """Retourne le nombre d'étudiants actuellement inscrits (statuts actifs)"""
+        from applications.inscriptions.models import Inscription
+        return self.inscriptions.filter(statut__in=Inscription.STATUTS_ACTIFS).count()
 
     def est_pleine(self):
         """Vérifie si la section a atteint sa capacité maximale"""

@@ -14,6 +14,21 @@ def set_gender_feminin(modeladmin, request, queryset):
     queryset.update(genre="F")
 
 
+@admin.action(description="Rôle éditorial → Lecteur")
+def set_role_editorial_lecteur(modeladmin, request, queryset):
+    queryset.update(role_editorial="LECTEUR")
+
+
+@admin.action(description="Rôle éditorial → Auteur")
+def set_role_editorial_auteur(modeladmin, request, queryset):
+    queryset.update(role_editorial="AUTEUR")
+
+
+@admin.action(description="Rôle éditorial → Éditeur")
+def set_role_editorial_editeur(modeladmin, request, queryset):
+    queryset.update(role_editorial="EDITEUR")
+
+
 # 🧩 2. Étendre ton UserAdmin existant
 @admin.register(Utilisateur)
 class UtilisateurAdmin(BaseUserAdmin):
@@ -22,15 +37,22 @@ class UtilisateurAdmin(BaseUserAdmin):
         "first_name",
         "last_name",
         "role",
+        "role_editorial",
         "genre",
         "numero_telephone",
         "is_active",
         "cree_le",
     ]
-    list_filter = ["role", "is_active", "is_staff"]
+    list_filter = ["role", "role_editorial", "is_active", "is_staff"]
     search_fields = ["email", "first_name", "last_name", "numero_telephone"]
     ordering = ["-cree_le"]
-    actions = [set_gender_masculin, set_gender_feminin]
+    actions = [
+        set_gender_masculin,
+        set_gender_feminin,
+        set_role_editorial_lecteur,
+        set_role_editorial_auteur,
+        set_role_editorial_editeur,
+    ]
 
     fieldsets = (
         ("Informations de connexion", {"fields": ("email", "password")}),
@@ -53,6 +75,7 @@ class UtilisateurAdmin(BaseUserAdmin):
             {
                 "fields": (
                     "role",
+                    "role_editorial",
                     "is_active",
                     "is_staff",
                     "is_superuser",
@@ -79,6 +102,7 @@ class UtilisateurAdmin(BaseUserAdmin):
                     "first_name",
                     "last_name",
                     "role",
+                    "role_editorial",
                     "genre",
                     "password1",
                     "password2",

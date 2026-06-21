@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annonces – {{ site.nom_etablissement|default:"FASCH" }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bleu: #1a3a6b; --bleu-fonce: #122d56; --bleu-clair: #e8eef7;
+      --or: #c9a84c; --or-clair: #f7f0dc;
+      --blanc: #ffffff; --texte: #1e2535; --texte-doux: #6b7280;
+      --gris-ligne: #e5e7eb; --gris-bg: #f4f6fa;
+      --police-titre: 'Georgia', serif;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gris-bg); color: var(--texte); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── En-tête ── */
+    .entete { background: var(--bleu); color: #fff; padding: 18px 40px; display: flex; align-items: center; gap: 14px; }
+    .entete-logo { height: 44px; width: auto; object-fit: contain; }
+    .entete-logo-icone { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--or); }
+    .entete-texte strong { display: block; font-family: var(--police-titre); font-size: 18px; }
+    .entete-texte span   { font-size: 11px; opacity: .7; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .fil-ariane { background: var(--blanc); border-bottom: 1px solid var(--gris-ligne); padding: 10px 40px; font-size: 13px; color: var(--texte-doux); }
+    .fil-ariane a { color: var(--bleu); text-decoration: none; }
+    .fil-ariane a:hover { text-decoration: underline; }
+    .fil-ariane span { margin: 0 6px; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-fonce) 100%);
+      color: #fff; padding: 52px 40px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .hero h1 { font-family: var(--police-titre); font-size: 2.2rem; margin-bottom: 6px; }
+    .hero p   { font-size: 14px; opacity: .75; }
+    .hero-trait { width: 48px; height: 3px; background: var(--or); border-radius: 2px; margin-top: 16px; }
+
+    /* ── Barre de recherche ── */
+    .recherche-barre {
+      background: var(--blanc);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(26,58,107,.15);
+      padding: 6px 6px 6px 18px;
+      display: flex; align-items: center; gap: 10px;
+      min-width: 300px;
+    }
+    .recherche-barre input {
+      border: none; outline: none;
+      font-size: 14px; font-family: inherit;
+      flex: 1; color: var(--texte);
+      background: transparent;
+    }
+    .btn-recherche {
+      background: var(--bleu); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 9px 16px; font-size: 13px;
+      cursor: pointer; transition: background .2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-recherche:hover { background: var(--bleu-fonce); }
+
+    /* ── Corps ── */
+    main { flex: 1; }
+    .page-annonces { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+    /* ── Compteur résultats ── */
+    .resultats-info {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+      font-size: 13px; color: var(--texte-doux);
+    }
+    .resultats-info strong { color: var(--bleu); }
+    .badge-total {
+      background: var(--bleu-clair); color: var(--bleu);
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    /* ── Carte annonce ── */
+    .annonces-liste { display: flex; flex-direction: column; gap: 20px; }
+
+    .carte-annonce {
+      background: var(--blanc);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(26,58,107,.07);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      text-decoration: none; color: inherit;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .carte-annonce:hover {
+      box-shadow: 0 8px 32px rgba(26,58,107,.15);
+      transform: translateY(-3px);
+    }
+
+    .carte-annonce-image {
+      background: var(--bleu);
+      overflow: hidden;
+      position: relative;
+      min-height: 180px;
+    }
+    .carte-annonce-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .carte-annonce-image-ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; color: rgba(255,255,255,.15);
+    }
+
+    /* Badge date événement sur l'image */
+    .annonce-date-event {
+      position: absolute; bottom: 12px; left: 12px;
+      background: var(--or); color: var(--bleu-fonce);
+      font-size: 11px; font-weight: 700;
+      padding: 5px 10px; border-radius: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .carte-annonce-corps {
+      padding: 24px 28px;
+      display: flex; flex-direction: column;
+    }
+    .carte-annonce-meta {
+      display: flex; flex-wrap: wrap; gap: 14px;
+      font-size: 12px; color: var(--texte-doux);
+      margin-bottom: 12px;
+    }
+    .carte-annonce-meta span { display: flex; align-items: center; gap: 5px; }
+    .carte-annonce-meta i   { color: var(--or); }
+    .carte-annonce-titre {
+      font-family: var(--police-titre);
+      font-size: 1.15rem; color: var(--bleu);
+      line-height: 1.4; margin-bottom: 10px;
+    }
+    .carte-annonce-resume {
+      font-size: 13px; color: var(--texte-doux);
+      line-height: 1.7; flex: 1;
+    }
+    .carte-annonce-pied {
+      margin-top: 16px;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .lien-voir {
+      font-size: 13px; font-weight: 700;
+      color: var(--bleu); display: flex; align-items: center; gap: 6px;
+    }
+    .lien-voir i { color: var(--or); }
+
+    /* ── Vide ── */
+    .etat-vide {
+      text-align: center; padding: 72px 20px;
+      background: var(--blanc); border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(26,58,107,.06);
+    }
+    .etat-vide-icone {
+      width: 72px; height: 72px;
+      background: var(--bleu-clair); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; font-size: 28px; color: var(--bleu);
+    }
+    .etat-vide h3 { font-family: var(--police-titre); font-size: 1.2rem; color: var(--bleu); margin-bottom: 8px; }
+    .etat-vide p  { font-size: 14px; color: var(--texte-doux); }
+
+    /* ── Pagination ── */
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
+    .pagination a, .pagination span {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--gris-ligne);
+      background: var(--blanc); color: var(--texte);
+      transition: all .2s;
+    }
+    .pagination a:hover { border-color: var(--bleu); color: var(--bleu); }
+    .pagination .actif  { background: var(--bleu); color: #fff; border-color: var(--bleu); }
+
+    footer { background: var(--bleu-fonce); color: rgba(255,255,255,.6); text-align: center; padding: 18px 20px; font-size: 13px; margin-top: auto; }
+    footer strong { color: #fff; }
+
+    @media (max-width: 768px) {
+      .entete { padding: 14px 20px; }
+      .fil-ariane { padding: 10px 20px; }
+      .hero { padding: 36px 20px; }
+      .hero h1 { font-size: 1.7rem; }
+      .hero-inner { flex-direction: column; align-items: flex-start; }
+      .recherche-barre { min-width: 100%; }
+      .carte-annonce { grid-template-columns: 1fr; }
+      .carte-annonce-image { min-height: 160px; }
+      .carte-annonce-corps { padding: 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mt-4">
+  {% include 'partials/header.html' %}
+</div>
+
+  <nav class="fil-ariane">
+    <a href="{% url 'articles:accueil' %}">Accueil</a>
+    <span>›</span>
+    <strong>Annonces</strong>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1><i class="fas fa-bullhorn" style="color:var(--or);margin-right:12px;"></i>Annonces</h1>
+        <p>Informations officielles et communications de la faculté.</p>
+        <div class="hero-trait"></div>
+      </div>
+      <form method="get" class="recherche-barre">
+        <i class="fas fa-search" style="color:var(--texte-doux);"></i>
+        <input type="text" name="q" value="{{ q }}" placeholder="Rechercher une annonce…">
+        <button type="submit" class="btn-recherche"><i class="fas fa-search"></i> Chercher</button>
+      </form>
+    </div>
+  </div>
+
+  <main>
+    <div class="page-annonces">
+
+      <div class="resultats-info">
+        <span>
+          {% if q %}
+            Résultats pour <strong>« {{ q }} »</strong>
+          {% else %}
+            Toutes les annonces
+          {% endif %}
+        </span>
+        <span class="badge-total">{{ total }} annonce{{ total|pluralize }}</span>
+      </div>
+
+      {% if annonces %}
+        <div class="annonces-liste">
+          {% for annonce in annonces %}
+            <a href="{% url 'articles:detail_annonce' annonce.slug %}" class="carte-annonce">
+
+              <div class="carte-annonce-image">
+                {% if annonce.image %}
+                  <img src="{{ annonce.image.url }}" alt="{{ annonce.titre }}">
+                {% else %}
+                  <div class="carte-annonce-image-ph"><i class="fas fa-bullhorn"></i></div>
+                {% endif %}
+                {% if annonce.date_evenement %}
+                  <div class="annonce-date-event">
+                    <i class="fas fa-calendar-alt"></i>
+                    {{ annonce.date_evenement|date:"d M Y" }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="carte-annonce-corps">
+                <div class="carte-annonce-meta">
+                  <span><i class="fas fa-calendar-alt"></i> {{ annonce.date_publication|date:"d F Y" }}</span>
+                  {% if annonce.organisateur %}
+                    <span><i class="fas fa-building"></i> {{ annonce.organisateur }}</span>
+                  {% endif %}
+                  {% if annonce.lieu %}
+                    <span><i class="fas fa-map-marker-alt"></i> {{ annonce.lieu }}</span>
+                  {% endif %}
+                </div>
+                <h2 class="carte-annonce-titre">{{ annonce.titre }}</h2>
+                <p class="carte-annonce-resume">{{ annonce.contenu|truncatechars:160 }}</p>
+                <div class="carte-annonce-pied">
+                  <span class="lien-voir">Lire l'annonce <i class="fas fa-arrow-right"></i></span>
+                </div>
+              </div>
+
+            </a>
+          {% endfor %}
+        </div>
+
+        {% if annonces.has_other_pages %}
+          <div class="pagination">
+            {% if annonces.has_previous %}
+              <a href="?page={{ annonces.previous_page_number }}&q={{ q }}"><i class="fas fa-chevron-left"></i></a>
+            {% endif %}
+            {% for num in annonces.paginator.page_range %}
+              {% if annonces.number == num %}
+                <span class="actif">{{ num }}</span>
+              {% elif num > annonces.number|add:'-3' and num < annonces.number|add:'3' %}
+                <a href="?page={{ num }}&q={{ q }}">{{ num }}</a>
+              {% endif %}
+            {% endfor %}
+            {% if annonces.has_next %}
+              <a href="?page={{ annonces.next_page_number }}&q={{ q }}"><i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      {% else %}
+        <div class="etat-vide">
+          <div class="etat-vide-icone"><i class="fas fa-bullhorn"></i></div>
+          <h3>Aucune annonce{% if q %} pour « {{ q }} »{% endif %}</h3>
+          <p>{% if q %}Essayez avec d'autres mots-clés.{% else %}Aucune annonce publiée pour le moment.{% endif %}</p>
+        </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+  <footer>
+    © {% now "Y" %} <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong> –
+    {{ site.nom_complet|default:"Université d'État d'Haïti" }}
+  </footer>
+
+</body>
+</html>

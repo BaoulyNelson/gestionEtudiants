@@ -1,91 +1,34 @@
-{% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-soft sticky-top" id="mainNav">
-    <div class="container">
-        <!-- Logo & texte -->
-        <a class="navbar-brand d-flex flex-column font-playfair fw-bold text-primary" href="{% url 'accueil' %}">
-            <span class="fs-3 text-primary">UEH</span>
-            <small class="text-muted fs-6">Faculté des Sciences Humaines</small>
-        </a>
+<div class="etablissement-header">
+  <div class="etablissement-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:80px;object-fit:contain;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    {% endif %}
+  </div>
 
-        <!-- Bouton mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+  <div class="etablissement-header-center">
+    <div class="etablissement-header-univ">Université d'État d'Haïti</div>
+    <div class="etablissement-header-faculty">{{ site.nom_complet }}</div>
+    {% if site.slogan %}
+      <div class="etablissement-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+  </div>
 
-        <!-- Liens de navigation -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-lg-center">
+  <div class="etablissement-header-right">
+    {% if site.adresse_ligne1 %}
+      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    {% endif %}
+    {% if site.telephone %}
+      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    {% endif %}
+    {% if site.email %}
+      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    {% endif %}
+    {% if site.lien_facebook %}
+      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    {% endif %}
+  </div>
+</div>
 
-                <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'accueil' %}">Accueil</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'departements:liste_departements' %}">Départements</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'articles:liste_articles' %}">Actualités</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-primary fw-semibold px-3" href="{% url 'admissions:centre_admissions' %}">Admissions</a>
-                </li>
-
-                {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-primary fw-semibold px-3 d-flex align-items-center gap-2"
-                    href="#" id="userDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if user.photo_profil %}
-                            <img src="{{ user.photo_profil.url }}" 
-                                class="rounded-circle"
-                                style="width: 32px; height: 32px; object-fit: cover;">
-                        {% else %}
-                            <i class="fas fa-user-circle"></i>
-                        {% endif %}
-                        {{ user.get_full_name }}
-                    </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="{% url 'comptes:profil' %}">
-                                    <i class="fas fa-id-card me-1"></i> Mon Profil
-                                </a>
-                            </li>
-
-                            {% if user.is_superuser %}
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'admin:index' %}">
-                                        <i class="fas fa-cogs me-1"></i> Administration
-                                    </a>
-                                </li>
-                            {% endif %}
-
-                            <li><hr class="dropdown-divider"></li>
-
-                            <li>
-                                <a class="dropdown-item" href="{% url 'comptes:deconnexion' %}">
-                                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
-                                </a>
-                            </li>
-                         
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="nav-item d-flex align-items-center gap-2">
-                     
-
-                        <!-- Boutons -->
-                        <div class="d-flex align-items-center ms-3">
-                            <a href="{% url 'comptes:connexion' %}" class="btn btn-primary-custom btn-sm px-4 py-2 me-2">
-                                Connexion
-                            </a>
-                        
-                        </div>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</nav>
+<hr class="etablissement-header-divider">

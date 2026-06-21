@@ -1,0 +1,430 @@
+{% load static humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- ── SEO de base ── -->
+  <title>{% block titre %}{{ site.nom_etablissement|default:'FASCH' }}{% endblock %} | {{ site.nom_etablissement|default:'FASCH' }}</title>
+  <meta name="description"  content="{% block description %}{{ site.slogan }}{% endblock %}">
+  <meta name="author"       content="{{ site.nom_etablissement|default:'FASCH' }}">
+  <meta name="robots"       content="index, follow">
+  <meta name="theme-color"  content="#1a2c4e">
+  <link rel="canonical"     href="{{ request.build_absolute_uri }}">
+  <!-- ── Open Graph (Facebook, WhatsApp, LinkedIn…) ── -->
+  <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
+  <meta property="og:site_name"   content="{{ site.nom_etablissement|default:'FASCH' }}">
+  <meta property="og:title"       content="{% block og_titre %}{{ site.nom_etablissement|default:'FASCH' }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ site.slogan }}{% endblock %}">
+  <meta property="og:url"         content="{{ request.build_absolute_uri }}">
+  <meta property="og:locale"      content="fr_HT">
+  {% block og_image %}
+    {% if site.logo %}
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ site.logo.url }}">
+    {% endif %}
+  {% endblock %}
+  <!-- ── Twitter Card ── -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="{% block tw_titre %}{{ site.nom_etablissement|default:'FASCH' }}{% endblock %}">
+  <meta name="twitter:description" content="{% block tw_description %}{{ site.slogan }}{% endblock %}">
+  {% block tw_image %}
+    {% if site.logo %}
+      <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ site.logo.url }}">
+    {% endif %}
+  {% endblock %}
+  <!-- ── Favicon ── -->
+  {% if site.logo %}
+    <link rel="icon"             type="image/png" href="{{ site.logo.url }}">
+    <link rel="apple-touch-icon"                  href="{{ site.logo.url }}">
+  {% else %}
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  {% endif %}
+  <!-- ── Feuilles de style ── -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ── Topbar (desktop uniquement) ──────────────────────────────────────── -->
+<div class="topbar d-none d-lg-flex">
+  <div class="container-xxl px-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="topbar-date">
+        <i class="fas fa-calendar-alt me-1"></i>{% now "l j F Y" %}
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        {% if user.is_authenticated %}
+          <span class="topbar-welcome"><i class="fas fa-user-circle me-1"></i>{{ user.get_full_name|default:user.username }}</span>
+          {% if user.peut_ecrire %}
+            <a href="{% url 'articles:dashboard' %}" class="topbar-link topbar-link--accent">
+              <i class="fas fa-tachometer-alt me-1"></i>Tableau de bord
+            </a>
+          {% endif %}
+          {# Après #}
+          <button type="button" class="topbar-link border-0 bg-transparent p-0"
+                  data-bs-toggle="modal" data-bs-target="#modalDeconnexion">
+            <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+          </button>
+        {% else %}
+          <a href="{% url 'comptes:connexion' %}" class="topbar-link"><i class="fas fa-sign-in-alt me-1"></i>Connexion</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Breaking News Ticker ──────────────────────────────────────────────── -->
+{% if breaking_news %}
+<div class="breaking-bar">
+  <div class="container-xxl px-3">
+    <div class="d-flex align-items-center">
+      <span class="breaking-label"><i class="fas fa-bolt me-1"></i>URGENT</span>
+      <div class="ticker-track">
+        <div class="ticker-items">
+          {% for art in breaking_news %}<a href="{{ art.get_absolute_url }}" class="ticker-item">{{ art.titre }}</a>{% endfor %}
+          {% for art in breaking_news %}<a href="{{ art.get_absolute_url }}" class="ticker-item">{{ art.titre }}</a>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── Navbar desktop ────────────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg main-navbar sticky-top d-none d-lg-flex" id="mainNav">
+  <div class="container-xxl px-3">
+  <a class="navbar-brand" href="{% url 'articles:accueil' %}">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+          style="height:36px;width:auto;object-fit:contain;margin-right:8px;vertical-align:middle;">
+    {% else %}
+      <span class="brand-icon"><i class="fas fa-newspaper"></i></span>
+    {% endif %}
+    <span class="brand-name">{{ site.nom_etablissement }}</span>
+  </a>
+    <div class="collapse navbar-collapse show" id="navMenu">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'articles:accueil' %}">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'actualites' in request.path %}active{% endif %}" href="{% url 'articles:liste_articles' %}">Actualités</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'tableau_bord' in request.path %}active{% endif %}" href="{% url 'comptes:tableau_bord' %}">Académique</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'annonces' in request.path %}active{% endif %}"
+            href="{% url 'articles:liste_annonces' %}">Annonces</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'evenements' in request.path %}active{% endif %}"
+            href="{% url 'articles:liste_evenements' %}">Événements</a>
+        </li>
+        {% for cat in nav_categories %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ cat.get_absolute_url }}"
+             style="border-bottom:2px solid transparent"
+             onmouseover="this.style.borderBottomColor='{{ cat.couleur }}'"
+             onmouseout="this.style.borderBottomColor='transparent'">{{ cat.nom }}</a>
+        </li>
+        {% endfor %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact:contact' %}">Contact</a>
+        </li>
+      </ul>
+      <form class="d-flex search-form" action="{% url 'articles:recherche' %}" method="get">
+        <div class="input-group input-group-sm">
+          <input class="form-control search-input" type="search" name="q"
+                 placeholder="Rechercher…" value="{{ request.GET.q|default:'' }}" aria-label="Rechercher">
+          <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+{% if user.is_authenticated %}
+<div class="modal fade" id="modalDeconnexion" tabindex="-1" aria-labelledby="modalDeconnexionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);">
+        <div class="w-100 text-center py-3">
+          <div class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-10"
+               style="width:56px;height:56px;">
+            <i class="bi bi-box-arrow-right fs-4 text-white"></i>
+          </div>
+          <h5 class="modal-title text-white fw-bold mb-1" id="modalDeconnexionLabel">Déconnexion</h5>
+          <p class="text-white-50 small mb-0">Vous êtes connecté en tant que <strong class="text-white">{{ user.username }}</strong></p>
+        </div>
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <div class="modal-body text-center px-4 py-4">
+        <p class="text-muted mb-0">Êtes-vous sûr de vouloir quitter votre session ?</p>
+      </div>
+
+      <div class="modal-footer border-0 justify-content-center gap-2 pb-4 px-4">
+        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill"
+                data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-2"></i>Annuler
+        </button>
+        <form action="{% url 'comptes:deconnexion' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger px-4 rounded-pill">
+            <i class="bi bi-box-arrow-right me-2"></i>Oui, me déconnecter
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── Navbar mobile (header simplifié) ─────────────────────────────────── -->
+<header class="mobile-header d-flex d-lg-none sticky-top">
+<a class="mobile-brand" href="{% url 'articles:accueil' %}">
+  {% if site.logo %}
+    <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+         style="height:28px;width:auto;object-fit:contain;margin-right:6px;vertical-align:middle;">
+  {% else %}
+    <i class="fas fa-newspaper me-1"></i>
+  {% endif %}
+  {{ site.nom_etablissement }}
+</a>
+  <!-- Bouton recherche mobile -->
+  <button class="mobile-search-btn" id="mobileSearchToggle" aria-label="Rechercher">
+    <i class="fas fa-search"></i>
+  </button>
+</header>
+
+<!-- ── Barre de recherche mobile dépliable ───────────────────────────────── -->
+<div class="mobile-search-bar d-lg-none" id="mobileSearchBar">
+  <form action="{% url 'articles:recherche' %}" method="get">
+    <div class="input-group">
+      <input class="form-control" type="search" name="q"
+             placeholder="Rechercher un article…"
+             value="{{ request.GET.q|default:'' }}" autofocus>
+      <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+    </div>
+  </form>
+</div>
+
+<!-- ── Messages flash ────────────────────────────────────────────────────── -->
+{% if messages %}
+<div class="flash-messages">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 rounded-0 border-0 border-start border-4 border-{{ message.tags }}" role="alert">
+    <div class="container-xxl px-3">
+      {% if message.tags == 'success' %}<i class="fas fa-check-circle me-2 text-success"></i>{% endif %}
+      {% if message.tags == 'danger'  %}<i class="fas fa-exclamation-circle me-2 text-danger"></i>{% endif %}
+      {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle me-2 text-warning"></i>{% endif %}
+      {% if message.tags == 'info'    %}<i class="fas fa-info-circle me-2 text-info"></i>{% endif %}
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── Contenu principal ─────────────────────────────────────────────────── -->
+<main id="contenu-principal">
+  {% block contenu %}{% endblock %}
+</main>
+
+<!-- ── Pied de page ──────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="container-xxl px-3">
+      <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-brand">
+          {% if site.logo %}
+            <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
+                style="height:36px;width:auto;object-fit:contain;margin-right:10px;vertical-align:middle;">
+          {% else %}
+            <i class="fas fa-newspaper me-2"></i>
+          {% endif %}
+          {{ site.nom_etablissement }}
+        </div>
+        <p class="footer-desc">{{ site.slogan }}</p>
+        <div class="footer-social">
+          {% if site.lien_facebook %}
+            <a href="{{ site.lien_facebook }}" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+          {% endif %}
+          {% if site.lien_twitter %}
+            <a href="{{ site.lien_twitter }}" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-twitter"></i></a>
+          {% endif %}
+          {% if site.lien_instagram %}
+            <a href="{{ site.lien_instagram }}" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-instagram"></i></a>
+          {% endif %}
+          {% if site.lien_youtube %}
+            <a href="{{ site.lien_youtube }}" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-youtube"></i></a>
+          {% endif %}
+        </div>
+</div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Catégories</h6>
+          <ul class="footer-links">
+            {% for cat in nav_categories %}<li><a href="{{ cat.get_absolute_url }}">{{ cat.nom }}</a></li>{% endfor %}
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Navigation</h6>
+          <ul class="footer-links">
+            <li><a href="{% url 'articles:accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'articles:liste_articles' %}">Actualités</a></li>
+            <li><a href="{% url 'contact:contact' %}">Contact</a></li>
+            {% if not user.is_authenticated %}
+            <li><a href="{% url 'comptes:connexion' %}">Connexion</a></li>
+            {% else %}
+            <li><a href="{% url 'comptes:profil' %}">Mon profil</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Nous contacter</h6>
+          <p class="footer-contact-item"><i class="fas fa-envelope me-2"></i>{{ site.email }}</p>
+          <p class="footer-contact-item"><i class="fas fa-map-marker-alt me-2"></i>{{ site.adresse_ligne1|default:"Haïti" }}</p>
+          <a href="{% url 'contact:contact' %}" class="btn btn-footer-cta mt-2">
+            Écrire à la rédaction <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container-xxl px-3">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <p class="mb-0">&copy; {% now "Y" %} {{ site.nom_etablissement }}. Tous droits réservés.</p>
+        <p class="mb-0 footer-tagline">{{ site.slogan }}</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     BOTTOM NAV — mobile uniquement (style Spotify / TikTok)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav d-lg-none" id="bottomNav" aria-label="Navigation principale">
+
+  <!-- Accueil -->
+  <a href="{% url 'articles:accueil' %}"
+     class="bottom-nav-item {% if request.path == '/' %}active{% endif %}">
+    <span class="bottom-nav-icon"><i class="fas fa-home"></i></span>
+    <span class="bottom-nav-label">Accueil</span>
+  </a>
+
+  <!-- Actualités -->
+  <a href="{% url 'articles:liste_articles' %}"
+     class="bottom-nav-item {% if 'actualites' in request.path %}active{% endif %}">
+    <span class="bottom-nav-icon"><i class="fas fa-newspaper"></i></span>
+    <span class="bottom-nav-label">Actualités</span>
+  </a>
+
+  <!-- Catégories (ouvre un panel du bas) -->
+  <button class="bottom-nav-item" id="btnCategories" aria-label="Catégories">
+    <span class="bottom-nav-icon"><i class="fas fa-th-large"></i></span>
+    <span class="bottom-nav-label">Catégories</span>
+  </button>
+
+  <!-- Contact -->
+  <a href="{% url 'contact:contact' %}"
+     class="bottom-nav-item {% if 'contact' in request.path %}active{% endif %}">
+    <span class="bottom-nav-icon"><i class="fas fa-envelope"></i></span>
+    <span class="bottom-nav-label">Contact</span>
+  </a>
+
+  <!-- Compte -->
+  {% if user.is_authenticated %}
+  <a href="{% url 'comptes:profil'%}"
+     class="bottom-nav-item {% if 'profil' in request.path or 'modifier' in request.path %}active{% endif %}">
+    <span class="bottom-nav-icon">
+      {% if user.photo_profil %}
+        <img src="{{ user.photo_profil.url }}" alt="" class="bottom-nav-avatar">
+      {% else %}
+        <span class="bottom-nav-avatar-letter">{{ user.get_full_name|default:user.username|first|upper }}</span>
+      {% endif %}
+    </span>
+    <span class="bottom-nav-label">Moi</span>
+  </a>
+  {% else %}
+  <a href="{% url 'comptes:connexion' %}"
+     class="bottom-nav-item {% if 'connexion' in request.path or 'inscription' in request.path %}active{% endif %}">
+    <span class="bottom-nav-icon"><i class="fas fa-user-circle"></i></span>
+    <span class="bottom-nav-label">Compte</span>
+  </a>
+  {% endif %}
+
+</nav>
+
+<!-- ── Panel catégories (glisse depuis le bas) ───────────────────────────── -->
+<div class="categories-panel d-lg-none" id="categoriesPanel">
+  <div class="cat-panel-handle"></div>
+  <div class="cat-panel-header">
+    <h6 class="cat-panel-title"><i class="fas fa-th-large me-2"></i>Catégories</h6>
+    <button class="cat-panel-close" id="closeCategoriesPanel"><i class="fas fa-times"></i></button>
+  </div>
+<div class="cat-panel-grid">
+  {% for cat in nav_categories %}
+  <a href="{{ cat.get_absolute_url }}" class="cat-panel-item" style="--cat-c:{{ cat.couleur }}">
+    <span class="cat-panel-dot" style="background:{{ cat.couleur }}"></span>
+    {{ cat.nom }}
+    <span class="cat-panel-count">{{ cat.nombre_articles }}</span>
+  </a>
+  {% endfor %}
+  <a href="{% url 'articles:liste_articles' %}" class="cat-panel-item cat-panel-item--all">
+    <span class="cat-panel-dot" style="background:#64748b"></span>
+    Tous les articles
+    <i class="fas fa-arrow-right ms-auto"></i>
+  </a>
+  <a href="{% url 'articles:liste_annonces' %}" class="cat-panel-item cat-panel-item--all">
+    <span class="cat-panel-dot" style="background:#64748b"></span>
+    <i class="fas fa-bullhorn me-2"></i> Annonces
+    <i class="fas fa-arrow-right ms-auto"></i>
+  </a>
+  <a href="{% url 'articles:liste_evenements' %}" class="cat-panel-item cat-panel-item--all">
+    <span class="cat-panel-dot" style="background:#64748b"></span>
+    <i class="fas fa-calendar-alt me-2"></i> Événement
+    <i class="fas fa-arrow-right ms-auto"></i>
+  </a>
+</div>
+  {% if user.is_authenticated %}
+  <div class="cat-panel-footer">
+    {% if user.peut_ecrire %}
+    <a href="{% url 'comptes:tableau_bord' %}" class="cat-panel-action">
+      <i class="fas fa-tachometer-alt me-2"></i>Académique
+    </a>
+    {% endif %}
+
+        {# Après #}
+    <button type="button" class="cat-panel-action cat-panel-action--muted border-0 bg-transparent"
+            data-bs-toggle="modal" data-bs-target="#modalDeconnexion">
+      <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+    </button>
+  </div>
+  {% else %}
+  <div class="cat-panel-footer">
+    <a href="{% url 'comptes:connexion' %}" class="cat-panel-action">
+      <i class="fas fa-user-plus me-2"></i>Se Connecter
+    </a>
+  </div>
+  {% endif %}
+</div>
+<!-- Overlay panel catégories -->
+<div class="cat-panel-overlay d-lg-none" id="catPanelOverlay"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

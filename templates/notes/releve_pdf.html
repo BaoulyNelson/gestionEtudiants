@@ -160,7 +160,7 @@
   <div class="releve-student-info">
     <p><strong>Nom :</strong> {{ etudiant.utilisateur.get_full_name }}</p>
     <p><strong>Numéro d'étudiant :</strong> {{ etudiant.numero_etudiant }}</p>
-    <p><strong>Département :</strong> {{ etudiant.departement.nom|default:"—" }}</p>
+    <p><strong>Département :</strong> {{ etudiant.departement.nom|default:"Tronc Commun" }}</p>
     <p><strong>Niveau :</strong> {{ etudiant.get_niveau_display }}</p>
   </div>
 

@@ -494,7 +494,7 @@
             <td class="center">
               <span class="niveau-badge">{{ etudiant.get_niveau_display }}</span>
             </td>
-            <td>{{ etudiant.departement.nom|default:"—" }}</td>
+            <td>{{ etudiant.departement.nom|default:"Tronc Commun" }}</td>
             <td class="center">
               <strong style="font-size:15px;font-family:'Georgia',serif;
                 {% if etudiant.moyenne >= 80 %}color:#155724

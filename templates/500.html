@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block titre %}Erreur serveur{% endblock %}
+{% block contenu %}
+<div class="error-page">
+  <div class="container text-center py-5">
+    <div class="error-code">500</div>
+    <h1 class="error-title">Erreur interne</h1>
+    <p class="error-desc">Une erreur inattendue s'est produite. Veuillez réessayer plus tard.</p>
+    <a href="{% url 'articles:accueil' %}" class="btn btn-primary btn-lg mt-3">
+      <i class="fas fa-home me-2"></i>Retour à l'accueil
+    </a>
+  </div>
+</div>
+{% endblock %}

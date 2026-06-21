@@ -17,8 +17,7 @@ urlpatterns = [
     # Ajouter dans urlpatterns
     path('profil/badge/pdf/', views.badge_pdf, name='badge_pdf'),
     path('profil/badge/png/', views.badge_png, name='badge_png'),
-    # path('profil/etudiant/modifier/', views.vue_modifier_profil_etudiant, name='modifier_profil_etudiant'),
-    # path('profil/professeur/modifier/', views.vue_modifier_profil_professeur, name='modifier_profil_professeur'),
+
     # Gestion utilisateurs (admin)
     path('utilisateurs/', views.vue_liste_utilisateurs, name='liste_utilisateurs'),
     path('utilisateurs/creer/', views.vue_creer_utilisateur, name='creer_utilisateur'),

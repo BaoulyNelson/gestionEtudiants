@@ -50,6 +50,11 @@ class Utilisateur(AbstractUser):
         ('M', 'Masculin'),
         ('F', 'Féminin'),
     ]
+    CHOIX_ROLE_EDITORIAL = [
+        ('LECTEUR', 'Lecteur'),
+        ('AUTEUR',  'Auteur'),
+        ('EDITEUR', 'Éditeur'),
+    ]
 
     username = None
     email = models.EmailField('Email', unique=True)
@@ -57,6 +62,10 @@ class Utilisateur(AbstractUser):
     first_name = models.CharField('Prénom', max_length=100)
     last_name = models.CharField('Nom', max_length=100)
     role = models.CharField('Rôle', max_length=20, choices=CHOIX_ROLE)
+    role_editorial = models.CharField(
+        'Rôle éditorial', max_length=20,
+        choices=CHOIX_ROLE_EDITORIAL, default='LECTEUR'
+    )
     genre = models.CharField('Genre', max_length=1, choices=CHOIX_GENRE, default='M')
 
     validateur_telephone = RegexValidator(
@@ -113,6 +122,14 @@ class Utilisateur(AbstractUser):
         elif self.role == 'PROFESSEUR':
             return 'Professeure' if self.genre == 'F' else 'Professeur'
         return self.get_role_display()
+    
+    @property
+    def peut_ecrire(self):
+        return self.role_editorial in ['AUTEUR', 'EDITEUR'] or self.is_staff
+
+    @property
+    def peut_gerer(self):
+        return self.role_editorial == 'EDITEUR' or self.is_staff
 
 
 class Etudiant(models.Model):
@@ -221,3 +238,7 @@ class Administrateur(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+        
+        
+        
+        

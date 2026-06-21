@@ -66,26 +66,29 @@ class FormulaireNote(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if not self.instance.pk:
-            # Mode création : uniquement les inscriptions actives sans note
-            self.fields['inscription'].queryset = Inscription.objects.filter(
-                statut='INSCRIT',           # ← corrigé (était status='ENROLLED')
-                note__isnull=True,
-            ).select_related(
-                'etudiant__utilisateur',    # ← corrigé (était student__user)
-                'section_cours__cours',     # ← corrigé (était course_section__course)
-            ).order_by('etudiant__numero_etudiant')   # ← corrigé
-        else:
-            # Mode modification : inscription non modifiable
-            self.fields['inscription'].disabled = True
-
-        # Libellé personnalisé pour chaque inscription
+        # Libellé personnalisé pour chaque inscription (utile si le champ reste visible)
         self.fields['inscription'].label_from_instance = lambda obj: (
             f"{obj.etudiant.numero_etudiant} - "
             f"{obj.etudiant.utilisateur.get_full_name()} | "
             f"{obj.section_cours.cours.code} - "
             f"Section {obj.section_cours.numero_section}"
         )
+
+        if self.instance.inscription_id:
+            # L'inscription est déjà déterminée (note existante OU nouvelle note
+            # créée pour un étudiant précis depuis la vue par inscription) :
+            # on ne permet pas de la changer depuis ce formulaire.
+            self.fields['inscription'].disabled = True
+        else:
+            # Mode création générique (formulaire sans inscription prédéfinie,
+            # ex. ajout libre côté admin) : uniquement les inscriptions actives sans note
+            self.fields['inscription'].queryset = Inscription.objects.filter(
+                statut='INSCRIT',
+                note__isnull=True,
+            ).select_related(
+                'etudiant__utilisateur',
+                'section_cours__cours',
+            ).order_by('etudiant__numero_etudiant')
 
     def clean(self):
         donnees = super().clean()

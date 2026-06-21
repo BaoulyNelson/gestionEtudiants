@@ -1,0 +1,369 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Événements – {{ site.nom_etablissement|default:"FASCH" }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bleu: #1a3a6b; --bleu-fonce: #122d56; --bleu-clair: #e8eef7;
+      --or: #c9a84c; --or-clair: #f7f0dc;
+      --blanc: #ffffff; --texte: #1e2535; --texte-doux: #6b7280;
+      --gris-ligne: #e5e7eb; --gris-bg: #f4f6fa;
+      --vert: #166534; --vert-bg: #dcfce7;
+      --rouge: #991b1b; --rouge-bg: #fee2e2;
+      --gris: #6b7280; --gris-bg2: #f3f4f6;
+      --police-titre: 'Georgia', serif;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gris-bg); color: var(--texte); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .entete { background: var(--bleu); color: #fff; padding: 18px 40px; display: flex; align-items: center; gap: 14px; }
+    .entete-logo { height: 44px; width: auto; object-fit: contain; }
+    .entete-logo-icone { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--or); }
+    .entete-texte strong { display: block; font-family: var(--police-titre); font-size: 18px; }
+    .entete-texte span   { font-size: 11px; opacity: .7; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .fil-ariane { background: var(--blanc); border-bottom: 1px solid var(--gris-ligne); padding: 10px 40px; font-size: 13px; color: var(--texte-doux); }
+    .fil-ariane a { color: var(--bleu); text-decoration: none; }
+    .fil-ariane a:hover { text-decoration: underline; }
+    .fil-ariane span { margin: 0 6px; }
+
+    /* ── Hero + prochain événement ── */
+    .hero {
+      background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-fonce) 100%);
+      color: #fff; padding: 48px 40px 0; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; margin-bottom: 40px; flex-wrap: wrap; }
+    .hero-texte h1 { font-family: var(--police-titre); font-size: 2.2rem; margin-bottom: 6px; }
+    .hero-texte p  { font-size: 14px; opacity: .75; }
+    .hero-trait { width: 48px; height: 3px; background: var(--or); border-radius: 2px; margin-top: 16px; }
+
+    /* Prochain événement — countdown inline dans le hero */
+    .prochain-bloc {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 14px; padding: 20px 24px;
+      min-width: 320px; flex-shrink: 0;
+      backdrop-filter: blur(4px);
+    }
+    .prochain-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .6; margin-bottom: 8px; }
+    .prochain-titre { font-family: var(--police-titre); font-size: 1.05rem; margin-bottom: 4px; line-height: 1.3; }
+    .prochain-date  { font-size: 12px; opacity: .7; margin-bottom: 16px; display: flex; align-items: center; gap: 5px; }
+    .prochain-date i { color: var(--or); }
+    .cd-mini { display: flex; gap: 8px; align-items: center; }
+    .cd-mini-unite { text-align: center; }
+    .cd-mini-val {
+      font-family: var(--police-titre); font-size: 1.4rem; font-weight: 700;
+      background: rgba(255,255,255,.15); border-radius: 6px;
+      padding: 6px 10px; min-width: 44px; display: block; line-height: 1;
+    }
+    .cd-mini-label { font-size: 9px; opacity: .55; margin-top: 3px; text-transform: uppercase; letter-spacing: .6px; }
+    .cd-mini-sep { font-size: 1.2rem; font-weight: 700; opacity: .4; margin-top: -4px; }
+
+    /* ── Onglets filtre ── */
+    .filtres-onglets { display: flex; gap: 4px; }
+    .onglet {
+      padding: 10px 22px; border-radius: 8px 8px 0 0;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      border: none; background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
+      transition: all .2s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .onglet:hover { background: rgba(255,255,255,.2); color: #fff; }
+    .onglet.actif { background: var(--gris-bg); color: var(--bleu); }
+    .onglet-compte { background: rgba(255,255,255,.2); color: #fff; border-radius: 20px; padding: 1px 8px; font-size: 11px; }
+    .onglet.actif .onglet-compte { background: var(--bleu); color: #fff; }
+
+    main { flex: 1; }
+    .page-evenements { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+    /* ── Grille événements ── */
+    .evenements-grille { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    .carte-evenement {
+      background: var(--blanc); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(26,58,107,.07);
+      display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+      transition: box-shadow .2s, transform .2s;
+      position: relative;
+    }
+    .carte-evenement:hover { box-shadow: 0 8px 28px rgba(26,58,107,.15); transform: translateY(-4px); }
+
+    .carte-ev-image {
+      height: 180px; background: var(--bleu);
+      overflow: hidden; position: relative;
+    }
+    .carte-ev-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .carte-ev-image-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 52px; color: rgba(255,255,255,.15); }
+
+    /* Badge statut sur l'image */
+    .badge-statut-img {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 10px; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: .6px;
+    }
+    .badge-a-venir  { background: var(--bleu-clair); color: var(--bleu); }
+    .badge-en-cours { background: var(--vert-bg);    color: var(--vert); }
+    .badge-termine  { background: var(--gris-bg2);   color: var(--gris); }
+
+    /* Bloc date flottant */
+    .carte-ev-date-badge {
+      position: absolute; bottom: -18px; left: 16px;
+      background: var(--or); color: var(--bleu-fonce);
+      border-radius: 8px; padding: 8px 14px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+      font-weight: 700;
+    }
+    .date-badge-jour  { font-family: var(--police-titre); font-size: 1.4rem; line-height: 1; }
+    .date-badge-mois  { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; margin-top: 1px; }
+
+    .carte-ev-corps { padding: 28px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+    .carte-ev-titre { font-family: var(--police-titre); font-size: 1rem; color: var(--bleu); line-height: 1.4; margin-bottom: 8px; }
+    .carte-ev-meta  { font-size: 12px; color: var(--texte-doux); display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .carte-ev-meta span { display: flex; align-items: center; gap: 4px; }
+    .carte-ev-meta i    { color: var(--or); }
+    .carte-ev-desc  { font-size: 13px; color: var(--texte-doux); line-height: 1.6; flex: 1; }
+
+    /* Countdown mini dans la carte */
+    .carte-ev-countdown {
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid var(--gris-ligne);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .cd-carte-unite { text-align: center; }
+    .cd-carte-val { font-family: var(--police-titre); font-size: 1.1rem; font-weight: 700; color: var(--bleu); display: block; background: var(--bleu-clair); border-radius: 5px; padding: 4px 8px; min-width: 36px; line-height: 1; }
+    .cd-carte-label { font-size: 9px; color: var(--texte-doux); text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+    .cd-carte-sep { font-size: 1rem; font-weight: 700; color: var(--or); margin-top: -6px; }
+
+    /* En cours — carte verte */
+    .carte-evenement.en-cours { border: 2px solid var(--vert); }
+    .carte-evenement.en-cours .cd-carte-val { background: var(--vert-bg); color: var(--vert); }
+    .en-cours-pulse { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--vert); font-weight: 700; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gris-ligne); }
+    .pulse-dot { width: 8px; height: 8px; background: var(--vert); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.4); } }
+
+    .carte-ev-pied { padding: 12px 20px; border-top: 1px solid var(--gris-ligne); font-size: 12px; font-weight: 600; color: var(--bleu); display: flex; align-items: center; gap: 6px; }
+    .carte-ev-pied i { color: var(--or); }
+
+    /* ── Vide ── */
+    .etat-vide { text-align: center; padding: 72px 20px; background: var(--blanc); border-radius: 14px; box-shadow: 0 2px 10px rgba(26,58,107,.06); }
+    .etat-vide-icone { width: 72px; height: 72px; background: var(--bleu-clair); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; color: var(--bleu); }
+    .etat-vide h3 { font-family: var(--police-titre); font-size: 1.2rem; color: var(--bleu); margin-bottom: 8px; }
+    .etat-vide p  { font-size: 14px; color: var(--texte-doux); }
+
+    /* ── Pagination ── */
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
+    .pagination a, .pagination span { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid var(--gris-ligne); background: var(--blanc); color: var(--texte); transition: all .2s; }
+    .pagination a:hover { border-color: var(--bleu); color: var(--bleu); }
+    .pagination .actif  { background: var(--bleu); color: #fff; border-color: var(--bleu); }
+
+    footer { background: var(--bleu-fonce); color: rgba(255,255,255,.6); text-align: center; padding: 18px 20px; font-size: 13px; margin-top: auto; }
+    footer strong { color: #fff; }
+
+    @media (max-width: 960px) { .evenements-grille { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) {
+      .entete { padding: 14px 20px; }
+      .fil-ariane { padding: 10px 20px; }
+      .hero { padding: 36px 20px 0; }
+      .hero-top { flex-direction: column; }
+      .prochain-bloc { min-width: 0; width: 100%; }
+      .evenements-grille { grid-template-columns: 1fr; }
+      .filtres-onglets { overflow-x: auto; padding-bottom: 4px; }
+      .onglet { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mt-4">
+  {% include 'partials/header.html' %}
+</div>
+
+  <nav class="fil-ariane">
+    <a href="{% url 'articles:accueil' %}">Accueil</a>
+    <span>›</span>
+    <strong>Événements</strong>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <div class="hero-texte">
+          <h1><i class="fas fa-calendar-star" style="color:var(--or);margin-right:12px;"></i>Événements</h1>
+          <p>Conférences, séminaires et activités académiques de la faculté.</p>
+          <div class="hero-trait"></div>
+        </div>
+
+        {% if prochain %}
+          <div class="prochain-bloc">
+            <div class="prochain-label"><i class="fas fa-clock" style="color:var(--or);margin-right:4px;"></i> Prochain événement</div>
+            <div class="prochain-titre">{{ prochain.titre|truncatechars:60 }}</div>
+            <div class="prochain-date"><i class="fas fa-calendar-alt"></i> {{ prochain.date_debut|date:"d F Y" }}</div>
+            <div class="cd-mini" id="cdMini">
+              <div class="cd-mini-unite"><span class="cd-mini-val" id="cdMJ">--</span><div class="cd-mini-label">Jours</div></div>
+              <div class="cd-mini-sep">:</div>
+              <div class="cd-mini-unite"><span class="cd-mini-val" id="cdMH">--</span><div class="cd-mini-label">Heures</div></div>
+              <div class="cd-mini-sep">:</div>
+              <div class="cd-mini-unite"><span class="cd-mini-val" id="cdMM">--</span><div class="cd-mini-label">Min</div></div>
+              <div class="cd-mini-sep">:</div>
+              <div class="cd-mini-unite"><span class="cd-mini-val" id="cdMS">--</span><div class="cd-mini-label">Sec</div></div>
+            </div>
+          </div>
+          <script>
+            (function(){
+              const cible = new Date("{{ prochain.date_debut|date:'Y-m-d' }}T{{ prochain.date_debut|date:'H:i:s' }}");
+              function maj(){
+                const diff = cible - new Date();
+                if(diff <= 0){ document.getElementById('cdMini').innerHTML='<span style="color:#4ade80;font-weight:700"><i class="fas fa-play-circle"></i> En cours !</span>'; return; }
+                document.getElementById('cdMJ').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+                document.getElementById('cdMH').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+                document.getElementById('cdMM').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+                document.getElementById('cdMS').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+              }
+              maj(); setInterval(maj,1000);
+            })();
+          </script>
+        {% endif %}
+      </div>
+
+      <!-- Onglets -->
+      <div class="filtres-onglets">
+        <a href="?filtre=tous"     class="onglet {% if filtre == 'tous' %}actif{% endif %}">Tous <span class="onglet-compte">{{ total }}</span></a>
+        <a href="?filtre=a_venir"  class="onglet {% if filtre == 'a_venir' %}actif{% endif %}"><i class="fas fa-clock"></i> À venir</a>
+        <a href="?filtre=en_cours" class="onglet {% if filtre == 'en_cours' %}actif{% endif %}"><i class="fas fa-play-circle"></i> En cours</a>
+        <a href="?filtre=termines" class="onglet {% if filtre == 'termines' %}actif{% endif %}"><i class="fas fa-check-circle"></i> Terminés</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="page-evenements">
+
+      {% if evenements %}
+        <div class="evenements-grille">
+          {% for ev in evenements %}
+            {% with statut=ev.get_statut %}
+            <a href="{% url 'articles:detail_evenement' ev.slug %}"
+               class="carte-evenement {% if statut == 'En cours' %}en-cours{% endif %}">
+
+              <div class="carte-ev-image">
+                {% if ev.image %}
+                  <img src="{{ ev.image.url }}" alt="{{ ev.titre }}">
+                {% else %}
+                  <div class="carte-ev-image-ph"><i class="fas fa-calendar-alt"></i></div>
+                {% endif %}
+                <span class="badge-statut-img
+                  {% if statut == 'À venir' %}badge-a-venir
+                  {% elif statut == 'En cours' %}badge-en-cours
+                  {% else %}badge-termine{% endif %}">
+                  {% if statut == 'En cours' %}<i class="fas fa-play-circle"></i> {% endif %}{{ statut }}
+                </span>
+                <div class="carte-ev-date-badge">
+                  <div class="date-badge-jour">{{ ev.date_debut|date:"d" }}</div>
+                  <div class="date-badge-mois">{{ ev.date_debut|date:"M" }}</div>
+                </div>
+              </div>
+
+              <div class="carte-ev-corps">
+                <h3 class="carte-ev-titre">{{ ev.titre }}</h3>
+                <div class="carte-ev-meta">
+                  <span><i class="fas fa-calendar-alt"></i> {{ ev.date_debut|date:"d M Y" }}</span>
+                  {% if ev.lieu %}<span><i class="fas fa-map-marker-alt"></i> {{ ev.lieu }}</span>{% endif %}
+                </div>
+                <p class="carte-ev-desc">{{ ev.description|truncatechars:110 }}</p>
+
+                {% if statut == 'À venir' %}
+                  <div class="carte-ev-countdown" data-debut="{{ ev.date_debut|date:'Y-m-d' }}T{{ ev.date_debut|date:'H:i:s' }}">
+                    <div class="cd-carte-unite"><span class="cd-carte-val cd-j">--</span><div class="cd-carte-label">J</div></div>
+                    <div class="cd-carte-sep">:</div>
+                    <div class="cd-carte-unite"><span class="cd-carte-val cd-h">--</span><div class="cd-carte-label">H</div></div>
+                    <div class="cd-carte-sep">:</div>
+                    <div class="cd-carte-unite"><span class="cd-carte-val cd-m">--</span><div class="cd-carte-label">M</div></div>
+                    <div class="cd-carte-sep">:</div>
+                    <div class="cd-carte-unite"><span class="cd-carte-val cd-s">--</span><div class="cd-carte-label">S</div></div>
+                  </div>
+                {% elif statut == 'En cours' %}
+                  <div class="en-cours-pulse">
+                    <div class="pulse-dot"></div>
+                    Événement en cours maintenant
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="carte-ev-pied">
+                <i class="fas fa-arrow-right"></i> Voir l'événement
+              </div>
+
+            </a>
+            {% endwith %}
+          {% endfor %}
+        </div>
+
+        {% if evenements.has_other_pages %}
+          <div class="pagination">
+            {% if evenements.has_previous %}
+              <a href="?page={{ evenements.previous_page_number }}&filtre={{ filtre }}"><i class="fas fa-chevron-left"></i></a>
+            {% endif %}
+            {% for num in evenements.paginator.page_range %}
+              {% if evenements.number == num %}
+                <span class="actif">{{ num }}</span>
+              {% elif num > evenements.number|add:'-3' and num < evenements.number|add:'3' %}
+                <a href="?page={{ num }}&filtre={{ filtre }}">{{ num }}</a>
+              {% endif %}
+            {% endfor %}
+            {% if evenements.has_next %}
+              <a href="?page={{ evenements.next_page_number }}&filtre={{ filtre }}"><i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      {% else %}
+        <div class="etat-vide">
+          <div class="etat-vide-icone"><i class="fas fa-calendar-times"></i></div>
+          <h3>Aucun événement</h3>
+          <p>Aucun événement ne correspond à ce filtre.</p>
+        </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+  <footer>
+    © {% now "Y" %} <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong> –
+    {{ site.nom_complet|default:"Université d'État d'Haïti" }}
+  </footer>
+
+  <script>
+    // Countdowns sur chaque carte "À venir"
+    function majTousCd() {
+      document.querySelectorAll('.carte-ev-countdown').forEach(function(el) {
+        const cible = new Date(el.dataset.debut);
+        const diff  = cible - new Date();
+        if (diff <= 0) {
+          el.innerHTML = '<span style="color:var(--vert);font-weight:700"><i class="fas fa-play-circle"></i> Commence !</span>';
+          el.closest('.carte-evenement').style.borderColor = 'var(--vert)';
+          return;
+        }
+        el.querySelector('.cd-j').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+        el.querySelector('.cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+        el.querySelector('.cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+        el.querySelector('.cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+      });
+    }
+    majTousCd();
+    setInterval(majTousCd, 1000);
+  </script>
+
+</body>
+</html>

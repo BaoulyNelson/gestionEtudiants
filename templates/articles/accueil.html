@@ -1,0 +1,157 @@
+{% extends 'base_articles.html' %}
+{% load static humanize %}
+{% block titre %}Accueil{% endblock %}
+{% block contenu %}
+
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+{% if article_une %}
+<section class="hero-section">
+  <div class="container-xxl px-3">
+    <div class="row g-0 hero-inner">
+      <div class="col-lg-8">
+        <a href="{{ article_une.get_absolute_url }}" class="hero-main-card">
+          {% if article_une.image_principale %}
+            <img src="{{ article_une.image_principale.url }}" alt="{{ article_une.titre }}" class="hero-main-img">
+          {% else %}
+            <div class="hero-main-img hero-placeholder"><i class="fas fa-newspaper fa-4x"></i></div>
+          {% endif %}
+          <div class="hero-overlay">
+            {% if article_une.categorie %}
+              <span class="hero-cat-badge" style="background:{{ article_une.categorie.couleur }}">{{ article_une.categorie.nom }}</span>
+            {% endif %}
+            <h1 class="hero-title">{{ article_une.titre }}</h1>
+            <p class="hero-excerpt">{{ article_une.extrait|truncatewords:25 }}</p>
+            <div class="hero-meta">
+              <span><i class="fas fa-user me-1"></i>{{ article_une.auteur.get_full_name|default:article_une.auteur.username }}</span>
+              <span><i class="fas fa-clock me-1"></i>{{ article_une.publie_le|naturaltime }}</span>
+              <span><i class="fas fa-eye me-1"></i>{{ article_une.nombre_vues }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-4">
+        <div class="hero-sidebar">
+          {% for art in articles_une|slice:"1:4" %}
+          <a href="{{ art.get_absolute_url }}" class="hero-side-card">
+            {% if art.image_principale %}
+              <img src="{{ art.image_principale.url }}" alt="{{ art.titre }}" class="hero-side-img">
+            {% else %}
+              <div class="hero-side-img hero-side-placeholder"><i class="fas fa-newspaper"></i></div>
+            {% endif %}
+            <div class="hero-side-body">
+              {% if art.categorie %}<span class="side-cat" style="color:{{ art.categorie.couleur }}">{{ art.categorie.nom }}</span>{% endif %}
+              <h3 class="hero-side-title">{{ art.titre|truncatechars:70 }}</h3>
+              <span class="hero-side-date">{{ art.publie_le|naturaltime }}</span>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Dernières actualités ───────────────────────────────────────────────── -->
+<section class="section-articles py-5">
+  <div class="container-xxl px-3">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="section-header">
+          <h2 class="section-title">Dernières actualités</h2>
+          <a href="{% url 'articles:liste_articles' %}" class="section-more">Voir tout <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+          {% for article in articles_recents %}
+          <div class="col-md-6">
+            <article class="article-card h-100">
+              <a href="{{ article.get_absolute_url }}" class="article-card-img-link">
+                {% if article.image_principale %}
+                  <img src="{{ article.image_principale.url }}" alt="{{ article.titre }}" class="article-card-img">
+                {% else %}
+                  <div class="article-card-img article-card-img--placeholder"><i class="fas fa-newspaper fa-2x"></i></div>
+                {% endif %}
+                {% if article.categorie %}
+                  <span class="article-card-cat" style="background:{{ article.categorie.couleur }}">{{ article.categorie.nom }}</span>
+                {% endif %}
+              </a>
+              <div class="article-card-body">
+                <h3 class="article-card-title">
+                  <a href="{{ article.get_absolute_url }}">{{ article.titre }}</a>
+                </h3>
+                <p class="article-card-excerpt">{{ article.extrait|truncatewords:18 }}</p>
+                <div class="article-card-footer">
+                  <div class="article-card-author">
+                    {% if article.auteur.userprofile.avatar %}
+                      <img src="{{ article.auteur.userprofile.avatar.url }}" alt="" class="author-avatar-xs">
+                    {% else %}
+                      <span class="author-avatar-xs author-initial">{{ article.auteur.get_full_name|default:article.auteur.username|first|upper }}</span>
+                    {% endif %}
+                    <span>{{ article.auteur.get_full_name|default:article.auteur.username }}</span>
+                  </div>
+                  <div class="article-card-stats">
+                    <span title="Temps de lecture"><i class="fas fa-clock"></i> {{ article.temps_lecture }}</span>
+                    <span title="Vues"><i class="fas fa-eye"></i> {{ article.nombre_vues|intcomma }}</span>
+                    <span title="Commentaires"><i class="fas fa-comment"></i> {{ article.nombre_commentaires }}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center py-5">
+            <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Aucun article publié pour le moment.</p>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+          <a href="{% url 'articles:liste_articles' %}" class="btn btn-primary btn-lg px-5">
+            <i class="fas fa-th-list me-2"></i>Toutes les actualités
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <aside class="sidebar">
+          <div class="sidebar-widget">
+            <h5 class="sidebar-widget-title"><i class="fas fa-fire text-danger me-2"></i>Les plus lus</h5>
+            <ol class="popular-list">
+              {% for art in articles_populaires %}
+              <li class="popular-item">
+                <div class="popular-num">{{ forloop.counter }}</div>
+                <div class="popular-body">
+                  {% if art.categorie %}<span class="popular-cat" style="color:{{ art.categorie.couleur }}">{{ art.categorie.nom }}</span>{% endif %}
+                  <a href="{{ art.get_absolute_url }}" class="popular-title">{{ art.titre|truncatechars:65 }}</a>
+                  <span class="popular-views"><i class="fas fa-eye me-1"></i>{{ art.nombre_vues|intcomma }}</span>
+                </div>
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+          <div class="sidebar-widget">
+            <h5 class="sidebar-widget-title"><i class="fas fa-folder me-2"></i>Catégories</h5>
+            <div class="categories-grid">
+              {% for cat in toutes_categories %}
+              <a href="{{ cat.get_absolute_url }}" class="category-chip" style="--cat-color:{{ cat.couleur }}">
+                <span>{{ cat.nom }}</span>
+                <span class="chip-count">{{ cat.nombre_articles }}</span>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="sidebar-widget sidebar-newsletter">
+            <i class="fas fa-envelope-open-text newsletter-icon"></i>
+            <h5>Restez informé</h5>
+            <p>Recevez nos actualités directement dans votre boîte mail.</p>
+            <a href="{% url 'contact:contact' %}" class="btn btn-danger btn-sm w-100">
+              <i class="fas fa-paper-plane me-2"></i>Nous contacter
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

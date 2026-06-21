@@ -1,0 +1,42 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load humanize %}
+{% block dash_titre %}Commentaires{% endblock %}
+{% block dash_contenu %}
+<div class="dash-card">
+  <div class="dash-card-header"><h5 class="dash-card-title"><i class="fas fa-comments me-2"></i>Commentaires</h5></div>
+  <div class="dash-card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Auteur</th><th>Commentaire</th><th>Article</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for c in commentaires %}
+          <tr>
+            <td class="fw-medium small">{{ c.auteur.get_full_name|default:c.auteur.username }}</td>
+            <td class="small text-muted">{{ c.contenu|truncatechars:70 }}</td>
+            <td class="small"><a href="{{ c.article.get_absolute_url }}" target="_blank">{{ c.article.titre|truncatechars:30 }}</a></td>
+            <td>{% if c.est_approuve %}<span class="badge bg-success">Approuvé</span>{% else %}<span class="badge bg-warning text-dark">Masqué</span>{% endif %}</td>
+            <td class="small text-muted">{{ c.created_at|naturaltime }}</td>
+            <td>
+              <form method="post" action="{% url 'comments:approuver' c.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-xs {% if c.est_approuve %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="{% if c.est_approuve %}Masquer{% else %}Approuver{% endif %}">
+                  <i class="fas {% if c.est_approuve %}fa-eye-slash{% else %}fa-check{% endif %}"></i>
+                </button>
+              </form>
+              <form method="post" action="{% url 'comments:supprimer' c.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-xs btn-outline-danger" onclick="return confirm('Supprimer ce commentaire ?')" title="Supprimer">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center text-muted py-4">Aucun commentaire.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

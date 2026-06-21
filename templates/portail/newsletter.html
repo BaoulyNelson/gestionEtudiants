@@ -1,0 +1,168 @@
+{% extends "base_articles.html" %}
+{% block title %}Newsletter – FASCH{% endblock %}
+
+{% block extra_css %}
+<style>
+  .nl-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+  .nl-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    overflow: hidden;
+    width: 100%;
+    max-width: 520px;
+  }
+  .nl-header {
+    background: linear-gradient(135deg, #1a3a6b 0%, #2d5a9e 100%);
+    padding: 40px 36px 32px;
+    text-align: center;
+  }
+  .nl-header-icon {
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .nl-header-icon i { font-size: 28px; color: #fff; }
+  .nl-header h1 {
+    font-size: 1.4rem; font-weight: 700;
+    color: #fff; margin: 0 0 8px;
+  }
+  .nl-header p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+  }
+  .nl-body { padding: 36px; }
+
+  .nl-body .form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  .nl-body .form-control {
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    height: 46px;
+    font-size: 0.95rem;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .nl-body .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+  }
+  .nl-submit {
+    width: 100%;
+    height: 48px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+    transition: background .15s;
+    margin-top: 8px;
+  }
+  .nl-submit:hover { background: #b91c1c; }
+
+  .nl-notice {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 14px;
+  }
+  .nl-notice i { color: #6b7280; margin-right: 4px; }
+
+  .nl-success {
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+  .nl-success-icon {
+    width: 64px; height: 64px;
+    background: #d1fae5;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .nl-success-icon i { font-size: 28px; color: #059669; }
+  .nl-success h2 { font-size: 1.2rem; font-weight: 700; color: #111; margin-bottom: 8px; }
+  .nl-success p  { font-size: 0.88rem; color: #6b7280; }
+</style>
+{% endblock %}
+
+{% block contenu %}
+<div class="nl-page">
+  <div class="nl-card">
+
+    <div class="nl-header">
+      <div class="nl-header-icon">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <h1>Restez informé</h1>
+      <p>Recevez les actualités de la FASCH directement dans votre boîte mail.</p>
+    </div>
+
+    <div class="nl-body">
+
+      {% if inscrit %}
+      <div class="nl-success">
+        <div class="nl-success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h2>Inscription confirmée !</h2>
+        <p>Merci <strong>{{ nom_inscrit }}</strong>, vous êtes bien inscrit à la newsletter de la FASCH.</p>
+        <a href="{% url 'portail:accueil' %}" class="nl-submit mt-3 text-decoration-none">
+          <i class="fas fa-home"></i> Retour à l'accueil
+        </a>
+      </div>
+
+      {% else %}
+
+      {% if erreur %}
+        <div class="alert alert-danger mb-3" style="border-radius:10px;font-size:0.875rem;">
+          <i class="fas fa-exclamation-circle me-2"></i>{{ erreur }}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Votre nom</label>
+          <input type="text" name="nom" class="form-control"
+                 placeholder="Prénom et nom"
+                 value="{{ request.POST.nom|default:'' }}">
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Adresse email <span class="text-danger">*</span></label>
+          <input type="email" name="email" class="form-control"
+                 placeholder="exemple@email.com"
+                 value="{{ request.POST.email|default:'' }}"
+                 required>
+        </div>
+        <button type="submit" class="nl-submit">
+          <i class="fas fa-paper-plane"></i>
+          S'inscrire à la newsletter
+        </button>
+      </form>
+
+      <p class="nl-notice">
+        <i class="fas fa-lock"></i>
+        Vos données sont confidentielles. Désinscription possible à tout moment.
+      </p>
+
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

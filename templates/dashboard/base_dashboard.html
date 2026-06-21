@@ -1,0 +1,134 @@
+{% extends 'base_articles.html' %}
+{% load static %}
+{% block contenu %}
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar" id="dashSidebar">
+    <div class="dash-sidebar-header">
+      <i class="fas fa-newspaper me-2"></i><span>Tableau de bord</span>
+      <button class="dash-close-btn d-lg-none" id="closeSidebar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-user-info">
+      {% if user.photo_profil %}
+        <img src="{{ user.photo_profil.url }}" alt="" class="dash-user-avatar">
+      {% else %}
+        <div class="dash-user-avatar dash-avatar-initials">{{ user.get_full_name|default:user.email|first|upper }}</div>
+      {% endif %}
+      <div>
+        <div class="dash-user-name">{{ user.get_full_name }}</div>
+        <div class="dash-user-role">
+          {% if user.is_staff %}Administrateur
+          {% elif user.role_editorial == 'EDITEUR' %}Éditeur
+          {% elif user.role_editorial == 'AUTEUR' %}Auteur
+          {% else %}Lecteur{% endif %}
+        </div>
+      </div>
+    </div>
+    <nav class="dash-nav">
+      <a href="{% url 'articles:dashboard' %}" class="dash-nav-link {% if 'tableau-de-bord' in request.path and 'articles' not in request.path and 'categories' not in request.path and 'messages' not in request.path and 'commentaires' not in request.path %}active{% endif %}">
+        <i class="fas fa-tachometer-alt"></i><span>Vue d'ensemble</span>
+      </a>
+      <div class="dash-nav-section">Contenu</div>
+      <a href="{% url 'articles:dashboard_articles' %}" class="dash-nav-link {% if 'articles' in request.path and 'categories' not in request.path %}active{% endif %}">
+        <i class="fas fa-newspaper"></i><span>Articles</span>
+      </a>
+      <a href="{% url 'articles:dashboard_annonces' %}" class="dash-nav-link {% if 'annonces' in request.path %}active{% endif %}">
+        <i class="fas fa-bullhorn"></i><span>Annonces</span>
+      </a>
+      <a href="{% url 'articles:dashboard_evenements' %}" class="dash-nav-link {% if 'evenements' in request.path %}active{% endif %}">
+        <i class="fas fa-calendar-alt"></i><span>Événements</span>
+      </a>
+      {% if user.peut_gerer %}
+      <div class="dash-nav-section">Administration</div>
+      <a href="{% url 'articles:dashboard_categories' %}" class="dash-nav-link {% if 'categories' in request.path %}active{% endif %}">
+        <i class="fas fa-folder"></i><span>Catégories</span>
+      </a>
+      <a href="{% url 'comments:dashboard_commentaires' %}" class="dash-nav-link {% if 'commentaires' in request.path %}active{% endif %}">
+        <i class="fas fa-comments"></i><span>Commentaires</span>
+      </a>
+      <a href="{% url 'contact:dashboard_messages' %}" class="dash-nav-link {% if 'messages' in request.path %}active{% endif %}">
+        <i class="fas fa-envelope"></i><span>Messages</span>
+      </a>
+      {% endif %}
+      <div class="dash-nav-section">Compte</div>
+      <a href="{% url 'comptes:profil' %}" class="dash-nav-link">
+        <i class="fas fa-user"></i><span>Mon profil</span>
+      </a>
+      <a href="{% url 'comptes:profil' %}" class="dash-nav-link">
+        <i class="fas fa-cog"></i><span>Paramètres</span>
+      </a>
+      <a href="{% url 'articles:accueil' %}" class="dash-nav-link">
+        <i class="fas fa-external-link-alt"></i><span>Voir le site</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <div class="dashboard-main">
+    <header class="dash-topbar">
+      <button class="dash-menu-btn d-lg-none" id="openSidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="dash-page-title">{% block dash_titre %}Tableau de bord{% endblock %}</h1>
+      <div class="dash-topbar-actions">
+        {% if user.peut_ecrire %}
+        <a href="{% url 'articles:dashboard_creer_article' %}" class="btn btn-primary btn-sm">
+          <i class="fas fa-plus me-1"></i>Nouvel article
+        </a>
+        {% endif %}
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;margin-top:var(--topbar-h);">
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          <div class="toast show align-items-center border-0 shadow toast-succes" role="alert" aria-live="assertive">
+            <div class="d-flex">
+              <div class="toast-body fw-semibold"><i class="fas fa-check-circle me-2"></i>Succès : {{ message }}</div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+            </div>
+          </div>
+        {% elif message.tags == 'danger' %}
+          <div class="toast show align-items-center border-0 shadow toast-echec" role="alert" aria-live="assertive">
+            <div class="d-flex">
+              <div class="toast-body fw-semibold"><i class="fas fa-exclamation-circle me-2"></i>Erreur : {{ message }}</div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+            </div>
+          </div>
+        {% elif message.tags == 'warning' %}
+          <div class="toast show align-items-center border-0 shadow toast-attente" role="alert" aria-live="assertive">
+            <div class="d-flex">
+              <div class="toast-body fw-semibold"><i class="fas fa-exclamation-triangle me-2"></i>Attention : {{ message }}</div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+            </div>
+          </div>
+        {% else %}
+          <div class="toast show align-items-center border-0 shadow toast-info" role="alert" aria-live="assertive">
+            <div class="d-flex">
+              <div class="toast-body fw-semibold"><i class="fas fa-info-circle me-2"></i>Info : {{ message }}</div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="dash-content">
+      {% block dash_contenu %}{% endblock %}
+    </div>
+  </div>
+</div>
+<div class="dash-overlay d-lg-none" id="dashOverlay"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const sidebar=document.getElementById('dashSidebar');
+const overlay=document.getElementById('dashOverlay');
+document.getElementById('openSidebar').addEventListener('click',()=>{sidebar.classList.add('open');overlay.classList.add('show');});
+document.getElementById('closeSidebar').addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('show');});
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('show');});
+</script>
+{% endblock %}

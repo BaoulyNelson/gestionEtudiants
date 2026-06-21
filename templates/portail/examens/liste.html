@@ -1,0 +1,779 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examens – {{ site.nom_etablissement|default:"FASCH" }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bleu:        #1a3a6b;
+      --bleu-fonce:  #122d56;
+      --bleu-clair:  #e8eef7;
+      --or:          #c9a84c;
+      --or-clair:    #f7f0dc;
+      --blanc:       #ffffff;
+      --texte:       #1e2535;
+      --texte-doux:  #6b7280;
+      --gris-ligne:  #e5e7eb;
+      --gris-bg:     #f4f6fa;
+
+      --a-venir:     #1a3a6b;
+      --a-venir-bg:  #e8eef7;
+      --en-cours:    #166534;
+      --en-cours-bg: #dcfce7;
+      --termine:     #6b7280;
+      --termine-bg:  #f3f4f6;
+      --annule:      #991b1b;
+      --annule-bg:   #fee2e2;
+
+      --police-titre: 'Georgia', serif;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--gris-bg);
+      color: var(--texte);
+      min-height: 100vh;
+    }
+
+    /* ── En-tête page ── */
+    .page-entete {
+      background: var(--bleu);
+      padding: 28px 40px 0;
+      color: #fff;
+    }
+    .page-entete-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .page-entete-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .page-retour {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .2s;
+    }
+    .page-retour:hover { color: #fff; }
+
+    .page-entete h1 {
+      font-family: var(--police-titre);
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-entete-sub {
+      font-size: 13px;
+      opacity: .7;
+      margin-bottom: 24px;
+    }
+
+    {% if user.est_professeur or user.est_administrateur %}
+    .btn-creer {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--or);
+      color: var(--bleu-fonce);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-creer:hover { background: #b8932f; }
+    {% endif %}
+
+    /* ── Onglets de filtre ── */
+    .filtres-onglets {
+      display: flex;
+      gap: 4px;
+    }
+    .onglet {
+      padding: 10px 22px;
+      border-radius: 8px 8px 0 0;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7);
+      transition: all .2s;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .onglet:hover { background: rgba(255,255,255,.2); color: #fff; }
+    .onglet.actif { background: var(--gris-bg); color: var(--bleu); }
+    .onglet-compte {
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      border-radius: 20px;
+      padding: 1px 8px;
+      font-size: 11px;
+    }
+    .onglet.actif .onglet-compte { background: var(--bleu); color: #fff; }
+
+    /* ── Corps ── */
+    .page-corps {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    /* ── Vue calendrier ── */
+    .calendrier-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--blanc);
+      border-radius: 14px 14px 0 0;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--gris-ligne);
+    }
+    .calendrier-mois {
+      font-family: var(--police-titre);
+      font-size: 1.2rem;
+      color: var(--bleu);
+      font-weight: 700;
+    }
+    .calendrier-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--gris-ligne);
+      background: var(--blanc);
+      color: var(--texte-doux);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all .2s;
+    }
+    .calendrier-btn:hover { border-color: var(--bleu); color: var(--bleu); }
+
+    .calendrier-grille-entetes {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--blanc);
+      border-bottom: 1px solid var(--gris-ligne);
+    }
+    .cal-jour-entete {
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--texte-doux);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+    .cal-jour-entete.weekend { color: var(--or); }
+
+    .calendrier-grille {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--blanc);
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(26,58,107,.08);
+    }
+    .cal-cellule {
+      min-height: 100px;
+      border-right: 1px solid var(--gris-ligne);
+      border-bottom: 1px solid var(--gris-ligne);
+      padding: 8px;
+      position: relative;
+      transition: background .15s;
+    }
+    .cal-cellule:nth-child(7n) { border-right: none; }
+    .cal-cellule.hors-mois { background: #fafafa; }
+    .cal-cellule.hors-mois .cal-num { color: #d1d5db; }
+    .cal-cellule.aujourd-hui { background: var(--bleu-clair); }
+    .cal-cellule.aujourd-hui .cal-num {
+      background: var(--bleu);
+      color: #fff;
+      border-radius: 50%;
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cal-cellule.weekend { background: #fdfcf8; }
+
+    .cal-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--texte);
+      margin-bottom: 4px;
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .cal-examen {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 5px;
+      margin-bottom: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+      transition: opacity .15s;
+    }
+    .cal-examen:hover { opacity: .8; }
+    .cal-examen.a-venir  { background: var(--a-venir-bg);  color: var(--a-venir); }
+    .cal-examen.en-cours { background: var(--en-cours-bg); color: var(--en-cours); }
+    .cal-examen.termine  { background: var(--termine-bg);  color: var(--termine); }
+    .cal-examen.annule   { background: var(--annule-bg);   color: var(--annule); text-decoration: line-through; }
+
+    /* ── Liste en dessous ── */
+    .section-titre {
+      font-family: var(--police-titre);
+      font-size: 1.1rem;
+      color: var(--bleu);
+      margin: 36px 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--or);
+      display: inline-block;
+    }
+
+    .examens-liste { display: flex; flex-direction: column; gap: 12px; }
+
+    .carte-examen {
+      background: var(--blanc);
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 2px 10px rgba(26,58,107,.06);
+      display: flex;
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+      cursor: pointer;
+    }
+    .carte-examen:hover {
+      box-shadow: 0 6px 24px rgba(26,58,107,.13);
+      transform: translateY(-2px);
+    }
+
+    /* Barre colorée à gauche */
+    .carte-examen-barre {
+      width: 6px;
+      flex-shrink: 0;
+    }
+    .carte-examen-barre.a-venir  { background: var(--a-venir); }
+    .carte-examen-barre.en-cours { background: var(--en-cours); }
+    .carte-examen-barre.termine  { background: var(--termine); }
+    .carte-examen-barre.annule   { background: var(--annule); }
+
+    /* Bloc date */
+    .carte-examen-date {
+      width: 72px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 8px;
+      border-right: 1px solid var(--gris-ligne);
+      text-align: center;
+    }
+    .date-jour {
+      font-family: var(--police-titre);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--bleu);
+      line-height: 1;
+    }
+    .date-mois {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--texte-doux);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-top: 2px;
+    }
+    .date-annee {
+      font-size: 11px;
+      color: #d1d5db;
+      margin-top: 1px;
+    }
+
+    /* Corps carte */
+    .carte-examen-corps {
+      flex: 1;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .carte-examen-info { flex: 1; }
+    .carte-examen-titre {
+      font-family: var(--police-titre);
+      font-size: 1rem;
+      color: var(--bleu);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .carte-examen-desc {
+      font-size: 12px;
+      color: var(--texte-doux);
+      line-height: 1.5;
+    }
+
+    /* Badge statut */
+    .badge-statut {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .badge-statut.a-venir  { background: var(--a-venir-bg);  color: var(--a-venir); }
+    .badge-statut.en-cours { background: var(--en-cours-bg); color: var(--en-cours); }
+    .badge-statut.termine  { background: var(--termine-bg);  color: var(--termine); }
+    .badge-statut.annule   { background: var(--annule-bg);   color: var(--annule); }
+
+    /* ── Actions prof/admin ── */
+    .carte-examen-actions {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px;
+      align-items: center;
+      border-left: 1px solid var(--gris-ligne);
+    }
+    .btn-ico {
+      width: 32px; height: 32px;
+      border-radius: 7px;
+      border: 1px solid var(--gris-ligne);
+      background: var(--blanc);
+      color: var(--texte-doux);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-ico:hover { border-color: var(--bleu); color: var(--bleu); }
+    .btn-ico.danger:hover { border-color: #dc2626; color: #dc2626; }
+
+    /* ── État vide ── */
+    .etat-vide {
+      text-align: center;
+      padding: 72px 20px;
+      background: var(--blanc);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(26,58,107,.06);
+    }
+    .etat-vide-icone {
+      width: 72px; height: 72px;
+      background: var(--bleu-clair);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px; color: var(--bleu);
+    }
+    .etat-vide h3 {
+      font-family: var(--police-titre);
+      font-size: 1.2rem; color: var(--bleu);
+      margin-bottom: 8px;
+    }
+    .etat-vide p { font-size: 14px; color: var(--texte-doux); }
+
+    /* ── Légende ── */
+    .legende {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .legende-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--texte-doux);
+    }
+    .legende-puce {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+    }
+    .legende-puce.a-venir  { background: var(--a-venir); }
+    .legende-puce.en-cours { background: var(--en-cours); }
+    .legende-puce.termine  { background: var(--termine); }
+
+    /* ── Tooltip (modal simple) ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.ouvert { display: flex; }
+    .modal-boite {
+      background: var(--blanc);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 480px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      position: relative;
+    }
+    .modal-fermer {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 8px; border: none;
+      background: var(--gris-bg); color: var(--texte-doux);
+      cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-badge { margin-bottom: 12px; }
+    .modal-titre {
+      font-family: var(--police-titre);
+      font-size: 1.3rem; color: var(--bleu);
+      margin-bottom: 8px;
+    }
+    .modal-date {
+      font-size: 13px; color: var(--texte-doux);
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .modal-date i { color: var(--or); }
+    .modal-desc {
+      font-size: 14px; line-height: 1.7;
+      color: var(--texte);
+      background: var(--gris-bg);
+      padding: 14px 16px;
+      border-radius: 8px;
+    }
+    .modal-actions {
+      display: flex; gap: 10px; margin-top: 20px;
+      justify-content: flex-end;
+    }
+    .btn-modal {
+      padding: 9px 18px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      border: none; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: opacity .2s;
+    }
+    .btn-modal:hover { opacity: .85; }
+    .btn-modal.primaire  { background: var(--bleu); color: #fff; }
+    .btn-modal.danger    { background: #fee2e2; color: #991b1b; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .page-entete { padding: 20px 16px 0; }
+      .page-corps  { padding: 0 12px; margin: 20px auto; }
+      .cal-cellule { min-height: 60px; padding: 4px; }
+      .cal-examen  { font-size: 10px; padding: 2px 4px; }
+      .cal-num     { font-size: 12px; }
+      .calendrier-nav { padding: 12px 16px; }
+      .carte-examen-date { width: 60px; }
+      .date-jour { font-size: 1.4rem; }
+      .filtres-onglets { overflow-x: auto; padding-bottom: 4px; }
+      .onglet { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+<div class="mt-4">
+  {% include 'partials/header.html' %}
+</div>
+  <!-- En-tête -->
+  <div class="page-entete">
+    <div class="page-entete-inner">
+      <div class="page-entete-top">
+        <a href="javascript:history.back()" class="page-retour">
+          <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        {% if user.est_professeur or user.est_administrateur %}
+          <a href="{% url 'portail:creer_examen' %}" class="btn-creer">
+            <i class="fas fa-plus"></i> Planifier un examen
+          </a>
+        {% endif %}
+      </div>
+      <h1><i class="fas fa-pencil-alt" style="color:var(--or);margin-right:10px;"></i>Examens</h1>
+      <p class="page-entete-sub">Calendrier des évaluations — {{ site.nom_etablissement|default:"FASCH" }}</p>
+
+      <!-- Onglets filtre -->
+      <div class="filtres-onglets">
+        <a href="?filtre=tous"     class="onglet {% if filtre == 'tous' %}actif{% endif %}">
+          Tous <span class="onglet-compte">{{ examens_en_cours|length|add:examens_a_venir|length|add:examens_termines|length }}</span>
+        </a>
+        <a href="?filtre=a_venir"  class="onglet {% if filtre == 'a_venir' %}actif{% endif %}">
+          <i class="fas fa-clock"></i> À venir
+          {% if examens_a_venir %}<span class="onglet-compte">{{ examens_a_venir|length }}</span>{% endif %}
+        </a>
+        <a href="?filtre=en_cours" class="onglet {% if filtre == 'en_cours' %}actif{% endif %}">
+          <i class="fas fa-play-circle"></i> En cours
+          {% if examens_en_cours %}<span class="onglet-compte">{{ examens_en_cours|length }}</span>{% endif %}
+        </a>
+        <a href="?filtre=termine"  class="onglet {% if filtre == 'termine' %}actif{% endif %}">
+          <i class="fas fa-check-circle"></i> Terminés
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-corps">
+
+    <!-- Légende -->
+    <div class="legende">
+      <div class="legende-item"><div class="legende-puce a-venir"></div> À venir</div>
+      <div class="legende-item"><div class="legende-puce en-cours"></div> En cours</div>
+      <div class="legende-item"><div class="legende-puce termine"></div> Terminé</div>
+    </div>
+
+    <!-- ── Calendrier ── -->
+    <div class="calendrier-nav">
+      <button class="calendrier-btn" id="btnPrev"><i class="fas fa-chevron-left"></i></button>
+      <div class="calendrier-mois" id="calendrierMois">Chargement…</div>
+      <button class="calendrier-btn" id="btnNext"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <div class="calendrier-grille-entetes">
+      <div class="cal-jour-entete">Lun</div>
+      <div class="cal-jour-entete">Mar</div>
+      <div class="cal-jour-entete">Mer</div>
+      <div class="cal-jour-entete">Jeu</div>
+      <div class="cal-jour-entete">Ven</div>
+      <div class="cal-jour-entete weekend">Sam</div>
+      <div class="cal-jour-entete weekend">Dim</div>
+    </div>
+
+    <div class="calendrier-grille" id="calendrierGrille"></div>
+
+    <!-- ── Liste ── -->
+    {% with tous=examens_en_cours|length|add:examens_a_venir|length %}
+
+    {% if examens_en_cours %}
+      <h2 class="section-titre"><i class="fas fa-play-circle" style="color:var(--en-cours);"></i> En cours</h2>
+      <div class="examens-liste">
+        {% for examen in examens_en_cours %}
+          {% include "portail/examens/_carte.html" with examen=examen statut_css="en-cours" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if examens_a_venir %}
+      <h2 class="section-titre"><i class="fas fa-clock" style="color:var(--a-venir);"></i> À venir</h2>
+      <div class="examens-liste">
+        {% for examen in examens_a_venir %}
+          {% include "portail/examens/_carte.html" with examen=examen statut_css="a-venir" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if examens_termines %}
+      <h2 class="section-titre"><i class="fas fa-check-circle" style="color:var(--termine);"></i> Terminés</h2>
+      <div class="examens-liste">
+        {% for examen in examens_termines %}
+          {% include "portail/examens/_carte.html" with examen=examen statut_css="termine" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if not examens_en_cours and not examens_a_venir and not examens_termines %}
+      <div class="etat-vide">
+        <div class="etat-vide-icone"><i class="fas fa-calendar-times"></i></div>
+        <h3>Aucun examen trouvé</h3>
+        <p>Aucun examen ne correspond à ce filtre.</p>
+      </div>
+    {% endif %}
+
+    {% endwith %}
+  </div>
+
+  <!-- Modal détail -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-boite">
+      <button class="modal-fermer" id="modalFermer"><i class="fas fa-times"></i></button>
+      <div class="modal-badge" id="modalBadge"></div>
+      <h2 class="modal-titre" id="modalTitre"></h2>
+      <div class="modal-date" id="modalDate"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Données Django → JS ── */
+    const EXAMENS = [
+      {% for examen in examens_en_cours %}
+      {
+        id: {{ examen.id }},
+        titre: "{{ examen.titre|escapejs }}",
+        date: "{{ examen.date|date:'Y-m-d' }}",
+        dateAff: "{{ examen.date|date:'d F Y' }}",
+        statut: "en-cours",
+        desc: "{{ examen.description|default:''|escapejs }}",
+        {% if user.est_professeur or user.est_administrateur %}
+        urlModif: "{% url 'portail:modifier_examen' examen.id %}",
+        urlSuppr: "{% url 'portail:supprimer_examen' examen.id %}",
+        {% endif %}
+      },
+      {% endfor %}
+      {% for examen in examens_a_venir %}
+      {
+        id: {{ examen.id }},
+        titre: "{{ examen.titre|escapejs }}",
+        date: "{{ examen.date|date:'Y-m-d' }}",
+        dateAff: "{{ examen.date|date:'d F Y' }}",
+        statut: "a-venir",
+        desc: "{{ examen.description|default:''|escapejs }}",
+        {% if user.est_professeur or user.est_administrateur %}
+        urlModif: "{% url 'portail:modifier_examen' examen.id %}",
+        urlSuppr: "{% url 'portail:supprimer_examen' examen.id %}",
+        {% endif %}
+      },
+      {% endfor %}
+      {% for examen in examens_termines %}
+      {
+        id: {{ examen.id }},
+        titre: "{{ examen.titre|escapejs }}",
+        date: "{{ examen.date|date:'Y-m-d' }}",
+        dateAff: "{{ examen.date|date:'d F Y' }}",
+        statut: "termine",
+        desc: "{{ examen.description|default:''|escapejs }}",
+        {% if user.est_professeur or user.est_administrateur %}
+        urlModif: "{% url 'portail:modifier_examen' examen.id %}",
+        urlSuppr: "{% url 'portail:supprimer_examen' examen.id %}",
+        {% endif %}
+      },
+      {% endfor %}
+    ];
+
+    /* ── Calendrier ── */
+    const MOIS_FR = ["Janvier","Février","Mars","Avril","Mai","Juin",
+                     "Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+
+    let annee  = new Date().getFullYear();
+    let mois   = new Date().getMonth();  // 0-indexé
+    const aujourd = new Date().toISOString().slice(0,10);
+
+    function construireCalendrier() {
+      const grille  = document.getElementById('calendrierGrille');
+      const titre   = document.getElementById('calendrierMois');
+      titre.textContent = `${MOIS_FR[mois]} ${annee}`;
+      grille.innerHTML  = '';
+
+      // Premier jour du mois (lundi = 0)
+      const premier = new Date(annee, mois, 1);
+      let depart = premier.getDay();          // 0=dim … 6=sam
+      depart = depart === 0 ? 6 : depart - 1; // recaler sur lundi=0
+
+      const nbJours = new Date(annee, mois + 1, 0).getDate();
+
+      // Jours du mois précédent
+      const jMoisPrec = new Date(annee, mois, 0).getDate();
+      for (let i = depart - 1; i >= 0; i--) {
+        grille.appendChild(creerCellule(jMoisPrec - i, true));
+      }
+
+      // Jours du mois courant
+      for (let j = 1; j <= nbJours; j++) {
+        const dateStr = `${annee}-${String(mois+1).padStart(2,'0')}-${String(j).padStart(2,'0')}`;
+        const examsDuJour = EXAMENS.filter(e => e.date === dateStr);
+        const estAujourd  = dateStr === aujourd;
+        const estWeekend  = [6,0].includes(new Date(annee, mois, j).getDay());
+        grille.appendChild(creerCellule(j, false, examsDuJour, estAujourd, estWeekend));
+      }
+
+      // Compléter la dernière semaine
+      const total = depart + nbJours;
+      const reste = total % 7 === 0 ? 0 : 7 - (total % 7);
+      for (let k = 1; k <= reste; k++) {
+        grille.appendChild(creerCellule(k, true));
+      }
+    }
+
+    function creerCellule(jour, horsM, examens=[], aujourdhui=false, weekend=false) {
+      const div = document.createElement('div');
+      div.className = 'cal-cellule'
+        + (horsM      ? ' hors-mois' : '')
+        + (aujourdhui ? " aujourd-hui" : '')
+        + (weekend    ? ' weekend' : '');
+
+      const num = document.createElement('div');
+      num.className = 'cal-num';
+      num.textContent = jour;
+      div.appendChild(num);
+
+      examens.forEach(e => {
+        const ev = document.createElement('span');
+        ev.className = `cal-examen ${e.statut}`;
+        ev.textContent = e.titre;
+        ev.title = e.titre;
+        ev.onclick = () => ouvrirModal(e);
+        div.appendChild(ev);
+      });
+
+      return div;
+    }
+
+    document.getElementById('btnPrev').onclick = () => {
+      if (mois === 0) { mois = 11; annee--; } else mois--;
+      construireCalendrier();
+    };
+    document.getElementById('btnNext').onclick = () => {
+      if (mois === 11) { mois = 0; annee++; } else mois++;
+      construireCalendrier();
+    };
+
+    construireCalendrier();
+
+    /* ── Modal ── */
+    const LABELS = {
+      'a-venir':  { texte: 'À venir',  icon: 'fa-clock',        bg: '#e8eef7', col: '#1a3a6b' },
+      'en-cours': { texte: 'En cours', icon: 'fa-play-circle',  bg: '#dcfce7', col: '#166534' },
+      'termine':  { texte: 'Terminé',  icon: 'fa-check-circle', bg: '#f3f4f6', col: '#6b7280' },
+    };
+
+    function ouvrirModal(e) {
+      const l = LABELS[e.statut] || LABELS['a-venir'];
+      document.getElementById('modalBadge').innerHTML =
+        `<span class="badge-statut ${e.statut}" style="display:inline-flex">
+           <i class="fas ${l.icon}"></i> ${l.texte}
+         </span>`;
+      document.getElementById('modalTitre').textContent = e.titre;
+      document.getElementById('modalDate').innerHTML =
+        `<i class="fas fa-calendar-alt"></i> ${e.dateAff}`;
+      document.getElementById('modalDesc').textContent =
+        e.desc || 'Aucune description disponible.';
+
+      let actions = `<button class="btn-modal" onclick="fermerModal()" style="background:var(--gris-bg);color:var(--texte)">Fermer</button>`;
+      if (e.urlModif) {
+        actions += `<a href="${e.urlModif}" class="btn-modal primaire"><i class="fas fa-edit"></i> Modifier</a>`;
+      }
+      if (e.urlSuppr) {
+        actions += `<a href="${e.urlSuppr}" class="btn-modal danger"><i class="fas fa-trash"></i> Supprimer</a>`;
+      }
+      document.getElementById('modalActions').innerHTML = actions;
+      document.getElementById('modalOverlay').classList.add('ouvert');
+    }
+
+    function fermerModal() {
+      document.getElementById('modalOverlay').classList.remove('ouvert');
+    }
+
+    document.getElementById('modalFermer').onclick  = fermerModal;
+    document.getElementById('modalOverlay').onclick = (e) => {
+      if (e.target === document.getElementById('modalOverlay')) fermerModal();
+    };
+
+    /* Clic sur les cartes liste */
+    document.querySelectorAll('.carte-examen[data-examen]').forEach(carte => {
+      carte.onclick = (e) => {
+        if (e.target.closest('.carte-examen-actions')) return;
+        const id = parseInt(carte.dataset.examen);
+        const ex = EXAMENS.find(e => e.id === id);
+        if (ex) ouvrirModal(ex);
+      };
+    });
+  </script>
+
+</body>
+</html>

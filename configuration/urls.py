@@ -39,6 +39,8 @@ urlpatterns = [
     path('departements/', include('applications.departements.urls')),
     path('articles/', include('applications.articles.urls')),
     path('notifications/', include('applications.notifications.urls')),
+    path('contact/', include('applications.contact.urls')),
+    path('commentaires/', include('applications.comments.urls')),
 ]
 
 # Servir les fichiers média en développement

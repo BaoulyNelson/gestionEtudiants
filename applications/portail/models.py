@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
+import datetime
 
-from django.utils import timezone
 
 
 class Livre(models.Model):
@@ -46,17 +46,17 @@ class Personnel(models.Model):
 
 
 class Examen(models.Model):
-    STATUS_CHOICES = [
-        ("completed", "Terminé"),
-        ("active", "En cours"),
-        ("upcoming", "À venir"),
+    CHOIX_STATUT = [
+        ("termine", "Terminé"),
+        ("en_cours", "En cours"),
+        ("a_venir", "À venir"),
     ]
 
     titre = models.CharField("Intitulé de l'examen", max_length=255)
     date = models.DateField("Date de l'examen")
     description = models.TextField("Description", blank=True)
-    status = models.CharField(
-        "Statut", max_length=20, choices=STATUS_CHOICES, default="upcoming"
+    statut = models.CharField(
+        "Statut", max_length=20, choices=CHOIX_STATUT, default="a_venir"
     )
 
     class Meta:
@@ -67,27 +67,43 @@ class Examen(models.Model):
     def __str__(self):
         return f"{self.titre} le {self.date:%d %B %Y}"
 
+        
+        
     def save(self, *args, **kwargs):
         """
-        Recalcule automatiquement `status` en fonction de `date` :
-        - date < aujourd'hui  → 'completed'
-        - date == aujourd'hui → 'active'
-        - date > aujourd'hui  → 'upcoming'
+        Recalcule automatiquement `statut` en fonction de `date` :
+        - date < aujourd'hui  → 'termine'
+        - date == aujourd'hui → 'en_cours'
+        - date > aujourd'hui  → 'a_venir'
         """
-        today = timezone.localdate()
-        if self.date < today:
-            self.status = "completed"
-        elif self.date == today:
-            self.status = "active"
+        aujourdhui = datetime.date.today()  # ← pas de timezone, compatible USE_TZ = False
+        
+        if self.date < aujourdhui:
+            self.statut = "termine"
+        elif self.date == aujourdhui:
+            self.statut = "en_cours"
         else:
-            self.status = "upcoming"
+            self.statut = "a_venir"
         super().save(*args, **kwargs)
 
 
 # models.py (dans une app existante, ex: `portail` ou une nouvelle app `config`)
 
 
+class NewsletterInscription(models.Model):
+    email      = models.EmailField(unique=True)
+    nom        = models.CharField(max_length=100, blank=True)
+    inscrit_le = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'Inscription newsletter'
+        ordering     = ['-inscrit_le']
+
+    def __str__(self):
+        return self.email
+    
+    
+    
 class SiteSettings(models.Model):
     # Infos générales
     nom_etablissement = models.CharField(max_length=100, default="FASCH")
@@ -155,3 +171,8 @@ class SiteSettings(models.Model):
         """Retourne toujours la première instance (singleton)."""
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+
+
+

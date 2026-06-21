@@ -1,5 +1,3 @@
-
-
 from django.db import models
 from django.core.validators import RegexValidator
 from django.db import models
@@ -47,7 +45,7 @@ class Candidature(models.Model):
         ordering = ['-date_creation']
     
     def __str__(self):
-        return f"{self.prenom} {self.nom} - {self.programme.name if self.programme else 'N/A'}"
+        return f"{self.prenom} {self.nom} - {self.programme.nom if self.programme else 'N/A'}"
 
 
 
@@ -105,12 +103,6 @@ class Ambassadeur(models.Model):
         verbose_name="Photo",
         help_text="Photo de profil (recommandé: 400x400px)"
     )
-    programme = models.CharField(
-        max_length=100, 
-        verbose_name="Programme d'études",
-        help_text="Ex: Psychologie, Sociologie"
-    )
-    
     programme = models.ForeignKey(
         Departement,
         on_delete=models.SET_NULL,
@@ -337,5 +329,3 @@ class VisiteVirtuelle(models.Model):
     
     def __str__(self):
         return self.titre
-
-

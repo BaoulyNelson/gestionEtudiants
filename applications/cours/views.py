@@ -27,7 +27,7 @@ def liste_cours(request):
 
     if niveau:
         cours = cours.filter(niveau=niveau)
-        if niveau == "1":
+        if niveau == "PREPARATOIRE":
             cours = cours.filter(departement__isnull=True)
         elif departement:
             cours = cours.filter(departement__code=departement)
@@ -306,54 +306,30 @@ def basculer_ouverture_section(request, id_section):
 
 @login_required
 def mes_cours(request):
-    """Cours de l'utilisateur connecté (étudiant ou professeur)"""
-    if request.user.est_etudiant():
-        etudiant = request.user.profil_etudiant
-
-        # Tous les statuts actifs/terminés, pas uniquement INSCRIT
-        STATUTS_VISIBLES = ["INSCRIT", "COMPLETE", "EN_COURS"]
-
-        inscriptions = (
-            etudiant.inscriptions
-            .filter(statut__in=STATUTS_VISIBLES)
-            .select_related(
-                "section_cours__cours",
-                "section_cours__professeur__utilisateur",
-            )
-            .order_by("-section_cours__annee", "section_cours__cours__code")
-        )
-
-        contexte = {
-            "inscriptions": inscriptions,
-            "est_etudiant": True,
-            "nombre_cours": inscriptions.count(),
-        }
-        return render(request, "cours/mes_cours.html", contexte)
-
-    elif request.user.est_professeur():
-        professeur = request.user.profil_professeur
-        sections = (
-            professeur.sections_cours
-            .select_related("cours")
-            .annotate(
-                nb_inscrits=Count(
-                    "inscriptions",
-                    filter=Q(inscriptions__statut__in=["INSCRIT", "COMPLETE", "EN_COURS"])
-                )
-            )
-            .order_by("-annee", "cours__code")
-        )
-
-        contexte = {
-            "sections": sections,
-            "est_professeur": True,
-            "nombre_cours": sections.count(),
-        }
-        return render(request, "cours/mes_cours.html", contexte)
-
-    else:
+    """Cours de l'utilisateur connecté (professeur uniquement)"""
+    if not request.user.est_professeur():
         messages.warning(
             request,
-            "Cette fonctionnalité n'est disponible que pour les étudiants et les professeurs.",
+            "Cette fonctionnalité n'est disponible que pour les professeurs.",
         )
         return redirect("accueil")
+
+    professeur = request.user.profil_professeur
+    sections = (
+        professeur.sections_cours
+        .select_related("cours")
+        .annotate(
+            nb_inscrits=Count(
+                "inscriptions",
+                filter=Q(inscriptions__statut__in=["INSCRIT", "COMPLETE", "EN_COURS"])
+            )
+        )
+        .order_by("-annee", "cours__code")
+    )
+
+    contexte = {
+        "sections": sections,
+        "est_professeur": True,
+        "nombre_cours": sections.count(),
+    }
+    return render(request, "cours/mes_cours.html", contexte)

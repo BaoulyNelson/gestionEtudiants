@@ -12,6 +12,7 @@
     padding-bottom: 18px;
     margin-bottom: 0;
   }
+
   .recap-header-left {
     flex-shrink: 0;
     min-width: 90px;
@@ -19,7 +20,12 @@
     align-items: center;
     justify-content: center;
   }
-  .recap-header-center { flex: 1; text-align: center; }
+
+  .recap-header-center {
+    flex: 1;
+    text-align: center;
+  }
+
   .recap-header-univ {
     font-size: 12px;
     font-weight: 600;
@@ -29,6 +35,7 @@
     margin-bottom: 4px;
     font-family: Arial, sans-serif;
   }
+
   .recap-header-faculty {
     font-size: 20px;
     font-weight: 700;
@@ -38,12 +45,14 @@
     margin-bottom: 6px;
     font-family: "Georgia", serif;
   }
+
   .recap-header-slogan {
     font-size: 11px;
     color: #777;
     font-style: italic;
     font-family: Arial, sans-serif;
   }
+
   .recap-header-right {
     flex-shrink: 0;
     text-align: right;
@@ -52,6 +61,7 @@
     font-family: Arial, sans-serif;
     min-width: 180px;
   }
+
   .recap-header-right p {
     margin: 3px 0;
     display: flex;
@@ -59,7 +69,13 @@
     justify-content: flex-end;
     gap: 6px;
   }
-  .recap-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+
+  .recap-header-right i {
+    color: #1a3a6b;
+    width: 12px;
+    text-align: center;
+  }
+
   .recap-header-divider {
     border: none;
     border-top: 2.5px solid #1a3a6b;
@@ -81,16 +97,38 @@
   }
 
   @media (max-width: 768px) {
-    .recap-header { flex-direction: column; align-items: center; text-align: center; }
-    .recap-header-right { text-align: center; }
-    .recap-header-right p { justify-content: center; }
+    .recap-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .recap-header-right {
+      text-align: center;
+    }
+
+    .recap-header-right p {
+      justify-content: center;
+    }
   }
 
   /* ── Impression ── */
   @media print {
-    .btn, .sidebar, .navbar, footer, .no-print,
-    .topbar, .bottom-nav-bar, .mobile-typewriter-bar { display: none !important; }
-    .content-wrapper { padding: 0 !important; }
+
+    .btn,
+    .sidebar,
+    .navbar,
+    footer,
+    .no-print,
+    .topbar,
+    .bottom-nav-bar,
+    .mobile-typewriter-bar {
+      display: none !important;
+    }
+
+    .content-wrapper {
+      padding: 0 !important;
+    }
   }
 </style>
 {% endblock %}
@@ -102,10 +140,9 @@
 
   <div class="recap-header-left">
     {% if site.logo %}
-      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}"
-           style="height:80px;object-fit:contain;">
+    <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:80px;object-fit:contain;">
     {% else %}
-      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
+    <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
     {% endif %}
   </div>
 
@@ -113,22 +150,22 @@
     <div class="recap-header-univ">Université d'État d'Haïti</div>
     <div class="recap-header-faculty">{{ site.nom_complet }}</div>
     {% if site.slogan %}
-      <div class="recap-header-slogan">{{ site.slogan }}</div>
+    <div class="recap-header-slogan">{{ site.slogan }}</div>
     {% endif %}
   </div>
 
   <div class="recap-header-right">
     {% if site.adresse_ligne1 %}
-      <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
+    <p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>
     {% endif %}
     {% if site.telephone %}
-      <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
+    <p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>
     {% endif %}
     {% if site.email %}
-      <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
+    <p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>
     {% endif %}
     {% if site.lien_facebook %}
-      <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
+    <p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>
     {% endif %}
   </div>
 
@@ -142,9 +179,9 @@
     <select class="form-select" onchange="window.location='?section_id='+this.value">
       <option value="">-- Sélectionner --</option>
       {% for s in toutes_sections %}
-        <option value="{{ s.id }}" {% if section and s.id == section.id %}selected{% endif %}>
-          {{ s.cours.code }} – {{ s.cours.nom }} (S{{ s.numero_section }})
-        </option>
+      <option value="{{ s.id }}" {% if section and s.id == section.id %}selected{% endif %}>
+        {{ s.cours.code }} – {{ s.cours.nom }} (S{{ s.numero_section }})
+      </option>
       {% endfor %}
     </select>
   </div>
@@ -190,6 +227,8 @@
             </tr>
           </thead>
 
+{% load l10n %}
+
           <tbody>
             {% for inscription in inscriptions %}
             <tr>
@@ -199,62 +238,37 @@
               </td>
 
               {% if inscription.note_obj %}
-                <!-- ↓ ID de la Note (pas de l'inscription) comme attendu par la vue admin -->
-                <td>
-                  <input type="number"
-                         name="note_{{ inscription.note_obj.id }}_examen_mi_parcours"
-                         class="form-control form-control-sm text-center"
-                         min="0" max="100" step="0.01"
-                         value="{{ inscription.note_obj.examen_mi_parcours|default_if_none:'' }}"
-                         placeholder="0-100">
-                </td>
-                <td>
-                  <input type="number"
-                         name="note_{{ inscription.note_obj.id }}_examen_final"
-                         class="form-control form-control-sm text-center"
-                         min="0" max="100" step="0.01"
-                         value="{{ inscription.note_obj.examen_final|default_if_none:'' }}"
-                         placeholder="0-100">
-                </td>
-                <td>
-                  <input type="number"
-                         name="note_{{ inscription.note_obj.id }}_travaux"
-                         class="form-control form-control-sm text-center"
-                         min="0" max="100" step="0.01"
-                         value="{{ inscription.note_obj.travaux|default_if_none:'' }}"
-                         placeholder="0-100">
-                </td>
-                <td>
-                  <input type="number"
-                         name="note_{{ inscription.note_obj.id }}_participation"
-                         class="form-control form-control-sm text-center"
-                         min="0" max="100" step="0.01"
-                         value="{{ inscription.note_obj.participation|default_if_none:'' }}"
-                         placeholder="0-100">
-                </td>
-                <td>
-                  <input type="number"
-                         name="note_{{ inscription.note_obj.id }}_projet"
-                         class="form-control form-control-sm text-center"
-                         min="0" max="100" step="0.01"
-                         value="{{ inscription.note_obj.projet|default_if_none:'' }}"
-                         placeholder="0-100">
-                </td>
-                <td class="text-center align-middle">
-                  {% if inscription.note_obj.note_finale %}
-                    <strong class="{% if inscription.note_obj.note_finale >= 60 %}text-success{% else %}text-danger{% endif %}">
-                      {{ inscription.note_obj.note_finale|floatformat:2 }}
-                    </strong>
-                  {% else %}
-                    <span class="text-muted">-</span>
-                  {% endif %}
-                </td>
+              <!-- ↓ ID de l'Inscription — correspond à ce que la vue lit : f"note_{inscription.id}_..." -->
+              <td>
+                <input type="number" name="note_{{ inscription.id }}_examen_mi_parcours" class="form-control form-control-sm text-center" min="0" max="100" step="0.01" value="{{ inscription.note_obj.examen_mi_parcours|default_if_none:''|unlocalize }}" placeholder="0-100">
+              </td>
+              <td>
+                <input type="number" name="note_{{ inscription.id }}_examen_final" class="form-control form-control-sm text-center" min="0" max="100" step="0.01" value="{{ inscription.note_obj.examen_final|default_if_none:''|unlocalize }}" placeholder="0-100">
+              </td>
+              <td>
+                <input type="number" name="note_{{ inscription.id }}_travaux" class="form-control form-control-sm text-center" min="0" max="100" step="0.01" value="{{ inscription.note_obj.travaux|default_if_none:''|unlocalize }}" placeholder="0-100">
+              </td>
+              <td>
+                <input type="number" name="note_{{ inscription.id }}_participation" class="form-control form-control-sm text-center" min="0" max="100" step="0.01" value="{{ inscription.note_obj.participation|default_if_none:''|unlocalize }}" placeholder="0-100">
+              </td>
+              <td>
+                <input type="number" name="note_{{ inscription.id }}_projet" class="form-control form-control-sm text-center" min="0" max="100" step="0.01" value="{{ inscription.note_obj.projet|default_if_none:''|unlocalize }}" placeholder="0-100">
+              </td>
+              <td class="text-center align-middle">
+                {% if inscription.note_obj.note_finale %}
+                <strong class="{% if inscription.note_obj.note_finale >= 60 %}text-success{% else %}text-danger{% endif %}">
+                  {{ inscription.note_obj.note_finale|floatformat:2 }}
+                </strong>
+                {% else %}
+                <span class="text-muted">-</span>
+                {% endif %}
+              </td>
 
               {% else %}
-                <!-- Pas encore de note créée pour cet étudiant -->
-                <td colspan="6" class="text-center text-muted">
-                  <span class="badge bg-secondary">Note non initialisée</span>
-                </td>
+              <!-- Pas encore de note créée pour cet étudiant -->
+              <td colspan="6" class="text-center text-muted">
+                <span class="badge bg-secondary">Note non initialisée</span>
+              </td>
               {% endif %}
             </tr>
             {% endfor %}
@@ -276,9 +290,9 @@
 </div>
 
 {% else %}
-  <div class="alert alert-warning">
-    <i class="fas fa-arrow-up"></i> Sélectionnez une section pour commencer la saisie.
-  </div>
+<div class="alert alert-warning">
+  <i class="fas fa-arrow-up"></i> Sélectionnez une section pour commencer la saisie.
+</div>
 {% endif %}
 
 {% include 'partials/pagination.html' %}

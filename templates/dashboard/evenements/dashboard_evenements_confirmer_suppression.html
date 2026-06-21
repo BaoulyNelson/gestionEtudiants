@@ -1,0 +1,30 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block dash_titre %}Supprimer l'événement{% endblock %}
+{% block dash_contenu %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="dash-card">
+      <div class="dash-card-header"><h5 class="dash-card-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Confirmer la suppression</h5></div>
+      <div class="dash-card-body text-center py-4">
+        <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+        <h5>Voulez-vous supprimer cet événement ?</h5>
+        <p class="text-muted">« {{ evenement.titre }} »</p>
+        <p class="small text-muted mb-1">
+          <i class="fas fa-calendar-alt me-1"></i>Du {{ evenement.date_debut|date:"d/m/Y H:i" }} au {{ evenement.date_fin|date:"d/m/Y H:i" }}
+        </p>
+        {% if evenement.lieu %}
+          <p class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i>{{ evenement.lieu }}</p>
+        {% endif %}
+        <p class="small text-danger mt-2">Cette action est irréversible.</p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <button type="submit" class="btn btn-danger px-4"><i class="fas fa-trash me-2"></i>Supprimer</button>
+            <a href="{% url 'articles:dashboard_evenements' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

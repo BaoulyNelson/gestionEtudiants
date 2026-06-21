@@ -1,0 +1,43 @@
+{% extends 'base_articles.html' %}
+{% block titre %}Recherche{% endblock %}
+{% block contenu %}
+<div class="page-header">
+  <div class="container-xxl px-3">
+    <h1 class="page-header-title">Résultats de recherche</h1>
+    {% if query %}<p class="page-header-desc">{{ nombre_resultats }} résultat{{ nombre_resultats|pluralize }} pour « {{ query }} »</p>{% endif %}
+  </div>
+</div>
+<div class="container-xxl px-3 py-5">
+  <form action="{% url 'articles:recherche' %}" method="get" class="mb-5">
+    <div class="input-group input-group-lg">
+      <input type="search" name="q" class="form-control" placeholder="Rechercher…" value="{{ query }}">
+      <button class="btn btn-primary" type="submit"><i class="fas fa-search me-2"></i>Rechercher</button>
+    </div>
+  </form>
+  <div class="row g-4">
+    {% for article in articles %}
+    <div class="col-md-6 col-lg-4">
+      <article class="article-card h-100">
+        <a href="{{ article.get_absolute_url }}" class="article-card-img-link">
+          {% if article.image_principale %}<img src="{{ article.image_principale.url }}" alt="{{ article.titre }}" class="article-card-img">
+          {% else %}<div class="article-card-img article-card-img--placeholder"><i class="fas fa-newspaper fa-2x"></i></div>{% endif %}
+          {% if article.categorie %}<span class="article-card-cat" style="background:{{ article.categorie.couleur }}">{{ article.categorie.nom }}</span>{% endif %}
+        </a>
+        <div class="article-card-body">
+          <h3 class="article-card-title"><a href="{{ article.get_absolute_url }}">{{ article.titre }}</a></h3>
+          <p class="article-card-excerpt">{{ article.extrait|truncatewords:18 }}</p>
+        </div>
+      </article>
+    </div>
+    {% empty %}
+    {% if query %}
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-search fa-3x text-muted mb-3"></i>
+      <h4>Aucun résultat trouvé</h4>
+      <p class="text-muted">Essayez d'autres mots-clés.</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

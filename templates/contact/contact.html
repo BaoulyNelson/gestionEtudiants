@@ -1,0 +1,67 @@
+{% extends 'base_articles.html' %}
+{% block titre %}Contact{% endblock %}
+{% block contenu %}
+<div class="page-header">
+  <div class="container-xxl px-3">
+    <h1 class="page-header-title">Contactez-nous</h1>
+    <p class="page-header-desc">L'administration FASCH est à votre disposition.</p>
+  </div>
+</div>
+<div class="container-xxl px-3 py-5">
+  <div class="row g-5">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          <h3 class="mb-4"><i class="fas fa-envelope me-2 text-primary"></i>Envoyez-nous un message</h3>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-4">
+              <label for="{{ field.id_for_label }}" class="form-label fw-medium">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}<div class="invalid-feedback d-block text-danger">{% for e in field.errors %}{{ e }}{% endfor %}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-lg px-5">
+              <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+<div class="col-lg-5">
+      <div class="contact-info-card">
+        <h4 class="mb-4 fw-bold">Informations de contact</h4>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div><strong>Email</strong><br><a href="mailto:{{ site.email }}">{{ site.email }}</a></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div><strong>Localisation</strong><br>{{ site.adresse_ligne1|default:"Haïti" }}</div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-clock"></i></div>
+          <div><strong>Disponibilité</strong><br>Lundi – Vendredi, 8h – 17h</div>
+        </div>
+        <hr class="my-4">
+        <h6 class="mb-3">Suivez-nous</h6>
+        <div class="d-flex gap-2">
+          {% if site.lien_facebook %}
+          <a href="{{ site.lien_facebook }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="fab fa-facebook-f"></i></a>
+          {% endif %}
+          {% if site.lien_twitter %}
+          <a href="{{ site.lien_twitter }}" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"><i class="fab fa-twitter"></i></a>
+          {% endif %}
+          {% if site.lien_instagram %}
+          <a href="{{ site.lien_instagram }}" target="_blank" rel="noopener" class="btn btn-outline-danger btn-sm"><i class="fab fa-instagram"></i></a>
+          {% endif %}
+          {% if site.lien_youtube %}
+          <a href="{{ site.lien_youtube }}" target="_blank" rel="noopener" class="btn btn-outline-danger btn-sm"><i class="fab fa-youtube"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

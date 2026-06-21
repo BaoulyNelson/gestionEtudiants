@@ -9,27 +9,102 @@ from applications.cours.models import Cours
 from applications.departements.models import Departement
 from applications.articles.models import Article, Evenement,Annonce
 
-
-# ──────────────────────────────────────────────────────────────
-# PAGES STATIQUES / PORTAILS
-# ──────────────────────────────────────────────────────────────
-def vue_accueil(request):
-    """Page d'accueil"""
-    if request.user.is_authenticated:
-        return redirect("comptes:tableau_bord")
-    return render(request, "accueil.html")
-
-
-
-
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import SiteSettings
-from .forms import FormulaireParametresSite
+from .models import NewsletterInscription, SiteSettings
+from .forms import ExamenForm, FormulaireParametresSite
 from applications.comptes.views import est_administrateur
+import datetime
+from django.utils import timezone
+from .models import SiteSettings, Examen
+from applications.articles.models import Annonce, Evenement
+from utilitaires.roles import est_administrateur,est_etudiant,est_professeur
+# ──────────────────────────────────────────────────────────────
+# PAGES STATIQUES / PORTAILS
+# ──────────────────────────────────────────────────────────────
+from utilitaires.roles import est_administrateur, est_etudiant, est_professeur, est_professeur_ou_admin
+from .models import Examen
+from .forms  import ExamenForm
+
+# ── Accueil — UNE SEULE version ─────────────────────────────
+def vue_accueil(request):
+    """Page d'accueil publique"""
+    if request.user.is_authenticated:
+        return redirect('comptes:tableau_bord')
+
+    aujourdhui = datetime.date.today()
+    annonces   = Annonce.objects.filter(est_active=True).order_by('-date_publication')[:4]
+    evenements = Evenement.objects.filter(date_fin__date__gte=aujourdhui).order_by('date_debut')[:4]
+
+    return render(request, 'index.html', {
+        'annonces':   annonces,
+        'evenements': evenements,
+        'examens':    None,   # non connecté → rien
+    })
 
 
+# ── Liste — tous les connectés ───────────────────────────────
+@login_required
+def vue_liste_examens(request):
+    return render(request, 'portail/examens/liste.html', {
+        'examens_en_cours': Examen.objects.filter(statut='en_cours'),
+        'examens_a_venir':  Examen.objects.filter(statut='a_venir'),
+        'examens_termines': Examen.objects.filter(statut='termine').order_by('-date')[:10],
+    })
+
+
+# ── Créer — prof + admin ─────────────────────────────────────
+@login_required
+@user_passes_test(est_professeur_ou_admin)
+def vue_creer_examen(request):
+    formulaire = ExamenForm(request.POST or None)
+
+    if request.method == 'POST' and formulaire.is_valid():
+        formulaire.save()
+        messages.success(request, "Examen planifié avec succès.")
+        return redirect('portail:liste_examens')
+
+    return render(request, 'portail/examens/formulaire.html', {
+        'formulaire': formulaire,
+        'action':     'Planifier un examen',
+        'examen':     None,
+    })
+
+
+# ── Modifier — prof + admin ──────────────────────────────────
+@login_required
+@user_passes_test(est_professeur_ou_admin)
+def vue_modifier_examen(request, examen_id):
+    examen     = get_object_or_404(Examen, id=examen_id)
+    formulaire = ExamenForm(request.POST or None, instance=examen)
+
+    if request.method == 'POST' and formulaire.is_valid():
+        formulaire.save()
+        messages.success(request, "Examen modifié avec succès.")
+        return redirect('portail:liste_examens')
+
+    return render(request, 'portail/examens/formulaire.html', {
+        'formulaire': formulaire,
+        'action':     "Modifier l'examen",
+        'examen':     examen,
+    })
+
+
+# ── Supprimer — admin seulement ──────────────────────────────
+@login_required
+@user_passes_test(est_administrateur)
+def vue_supprimer_examen(request, examen_id):
+    examen = get_object_or_404(Examen, id=examen_id)
+
+    if request.method == 'POST':
+        examen.delete()
+        messages.success(request, "Examen supprimé.")
+        return redirect('portail:liste_examens')
+
+    return render(request, 'portail/examens/confirmer_suppression.html', {
+        'examen': examen,
+    })
 
 @login_required
 @user_passes_test(est_administrateur)
@@ -220,3 +295,28 @@ def recherche_globale(request):
         'total_resultats': total_resultats,
     }
     return render(request, 'portail/recherche_globale.html', contexte)
+
+
+
+
+
+def vue_newsletter(request):
+    contexte = {"inscrit": False, "erreur": None, "nom_inscrit": ""}
+
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()
+        nom   = request.POST.get("nom", "").strip()
+
+        if not email:
+            contexte["erreur"] = "L'adresse email est obligatoire."
+        else:
+            obj, created = NewsletterInscription.objects.get_or_create(
+                email=email, defaults={"nom": nom}
+            )
+            if created:
+                contexte["inscrit"]     = True
+                contexte["nom_inscrit"] = nom or email
+            else:
+                contexte["erreur"] = "Cette adresse email est déjà inscrite."
+
+    return render(request, "portail/newsletter.html", contexte)

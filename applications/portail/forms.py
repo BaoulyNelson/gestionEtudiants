@@ -1,5 +1,5 @@
 from django import forms
-from .models import SiteSettings
+from .models import Examen, SiteSettings
 
 class FormulaireParametresSite(forms.ModelForm):
     class Meta:
@@ -31,4 +31,39 @@ class FormulaireParametresSite(forms.ModelForm):
             "lien_facebook":     forms.URLInput(attrs={"class": "form-control"}),
             "lien_linkedin":     forms.URLInput(attrs={"class": "form-control"}),
             "annee_copyright":   forms.NumberInput(attrs={"class": "form-control"}),
+        }
+        
+        
+        
+# portail/forms.py
+
+
+
+
+class ExamenForm(forms.ModelForm):
+    class Meta:
+        model  = Examen
+        fields = ['titre', 'date', 'description']
+        # statut est exclu : recalculé automatiquement par Examen.save()
+
+        widgets = {
+            'titre': forms.TextInput(attrs={
+                'class':       'form-control',
+                'placeholder': "Ex : Examen final de Psychologie Clinique",
+            }),
+            'date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type':  'date',
+            }),
+            'description': forms.Textarea(attrs={
+                'class':       'form-control',
+                'rows':        4,
+                'placeholder': "Instructions, matières couvertes, documents autorisés…",
+            }),
+        }
+
+        labels = {
+            'titre':       "Intitulé de l'examen",
+            'date':        "Date de l'examen",
+            'description': "Description / Instructions",
         }

@@ -1,0 +1,1284 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FASCH – Faculté des Sciences Humaines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+  crossorigin="anonymous">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bleu:        #1a3a6b;
+  --bleu-clair:  #2a5298;
+  --rouge:       #8b1a2a;
+  --or:          #c9a84c;
+  --gris-clair:  #f5f6f8;
+  --gris-ligne:  #e2e6ed;
+  --texte:       #1a1a2e;
+  --texte-doux:  #555e72;
+  --blanc:       #ffffff;
+  --police-titre: 'EB Garamond', Georgia, serif;
+  --police-corps: 'Inter', system-ui, sans-serif;
+  --nav-h:       68px;
+  --panneau-w:   320px;
+  --transition:  0.35s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--police-corps); color: var(--texte); background: var(--blanc); overflow-x: hidden; }
+
+/* ═══════════════════════════════════════════════
+   BARRE DE NAVIGATION — DESKTOP
+═══════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--blanc);
+  border-bottom: 1px solid var(--gris-ligne);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 900;
+  box-shadow: 0 2px 12px rgba(26,58,107,.07);
+}
+
+.nav-logo {
+  display: flex;
+  flex-direction: row;        /* ← horizontal */
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo-icone {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.nav-logo-icone i {
+  width: 100%;
+  height: 100%;
+  background: var(--bleu);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--or);
+  font-size: 18px;
+}
+
+.nav-logo-icone img {
+  height: auto;
+  width: 44px;
+  max-width: 80px;
+  object-fit: contain;
+}
+
+.nav-logo-texte { line-height: 1.2; }
+.nav-logo-texte strong {
+  display: block;
+  font-family: var(--police-titre);
+  font-size: 17px;
+  color: #dc2626;             /* ← rouge */
+  letter-spacing: .5px;
+}
+.nav-logo-texte span {
+  font-size: 10.5px;
+  color: var(--texte-doux);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+/* Liens desktop */
+.nav-liens {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+.nav-liens a {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--texte);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: background var(--transition), color var(--transition);
+  letter-spacing: .2px;
+}
+.nav-liens a:hover { background: var(--gris-clair); color: var(--bleu); }
+.nav-liens a.actif { color: var(--bleu); font-weight: 600; }
+
+.nav-droite {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-connexion {
+  background: var(--bleu);
+  color: var(--blanc) !important;
+  border-radius: 6px;
+  padding: 8px 18px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: background var(--transition) !important;
+}
+.btn-connexion:hover { background: var(--bleu-clair) !important; }
+
+/* Burger (masqué desktop) */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 4px;
+}
+.burger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--bleu);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition), width var(--transition);
+  transform-origin: center;
+}
+
+/* ═══════════════════════════════════════════════
+   PANNEAU LATÉRAL MOBILE
+═══════════════════════════════════════════════ */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,15,30,.45);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.overlay.visible { opacity: 1; }
+
+.panneau {
+  position: fixed;
+  top: 0; right: 0;
+  width: var(--panneau-w);
+  max-width: 92vw;
+  height: 100dvh;
+  background: var(--blanc);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--transition);
+  overflow-y: auto;
+}
+.panneau.ouvert { transform: translateX(0); }
+
+/* En-tête panneau */
+.panneau-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--gris-ligne);
+  position: sticky;
+  top: 0;
+  background: var(--blanc);
+  z-index: 1;
+}
+.panneau-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* espace entre logo et texte */
+}
+
+.panneau-logo-icone {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  overflow: hidden; /* clippe le logo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panneau-logo-icone img {
+  height: 36px;
+  width: auto;
+  max-width: 44px; /* ← clé : ne pas laisser l'image dépasser la boîte */
+  object-fit: contain;
+}
+
+.panneau-logo-icone i {
+  font-size: 20px;
+  color: var(--bleu);
+}
+
+.panneau-logo strong {
+  font-size: 16px;
+  color: var(--bleu);
+  margin-left: 4px; /* petit décalage supplémentaire si besoin */
+}
+.panneau-logo strong {
+  font-family: var(--police-titre);
+  font-size: 16px;
+  color: var(--bleu);
+}
+.panneau-fermer {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--gris-clair);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--texte-doux);
+  font-size: 14px;
+  transition: background var(--transition);
+}
+.panneau-fermer:hover { background: var(--gris-ligne); }
+
+/* Corps panneau */
+.panneau-corps { flex: 1; padding: 8px 0 20px; }
+
+.panneau-groupe-titre {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #aab0be;
+  padding: 16px 20px 6px;
+}
+
+.panneau-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--texte);
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.panneau-item:hover { background: var(--gris-clair); color: var(--bleu); }
+.panneau-item i.icone-gauche {
+  width: 20px;
+  color: var(--rouge);
+  font-size: 14px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.panneau-item-label { flex: 1; }
+.panneau-item-fleche {
+  color: #bbb;
+  font-size: 11px;
+}
+
+/* Pied panneau */
+.panneau-pied {
+  padding: 16px 20px;
+  border-top: 1px solid var(--gris-ligne);
+  position: sticky;
+  bottom: 0;
+  background: var(--blanc);
+}
+.panneau-btn-connexion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  background: var(--rouge);
+  color: var(--blanc);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--transition);
+  letter-spacing: .3px;
+}
+.panneau-btn-connexion:hover { background: #6e1520; }
+.panneau-ueh {
+  text-align: center;
+  margin-top: 12px;
+}
+.panneau-ueh a {
+  font-family: var(--police-titre);
+  font-size: 13px;
+  color: var(--rouge);
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+}
+.panneau-ueh span {
+  font-size: 10px;
+  color: var(--texte-doux);
+  display: block;
+  margin-top: 2px;
+  letter-spacing: .5px;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  margin-top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  background:
+    linear-gradient(135deg, rgba(26,58,107,.88) 0%, rgba(139,26,42,.72) 100%),
+    url("{% static 'images/FASCH.png' %}") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  padding: 80px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 80px;
+  background: var(--blanc);
+  clip-path: ellipse(60% 100% at 50% 100%);
+}
+
+.hero-contenu {
+  max-width: 640px;
+  position: relative;
+  z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--or);
+  margin-bottom: 20px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1.5px;
+  background: var(--or);
+  border-radius: 2px;
+}
+.hero h1 {
+  font-family: var(--police-titre);
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 500;
+  color: var(--blanc);
+  line-height: 1.15;
+  margin-bottom: 20px;
+  letter-spacing: -.3px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--or);
+}
+.hero p {
+  font-size: 16px;
+  color: rgba(255,255,255,.82);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 520px;
+}
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.btn-hero-primaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--or);
+  color: var(--texte);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-hero-primaire:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,.35); }
+.btn-hero-secondaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--blanc);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,.45);
+  transition: border-color .2s, background .2s;
+}
+.btn-hero-secondaire:hover { border-color: var(--blanc); background: rgba(255,255,255,.08); }
+
+/* ═══════════════════════════════════════════════
+   CHIFFRES CLÉS
+═══════════════════════════════════════════════ */
+.chiffres {
+  padding: 70px 40px;
+  background: var(--blanc);
+}
+.chiffres-grille {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--gris-ligne);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.chiffre-item {
+  padding: 36px 24px;
+  text-align: center;
+  border-right: 1px solid var(--gris-ligne);
+}
+.chiffre-item:last-child { border-right: none; }
+.chiffre-item-valeur {
+  font-family: var(--police-titre);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--bleu);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.chiffre-item-valeur sup {
+  font-size: 22px;
+  color: var(--rouge);
+}
+.chiffre-item-label {
+  font-size: 12px;
+  color: var(--texte-doux);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════
+   DÉPARTEMENTS
+═══════════════════════════════════════════════ */
+.departements {
+  padding: 70px 40px;
+  background: var(--gris-clair);
+}
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--rouge);
+  margin-bottom: 10px;
+}
+.section-titre {
+  font-family: var(--police-titre);
+  font-size: clamp(26px, 3.5vw, 38px);
+  color: var(--bleu);
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+.dept-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 1000px;
+}
+.dept-carte {
+  background: var(--blanc);
+  border: 1px solid var(--gris-ligne);
+  border-radius: 8px;
+  padding: 28px 22px;
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  display: block;
+}
+.dept-carte:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(26,58,107,.10);
+  border-color: var(--bleu);
+}
+.dept-icone {
+  font-size: 28px;
+  margin-bottom: 14px;
+  display: block;
+}
+.dept-nom {
+  font-family: var(--police-titre);
+  font-size: 18px;
+  color: var(--bleu);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.dept-desc {
+  font-size: 13px;
+  color: var(--texte-doux);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════
+   CTA PLATEFORME
+═══════════════════════════════════════════════ */
+.cta-plateforme {
+  background: var(--bleu);
+  padding: 70px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.cta-plateforme-texte h2 {
+  font-family: var(--police-titre);
+  font-size: clamp(24px, 3vw, 34px);
+  color: var(--blanc);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.cta-plateforme-texte p {
+  font-size: 15px;
+  color: rgba(255,255,255,.75);
+  line-height: 1.6;
+  max-width: 480px;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 30px;
+  background: var(--or);
+  color: var(--texte);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .2s;
+}
+.btn-cta:hover { transform: scale(1.03); }
+
+/* ═══════════════════════════════════════════════
+   PIED DE PAGE
+═══════════════════════════════════════════════ */
+footer {
+  background: #0e1f3d;
+  color: rgba(255,255,255,.6);
+  padding: 50px 40px 24px;
+}
+.footer-grille {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+  max-width: 1000px;
+}
+.footer-logo strong {
+  font-family: var(--police-titre);
+  font-size: 20px;
+  color: var(--blanc);
+  display: block;
+  margin-bottom: 8px;
+}
+.footer-logo p {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--or);
+  margin-bottom: 14px;
+}
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,.55);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color .2s;
+}
+.footer-col a:hover { color: var(--blanc); }
+.footer-bas {
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 20px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE MOBILE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Nav mobile */
+  .nav { padding: 0 18px; }
+  .nav-liens, .nav-droite { display: none; }
+  .burger { display: flex; }
+
+  /* Overlay actif */
+  .overlay { display: block; pointer-events: none; }
+  .overlay.visible { pointer-events: all; }
+
+  /* Hero */
+  .hero { padding: 50px 20px 80px; }
+
+  /* Chiffres */
+  .chiffres { padding: 50px 20px; }
+  .chiffres-grille { grid-template-columns: repeat(2, 1fr); }
+  .chiffre-item { border-right: none; border-bottom: 1px solid var(--gris-ligne); }
+  .chiffre-item:nth-child(odd) { border-right: 1px solid var(--gris-ligne); }
+  .chiffre-item:nth-last-child(-n+2) { border-bottom: none; }
+
+  /* Départements */
+  .departements { padding: 50px 20px; }
+
+  /* CTA */
+  .cta-plateforme { padding: 50px 20px; }
+
+  /* Footer */
+  footer { padding: 40px 20px 20px; }
+  .footer-grille { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bas { flex-direction: column; text-align: center; }
+}
+
+/* Burger animé quand ouvert */
+.burger.ouvert span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.burger.ouvert span:nth-child(2) { opacity: 0; width: 0; }
+.burger.ouvert span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.countdown-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.countdown-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+.countdown-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 36px;
+}
+.countdown-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a3a6b;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.countdown-unit-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: .5px;
+  margin-top: 2px;
+}
+.countdown-sep {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+.countdown-box.en-cours .countdown-label { color: #16a34a; }
+.countdown-box.en-cours .countdown-val   { color: #16a34a; }
+.countdown-box.termine  { opacity: .5; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     NAVIGATION DESKTOP
+════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Navigation principale">
+
+<a href="#" class="nav-logo">
+  <div class="nav-logo-icone">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}">
+    {% else %}
+      <i class="fas fa-graduation-cap"></i>
+    {% endif %}
+  </div>
+  <div class="nav-logo-texte">
+    <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong>
+    <span>{{ site.nom_complet|default:"Faculté des Sciences Humaines" }}</span>
+  </div>
+</a>
+
+  <ul class="nav-liens" role="list">
+    <li><a href="#" class="actif">Accueil</a></li>
+    <li><a href="{% url 'admissions:centre_admissions' %}">Admissions</a></li>
+    <li><a href="#departements">Départements</a></li>
+    <li><a href="{% url 'articles:recherche' %}">Recherche</a></li>
+    <li><a href="{% url 'articles:liste_articles' %}">Actualités</a></li>
+    <li><a href="{% url 'contact:contact' %}">Contact</a></li>
+  </ul>
+
+  <div class="nav-droite">
+    <a href="{% url 'comptes:connexion' %}" class="nav-liens a btn-connexion"
+       style="text-decoration:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;color:#fff;background:var(--bleu);display:inline-flex;align-items:center;gap:6px;">
+      <i class="fas fa-sign-in-alt"></i> Se connecter
+    </a>
+  </div>
+
+  <!-- Burger mobile -->
+  <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="panneau">
+    <span></span><span></span><span></span>
+  </button>
+
+</nav>
+<!-- ── Messages flash ────────────────────────────────────────────────────── -->
+{% if messages %}
+<div class="flash-messages">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 rounded-0 border-0 border-start border-4 border-{{ message.tags }}" role="alert">
+    <div class="container-xxl px-3">
+      {% if message.tags == 'success' %}<i class="fas fa-check-circle me-2 text-success"></i>{% endif %}
+      {% if message.tags == 'danger'  %}<i class="fas fa-exclamation-circle me-2 text-danger"></i>{% endif %}
+      {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle me-2 text-warning"></i>{% endif %}
+      {% if message.tags == 'info'    %}<i class="fas fa-info-circle me-2 text-info"></i>{% endif %}
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<!-- ════════════════════════════════
+     OVERLAY
+════════════════════════════════ -->
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════
+     PANNEAU LATÉRAL MOBILE (droite → gauche)
+════════════════════════════════ -->
+<aside class="panneau" id="panneau" role="dialog" aria-modal="true" aria-label="Menu de navigation">
+
+  <!-- En-tête -->
+<div class="panneau-entete">
+  <div class="panneau-logo">
+    <div class="panneau-logo-icone">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:36px;object-fit:contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap"></i>
+      {% endif %}
+    </div>
+    <strong>{{ site.nom_etablissement|default:"Menu" }}</strong>
+  </div>
+  <button class="panneau-fermer" id="fermer" aria-label="Fermer le menu">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+  <!-- Corps -->
+  <div class="panneau-corps">
+
+    <div class="panneau-groupe-titre">Navigation</div>
+
+    <a href="#" class="panneau-item">
+      <span class="panneau-item-label">Accueil</span>
+      <i class="fas fa-chevron-right panneau-item-fleche"></i>
+    </a>
+    <button class="panneau-item">
+      <span class="panneau-item-label">Gouvernance</span>
+      <i class="fas fa-chevron-down panneau-item-fleche"></i>
+    </button>
+
+
+
+    <a href=" {% url 'articles:recherche' %}" class="panneau-item">
+      <span class="panneau-item-label">Recherche</span>
+      <i class="fas fa-chevron-right panneau-item-fleche"></i>
+
+    </a>
+   
+    <a href="{% url 'articles:liste_articles' %}" class="panneau-item">
+      <span class="panneau-item-label">Actualités</span>
+      <i class="fas fa-chevron-right panneau-item-fleche"></i>
+    </a>
+    <a href="{% url 'contact:contact' %}" class="panneau-item">
+      <span class="panneau-item-label">Contact</span>
+      <i class="fas fa-chevron-right panneau-item-fleche"></i>
+    </a>
+
+
+
+    <div class="panneau-groupe-titre">Liens rapides</div>
+
+{% if user.is_authenticated %}
+  <a href="{% url 'comptes:tableau_bord' %}" class="panneau-item">
+    <i class="fas fa-tachometer-alt icone-gauche"></i>
+    <span class="panneau-item-label">Mon tableau de bord</span>
+    <i class="fas fa-chevron-right panneau-item-fleche"></i>
+  </a>
+{% else %}
+  <a href="{% url 'comptes:connexion' %}" class="panneau-item">
+    <i class="fas fa-user-circle icone-gauche"></i>
+    <span class="panneau-item-label">Plateforme</span>
+    <i class="fas fa-chevron-right panneau-item-fleche"></i>
+  </a>
+{% endif %}
+  <a href="{% url 'portail:newsletter' %}" class="panneau-item">
+    <i class="fas fa-envelope icone-gauche"></i>
+    <span class="panneau-item-label">Newsletter</span>
+  </a>
+
+  </div>
+
+  <!-- Pied -->
+  <div class="panneau-pied">
+    <a href="{% url 'comptes:connexion' %}" class="panneau-btn-connexion">
+      <i class="fas fa-sign-in-alt"></i> Se connecter
+    </a>
+    <div class="panneau-ueh">
+      <a href="#">Université d'État d'Haïti</a>
+      <span>Savoir pour Servir</span>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ════════════════════════════════
+     HÉRO
+════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-titre">
+  <div class="hero-contenu">
+    <div class="hero-eyebrow">Depuis 1974 · Port-au-Prince</div>
+    <h1 id="hero-titre">Former les <em>esprits critiques</em> de demain</h1>
+    <p>La Faculté des Sciences Humaines de l'UEH vous ouvre les portes de la psychologie, de la sociologie, des sciences de la communication et du travail social.</p>
+    <div class="hero-actions">
+      <a href="#departements" class="btn-hero-primaire">
+        <i class="fas fa-compass"></i> Découvrir les départements
+      </a>
+      <a href="{% url 'comptes:tableau_bord' %}" class="btn-hero-secondaire">
+        <i class="fas fa-sign-in-alt"></i> Espace étudiant
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CHIFFRES CLÉS
+════════════════════════════════ -->
+<section class="chiffres" aria-label="Chiffres clés">
+  <div class="chiffres-grille">
+    <div class="chiffre-item">
+      <div class="chiffre-item-valeur">4<sup>+</sup></div>
+      <div class="chiffre-item-label">Départements</div>
+    </div>
+    <div class="chiffre-item">
+      <div class="chiffre-item-valeur">2 000<sup>+</sup></div>
+      <div class="chiffre-item-label">Étudiants</div>
+    </div>
+    <div class="chiffre-item">
+      <div class="chiffre-item-valeur">60<sup>+</sup></div>
+      <div class="chiffre-item-label">Professeurs</div>
+    </div>
+    <div class="chiffre-item">
+      <div class="chiffre-item-valeur">64<sup>ans</sup></div>
+      <div class="chiffre-item-label">D'histoire</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     DÉPARTEMENTS
+════════════════════════════════ -->
+<section class="departements" id="departements" aria-labelledby="dept-titre">
+  <div class="section-eyebrow">Nos départements</div>
+  <h2 class="section-titre" id="dept-titre">Quatre disciplines, une vocation</h2>
+  <div class="dept-grille">
+    <a href="#" class="dept-carte">
+      <span class="dept-icone">🧠</span>
+      <div class="dept-nom">Psychologie</div>
+      <div class="dept-desc">Comprendre l'esprit humain, ses mécanismes et ses expressions sociales.</div>
+    </a>
+    <a href="#" class="dept-carte">
+      <span class="dept-icone">📡</span>
+      <div class="dept-nom">Communication Sociale</div>
+      <div class="dept-desc">Analyser et produire les discours qui façonnent la société contemporaine.</div>
+    </a>
+    <a href="#" class="dept-carte">
+      <span class="dept-icone">🌍</span>
+      <div class="dept-nom">Sociologie</div>
+      <div class="dept-desc">Décrypter les dynamiques collectives et les structures du lien social.</div>
+    </a>
+    <a href="#" class="dept-carte">
+      <span class="dept-icone">🤝</span>
+      <div class="dept-nom">Travail Social</div>
+      <div class="dept-desc">Intervenir sur le terrain auprès des individus et des communautés vulnérables.</div>
+    </a>
+  </div>
+</section>
+<!-- ── Examens à venir ── -->
+{% if examens %}
+<section class="py-5">
+  <div class="container">
+    <h2 class="mb-4"><i class="fas fa-calendar-check me-2" style="color:var(--primary)"></i>Examens à venir</h2>
+    <div class="row g-3">
+      {% for examen in examens %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <span class="badge mb-2
+              {% if examen.statut == 'en_cours' %}bg-success
+              {% else %}bg-primary{% endif %}">
+              {{ examen.get_statut_display }}
+            </span>
+            <h5 class="card-title">{{ examen.titre }}</h5>
+            <p class="text-muted mb-0">
+              <i class="fas fa-calendar me-1"></i>{{ examen.date|date:"d F Y" }}
+            </p>
+            {% if examen.description %}
+              <p class="card-text mt-2 small">{{ examen.description|truncatewords:20 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Annonces ── -->
+{% if annonces %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="mb-4"><i class="fas fa-bullhorn me-2" style="color:var(--primary)"></i>Annonces</h2>
+    <div class="row g-3">
+      {% for annonce in annonces %}
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          {% if annonce.image %}
+            <img src="{{ annonce.image.url }}" class="card-img-top" style="height:160px;object-fit:cover;">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ annonce.titre }}</h5>
+            <p class="card-text small text-muted">{{ annonce.contenu|truncatewords:25 }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">
+                <i class="fas fa-calendar me-1"></i>{{ annonce.date_publication|date:"d/m/Y" }}
+              </small>
+              {% if annonce.lieu %}
+                <small class="text-muted">
+                  <i class="fas fa-map-marker-alt me-1"></i>{{ annonce.lieu }}
+                </small>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if evenements %}
+<section class="py-5">
+  <div class="container">
+    <h2 class="mb-4">
+      <i class="fas fa-calendar-star me-2" style="color:var(--primary)"></i>
+      Événements à venir
+    </h2>
+    <div class="row g-4">
+      {% for evt in evenements %}
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+          {% if evt.image %}
+            <img src="{{ evt.image.url }}" class="card-img-top" style="height:140px;object-fit:cover;">
+          {% else %}
+            <div style="height:140px;background:linear-gradient(135deg,#1a3a6b,#2d5a9e);display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-calendar-alt" style="font-size:40px;color:rgba(255,255,255,0.4);"></i>
+            </div>
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <span class="badge mb-2" style="background:var(--primary);width:fit-content;">
+              {{ evt.get_status }}
+            </span>
+            <h6 class="card-title fw-bold">{{ evt.titre }}</h6>
+            {% if evt.lieu %}
+              <p class="small text-muted mb-2">
+                <i class="fas fa-map-marker-alt me-1"></i>{{ evt.lieu }}
+              </p>
+            {% endif %}
+
+            <!-- Compte à rebours -->
+            <div class="mt-auto">
+              <div class="countdown-box" data-date="{{ evt.date_debut|date:'Y-m-d H:i:s' }}">
+                <div class="countdown-label">Commence dans</div>
+                <div class="countdown-timer">
+                  <div class="countdown-unit">
+                    <span class="countdown-val" data-unit="j">--</span>
+                    <span class="countdown-unit-label">J</span>
+                  </div>
+                  <span class="countdown-sep">:</span>
+                  <div class="countdown-unit">
+                    <span class="countdown-val" data-unit="h">--</span>
+                    <span class="countdown-unit-label">H</span>
+                  </div>
+                  <span class="countdown-sep">:</span>
+                  <div class="countdown-unit">
+                    <span class="countdown-val" data-unit="m">--</span>
+                    <span class="countdown-unit-label">Min</span>
+                  </div>
+                  <span class="countdown-sep">:</span>
+                  <div class="countdown-unit">
+                    <span class="countdown-val" data-unit="s">--</span>
+                    <span class="countdown-unit-label">Sec</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+<!-- ════════════════════════════════
+     CTA PLATEFORME
+════════════════════════════════ -->
+<section class="cta-plateforme" aria-labelledby="cta-titre">
+  <div class="cta-plateforme-texte">
+    <h2 id="cta-titre">Accédez à votre espace académique</h2>
+    <p>Consultez vos notes, votre relevé de notes, votre palmarès et suivez votre progression en temps réel sur la plateforme FASCH.</p>
+  </div>
+  <a href="/comptes/connexion/" class="btn-cta">
+    <i class="fas fa-arrow-right"></i> Se connecter à la plateforme
+  </a>
+</section>
+
+<!-- ════════════════════════════════
+     PIED DE PAGE
+════════════════════════════════ -->
+  <footer>
+  <div class="footer-grille">
+
+    <div class="footer-logo">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:48px;object-fit:contain;margin-bottom:8px;">
+      {% else %}
+        <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong>
+      {% endif %}
+      <p>{{ site.slogan|default:"Faculté des Sciences Humaines de l'Université d'État d'Haïti." }}</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="#">Accueil</a>
+      <a href="{% url 'admissions:centre_admissions' %}">Admissions</a>
+      <a href="#departements">Départements</a>
+      <a href="{% url 'articles:recherche' %}">Recherche</a>
+      <a href="{% url 'contact:contact' %}">Contact</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      {% if site.adresse_ligne1 %}
+        <a href="#"><i class="fas fa-map-marker-alt" style="width:14px;margin-right:6px;"></i>{{ site.adresse_ligne1 }}</a>
+      {% endif %}
+      {% if site.telephone %}
+        <a href="tel:{{ site.telephone }}"><i class="fas fa-phone" style="width:14px;margin-right:6px;"></i>{{ site.telephone }}</a>
+      {% endif %}
+      {% if site.email %}
+        <a href="mailto:{{ site.email }}"><i class="fas fa-envelope" style="width:14px;margin-right:6px;"></i>{{ site.email }}</a>
+      {% endif %}
+      {% if site.lien_facebook %}
+        <a href="{{ site.lien_facebook }}" target="_blank" rel="noopener"><i class="fab fa-facebook" style="width:14px;margin-right:6px;"></i>Facebook</a>
+      {% endif %}
+    </div>
+
+  </div>
+  <div class="footer-bas">
+    <span>© {% now "Y" %} {{ site.nom_etablissement|default:"FASCH" }} – {{ site.nom_complet|default:"Université d'État d'Haïti" }}</span>
+    {% if site.slogan %}
+      <span>{{ site.slogan }}</span>
+    {% endif %}
+  </div>
+</footer>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"></script>
+<!-- ════════════════════════════════
+     JAVASCRIPT PANNEAU
+════════════════════════════════ -->
+
+<script>
+document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('nl-email').value;
+  const nom   = document.getElementById('nl-nom').value;
+  if (!email) return;
+
+  fetch("{% url 'portail:newsletter' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+    body: JSON.stringify({ email, nom }),
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('newsletter-form').style.display = 'none';
+    document.getElementById(data.ok ? 'newsletter-success' : 'newsletter-error').style.display = 'block';
+  })
+  .catch(() => {
+    document.getElementById('newsletter-error').style.display = 'block';
+  });
+});
+</script>
+<script>
+const burger  = document.getElementById('burger');
+const panneau = document.getElementById('panneau');
+const overlay = document.getElementById('overlay');
+const fermer  = document.getElementById('fermer');
+
+function ouvrirPanneau() {
+  panneau.classList.add('ouvert');
+  overlay.classList.add('visible');
+  burger.classList.add('ouvert');
+  burger.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+  fermer.focus();
+}
+
+function fermerPanneau() {
+  panneau.classList.remove('ouvert');
+  overlay.classList.remove('visible');
+  burger.classList.remove('ouvert');
+  burger.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+  burger.focus();
+}
+
+burger.addEventListener('click', ouvrirPanneau);
+fermer.addEventListener('click', fermerPanneau);
+overlay.addEventListener('click', fermerPanneau);
+
+// Fermer avec Échap
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && panneau.classList.contains('ouvert')) fermerPanneau();
+});
+
+// Piège de focus dans le panneau (accessibilité)
+panneau.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const focusables = panneau.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+  const premier = focusables[0];
+  const dernier = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === premier) {
+    e.preventDefault(); dernier.focus();
+  } else if (!e.shiftKey && document.activeElement === dernier) {
+    e.preventDefault(); premier.focus();
+  }
+});
+</script>
+<script>
+(function () {
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick(box) {
+    const cible = new Date(box.dataset.date).getTime();
+    const maintenant = Date.now();
+    const diff = cible - maintenant;
+
+    if (diff <= 0) {
+      // Événement en cours ou terminé
+      box.classList.add('en-cours');
+      box.querySelector('.countdown-label').textContent = 'En cours';
+      box.querySelectorAll('.countdown-val').forEach(el => el.textContent = '00');
+      return;
+    }
+
+    const j  = Math.floor(diff / 86400000);
+    const h  = Math.floor((diff % 86400000) / 3600000);
+    const m  = Math.floor((diff % 3600000)  / 60000);
+    const s  = Math.floor((diff % 60000)    / 1000);
+
+    box.querySelector('[data-unit="j"]').textContent = pad(j);
+    box.querySelector('[data-unit="h"]').textContent = pad(h);
+    box.querySelector('[data-unit="m"]').textContent = pad(m);
+    box.querySelector('[data-unit="s"]').textContent = pad(s);
+  }
+
+  document.querySelectorAll('.countdown-box').forEach(box => {
+    tick(box);
+    setInterval(() => tick(box), 1000);
+  });
+})();
+</script>
+</body>
+</html>

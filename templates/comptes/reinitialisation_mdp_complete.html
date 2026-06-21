@@ -1,6 +1,7 @@
-{% extends "base.html" %}
-
-{% block authenticated_content %}
+{% extends "base_public.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+{% block public_content %}
 <h2>Mot de passe réinitialisé</h2>
 <p>Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.</p>
 <a href="{% url 'comptes:connexion' %}" class="btn btn-primary">Connexion</a>

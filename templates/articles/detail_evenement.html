@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ evenement.titre }} – {{ site.nom_etablissement|default:"FASCH" }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bleu: #1a3a6b; --bleu-fonce: #122d56; --bleu-clair: #e8eef7;
+      --or: #c9a84c; --or-clair: #f7f0dc;
+      --blanc: #ffffff; --texte: #1e2535; --texte-doux: #6b7280;
+      --gris-ligne: #e5e7eb; --gris-bg: #f4f6fa;
+      --police-titre: 'Georgia', serif;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gris-bg); color: var(--texte); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .entete { background: var(--bleu); color: #fff; padding: 18px 40px; display: flex; align-items: center; gap: 14px; }
+    .entete-logo { height: 44px; width: auto; object-fit: contain; }
+    .entete-logo-icone { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--or); }
+    .entete-texte strong { display: block; font-family: var(--police-titre); font-size: 18px; }
+    .entete-texte span   { font-size: 11px; opacity: .7; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .fil-ariane { background: var(--blanc); border-bottom: 1px solid var(--gris-ligne); padding: 10px 40px; font-size: 13px; color: var(--texte-doux); }
+    .fil-ariane a { color: var(--bleu); text-decoration: none; }
+    .fil-ariane a:hover { text-decoration: underline; }
+    .fil-ariane span { margin: 0 6px; }
+
+    .ev-hero {
+      background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-fonce) 100%);
+      color: #fff; padding: 48px 40px;
+      position: relative; overflow: hidden;
+    }
+    .ev-hero::after {
+      content: ''; position: absolute; right: -80px; top: -80px;
+      width: 360px; height: 360px;
+      background: rgba(255,255,255,.04); border-radius: 50%;
+    }
+    .ev-hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    .ev-hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--or); color: var(--bleu-fonce);
+      font-size: 12px; font-weight: 700;
+      padding: 6px 14px; border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .ev-hero h1 { font-family: var(--police-titre); font-size: 2rem; line-height: 1.3; margin-bottom: 16px; max-width: 740px; }
+    .ev-hero-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; opacity: .82; }
+    .ev-hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .ev-hero-meta i { color: var(--or); }
+
+    main { flex: 1; }
+    .page-detail { max-width: 1060px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+
+    .ev-corps { display: flex; flex-direction: column; gap: 24px; }
+    .ev-carte { background: var(--blanc); border-radius: 14px; box-shadow: 0 2px 12px rgba(26,58,107,.07); overflow: hidden; }
+    .ev-image { width: 100%; max-height: 380px; object-fit: cover; display: block; }
+    .ev-image-ph {
+      width: 100%; height: 220px; background: var(--bleu-clair);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; color: var(--bleu);
+    }
+    .ev-contenu { padding: 28px; font-size: 15px; line-height: 1.8; color: var(--texte); }
+
+    .nav-retour {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--bleu);
+      text-decoration: none;
+    }
+    .nav-retour i { color: var(--or); }
+
+    .ev-sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .ev-info-carte { background: var(--blanc); border-radius: 14px; padding: 22px; box-shadow: 0 2px 12px rgba(26,58,107,.07); }
+    .ev-info-carte h3 { font-family: var(--police-titre); font-size: 1rem; color: var(--bleu); margin-bottom: 16px; }
+    .ev-info-ligne { display: flex; gap: 12px; margin-bottom: 14px; }
+    .ev-info-ligne i { color: var(--or); width: 16px; margin-top: 2px; }
+    .info-label { font-size: 11px; color: var(--texte-doux); text-transform: uppercase; letter-spacing: .5px; }
+    .info-val { font-size: 13.5px; font-weight: 600; }
+
+    .ev-recents { display: flex; flex-direction: column; gap: 12px; }
+    .ev-recent { display: flex; gap: 12px; text-decoration: none; color: inherit; }
+    .ev-recent img { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+    .er-titre { font-size: 13px; font-weight: 600; color: var(--bleu); line-height: 1.3; }
+    .er-date { font-size: 11.5px; color: var(--texte-doux); margin-top: 4px; }
+
+    footer { background: var(--bleu-fonce); color: rgba(255,255,255,.6); text-align: center; padding: 18px 20px; font-size: 13px; margin-top: auto; }
+    footer strong { color: #fff; }
+
+    @media (max-width: 860px) {
+      .page-detail { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .entete { padding: 14px 20px; }
+      .fil-ariane { padding: 10px 20px; }
+      .ev-hero { padding: 36px 20px; }
+      .ev-hero h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mt-4">
+  {% include 'partials/header.html' %}
+</div>
+
+  <nav class="fil-ariane">
+    <a href="{% url 'portail:accueil' %}">Accueil</a>
+    <span>›</span>
+    <a href="{% url 'articles:liste_evenements' %}">Événements</a>
+    <span>›</span>
+    <strong>{{ evenement.titre|truncatechars:48 }}</strong>
+  </nav>
+
+  {% with statut=evenement.get_statut %}
+  <div class="ev-hero">
+    <div class="ev-hero-inner">
+      <span class="ev-hero-badge">
+        {% if statut == 'En cours' %}<i class="fas fa-play-circle"></i>{% else %}<i class="fas fa-calendar-alt"></i>{% endif %}
+        {{ statut }}
+      </span>
+      <h1>{{ evenement.titre }}</h1>
+      <div class="ev-hero-meta">
+        <span><i class="fas fa-calendar-alt"></i> {{ evenement.date_debut|date:"d F Y, H:i" }}</span>
+        {% if evenement.lieu %}<span><i class="fas fa-map-marker-alt"></i> {{ evenement.lieu }}</span>{% endif %}
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+
+  <main>
+    <div class="page-detail">
+
+      <div class="ev-corps">
+        <div class="ev-carte">
+          {% if evenement.image %}
+            <img src="{{ evenement.image.url }}" alt="{{ evenement.titre }}" class="ev-image">
+          {% else %}
+            <div class="ev-image-ph"><i class="fas fa-calendar-alt"></i></div>
+          {% endif %}
+          <div class="ev-contenu">{{ evenement.description|linebreaks }}</div>
+        </div>
+
+        <a href="{% url 'articles:liste_evenements' %}" class="nav-retour">
+          <i class="fas fa-arrow-left"></i> Retour aux événements
+        </a>
+      </div>
+
+      <aside class="ev-sidebar">
+        <div class="ev-info-carte">
+          <h3>Détails de l'événement</h3>
+
+          <div class="ev-info-ligne">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+              <div class="info-label">Début</div>
+              <div class="info-val">{{ evenement.date_debut|date:"d F Y à H:i" }}</div>
+            </div>
+          </div>
+
+          <div class="ev-info-ligne">
+            <i class="fas fa-calendar-check"></i>
+            <div>
+              <div class="info-label">Fin</div>
+              <div class="info-val">{{ evenement.date_fin|date:"d F Y à H:i" }}</div>
+            </div>
+          </div>
+
+          {% if evenement.lieu %}
+            <div class="ev-info-ligne">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <div class="info-label">Lieu</div>
+                <div class="info-val">{{ evenement.lieu }}</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if evenements_recents %}
+          <div class="ev-info-carte">
+            <h3>Autres événements</h3>
+            <div class="ev-recents">
+              {% for e in evenements_recents %}
+                <a href="{% url 'articles:detail_evenement' e.slug %}" class="ev-recent">
+                  {% if e.image %}<img src="{{ e.image.url }}" alt="{{ e.titre }}">{% endif %}
+                  <div>
+                    <div class="er-titre">{{ e.titre|truncatechars:50 }}</div>
+                    <div class="er-date">{{ e.date_debut|date:"d M Y" }}</div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </aside>
+
+    </div>
+  </main>
+
+  <footer>
+    © {% now "Y" %} <strong>{{ site.nom_etablissement|default:"FASCH" }}</strong> –
+    {{ site.nom_complet|default:"Université d'État d'Haïti" }}
+  </footer>
+
+</body>
+</html>

@@ -7,180 +7,193 @@
   <title>Connexion — FASCH</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Georgia&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
-      font-family: 'Inter', sans-serif;
-      background: #fff;
-      background-image: url("{% static 'images/images.jpg' %}");
-      background-size: cover;
-      background-position: center;
-    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
-    /* ── Layout ─────────────────────────────────────────── */
-    .page {
+    /* ══════════════════════════════════════
+       LAYOUT SPLIT
+    ══════════════════════════════════════ */
+    .split {
       display: flex;
       min-height: 100vh;
     }
 
-    /* ── LEFT PANEL ─────────────────────────────────────── */
-    .panel-left {
-      flex: 0 0 50%;
+    /* ── Panneau gauche ── */
+    .split-left {
+      flex: 1;
+      background: linear-gradient(160deg, #7a1c1c 0%, #9c1f1f 35%, #1a2a5e 100%);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2.5rem;
       position: relative;
       overflow: hidden;
-      background: #0a0f2e;
     }
 
-    /* Multi-layer gradient sky */
-    .panel-left::before {
+    /* Cercles décoratifs */
+    .split-left::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 70% 85%, #ff8c3a33 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 30% 90%, #ff6b2b22 0%, transparent 55%),
-        radial-gradient(ellipse 100% 80% at 50% 100%, #1a0a3a88 0%, transparent 65%),
-        linear-gradient(175deg, #0d1b4b 0%, #1a2a7a 30%, #2d3fa0 55%, #c06030 78%, #e8803a 90%, #fdb96b 100%);
-      z-index: 0;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      border: 60px solid rgba(255,255,255,0.04);
+      top: -120px; left: -120px;
+    }
+    .split-left::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 50px solid rgba(255,255,255,0.04);
+      bottom: -80px; right: -80px;
     }
 
-    /* Stars */
-    .panel-left::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(1px 1px at 10% 8%, #fff 0%, transparent 100%),
-        radial-gradient(1px 1px at 25% 3%, #fff 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 40% 6%, #fff 0%, transparent 100%),
-        radial-gradient(1px 1px at 55% 2%, #fff 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 9%, #fff 0%, transparent 100%),
-        radial-gradient(1px 1px at 85% 4%, #fff 0%, transparent 100%),
-        radial-gradient(1px 1px at 15% 15%, #fff9 0%, transparent 100%),
-        radial-gradient(1px 1px at 60% 12%, #fff9 0%, transparent 100%),
-        radial-gradient(1px 1px at 90% 18%, #fff9 0%, transparent 100%),
-        radial-gradient(1px 1px at 5% 22%, #fff7 0%, transparent 100%),
-        radial-gradient(1px 1px at 35% 18%, #fff7 0%, transparent 100%);
+    .left-logo {
+      margin-bottom: 2rem;
+      z-index: 1;
+      background: #fff;
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .left-logo img {
+      max-height: 90px;
+      max-width: 220px;
+      object-fit: contain;
+      display: block;
+    }
+    .left-logo-placeholder {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .left-logo-placeholder i { font-size: 42px; color: #fff; }
+
+    .left-title {
+      font-family: 'Georgia', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      z-index: 1;
+    }
+    .left-subtitle {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 2.5rem;
       z-index: 1;
     }
 
-    .panel-left-content {
-      position: relative;
-      z-index: 2;
-      height: 100%;
+    .left-divider {
+      width: 50px; height: 3px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 2px;
+      margin-bottom: 2.5rem;
+      z-index: 1;
+    }
+
+    .left-features {
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 0;
+      gap: 1.1rem;
+      z-index: 1;
+      width: 100%;
+      max-width: 340px;
     }
-
-    /* SVG scene */
-    .scene { width: 100%; display: block; }
-
-    /* Arc trajectory */
-    .arc-path {
-      fill: none;
-      stroke: url(#arcGrad);
-      stroke-width: 2;
-      opacity: 0.85;
-      filter: drop-shadow(0 0 6px #a0c8ff88);
-    }
-
-    /* Brand badge top-left */
-    .brand-badge {
-      position: absolute;
-      top: 2rem;
-      left: 2rem;
-      z-index: 10;
+    .left-feature {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.85rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 0.85rem 1.1rem;
+    }
+    .left-feature-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .left-feature-icon i { color: #fff; font-size: 15px; }
+    .left-feature-text strong {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
       color: #fff;
     }
-    .brand-badge .logo-ring {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      border: 1.5px solid rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-    }
-    .brand-badge .logo-name {
-      font-weight: 700;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
-      text-shadow: 0 1px 6px #0006;
+    .left-feature-text span {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
     }
 
-    /* Caption bottom-left */
-    .panel-caption {
+    .left-footer {
       position: absolute;
-      bottom: 2.2rem;
-      left: 2rem;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.78rem;
-      letter-spacing: 0.03em;
-      text-shadow: 0 1px 4px #0008;
-      z-index: 10;
+      bottom: 1.5rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      z-index: 1;
     }
 
-    /* ── RIGHT PANEL ─────────────────────────────────────── */
-    .panel-right {
-      flex: 0 0 50%;
+    /* ── Panneau droit ── */
+    .split-right {
+      width: 480px;
+      flex-shrink: 0;
+      background: #f6f7fb;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 3rem 2rem;
-      background: #ffffff;
+      padding: 2.5rem 2rem;
+      overflow-y: auto;
     }
 
-    .form-box {
-      width: 100%;
-      max-width: 420px;
-    }
+    .form-box { width: 100%; max-width: 400px; }
 
-    /* Heading */
-    .form-box h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #1a1a2e;
-      line-height: 1.2;
-      margin-bottom: 0.45rem;
-    }
-    .form-box h1 span { color: #1a5ce6; }
-
-    .form-box .subtitle {
-      color: #6b7280;
-      font-size: 0.92rem;
+    .form-heading {
       margin-bottom: 2rem;
+    }
+    .form-heading h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.4rem;
+    }
+    .form-heading p {
+      font-size: 0.875rem;
+      color: #6b7280;
     }
 
     /* Alert messages */
     .alert {
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
       display: flex;
       align-items: flex-start;
       gap: 0.5rem;
     }
-    .alert-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .alert-error   { background: #fef2f2; color: #7a2424; border: 1px solid #fecaca; }
     .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
     .alert-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
     .alert-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
-    /* Field group */
+    /* Fields */
     .field-group { margin-bottom: 1.2rem; }
-
     .field-group label {
       display: block;
       font-size: 0.875rem;
@@ -188,450 +201,278 @@
       color: #374151;
       margin-bottom: 0.45rem;
     }
+    .field-hint   { font-size: 0.78rem; color: #9ca3af; margin-top: 0.35rem; }
+    .invalid-msg  { font-size: 0.8rem;  color: #b91c1c; margin-top: 0.35rem; }
 
-    /* Input wrapper with icon */
-    .input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
+    .input-wrap { position: relative; display: flex; align-items: center; }
     .input-wrap .icon-left {
-      position: absolute;
-      left: 0.9rem;
-      color: #9ca3af;
-      font-size: 0.9rem;
-      pointer-events: none;
-      z-index: 1;
+      position: absolute; left: 0.9rem;
+      color: #9ca3af; font-size: 0.9rem;
+      pointer-events: none; z-index: 1;
     }
     .input-wrap input {
-      width: 100%;
-      height: 48px;
+      width: 100%; height: 48px;
       padding: 0 2.8rem 0 2.6rem;
       border: 1.5px solid #e5e7eb;
       border-radius: 10px;
-      background: #f9fafb;
-      font-size: 0.92rem;
-      color: #111827;
-      outline: none;
-      transition: border-color .18s, box-shadow .18s, background .18s;
+      font-size: 0.95rem;
       font-family: inherit;
-    }
-    .input-wrap input::placeholder { color: #9ca3af; }
-    .input-wrap input:focus {
-      border-color: #1a5ce6;
+      color: #1a1a2e;
       background: #fff;
-      box-shadow: 0 0 0 3px #1a5ce620;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-wrap input:focus {
+      border-color: #1a3a6b;
+      box-shadow: 0 0 0 3px rgba(26,58,107,0.1);
     }
     .input-wrap input.is-invalid { border-color: #ef4444; }
-
-    /* Eye / clear button */
-    .input-wrap .icon-right {
-      position: absolute;
-      right: 0.85rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #9ca3af;
-      font-size: 0.88rem;
-      padding: 0;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      transition: color .15s;
-    }
-    .input-wrap .icon-right:hover { color: #4b5563; }
-
-    .field-hint {
-      font-size: 0.78rem;
-      color: #9ca3af;
-      margin-top: 0.3rem;
+    .icon-right {
+      position: absolute; right: 0.9rem;
+      background: none; border: none;
+      color: #9ca3af; cursor: pointer;
+      font-size: 0.95rem; padding: 0.25rem;
     }
 
-    .invalid-msg {
-      font-size: 0.8rem;
-      color: #ef4444;
-      margin-top: 0.3rem;
-    }
-
-    /* Forgot password */
     .forgot-row {
       text-align: right;
-      margin-top: -0.4rem;
       margin-bottom: 1.5rem;
     }
     .forgot-row a {
       font-size: 0.85rem;
-      color: #1a5ce6;
+      color: #1a3a6b;
       text-decoration: none;
       font-weight: 500;
-      transition: color .15s;
     }
-    .forgot-row a:hover { color: #1348c2; text-decoration: underline; }
+    .forgot-row a:hover { text-decoration: underline; }
 
-    /* Sign-in button */
     .btn-signin {
-      width: 100%;
-      height: 50px;
-      background: linear-gradient(135deg, #1a5ce6 0%, #2563eb 100%);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      border: none;
+      width: 100%; height: 50px;
+      background: #1a3a6b;
+      color: #fff; border: none;
       border-radius: 10px;
-      cursor: pointer;
-      letter-spacing: 0.02em;
-      transition: transform .15s, box-shadow .15s, background .2s;
-      box-shadow: 0 4px 14px #1a5ce640;
-      margin-bottom: 1.5rem;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .btn-signin:hover {
-      background: linear-gradient(135deg, #1348c2 0%, #1d4ed8 100%);
-      box-shadow: 0 6px 20px #1a5ce655;
-      transform: translateY(-1px);
-    }
-    .btn-signin:active { transform: translateY(0); }
-
-    /* Divider */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-      color: #9ca3af;
-      font-size: 0.82rem;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e5e7eb;
-    }
-
-    /* Social buttons */
-    .social-row {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
+      font-size: 0.95rem; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      display: flex; align-items: center;
+      justify-content: center; gap: 0.5rem;
+      transition: background 0.15s;
       margin-bottom: 1.5rem;
     }
-    .social-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1.5px solid #e5e7eb;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: transform .15s, box-shadow .15s, border-color .15s;
-      text-decoration: none;
-    }
-    .social-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px #0001;
-      border-color: #d1d5db;
-    }
-    /* Google colors */
-    .social-btn.google { color: #ea4335; }
-    /* Facebook */
-    .social-btn.facebook {
-      background: #1877f2;
-      border-color: #1877f2;
-      color: #fff;
-    }
-    /* LinkedIn */
-    .social-btn.linkedin {
-      background: #0a66c2;
-      border-color: #0a66c2;
-      color: #fff;
-    }
+    .btn-signin:hover { background: #0f2557; }
 
-    /* Footer text */
-    .signup-row {
-      text-align: center;
-      font-size: 0.875rem;
-      color: #6b7280;
-      margin-bottom: 1.5rem;
-    }
-    .signup-row a {
-      color: #1a5ce6;
-      font-weight: 700;
-      text-decoration: none;
-      transition: color .15s;
-    }
-    .signup-row a:hover { color: #1348c2; }
-
-    /* Notice bottom */
+    /* Notice */
     .notice {
-      border-top: 1px solid #f3f4f6;
-      padding-top: 1rem;
-    }
-    .notice .notice-item {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 1.25rem;
       display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      color: #6b7280;
-      margin-bottom: 0.5rem;
+      flex-direction: column;
+      gap: 0.65rem;
     }
-    .notice .notice-item i { color: #f59e0b; margin-top: 1px; flex-shrink: 0; }
-    .notice .notice-item i.info { color: #6b7280; }
-    .notice strong { color: #374151; }
+    .notice-item {
+      display: flex; align-items: flex-start;
+      gap: 0.5rem; font-size: 0.78rem;
+      color: #6b7280; line-height: 1.4;
+    }
+    .notice-item i         { color: #f59e0b; margin-top: 0.15rem; flex-shrink: 0; }
+    .notice-item i.info    { color: #3b82f6; }
+    .notice-item strong    { color: #374151; }
 
-    /* ── Responsive ─────────────────────────────────────── */
-    @media (max-width: 860px) {
-      .panel-left { display: none; }
-      .panel-right { flex: 1; }
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .split { flex-direction: column; }
+      .split-left {
+        padding: 2.5rem 1.5rem;
+        min-height: auto;
+      }
+      .left-features { display: none; }
+      .split-right {
+        width: 100%;
+        padding: 2rem 1.25rem;
+      }
     }
-    @media (max-width: 480px) {
-      .panel-right { padding: 2rem 1.25rem; }
-      .form-box h1 { font-size: 1.6rem; }
-    }
+
+    /* Style de base pour tous les toasts */
+.toast {
+  opacity: 0.95;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Style pour le conteneur des toasts */
+.toast-container {
+  max-width: 400px;
+}
+/* ── TOASTS STATUTS (mêmes couleurs que les badges) ─── */
+.toast-succes  { background: #d1fae5; color: #065f46; }
+.toast-echec   { background: #fee2e2; color: #991b1b; }
+.toast-attente { background: #fef3c7; color: #92400e; }
+.toast-info    { background: #dbeafe; color: #1e40af; }
+
+.toast-succes .btn-close,
+.toast-echec  .btn-close,
+.toast-attente .btn-close,
+.toast-info   .btn-close {
+  filter: none;  /* annule btn-close-white de Bootstrap */
+}
+/* Style pour le corps du toast */
+.toast-body {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Style pour les icônes */
+.toast-body i {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* Style pour le bouton de fermeture */
+.btn-close {
+  margin-left: 0.5rem;
+  opacity: 0.7;
+  filter: brightness(1.2);
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
   </style>
 </head>
 <body>
 
-<div class="page">
+<div class="split">
 
-  <!-- ═══════════════════════════════════════════════════
-       LEFT PANEL — Illustrated scene
-  ═══════════════════════════════════════════════════ -->
-  <div class="panel-left">
+  <!-- ════════════ PANNEAU GAUCHE ════════════ -->
+  <div class="split-left">
 
-    <!-- Brand badge -->
-    <div class="brand-badge">
-      <div class="logo-ring"><i class="fas fa-university"></i></div>
-      <span class="logo-name">FASCH</span>
+    <div class="left-logo">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement|default:'FASCH' }}">
+      {% else %}
+        <div class="left-logo-placeholder">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+      {% endif %}
     </div>
 
-    <!-- SVG cityscape scene -->
-    <div class="panel-left-content">
-      <svg class="scene" viewBox="0 0 640 720" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <!-- Arc trajectory gradient -->
-          <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="#a0d4ff" stop-opacity="0"/>
-            <stop offset="40%"  stop-color="#c8e8ff" stop-opacity="1"/>
-            <stop offset="70%"  stop-color="#ffe0a0" stop-opacity="1"/>
-            <stop offset="100%" stop-color="#ffe0a0" stop-opacity="0"/>
-          </linearGradient>
+    <h1 class="left-title">{{ site.nom_complet|default:"Faculté des Sciences Humaines" }}</h1>
+    <p class="left-subtitle">Université d'État d'Haïti</p>
 
-          <!-- Glow for buildings -->
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
+    <div class="left-divider"></div>
 
-          <!-- Sun glow -->
-          <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stop-color="#ffe090" stop-opacity="1"/>
-            <stop offset="50%"  stop-color="#ff9f3a" stop-opacity="0.6"/>
-            <stop offset="100%" stop-color="#ff6020" stop-opacity="0"/>
-          </radialGradient>
-
-          <!-- Water shimmer -->
-          <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"  stop-color="#1a3880" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#0d1a40" stop-opacity="1"/>
-          </linearGradient>
-
-          <!-- Road glow -->
-          <linearGradient id="roadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stop-color="#ff9040" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#ff5010" stop-opacity="0.2"/>
-          </linearGradient>
-
-          <!-- Person gradient -->
-          <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"  stop-color="#5b8fd4"/>
-            <stop offset="100%" stop-color="#3a6ab0"/>
-          </linearGradient>
-
-          <!-- Building gradient -->
-          <linearGradient id="bldGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stop-color="#b0c8f0" stop-opacity="0.9"/>
-            <stop offset="50%"  stop-color="#e8c080" stop-opacity="0.7"/>
-            <stop offset="100%" stop-color="#4060a0" stop-opacity="0.8"/>
-          </linearGradient>
-          <linearGradient id="bldGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"  stop-color="#c8d8f0" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#506090" stop-opacity="0.7"/>
-          </linearGradient>
-        </defs>
-
-        <!-- ─── Sun / horizon glow ─── -->
-        <ellipse cx="310" cy="520" rx="180" ry="90" fill="url(#sunGlow)" opacity="0.6"/>
-        <circle  cx="310" cy="510" r="32" fill="#ffe090" opacity="0.9" filter="url(#glow)"/>
-
-        <!-- ─── Arc trajectory ─── -->
-        <path class="arc-path" d="M 40 80 Q 340 -60 620 200"/>
-
-        <!-- ─── Drone ─── -->
-        <g transform="translate(160,110) rotate(-8)">
-          <rect x="-18" y="-4" width="36" height="8" rx="4" fill="#c8d8f0" opacity="0.9"/>
-          <!-- propellers -->
-          <ellipse cx="-14" cy="-7" rx="8" ry="2" fill="#a0b8e0" opacity="0.7"/>
-          <ellipse cx="14"  cy="-7" rx="8" ry="2" fill="#a0b8e0" opacity="0.7"/>
-          <ellipse cx="-14" cy="7"  rx="8" ry="2" fill="#a0b8e0" opacity="0.7"/>
-          <ellipse cx="14"  cy="7"  rx="8" ry="2" fill="#a0b8e0" opacity="0.7"/>
-          <!-- camera -->
-          <circle cx="0" cy="4" r="3" fill="#203060" opacity="0.9"/>
-        </g>
-
-        <!-- ─── Background city silhouette ─── -->
-        <!-- far buildings -->
-        <rect x="420" y="340" width="30" height="160" fill="#1e3070" opacity="0.5"/>
-        <rect x="445" y="310" width="22" height="190" fill="#243880" opacity="0.5"/>
-        <rect x="462" y="350" width="18" height="150" fill="#1a2a60" opacity="0.45"/>
-        <rect x="475" y="280" width="28" height="220" fill="#283d90" opacity="0.5"/>
-        <rect x="498" y="320" width="20" height="180" fill="#1e3070" opacity="0.45"/>
-        <rect x="380" y="370" width="25" height="130" fill="#1a2860" opacity="0.4"/>
-        <rect x="400" y="355" width="18" height="145" fill="#1e3070" opacity="0.4"/>
-
-        <!-- ─── Main skyscrapers ─── -->
-        <!-- Tower 1 (tallest, center-right) -->
-        <g filter="url(#glow)">
-          <rect x="360" y="150" width="52" height="380" rx="4" fill="url(#bldGrad1)" opacity="0.88"/>
-          <!-- windows grid -->
-          <g opacity="0.35" fill="#fff">
-            {% for row in "123456789abcde" %}
-            {% endfor %}
-          </g>
-          <!-- glowing spire -->
-          <polygon points="384,150 386,80 388,150" fill="#d0e8ff" opacity="0.9"/>
-          <!-- reflective face -->
-          <rect x="360" y="150" width="12" height="380" rx="2" fill="#e8d0a0" opacity="0.35"/>
-        </g>
-
-        <!-- Tower 2 (slightly left) -->
-        <g filter="url(#glow)">
-          <rect x="310" y="200" width="42" height="330" rx="3" fill="url(#bldGrad2)" opacity="0.82"/>
-          <polygon points="330,200 332,138 334,200" fill="#c0d8f0" opacity="0.85"/>
-          <rect x="310" y="200" width="10" height="330" rx="2" fill="#e0c890" opacity="0.3"/>
-        </g>
-
-        <!-- Tower 3 (right) -->
-        <rect x="418" y="240" width="36" height="290" rx="3" fill="url(#bldGrad1)" opacity="0.75"/>
-        <polygon points="434,240 436,185 438,240" fill="#b8d0f0" opacity="0.8"/>
-
-        <!-- ─── Window lights on buildings ─── -->
-        <g opacity="0.55" fill="#ffe8a0">
-          <!-- Tower 1 windows -->
-          <rect x="368" y="165" width="5" height="4" rx="1"/><rect x="378" y="165" width="5" height="4" rx="1"/><rect x="390" y="165" width="5" height="4" rx="1"/>
-          <rect x="368" y="178" width="5" height="4" rx="1"/><rect x="378" y="178" width="5" height="4" rx="1"/>
-          <rect x="368" y="191" width="5" height="4" rx="1"/><rect x="390" y="191" width="5" height="4" rx="1"/>
-          <rect x="368" y="204" width="5" height="4" rx="1"/><rect x="378" y="204" width="5" height="4" rx="1"/><rect x="390" y="204" width="5" height="4" rx="1"/>
-          <rect x="368" y="218" width="5" height="4" rx="1"/><rect x="390" y="218" width="5" height="4" rx="1"/>
-          <rect x="368" y="232" width="5" height="4" rx="1"/><rect x="378" y="232" width="5" height="4" rx="1"/>
-          <!-- Tower 2 windows -->
-          <rect x="318" y="215" width="4" height="3" rx="1"/><rect x="327" y="215" width="4" height="3" rx="1"/>
-          <rect x="318" y="226" width="4" height="3" rx="1"/>
-          <rect x="318" y="238" width="4" height="3" rx="1"/><rect x="327" y="238" width="4" height="3" rx="1"/>
-          <rect x="318" y="250" width="4" height="3" rx="1"/>
-        </g>
-
-        <!-- ─── Foreground city base ─── -->
-        <rect x="0" y="520" width="640" height="200" fill="#0d1a40" opacity="0.85"/>
-        <!-- lower building silhouettes -->
-        <rect x="230" y="470" width="55" height="90" fill="#0f1e50" opacity="0.8"/>
-        <rect x="280" y="480" width="45" height="80" fill="#0d1a45" opacity="0.75"/>
-        <rect x="170" y="490" width="60" height="70" fill="#0e1c48" opacity="0.75"/>
-        <rect x="520" y="460" width="45" height="100" fill="#0d1a42" opacity="0.7"/>
-        <rect x="560" y="475" width="35" height="85" fill="#0c1840" opacity="0.65"/>
-
-        <!-- ─── Water / sea ─── -->
-        <ellipse cx="130" cy="570" rx="220" ry="80" fill="url(#waterGrad)" opacity="0.6"/>
-        <!-- shimmer lines -->
-        <line x1="40"  y1="555" x2="80"  y2="555" stroke="#4080c0" stroke-width="1" opacity="0.4"/>
-        <line x1="55"  y1="565" x2="110" y2="565" stroke="#4080c0" stroke-width="1" opacity="0.35"/>
-        <line x1="30"  y1="575" x2="95"  y2="575" stroke="#5090d0" stroke-width="1" opacity="0.3"/>
-
-        <!-- ─── Highway / road ─── -->
-        <path d="M 0 680 Q 220 560 420 490 L 640 440 L 640 470 Q 420 520 220 600 L 0 720 Z"
-              fill="url(#roadGrad)" opacity="0.35"/>
-        <!-- road dashes -->
-        <line x1="80"  y1="665" x2="120" y2="645" stroke="#ffc060" stroke-width="2" stroke-dasharray="12,10" opacity="0.5"/>
-        <line x1="160" y1="625" x2="200" y2="608" stroke="#ffc060" stroke-width="2" stroke-dasharray="12,10" opacity="0.45"/>
-        <line x1="240" y1="592" x2="280" y2="578" stroke="#ffc060" stroke-width="2" stroke-dasharray="12,10" opacity="0.4"/>
-
-        <!-- ─── Foreground platform ─── -->
-        <rect x="-10" y="640" width="320" height="90" rx="8" fill="#16224a" opacity="0.9"/>
-        <rect x="-10" y="638" width="320" height="6" rx="3" fill="#2a3868" opacity="0.8"/>
-        <!-- platform edge glow -->
-        <rect x="-10" y="638" width="320" height="2" fill="#e8d0a0" opacity="0.25"/>
-
-        <!-- ─── Person (silhouette) sitting on platform ─── -->
-        <!-- Torso / jacket -->
-        <path d="M 130 610 Q 115 620 110 640 L 185 640 Q 180 620 165 610 Z"
-              fill="url(#personGrad)" opacity="0.95"/>
-        <!-- Head -->
-        <circle cx="148" cy="600" r="16" fill="#c88060" opacity="0.95"/>
-        <!-- Hair -->
-        <path d="M 132 598 Q 130 580 148 584 Q 166 580 165 600 Q 158 590 148 593 Q 138 590 132 598 Z"
-              fill="#3a2010" opacity="0.95"/>
-        <!-- Long hair flowing -->
-        <path d="M 132 598 Q 118 620 122 645" stroke="#3a2010" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.9"/>
-        <!-- Left arm to laptop -->
-        <path d="M 120 625 Q 100 635 88 642" stroke="#5b8fd4" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.9"/>
-        <!-- Right arm -->
-        <path d="M 165 625 Q 182 630 192 638" stroke="#5b8fd4" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.9"/>
-        <!-- Legs -->
-        <path d="M 125 640 Q 115 655 100 660" stroke="#1e2a40" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M 160 640 Q 168 652 175 658" stroke="#1e2a40" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.95"/>
-
-        <!-- ─── Laptop ─── -->
-        <g transform="translate(82, 638)">
-          <!-- base -->
-          <rect x="0" y="0" width="55" height="4" rx="2" fill="#2a3040" opacity="0.95"/>
-          <!-- screen hinge-open -->
-          <rect x="4" y="-32" width="48" height="32" rx="3" fill="#1a2030" opacity="0.95"/>
-          <!-- screen glow -->
-          <rect x="6" y="-30" width="44" height="28" rx="2" fill="#1a3a70" opacity="0.9"/>
-          <rect x="8" y="-28" width="40" height="10" rx="1" fill="#2a6ad0" opacity="0.5"/>
-          <rect x="8" y="-16" width="25" height="3" rx="1" fill="#4080c0" opacity="0.4"/>
-          <rect x="8" y="-11" width="18" height="3" rx="1" fill="#4080c0" opacity="0.3"/>
-          <!-- screen edge glow -->
-          <rect x="4" y="-32" width="48" height="1" rx="1" fill="#80b0ff" opacity="0.4"/>
-        </g>
-      </svg>
+    <div class="left-features">
+      <div class="left-feature">
+        <div class="left-feature-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="left-feature-text">
+          <strong>Gestion académique</strong>
+          <span>Cours, inscriptions et notes en ligne</span>
+        </div>
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="left-feature-text">
+          <strong>Relevés officiels</strong>
+          <span>Téléchargement PDF instantané</span>
+        </div>
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-icon"><i class="fas fa-bell"></i></div>
+        <div class="left-feature-text">
+          <strong>Notifications</strong>
+          <span>Restez informé en temps réel</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Caption -->
-    <p class="panel-caption">Système de Gestion Académique · FASCH</p>
+    <p class="left-footer">
+      © {{ site.annee_copyright|default:"2026" }} {{ site.nom_etablissement|default:"FASCH" }} — Tous droits réservés
+    </p>
+
   </div>
 
-  <!-- ═══════════════════════════════════════════════════
-       RIGHT PANEL — Login form
-  ═══════════════════════════════════════════════════ -->
-  <div class="panel-right">
+  <!-- ════════════ PANNEAU DROIT ════════════ -->
+  <div class="split-right">
     <div class="form-box">
 
-      <h1>Bienvenue <span>de retour&nbsp;!</span></h1>
-      <p class="subtitle">Veuillez vous connecter à votre compte</p>
+      <div class="form-heading">
+        <h1>Connexion</h1>
+        <p>Veuillez vous connecter à votre compte</p>
+      </div>
 
-      <!-- ── Django messages ── -->
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">
-            <i class="fas fa-{% if message.tags == 'error' %}circle-xmark{% elif message.tags == 'success' %}circle-check{% elif message.tags == 'warning' %}triangle-exclamation{% else %}circle-info{% endif %}"></i>
-            <span>{{ message }}</span>
+      <!-- Messages Django -->
+<!-- ── Messages / Toasts ─────────────────────────────────────────────── -->
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;margin-top:var(--topbar-h);">
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      {% with toast_class="toast-succes" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-check-circle me-2"></i>Succès : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
           </div>
-        {% endfor %}
-      {% endif %}
+        </div>
+      {% endwith %}
+    {% elif message.tags == 'danger' %}
+      {% with toast_class="toast-echec" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-exclamation-circle me-2"></i>Erreur : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% elif message.tags == 'warning' %}
+      {% with toast_class="toast-attente" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-exclamation-triangle me-2"></i>Attention : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% else %}
+      {% with toast_class="toast-info" %}
+        <div class="toast show align-items-center border-0 shadow {{ toast_class }}"
+             role="alert" aria-live="assertive">
+          <div class="d-flex">
+            <div class="toast-body fw-semibold">
+              <i class="fas fa-info-circle me-2"></i>Info : {{ message }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Fermer"></button>
+          </div>
+        </div>
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
 
       <form method="post" novalidate>
         {% csrf_token %}
 
-        <!-- Email / Identifiant -->
+        <!-- Identifiant -->
         <div class="field-group">
-          <label for="{{ formulaire.identifiant.id_for_label }}">Email</label>
+          <label for="{{ formulaire.identifiant.id_for_label }}">Identifiant</label>
           <div class="input-wrap">
             <i class="fas fa-envelope icon-left"></i>
             <input
@@ -639,18 +480,18 @@
               id="{{ formulaire.identifiant.id_for_label }}"
               name="{{ formulaire.identifiant.html_name }}"
               value="{{ formulaire.identifiant.value|default:'' }}"
-              placeholder="Entrez votre email ou téléphone"
+              placeholder="Email, téléphone ou numéro étudiant"
               autocomplete="username"
               {% if formulaire.identifiant.errors %}class="is-invalid"{% endif %}
             />
           </div>
-          <p class="field-hint">Email, numéro de téléphone ou numéro étudiant</p>
+          <p class="field-hint">Email, numéro de téléphone (+509…) ou numéro étudiant</p>
           {% if formulaire.identifiant.errors %}
             <p class="invalid-msg">{{ formulaire.identifiant.errors|join:", " }}</p>
           {% endif %}
         </div>
 
-        <!-- Password -->
+        <!-- Mot de passe -->
         <div class="field-group">
           <label for="{{ formulaire.password.id_for_label }}">Mot de passe</label>
           <div class="input-wrap">
@@ -672,39 +513,16 @@
           {% endif %}
         </div>
 
-        <!-- Forgot password -->
         <div class="forgot-row">
           <a href="{% url 'comptes:reinitialisation' %}">Mot de passe oublié&nbsp;?</a>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="btn-signin">
           <i class="fas fa-arrow-right-to-bracket"></i>
           Se connecter
         </button>
+
       </form>
-
-      <!-- Social divider -->
-      <div class="divider">Ou continuer avec</div>
-
-      <!-- Social buttons -->
-      <div class="social-row">
-        <a href="#" class="social-btn google"   aria-label="Connexion Google">
-          <i class="fab fa-google"></i>
-        </a>
-        <a href="#" class="social-btn facebook" aria-label="Connexion Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="social-btn linkedin" aria-label="Connexion LinkedIn">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-      </div>
-
-      <!-- Sign up row -->
-      <p class="signup-row">
-        Pas encore de compte&nbsp;?
-        <a href="#">S'inscrire</a>
-      </p>
 
       <!-- Notice -->
       <div class="notice">
@@ -720,6 +538,7 @@
 
     </div>
   </div>
+
 </div>
 
 <script>
@@ -728,8 +547,8 @@
     const icone  = document.getElementById('eyeIcon');
     const isHide = champ.type === 'password';
     champ.type   = isHide ? 'text' : 'password';
-    icone.classList.toggle('fa-eye',      !isHide);
-    icone.classList.toggle('fa-eye-slash', isHide);
+    icone.classList.toggle('fa-eye',       !isHide);
+    icone.classList.toggle('fa-eye-slash',  isHide);
     this.setAttribute('aria-label', isHide ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
   });
 </script>

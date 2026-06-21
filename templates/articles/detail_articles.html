@@ -1,0 +1,279 @@
+{% extends 'base_articles.html' %}
+{% load static humanize %}
+{% block titre %}{{ article.titre }}{% endblock %}
+{% block description %}{{ article.extrait|truncatewords:25 }}{% endblock %}
+{% block contenu %}
+{% if article.statut != 'publie' %}
+<div class="alert alert-warning d-flex align-items-center gap-2 rounded-0 border-0 border-start border-4 border-warning mb-0">
+  <i class="bi bi-eye-slash-fill fs-5"></i>
+  <div>
+    <strong>Aperçu uniquement</strong> — Cet article est en
+    <span class="badge bg-warning text-dark">{{ article.get_statut_display }}</span>
+    et n'est pas visible par le public.
+  </div>
+</div>
+{% endif %}
+<!-- ── En-tête article ─────────────────────────────────────────────────── -->
+<div class="article-header">
+  {% if article.image_principale %}
+    <div class="article-hero-img" style="background-image:url('{{ article.image_principale.url }}')"></div>
+  {% endif %}
+  <div class="container-xxl px-3">
+    <nav aria-label="breadcrumb" class="pt-3"><ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'articles:accueil' %}">Accueil</a></li>
+      {% if article.categorie %}<li class="breadcrumb-item"><a href="{{ article.categorie.get_absolute_url }}">{{ article.categorie.nom }}</a></li>{% endif %}
+      <li class="breadcrumb-item active">Article</li>
+    </ol></nav>
+    {% if article.categorie %}
+      <a href="{{ article.categorie.get_absolute_url }}" class="article-category-badge" style="background:{{ article.categorie.couleur }}">{{ article.categorie.nom }}</a>
+    {% endif %}
+    <h1 class="article-main-title">{{ article.titre }}</h1>
+    <div class="article-meta-bar">
+      <div class="article-author-info">
+        {% if article.auteur.userprofile.avatar %}
+          <img src="{{ article.auteur.userprofile.avatar.url }}" alt="" class="author-avatar-md">
+        {% else %}
+          <span class="author-avatar-md author-initial-md">{{ article.auteur.get_full_name|default:article.auteur.username|first|upper }}</span>
+        {% endif %}
+        <div>
+  <span class="author-name-link">
+            {{ article.auteur.get_full_name|default:article.auteur.email }}
+          </span>
+          <span class="author-role-badge">{{ article.auteur.afficher_role_par_genre }}</span>
+          <div class="article-date text-muted">
+            <i class="fas fa-calendar-alt me-1"></i>{{ article.publie_le|date:"j F Y à H:i" }}
+          </div>
+        </div>
+      </div>
+      <div class="article-stats">
+        <span><i class="fas fa-clock me-1"></i>{{ article.temps_lecture }} de lecture</span>
+        <span><i class="fas fa-eye me-1"></i>{{ article.nombre_vues|intcomma }} vues</span>
+        <span><i class="fas fa-comment me-1"></i>{{ article.nombre_commentaires }} commentaires</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Corps principal ────────────────────────────────────────────────────── -->
+<div class="container-xxl px-3 py-4">
+  <div class="row">
+    <!-- Contenu article -->
+    <div class="col-lg-8">
+      <div class="article-body">
+        {% if article.extrait %}<p class="article-lead">{{ article.extrait }}</p>{% endif %}
+        <div class="article-content">{{ article.contenu|safe }}</div>
+      </div>
+
+      <!-- Tags -->
+      {% if article.tags.all %}
+      <div class="article-tags mt-4">
+        <i class="fas fa-tags me-2 text-muted"></i>
+        {% for tag in article.tags.all %}
+        <a href="{{ tag.get_absolute_url }}" class="tag-pill">#{{ tag.nom }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Partage social -->
+      <div class="social-share mt-4">
+        <span class="share-label"><i class="fas fa-share-alt me-2"></i>Partager :</span>
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ article.titre|urlencode }}"
+           target="_blank" class="btn btn-share btn-twitter"><i class="fab fa-twitter me-1"></i>Twitter</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+           target="_blank" class="btn btn-share btn-facebook"><i class="fab fa-facebook-f me-1"></i>Facebook</a>
+        <a href="https://wa.me/?text={{ article.titre|urlencode }}%20{{ request.build_absolute_uri }}"
+           target="_blank" class="btn btn-share btn-whatsapp"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+      </div>
+
+      <!-- Boîte auteur -->
+      <div class="author-box mt-5">
+        {% if article.auteur.userprofile.avatar %}
+          <img src="{{ article.auteur.userprofile.avatar.url }}" alt="" class="author-box-avatar">
+        {% else %}
+          <div class="author-box-avatar author-box-initial">{{ article.auteur.get_full_name|default:article.auteur.username|first|upper }}</div>
+        {% endif %}
+        <div class="author-box-info">
+          <h5 class="author-box-name">
+    <span class="author-name-link">
+            {{ article.auteur.get_full_name|default:article.auteur.email }}
+          </span>
+          <span class="author-role-badge">{{ article.auteur.afficher_role_par_genre }}</span>
+          </h5>
+          {% if article.auteur.userprofile.bio %}
+            <p class="author-box-bio">{{ article.auteur.userprofile.bio }}</p>
+          {% endif %}
+          {% if article.auteur.userprofile.twitter %}
+            <a href="https://twitter.com/{{ article.auteur.userprofile.twitter }}" target="_blank" class="author-box-social">
+              <i class="fab fa-twitter me-1"></i>{{ article.auteur.userprofile.twitter }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Articles similaires -->
+      {% if articles_similaires %}
+      <div class="related-articles mt-5">
+        <h4 class="related-title"><i class="fas fa-link me-2"></i>Articles similaires</h4>
+        <div class="row g-3">
+          {% for art in articles_similaires %}
+          <div class="col-md-4">
+            <a href="{{ art.get_absolute_url }}" class="related-card">
+              {% if art.image_principale %}
+                <img src="{{ art.image_principale.url }}" alt="{{ art.titre }}" class="related-img">
+              {% else %}
+                <div class="related-img related-img--placeholder"><i class="fas fa-newspaper"></i></div>
+              {% endif %}
+              <div class="related-body">
+                <span class="related-date">{{ art.publie_le|date:"j F Y" }}</span>
+                <h6 class="related-card-title">{{ art.titre|truncatechars:60 }}</h6>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Section commentaires -->
+      <div class="comments-section mt-5" id="commentaires">
+        <h4 class="comments-title">
+          <i class="fas fa-comments me-2"></i>
+          Commentaires ({{ article.nombre_commentaires }})
+        </h4>
+
+        {% if user.is_authenticated %}
+        <div class="comment-form-wrapper">
+          <form method="post" action="{% url 'comments:ajouter' article.slug %}">
+            {% csrf_token %}
+            <input type="hidden" name="parent" id="parent-id" value="">
+            <div class="d-flex gap-3">
+              {% if user.photo_profil %}
+                <img src="{{ user.photo_profil.url }}" alt="" class="author-avatar-sm flex-shrink-0">
+              {% else %}
+                <span class="author-avatar-sm author-initial flex-shrink-0">{{ user.get_full_name|default:user.username|first|upper }}</span>
+              {% endif %}
+              <div class="flex-grow-1">
+                {{ formulaire_commentaire.contenu }}
+                <div class="mt-2 d-flex justify-content-between align-items-center">
+                  <span id="reply-indicator" class="text-muted small d-none">
+                    <i class="fas fa-reply me-1"></i>Réponse à un commentaire
+                    <button type="button" class="btn btn-link btn-sm p-0 ms-2" id="cancel-reply">Annuler</button>
+                  </span>
+                  <button type="submit" class="btn btn-primary btn-sm ms-auto">
+                    <i class="fas fa-paper-plane me-2"></i>Publier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        {% else %}
+        <div class="comment-login-prompt">
+          <i class="fas fa-lock me-2"></i>
+          <a href="{% url 'comptes:connexion' %}">Connectez-vous</a> pour laisser un commentaire.
+        </div>
+        {% endif %}
+
+        <div class="comments-list mt-4">
+          {% for commentaire in commentaires %}
+          <div class="comment-item" id="comment-{{ commentaire.pk }}">
+            <div class="d-flex gap-3">
+              {% if commentaire.auteur.userprofile.avatar %}
+                <img src="{{ commentaire.auteur.userprofile.avatar.url }}" alt="" class="author-avatar-sm flex-shrink-0">
+              {% else %}
+                <span class="author-avatar-sm author-initial flex-shrink-0">{{ commentaire.auteur.get_full_name|default:commentaire.auteur.username|first|upper }}</span>
+              {% endif %}
+              <div class="flex-grow-1">
+                <div class="comment-header">
+                  <strong class="comment-author">{{ commentaire.auteur.get_full_name|default:commentaire.auteur.username }}</strong>
+                  <span class="comment-date">{{ commentaire.created_at|naturaltime }}</span>
+                  {% if user == commentaire.auteur or user.is_staff %}
+                  <form method="post" action="{% url 'comments:supprimer' commentaire.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-0 ms-2" onclick="return confirm('Supprimer ce commentaire ?')">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                  {% endif %}
+                </div>
+                <p class="comment-content">{{ commentaire.contenu }}</p>
+                {% if user.is_authenticated %}
+                <button class="btn btn-link btn-sm p-0 text-muted reply-btn"
+                        data-comment-id="{{ commentaire.pk }}"
+                        data-author="{{ commentaire.auteur.get_full_name|default:commentaire.auteur.username }}">
+                  <i class="fas fa-reply me-1"></i>Répondre
+                </button>
+                {% endif %}
+                <!-- Replies -->
+                {% for reply in commentaire.replies.all %}
+                {% if reply.est_approuve %}
+                <div class="reply-item mt-3">
+                  <div class="d-flex gap-2">
+                    <span class="author-avatar-xs author-initial">{{ reply.auteur.get_full_name|default:reply.auteur.username|first|upper }}</span>
+                    <div>
+                      <div class="comment-header">
+                        <strong>{{ reply.auteur.get_full_name|default:reply.auteur.username }}</strong>
+                        <span class="comment-date">{{ reply.created_at|naturaltime }}</span>
+                      </div>
+                      <p class="comment-content mb-0">{{ reply.contenu }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="no-comments text-center py-4">
+            <i class="fas fa-comment-slash fa-2x text-muted mb-2"></i>
+            <p class="text-muted">Soyez le premier à commenter cet article.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <aside class="sidebar sticky-sidebar">
+        <div class="sidebar-widget">
+          <h5 class="sidebar-widget-title"><i class="fas fa-fire text-danger me-2"></i>Les plus lus</h5>
+          <ol class="popular-list">
+            {% for art in articles_populaires %}
+            <li class="popular-item">
+              <div class="popular-num">{{ forloop.counter }}</div>
+              <div class="popular-body">
+                {% if art.categorie %}<span class="popular-cat" style="color:{{ art.categorie.couleur }}">{{ art.categorie.nom }}</span>{% endif %}
+                <a href="{{ art.get_absolute_url }}" class="popular-title">{{ art.titre|truncatechars:65 }}</a>
+                <span class="popular-views"><i class="fas fa-eye me-1"></i>{{ art.nombre_vues|intcomma }}</span>
+              </div>
+            </li>
+            {% endfor %}
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.reply-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var id = this.getAttribute('data-comment-id');
+    var author = this.getAttribute('data-author');
+    document.getElementById('parent-id').value = id;
+    document.getElementById('reply-indicator').classList.remove('d-none');
+    document.querySelector('textarea[name="contenu"]').focus();
+    document.querySelector('textarea[name="contenu"]').placeholder = 'Répondre à ' + author + '…';
+  });
+});
+document.getElementById('cancel-reply') && document.getElementById('cancel-reply').addEventListener('click', function(){
+  document.getElementById('parent-id').value = '';
+  document.getElementById('reply-indicator').classList.add('d-none');
+  document.querySelector('textarea[name="contenu"]').placeholder = 'Rédigez votre commentaire...';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block dash_titre %}{{ titre_page }}{% endblock %}
+{% block dash_contenu %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+  {% endif %}
+  <div class="row g-4">
+    <!-- Colonne principale -->
+    <div class="col-lg-8">
+      <div class="dash-card mb-4">
+        <div class="dash-card-header"><h5 class="dash-card-title">Contenu de l'événement</h5></div>
+        <div class="dash-card-body">
+          <div class="mb-3">
+            <label class="form-label fw-medium">{{ form.titre.label }}</label>
+            {{ form.titre }}
+            {% if form.titre.errors %}<div class="invalid-feedback d-block">{{ form.titre.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">{{ form.description.label }}</label>
+            {{ form.description }}
+            {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne latérale -->
+    <div class="col-lg-4">
+      <div class="dash-card mb-4">
+        <div class="dash-card-header"><h5 class="dash-card-title">Publication</h5></div>
+        <div class="dash-card-body">
+          <div class="d-grid gap-2 mt-1">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>{{ bouton_submit }}
+            </button>
+            <a href="{% url 'articles:dashboard_evenements' %}" class="btn btn-outline-secondary">Annuler</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card mb-4">
+        <div class="dash-card-header"><h5 class="dash-card-title">Détails</h5></div>
+        <div class="dash-card-body">
+          <div class="mb-3">
+            <label class="form-label fw-medium">{{ form.lieu.label }}</label>
+            {{ form.lieu }}
+            {% if form.lieu.errors %}<div class="invalid-feedback d-block">{{ form.lieu.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">{{ form.date_debut.label }}</label>
+            {{ form.date_debut }}
+            {% if form.date_debut.errors %}<div class="invalid-feedback d-block">{{ form.date_debut.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">{{ form.date_fin.label }}</label>
+            {{ form.date_fin }}
+            {% if form.date_fin.errors %}<div class="invalid-feedback d-block">{{ form.date_fin.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-header"><h5 class="dash-card-title">Image</h5></div>
+        <div class="dash-card-body">
+          {% if form.instance.image %}
+          <div class="mb-2">
+            <img src="{{ form.instance.image.url }}" class="img-fluid rounded" alt="Image actuelle">
+            <small class="text-muted d-block mt-1">Image actuelle</small>
+          </div>
+          {% endif %}
+          {{ form.image }}
+          {% if form.image.errors %}<div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

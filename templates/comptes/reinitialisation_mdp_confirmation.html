@@ -1,7 +1,8 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% load crispy_forms_tags %}
-
-{% block authenticated_content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+{% block public_content %}
 <h2>Choisir un nouveau mot de passe</h2>
 <form method="post">
   {% csrf_token %}

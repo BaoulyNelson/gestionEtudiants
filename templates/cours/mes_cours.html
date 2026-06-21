@@ -135,63 +135,11 @@
 <!-- ── Titre ── -->
 <div class="cours-doc-title">
   <i class="fas fa-book me-2" style="color:#1a3a6b;"></i>
-  {% if est_etudiant %}Mes Cours{% else %}Mes Sections{% endif %}
-</div>
-
-<!-- ══════════════ VUE ÉTUDIANT ══════════════ -->
-{% if est_etudiant %}
-<div class="card">
-  <div class="card-body">
-    {% if inscriptions %}
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Cours</th>
-            <th>Section</th>
-            <th>Professeur</th>
-            <th>Horaire</th>
-            <th>Salle</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for inscription in inscriptions %}
-          <tr>
-            <td>
-              <strong>{{ inscription.section_cours.cours.code }}</strong><br>
-              <small class="text-muted">{{ inscription.section_cours.cours.nom }}</small>
-            </td>
-            <td>
-              <span class="badge bg-secondary">{{ inscription.section_cours.numero_section }}</span>
-            </td>
-            <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name }}</td>
-            <td>
-              <span class="badge bg-primary">{{ inscription.section_cours.get_jour_semaine_display }}</span><br>
-              <small>{{ inscription.section_cours.heure_debut|time:"H:i" }} - {{ inscription.section_cours.heure_fin|time:"H:i" }}</small>
-            </td>
-            <td>{{ inscription.section_cours.salle|default:"N/A" }}</td>
-            <td>
-              <a href="{% url 'cours:detail_section' inscription.section_cours.id %}"
-                 class="btn btn-sm btn-info">
-                <i class="fas fa-eye"></i>
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="alert alert-info">
-      <i class="fas fa-info-circle"></i> Vous n'êtes inscrit à aucun cours.
-    </div>
-    {% endif %}
-  </div>
+  Mes Sections
 </div>
 
 <!-- ══════════════ VUE PROFESSEUR ══════════════ -->
-{% elif est_professeur %}
+
 <div class="card">
   <div class="card-body">
     {% if sections %}
@@ -227,7 +175,7 @@
             </td>
                         {# ← colonne manquante #}
             <td>
-              {{ section.cours.departement.nom|default:"—" }}
+              {{ section.cours.departement.nom|default:"Tronc Commun" }}
             </td>
             <td>{{ section.salle|default:"N/A" }}</td>
 
@@ -253,6 +201,6 @@
     {% endif %}
   </div>
 </div>
-{% endif %}
+
 
 {% endblock %}

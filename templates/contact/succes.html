@@ -1,0 +1,19 @@
+{% extends 'base_articles.html' %}
+{% block titre %}Message envoyé{% endblock %}
+{% block contenu %}
+<div class="container py-5 text-center">
+  <div class="success-icon mb-4"><i class="fas fa-check-circle fa-5x text-success"></i></div>
+  <h1 class="display-5 fw-bold mb-3">Message envoyé !</h1>
+  <p class="lead text-muted mb-4 col-md-6 mx-auto">
+    Merci de nous avoir contactés. Notre équipe vous répondra dans les meilleurs délais.
+  </p>
+  <div class="d-flex justify-content-center gap-3">
+    <a href="{% url 'articles:accueil' %}" class="btn btn-primary btn-lg">
+      <i class="fas fa-home me-2"></i>Retour à l'accueil
+    </a>
+    <a href="{% url 'contact:contact' %}" class="btn btn-outline-secondary btn-lg">
+      <i class="fas fa-envelope me-2"></i>Nouveau message
+    </a>
+  </div>
+</div>
+{% endblock %}

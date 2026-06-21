@@ -176,7 +176,8 @@
             {% endif %}
           </td>
           <td>{{ etu.profil_etudiant.get_niveau_display }}</td>
-          <td>{{ etu.numero_telephone }}</td>
+          <td>{{ etu.numero_telephone |default:"-" }}</td>
+
           <td class="text-center">
             <a href="{% url 'comptes:detail_etudiant' etu.profil_etudiant.id %}"
                class="btn btn-sm btn-info">

@@ -169,7 +169,7 @@ def vue_connexion(request):
                         return redirect("comptes:changer_mot_de_passe")
                     return redirect("comptes:tableau_bord")
                 else:
-                    messages.error(request, "Ce compte est inactif.")
+                    messages.error(request, "Ce compte a été  desactivé par l'administrateur.")
             else:
                 messages.error(request, "Identifiant ou mot de passe incorrect.")
     else:

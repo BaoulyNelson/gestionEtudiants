@@ -1,0 +1,128 @@
+{% extends 'base_public.html' %}
+{% block title %}Politique de confidentialité - {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+
+{% block public_content %}
+<div class="container mt-4">
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2><i class="fas fa-shield-alt"></i> Politique de confidentialité</h2>
+      <p class="text-muted">
+        Dernière mise à jour : {% now "d/m/Y" %}
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-info-circle text-primary"></i> 1. Introduction</h5>
+      <p class="mb-0">
+        {{ site.nom_complet|default:"La Faculté des Sciences Humaines" }} (« {{ site.nom_etablissement|default:"FASCH" }} », « nous »)
+        attache une grande importance à la protection des données personnelles de ses étudiants,
+        professeurs, candidats et visiteurs. Cette politique explique quelles données nous collectons,
+        pourquoi, et comment elles sont protégées.
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-database text-primary"></i> 2. Données collectées</h5>
+      <ul class="mb-0">
+        <li><strong>Identité :</strong> nom, prénom, genre, date de naissance, photo de profil.</li>
+        <li><strong>Coordonnées :</strong> email, numéro de téléphone, adresse postale.</li>
+        <li><strong>Données académiques :</strong> numéro étudiant, département, niveau, inscriptions, notes.</li>
+        <li><strong>Données de candidature :</strong> lettre de motivation, pièces justificatives soumises lors d'une demande d'admission.</li>
+        <li><strong>Données de connexion :</strong> historique de connexion, adresse IP, journal des actions effectuées sur la plateforme.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-tasks text-primary"></i> 3. Finalités du traitement</h5>
+      <p>Les données collectées sont utilisées exclusivement pour :</p>
+      <ul class="mb-0">
+        <li>Gérer les candidatures, inscriptions et dossiers académiques ;</li>
+        <li>Permettre la saisie et la consultation des notes par les personnes autorisées ;</li>
+        <li>Communiquer des informations administratives ou pédagogiques aux utilisateurs concernés ;</li>
+        <li>Assurer la sécurité et le bon fonctionnement de la plateforme.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-share-alt text-primary"></i> 4. Partage des données</h5>
+      <p class="mb-0">
+        Vos données ne sont jamais vendues ni partagées à des fins commerciales. L'accès est limité
+        au strict nécessaire : un professeur ne consulte que les données des étudiants inscrits à ses
+        sections, et le personnel administratif n'accède aux dossiers que dans le cadre de ses fonctions.
+        Aucune donnée n'est transmise à un tiers en dehors de l'établissement, sauf obligation légale.
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-archive text-primary"></i> 5. Conservation des données</h5>
+      <p class="mb-0">
+        Les données académiques (notes, inscriptions) sont conservées pendant toute la durée du
+        parcours de l'étudiant, puis archivées conformément aux obligations de conservation des
+        établissements d'enseignement supérieur. Les dossiers de candidatures non retenues sont
+        conservés pour une durée limitée avant suppression.
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-user-shield text-primary"></i> 6. Vos droits</h5>
+      <p>Vous disposez à tout moment du droit de :</p>
+      <ul class="mb-0">
+        <li>Consulter les données personnelles vous concernant ;</li>
+        <li>Demander la correction d'une information inexacte ou incomplète ;</li>
+        <li>Demander la suppression de vos données, sous réserve des obligations légales de conservation ;</li>
+        <li>Vous opposer à l'utilisation de vos données à des fins autres que celles décrites ci-dessus.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-lock text-primary"></i> 7. Sécurité</h5>
+      <p class="mb-0">
+        L'accès à votre compte est protégé par un mot de passe que vous seul connaissez. Nous vous
+        recommandons de ne jamais le partager et de le modifier immédiatement après votre première
+        connexion. Toutes les données sont stockées sur des serveurs sécurisés, avec un accès restreint
+        au personnel autorisé.
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-cookie-bite text-primary"></i> 8. Cookies</h5>
+      <p class="mb-0">
+        La plateforme utilise des cookies strictement nécessaires à son fonctionnement, notamment
+        pour maintenir votre session de connexion active. Aucun cookie de suivi publicitaire n'est
+        utilisé.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="mb-3"><i class="fas fa-envelope-open-text text-primary"></i> 9. Nous contacter</h5>
+      <p class="mb-1">
+        Pour toute question concernant cette politique ou pour exercer l'un de vos droits, contactez-nous :
+      </p>
+      <p class="mb-0">
+        <i class="fas fa-envelope me-2"></i>
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

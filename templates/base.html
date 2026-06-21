@@ -5,20 +5,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{% block meta_description %}FASCH - Plateforme de gestion universitaire : inscriptions, notes, cours et profils étudiants/professeurs.{% endblock %}">
+  <meta name="description" content="{% block meta_description %}{{ site.slogan|default:'FASCH - Plateforme de gestion universitaire : inscriptions, notes, cours et profils étudiants/professeurs.' }}{% endblock %}">
   <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
   <meta name="csrf-token" content="{{ csrf_token }}">
   <meta name="theme-color" content="#0f2a5c">
 
-  <meta property="og:title" content="{% block og_title %}FASCH - Système de Gestion Universitaire{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}Plateforme de gestion universitaire de la FASCH.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ site.nom_etablissement|default:'FASCH' }} - Système de Gestion Universitaire{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ site.slogan|default:'Plateforme de gestion universitaire de la FASCH.' }}{% endblock %}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
-  {% block og_image %}{% endblock %}
+  {% block og_image %}
+    {% if site.logo %}
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ site.logo.url }}">
+    {% endif %}
+  {% endblock %}
 
-  <title>{% block title %}FASCH - Système de Gestion Universitaire{% endblock %}</title>
+  <title>{% block title %}{{ site.nom_etablissement|default:'FASCH' }} - Système de Gestion Universitaire{% endblock %}</title>
 
-  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  {% if site.logo %}
+    <link rel="icon" type="image/png" href="{{ site.logo.url }}">
+  {% else %}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  {% endif %}
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +36,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <style>
 /* ══════════════════════════════════════════
    VARIABLES & RESET
@@ -925,13 +932,18 @@ a {
      TOP NAVBAR
 ══════════════════════════════════════════ -->
 <header class="topbar">
-  <!-- Brand -->
+<!-- Brand -->
   <a href="{% url 'comptes:tableau_bord' %}" class="topbar-brand">
-    FASCH
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement|default:'FASCH' }}" style="height:28px;width:auto;object-fit:contain;margin-right:8px;">
+    {% else %}
+      <i class="fas fa-graduation-cap" style="margin-right:8px;"></i>
+    {% endif %}
+    {{ site.nom_etablissement|default:'FASCH' }}
   </a>
 
  <!-- ✦ Typewriter centré -->
-  <div class="topbar-typewriter" aria-live="polite" aria-label="Université d'État d'Haïti – Faculté des Sciences Humaines">
+<div class="topbar-typewriter" aria-live="polite" aria-label="Université d'État d'Haïti – {{ site.nom_complet }}">
     <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
   </div>
   <!-- Right actions -->
@@ -1002,18 +1014,26 @@ a {
           </a>
         </li>
         <li>
-          <a class="dropdown-item" href="{% url 'accueil' %}">
-            <i class="fas fa-home"></i> Accueil
+          <a class="dropdown-item" href="{% url 'articles:liste_articles' %}">
+            <i class="fas fa-home"></i> Actualités
           </a>
+
         </li>
-{% if user.est_administrateur %}
-<li>
-  <a class="dropdown-item" href="{% url 'portail:parametres_site' %}">
-    <i class="fas fa-cog"></i> Paramètres du site
-  </a>
-</li>
-<li><hr class="dropdown-divider"></li>
-{% endif %}
+        {% if user.est_administrateur %}
+          <li>
+            <a class="dropdown-item" href="{% url 'portail:parametres_site' %}">
+              <i class="fas fa-cog"></i> Paramètres
+            </a>
+          </li>
+          {% if user.is_superuser %}
+          <li>
+            <a class="dropdown-item" href="{% url 'admin:index' %}">
+              <i class="fas fa-tools"></i> Administration
+            </a>
+          </li>
+          {% endif %}
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
         <li>
           <a class="dropdown-item text-danger" href="{% url 'comptes:deconnexion' %}">
             <i class="fas fa-sign-out-alt"></i> Déconnexion
@@ -1057,15 +1077,8 @@ a {
     </li>
 
     <!-- ── ÉTUDIANT ── -->
+ <!-- ── ÉTUDIANT ── -->
     {% if user.est_etudiant %}
-    <li>
-      <a class="sidebar-menu-link {% block sb_active_mes_cours %}{% endblock %}"
-         href="{% url 'cours:mes_cours' %}">
-        <i class="fas fa-book sidebar-menu-icon"></i>
-        <span>Mes Cours</span>
-        {% if course_count %}<span class="sidebar-menu-badge">{{ course_count }}</span>{% endif %}
-      </a>
-    </li>
     <li>
       <a class="sidebar-menu-link {% block sb_active_inscrire %}{% endblock %}"
          href="{% url 'inscriptions:sections_disponibles' %}">
@@ -1078,6 +1091,7 @@ a {
          href="{% url 'inscriptions:mes_inscriptions' %}">
         <i class="fas fa-list sidebar-menu-icon"></i>
         <span>Inscriptions</span>
+        {% if course_count %}<span class="sidebar-menu-badge">{{ course_count }}</span>{% endif %}
       </a>
     </li>
     <li>
@@ -1103,30 +1117,30 @@ a {
     </li>
     {% endif %}
 
-<!-- ── PROFESSEUR ── -->
-{% if user.est_professeur %}
-<li>
-  <a class="sidebar-menu-link {% block sb_active_mes_sections %}{% endblock %}"
-     href="{% url 'cours:mes_cours' %}">
-    <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
-    <span>Mes Cours</span>
-  </a>
-</li>
-<li>
-  <a class="sidebar-menu-link {% block sb_active_etudiants_prof %}{% endblock %}"
-     href="{% url 'notes:mes_etudiants' %}">
-    <i class="fas fa-user-graduate sidebar-menu-icon"></i>
-    <span>Étudiants</span>
-  </a>
-</li>
-<li>
-  <a class="sidebar-menu-link {% block sb_active_palmares %}{% endblock %}"
-     href="{% url 'notes:palmares' %}">
-    <i class="fas fa-trophy sidebar-menu-icon"></i>
-    <span>Palmarès</span>
-  </a>
-</li>
-{% endif %}
+  <!-- ── PROFESSEUR ── -->
+  {% if user.est_professeur %}
+  <li>
+    <a class="sidebar-menu-link {% block sb_active_mes_sections %}{% endblock %}"
+      href="{% url 'cours:mes_cours' %}">
+      <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
+      <span>Mes Cours</span>
+    </a>
+  </li>
+  <li>
+    <a class="sidebar-menu-link {% block sb_active_etudiants_prof %}{% endblock %}"
+      href="{% url 'notes:mes_etudiants' %}">
+      <i class="fas fa-user-graduate sidebar-menu-icon"></i>
+      <span>Étudiants</span>
+    </a>
+  </li>
+  <li>
+    <a class="sidebar-menu-link {% block sb_active_palmares %}{% endblock %}"
+      href="{% url 'notes:palmares' %}">
+      <i class="fas fa-trophy sidebar-menu-icon"></i>
+      <span>Palmarès</span>
+    </a>
+  </li>
+  {% endif %}
 
     <!-- ── ADMINISTRATEUR ── -->
     {% if user.est_administrateur %}
@@ -1219,6 +1233,13 @@ a {
         <span>Mon Profil</span>
       </a>
     </li>
+        <li>
+      <a class="sidebar-menu-link {% block sb_active_examens %}{% endblock %}"
+         href="{% url 'portail:liste_examens' %}">
+        <i class="fas fa-pencil-alt sidebar-menu-icon"></i>
+        <span>Examens</span>
+      </a>
+    </li>
     <li>
       <a class="sidebar-menu-link text-danger" href="{% url 'comptes:deconnexion' %}"
          style="color:rgba(239,68,68,0.85)!important;">
@@ -1309,7 +1330,7 @@ a {
 
 {% with current_view=request.resolver_match.view_name %}
 <!-- ✦ Bannière typewriter mobile — au-dessus de la bottom nav -->
-<div class="mobile-typewriter-bar d-lg-none">
+<div class="mobile-typewriter-bar d-lg-none" aria-live="polite" aria-label="Université d'État d'Haïti – {{ site.nom_complet }}">
   <span id="typewriter-text-mobile"></span><span class="typewriter-cursor-mobile">|</span>
 </div>
 <!-- ══════════════════════════════════════════
@@ -1322,9 +1343,9 @@ a {
     <span>Tableau</span>
   </a>
 
-  {% if user.est_etudiant %}
-  <a href="{% url 'cours:mes_cours' %}" class="bn-item{% if current_view == 'cours:mes_cours' %} bn-item--center{% endif %}">
-    <i class="fas fa-book"></i>
+{% if user.est_etudiant %}
+  <a href="{% url 'inscriptions:mes_inscriptions' %}" class="bn-item{% if current_view == 'inscriptions:mes_inscriptions' %} bn-item--center{% endif %}">
+    <i class="fas fa-list"></i>
     <span>Cours</span>
   </a>
   <a href="{% url 'inscriptions:sections_disponibles' %}" class="bn-item{% if current_view == 'inscriptions:sections_disponibles' %} bn-item--center{% endif %}">
@@ -1335,6 +1356,8 @@ a {
     <i class="fas fa-star"></i>
     <span>Notes</span>
   </a>
+
+
 
   {% elif user.est_professeur %}
   <a href="{% url 'cours:mes_cours' %}" class="bn-item{% if current_view == 'cours:mes_cours' %} bn-item--center{% endif %}">
@@ -1414,9 +1437,13 @@ a {
 ══════════════════════════════════════════ -->
 <div class="bottom-sheet d-lg-none" id="bottomSheet">
   <div class="bs-handle"></div>
-  <div class="bs-header">
+<div class="bs-header">
     <h6 class="bs-title">
-      <i class="fas fa-graduation-cap" style="color:var(--navy)"></i>
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement|default:'FASCH' }}" style="height:22px;width:auto;object-fit:contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap" style="color:var(--navy)"></i>
+      {% endif %}
       FASCH — Menu complet
     </h6>
     <button class="bs-close" id="closeBottomSheet" aria-label="Fermer">
@@ -1430,6 +1457,8 @@ a {
     <a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link"><i class="fas fa-list"></i>Mes inscriptions</a>
     <a href="{% url 'notes:mes_professeurs' %}" class="bs-link"><i class="fas fa-chalkboard-teacher"></i>Mes professeurs</a>
     <a href="{% url 'notes:releve_notes' %}" class="bs-link"><i class="fas fa-file-alt"></i>Relevé de notes</a>
+    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
+
   </div>
 
   {% elif user.est_professeur %}
@@ -1437,6 +1466,8 @@ a {
   <div class="bs-links">
     <a href="{% url 'cours:liste_sections' %}" class="bs-link"><i class="fas fa-list"></i>Toutes les sections</a>
     <a href="{% url 'notes:palmares' %}" class="bs-link"><i class="fas fa-trophy"></i>Palmarès</a>
+    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
+
   </div>
 
   {% elif user.est_administrateur %}
@@ -1449,6 +1480,8 @@ a {
     <a href="{% url 'notes:gpa_etudiants' %}" class="bs-link"><i class="fas fa-star"></i>GPA étudiants</a>
     <a href="{% url 'notes:saisie_notes_groupee' %}" class="bs-link"><i class="fas fa-table"></i>Saisie en masse</a>
     <a href="{% url 'notes:statistiques_notes' %}" class="bs-link"><i class="fas fa-chart-bar"></i>Statistiques</a>
+    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
+
   </div>
   {% endif %}
 
@@ -1461,7 +1494,9 @@ a {
       {% endif %}
     </a>
     <a href="{% url 'comptes:profil' %}" class="bs-link"><i class="fas fa-user-edit"></i>Mon profil</a>
-    <a href="{% url 'accueil' %}" class="bs-link"><i class="fas fa-home"></i>Accueil</a>
+    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>  {# ← visible pour tous #}
+
+    <a href="{% url 'articles:liste_articles' %}" class="bs-link"><i class="fas fa-home"></i>Actualités</a>
     <a href="{% url 'comptes:deconnexion' %}" class="bs-link bs-link--danger"><i class="fas fa-sign-out-alt"></i>Déconnexion</a>
   </div>
 </div>
@@ -1482,7 +1517,7 @@ a {
 (function () {
   const PHRASES = [
     "Université d'État d'Haïti",
-    "Faculté des Sciences Humaines",
+    "{{ site.nom_complet|escapejs }}",
   ];
 
   const TYPE_SPEED  = 55;
@@ -1528,6 +1563,7 @@ a {
   startTypewriter(document.getElementById('typewriter-text-mobile'));
 
 })();
+
 </script>
 
 <script>

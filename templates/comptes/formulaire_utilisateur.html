@@ -45,6 +45,17 @@
           {% if formulaire.role.errors %}<div class="text-danger">{{ formulaire.role.errors }}</div>{% endif %}
         </div>
         {% endif %}
+
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.role_editorial.id_for_label }}" class="form-label">Rôle éditorial</label>
+          {{ formulaire.role_editorial }}
+          {% if formulaire.role_editorial.errors %}<div class="text-danger">{{ formulaire.role_editorial.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="{{ formulaire.numero_telephone.id_for_label }}" class="form-label">Téléphone</label>
+          {{ formulaire.numero_telephone }}
+          {% if formulaire.numero_telephone.errors %}<div class="text-danger">{{ formulaire.numero_telephone.errors }}</div>{% endif %}
+        </div>
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.numero_telephone.id_for_label }}" class="form-label">Téléphone</label>
           {{ formulaire.numero_telephone }}

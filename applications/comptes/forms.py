@@ -61,6 +61,7 @@ class FormulaireUtilisateur(forms.ModelForm):
             "first_name",
             "last_name",
             "role",
+            "role_editorial",
             "genre",
             "numero_telephone",
             "adresse",
@@ -73,6 +74,7 @@ class FormulaireUtilisateur(forms.ModelForm):
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "role": forms.Select(attrs={"class": "form-select"}),
+            "role_editorial": forms.Select(attrs={"class": "form-select"}),
             "genre": forms.Select(attrs={"class": "form-select"}),
             "numero_telephone": forms.TextInput(attrs={"class": "form-control"}),
             "adresse": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
@@ -294,6 +296,3 @@ class FormulaireModificationAdministrateur(forms.ModelForm):
         widgets = {
             "poste": forms.TextInput(attrs={"class": "form-control"}),
         }
-
-
-

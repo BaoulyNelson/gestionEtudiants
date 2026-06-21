@@ -144,7 +144,8 @@ def vue_saisie_notes(request, id_section):
             note.save()
 
         messages.success(request, "Notes enregistrées avec succès.")
-        return redirect("notes:sections_professeur")
+        return redirect("notes:saisie_notes_professeur", id_section=section.id)
+
 
     inscription_notes = []
     for inscription in inscriptions:
@@ -1033,6 +1034,65 @@ def modifier_note_professeur(request, id_note):
         "notes/formulaire_note.html",
         {"form": form, "note": note, "action": "Modifier"},
     )
+
+
+@login_required
+@user_passes_test(est_professeur)
+def saisie_modifier_note_professeur(request, id_inscription):
+    """
+    Vue unique pour un étudiant donné :
+    - s'il n'a pas encore de note pour cette inscription -> formulaire de SAISIE (vide)
+    - s'il en a déjà une -> formulaire de MODIFICATION (champs pré-remplis)
+    """
+    inscription = get_object_or_404(
+        Inscription.objects.select_related(
+            "etudiant__utilisateur", "section_cours__cours", "section_cours__professeur"
+        ),
+        id=id_inscription,
+    )
+
+    if not request.user.is_superuser:
+        if inscription.section_cours.professeur != request.user.profil_professeur:
+            messages.error(request, "Vous n'avez pas accès à cette inscription.")
+            return redirect("notes:sections_professeur")
+
+    # Note existante (instance liée) OU nouvelle instance non sauvegardée,
+    # déjà rattachée à l'inscription : c'est ce qui fait basculer
+    # automatiquement le formulaire en mode "Saisir" ou "Modifier".
+    note = Note.objects.filter(inscription=inscription).first()
+    creation = note is None
+    if creation:
+        note = Note(inscription=inscription)
+
+    if request.method == "POST":
+        form = FormulaireNote(request.POST, instance=note)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.inscription = inscription  # sécurité : on impose la bonne inscription
+            note.note_par = (
+                inscription.section_cours.professeur
+                if request.user.is_superuser
+                else request.user.profil_professeur
+            )
+            note.save()
+            messages.success(
+                request,
+                "Note enregistrée avec succès." if creation else "Note mise à jour avec succès.",
+            )
+            return redirect(
+                "notes:saisie_notes_professeur",
+                id_section=inscription.section_cours.id,
+            )
+    else:
+        form = FormulaireNote(instance=note)
+
+    contexte = {
+        "form": form,
+        "note": note if not creation else None,
+        "inscription": inscription,
+        "action": "Saisir" if creation else "Modifier",
+    }
+    return render(request, "notes/formulaire_note.html", contexte)
 
 
 @login_required

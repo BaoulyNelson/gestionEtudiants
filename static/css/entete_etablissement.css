@@ -1,0 +1,71 @@
+/* ════════════════════════════════════════════════════════
+   En-tête établissement — partagé entre tous les templates
+   qui incluent partials/entete_etablissement.html
+   ════════════════════════════════════════════════════════ */
+
+.etablissement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+}
+.etablissement-header-left {
+  flex-shrink: 0;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.etablissement-header-center { flex: 1; text-align: center; }
+.etablissement-header-univ {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 4px;
+  font-family: Arial, sans-serif;
+}
+.etablissement-header-faculty {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a3a6b;
+  margin-bottom: 6px;
+  font-family: "Georgia", serif;
+}
+.etablissement-header-slogan {
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+  font-family: Arial, sans-serif;
+}
+.etablissement-header-right {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 11.5px;
+  color: #555;
+  font-family: Arial, sans-serif;
+  min-width: 180px;
+}
+.etablissement-header-right p {
+  margin: 3px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.etablissement-header-right i { color: #1a3a6b; width: 12px; text-align: center; }
+.etablissement-header-divider {
+  border: none;
+  border-top: 2.5px solid #1a3a6b;
+  margin: 0 0 22px;
+}
+
+@media (max-width: 768px) {
+  .etablissement-header { flex-direction: column; align-items: center; text-align: center; }
+  .etablissement-header-right { text-align: center; }
+  .etablissement-header-right p { justify-content: center; }
+}

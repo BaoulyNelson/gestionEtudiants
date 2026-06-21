@@ -1,7 +1,7 @@
 # admin.py
 
 from django.contrib import admin
-from .models import SiteSettings
+from .models import SiteSettings, NewsletterInscription, Livre, Personnel, Examen
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
@@ -18,3 +18,29 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+    
+@admin.register(Livre)
+class LivreAdmin(admin.ModelAdmin):
+    list_display  = ['titre', 'auteur', 'annee', 'disponible']
+    list_filter   = ['disponible']
+    search_fields = ['titre', 'auteur']
+
+@admin.register(Personnel)
+class PersonnelAdmin(admin.ModelAdmin):
+    list_display  = ['nom', 'poste']
+    list_filter   = ['poste']
+    search_fields = ['nom']
+
+@admin.register(Examen)
+class ExamenAdmin(admin.ModelAdmin):
+    list_display  = ['titre', 'date', 'statut']
+    list_filter   = ['statut']
+    search_fields = ['titre']
+    readonly_fields = ['statut']  # calculé automatiquement dans save()
+
+
+@admin.register(NewsletterInscription)
+class NewsletterInscriptionAdmin(admin.ModelAdmin):
+    list_display  = ['email', 'nom', 'inscrit_le']
+    search_fields = ['email', 'nom']
+    ordering      = ['-inscrit_le']
