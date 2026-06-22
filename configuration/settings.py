@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django.contrib.humanize',
     # Apps locales
-    "applications.admissions",
     "applications.articles",
     "applications.comptes",
     "applications.cours",
@@ -172,16 +171,12 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Pagination
-SITE_NAME         = config('SITE_NAME',         default='LeMédia')
-SITE_DESCRIPTION  = config('SITE_DESCRIPTION',  default="Votre source d'information fiable")
-SITE_TAGLINE      = config('SITE_TAGLINE',       default="L'actualité qui compte")
-CONTACT_EMAIL     = config('CONTACT_EMAIL',      default='contact@lemedia.ht')
-ARTICLES_PAR_PAGE = config('ARTICLES_PAR_PAGE',  default=9, cast=int)
 
 # Custom settings
-MAX_COURS_PAR_SESSION = 8  # était MAX_COURSES_PER_SESSION
+MAX_COURS_PAR_SESSION = 7  
 MOT_DE_PASSE_TEMPORAIRE = "motdepasse123"  # était DEFAULT_TEMP_PASSWORD
 ELEMENTS_PAR_PAGE = 20  # était PAGINATION_PER_PAGE
+ARTICLES_PAR_PAGE = config('ARTICLES_PAR_PAGE',  default=9, cast=int)
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

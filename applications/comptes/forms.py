@@ -235,6 +235,31 @@ class FormulaireModificationEtudiant(forms.ModelForm):
             etudiant.save()
         return etudiant
 
+
+class FormulaireProfilEtudiant(forms.ModelForm):
+    """Utilisé dans vue_modifier_utilisateur — champs Etudiant uniquement.
+    Les champs Utilisateur sont gérés séparément par FormulaireUtilisateur."""
+
+    class Meta:
+        model = Etudiant
+        fields = ["numero_etudiant", "departement", "niveau", "date_inscription"]
+        widgets = {
+            "numero_etudiant": forms.TextInput(
+                attrs={"class": "form-control", "readonly": True}
+            ),
+            "departement": forms.Select(attrs={"class": "form-select"}),
+            "niveau": forms.Select(attrs={"class": "form-select"}),
+            "date_inscription": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # numero_etudiant est auto-généré : disabled=True l'exclut de la
+        # validation ET conserve automatiquement la valeur de l'instance.
+        self.fields["numero_etudiant"].disabled = True
+        self.fields["numero_etudiant"].help_text = "Généré automatiquement — non modifiable."
 class FormulaireCreationProfesseur(forms.ModelForm):
     """Formulaire de création de profil professeur"""
 

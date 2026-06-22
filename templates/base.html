@@ -1086,22 +1086,26 @@ a {
         <span>S'inscrire</span>
       </a>
     </li>
-    <li>
-      <a class="sidebar-menu-link {% block sb_active_inscriptions %}{% endblock %}"
-         href="{% url 'inscriptions:mes_inscriptions' %}">
-        <i class="fas fa-list sidebar-menu-icon"></i>
-        <span>Inscriptions</span>
-        {% if course_count %}<span class="sidebar-menu-badge">{{ course_count }}</span>{% endif %}
-      </a>
-    </li>
+  <li>
+    <a class="sidebar-menu-link {% block sb_active_inscriptions %}{% endblock %}"
+      href="{% url 'inscriptions:mes_inscriptions' %}">
+      <i class="fas fa-list sidebar-menu-icon"></i>
+      <span>Inscriptions</span>
+      {% if badges.cours_count %}
+      <span class="sidebar-menu-badge">{{ badges.cours_count }}</span>
+      {% endif %}
+    </a>
+  </li>
     <li>
       <a class="sidebar-menu-link {% block sb_active_notes %}{% endblock %}"
-         href="{% url 'notes:mes_notes' %}">
+        href="{% url 'notes:mes_notes' %}">
         <i class="fas fa-star sidebar-menu-icon"></i>
         <span>Notes</span>
+        {% if badges.notes_count %}
+        <span class="sidebar-menu-badge">{{ badges.notes_count }}</span>
+        {% endif %}
       </a>
     </li>
-    <li>
       <a class="sidebar-menu-link {% block sb_active_professeurs %}{% endblock %}"
          href="{% url 'notes:mes_professeurs' %}">
         <i class="fas fa-chalkboard-teacher sidebar-menu-icon"></i>
@@ -1115,6 +1119,8 @@ a {
         <span>Relevé</span>
       </a>
     </li>
+
+
     {% endif %}
 
   <!-- ── PROFESSEUR ── -->
@@ -1222,6 +1228,7 @@ a {
         <span>Statistiques</span>
       </a>
     </li>
+
     {% endif %}
 
     <!-- ── Compte commun ── -->
@@ -1233,13 +1240,31 @@ a {
         <span>Mon Profil</span>
       </a>
     </li>
-        <li>
-      <a class="sidebar-menu-link {% block sb_active_examens %}{% endblock %}"
-         href="{% url 'portail:liste_examens' %}">
-        <i class="fas fa-pencil-alt sidebar-menu-icon"></i>
-        <span>Examens</span>
-      </a>
-    </li>
+<li>
+  <a class="sidebar-menu-link {% block sb_active_examens %}{% endblock %}"
+     href="{% url 'portail:liste_examens' %}">
+    <i class="fas fa-pencil-alt sidebar-menu-icon"></i>
+    <span>Examens</span>
+    {% if badges.examens_count %}
+    <span class="sidebar-menu-badge">{{ badges.examens_count }}</span>
+    {% endif %}
+  </a>
+</li>
+
+<li>
+  <a class="sidebar-menu-link {% block sb_active_personnel %}{% endblock %}"
+     href="{% url 'portail:liste_personnel' %}">
+    <i class="fas fa-user-tie sidebar-menu-icon"></i>
+    <span>Personnel</span>
+  </a>
+</li>
+<li>
+  <a class="sidebar-menu-link {% block sb_active_livres %}{% endblock %}"
+     href="{% url 'portail:liste_livres' %}">
+    <i class="fas fa-book sidebar-menu-icon"></i>
+    <span>Bibliothèque</span>
+  </a>
+</li>
     <li>
       <a class="sidebar-menu-link text-danger" href="{% url 'comptes:deconnexion' %}"
          style="color:rgba(239,68,68,0.85)!important;">
@@ -1454,10 +1479,20 @@ a {
   {% if user.est_etudiant %}
   <div class="bs-section-label">Espace étudiant</div>
   <div class="bs-links">
-    <a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link"><i class="fas fa-list"></i>Mes inscriptions</a>
+<a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link">
+  <i class="fas fa-list"></i>Mes inscriptions
+  {% if badges.cours_count %}
+  <span class="badge bg-danger rounded-pill">{{ badges.cours_count }}</span>
+  {% endif %}
+</a>
     <a href="{% url 'notes:mes_professeurs' %}" class="bs-link"><i class="fas fa-chalkboard-teacher"></i>Mes professeurs</a>
     <a href="{% url 'notes:releve_notes' %}" class="bs-link"><i class="fas fa-file-alt"></i>Relevé de notes</a>
-    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
+  <a href="{% url 'portail:liste_examens' %}" class="bs-link">
+    <i class="fas fa-pencil-alt"></i>Examens
+    {% if badges.examens_count %}
+    <span class="badge bg-danger rounded-pill">{{ badges.examens_count }}</span>
+    {% endif %}
+</a>
 
   </div>
 
@@ -1481,7 +1516,7 @@ a {
     <a href="{% url 'notes:saisie_notes_groupee' %}" class="bs-link"><i class="fas fa-table"></i>Saisie en masse</a>
     <a href="{% url 'notes:statistiques_notes' %}" class="bs-link"><i class="fas fa-chart-bar"></i>Statistiques</a>
     <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
-
+    
   </div>
   {% endif %}
 
@@ -1493,8 +1528,13 @@ a {
       <span class="badge bg-danger rounded-pill ms-auto">{{ notifications_non_lues.count }}</span>
       {% endif %}
     </a>
+      <a href="{% url 'portail:liste_personnel' %}" class="bs-link">
+    <i class="fas fa-user-tie"></i>Personnel
+      </a>
+      <a href="{% url 'portail:liste_livres' %}" class="bs-link">
+        <i class="fas fa-book"></i>Bibliothèque
+      </a>
     <a href="{% url 'comptes:profil' %}" class="bs-link"><i class="fas fa-user-edit"></i>Mon profil</a>
-    <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>  {# ← visible pour tous #}
 
     <a href="{% url 'articles:liste_articles' %}" class="bs-link"><i class="fas fa-home"></i>Actualités</a>
     <a href="{% url 'comptes:deconnexion' %}" class="bs-link bs-link--danger"><i class="fas fa-sign-out-alt"></i>Déconnexion</a>

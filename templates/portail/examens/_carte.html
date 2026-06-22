@@ -1,4 +1,3 @@
-{% load static %}
 <div class="carte-examen" data-examen="{{ examen.id }}">
   <div class="carte-examen-barre {{ statut_css }}"></div>
 
@@ -10,11 +9,32 @@
 
   <div class="carte-examen-corps">
     <div class="carte-examen-info">
-      <div class="carte-examen-titre">{{ examen.titre }}</div>
+      <div class="carte-examen-titre">
+        {{ examen.section_cours.cours.code }} — {{ examen.get_type_examen_display }}
+      </div>
+      <div class="carte-examen-meta">
+        <i class="fas fa-book" style="width:14px;color:#1a3a6b;"></i>
+        {{ examen.section_cours.cours.nom }}
+        &nbsp;·&nbsp; Section {{ examen.section_cours.numero_section }}
+      </div>
+      {% if examen.heure %}
+      <div class="carte-examen-meta">
+        <i class="fas fa-clock" style="width:14px;color:#1a3a6b;"></i>
+        {{ examen.heure|time:"H:i" }}
+        {% if examen.duree_minutes %} — {{ examen.duree_minutes }} min{% endif %}
+      </div>
+      {% endif %}
+      {% if examen.salle %}
+      <div class="carte-examen-meta">
+        <i class="fas fa-door-open" style="width:14px;color:#1a3a6b;"></i>
+        {{ examen.salle }}
+      </div>
+      {% endif %}
       {% if examen.description %}
-        <div class="carte-examen-desc">{{ examen.description|truncatechars:100 }}</div>
+        <div class="carte-examen-desc">{{ examen.description|truncatechars:120 }}</div>
       {% endif %}
     </div>
+
     <div class="badge-statut {{ statut_css }}">
       {% if statut_css == "en-cours" %}
         <i class="fas fa-play-circle"></i> En cours
@@ -26,7 +46,7 @@
     </div>
   </div>
 
-  {% if user.est_professeur or user.est_administrateur %}
+  {% if request.user.est_professeur or request.user.est_administrateur %}
     <div class="carte-examen-actions">
       <a href="{% url 'portail:modifier_examen' examen.id %}" class="btn-ico" title="Modifier">
         <i class="fas fa-edit"></i>

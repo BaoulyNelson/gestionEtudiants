@@ -80,6 +80,27 @@
     font-family: "Georgia", "Times New Roman", serif;
   }
 
+  /* ── Barre de filtres ── */
+  .filtres-bar {
+    background: #f8f9fb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .filtres-bar .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .filtres-resultat {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 12px;
+  }
+  .filtres-resultat strong { color: #1a3a6b; }
+
   @media (max-width: 768px) {
     .etudiants-header { flex-direction: column; align-items: center; text-align: center; }
     .etudiants-header-right { text-align: center; }
@@ -136,14 +157,55 @@
     Liste des étudiants
   </div>
 
-  <!-- ── Recherche ── -->
-  <form method="get" class="mb-3">
-    <div class="input-group">
-      <input type="text" name="search" class="form-control" placeholder="Rechercher..."
-             value="{{ search|default:'' }}">
-      <button type="submit" class="btn btn-primary">Rechercher</button>
+  <!-- ── Recherche + filtres ── -->
+  <form method="get" class="filtres-bar">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label">Recherche</label>
+        <input type="text" name="search" class="form-control" placeholder="Nom, matricule, email…"
+               value="{{ recherche|default:'' }}">
+      </div>
+
+      <div class="col-md-3 col-6">
+        <label class="form-label">Département</label>
+        <select name="departement" class="form-select">
+          <option value="">Tous les départements</option>
+          {% for dep in departements %}
+            <option value="{{ dep.code }}" {% if departement_filtre == dep.code %}selected{% endif %}>
+              {{ dep.nom }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-2 col-6">
+        <label class="form-label">Niveau</label>
+        <select name="niveau" class="form-select">
+          <option value="">Tous les niveaux</option>
+          {% for valeur, libelle in niveaux %}
+            <option value="{{ valeur }}" {% if niveau_filtre == valeur %}selected{% endif %}>
+              {{ libelle }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-2 col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">
+          <i class="fas fa-filter me-1"></i> Filtrer
+        </button>
+        {% if recherche or departement_filtre or niveau_filtre %}
+          <a href="{% url 'comptes:liste_etudiants' %}" class="btn btn-outline-secondary" title="Réinitialiser">
+            <i class="fas fa-times"></i>
+          </a>
+        {% endif %}
+      </div>
     </div>
   </form>
+
+  <p class="filtres-resultat">
+    <strong>{{ page_obj.paginator.count }}</strong> étudiant{{ page_obj.paginator.count|pluralize }} trouvé{{ page_obj.paginator.count|pluralize }}
+  </p>
 
   <!-- ── Tableau ── -->
   <div class="table-responsive">

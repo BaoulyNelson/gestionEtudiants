@@ -231,11 +231,6 @@ class FormulairePartenariat(forms.ModelForm):
             "ordre": forms.NumberInput(attrs={"class": "form-control"}),
         }
 
-
-
-
-
-
 class FormulaireEvenement(forms.ModelForm):
     """Formulaire de création/édition d'un événement."""
 
@@ -259,10 +254,12 @@ class FormulaireEvenement(forms.ModelForm):
                 attrs={"class": _INPUT, "rows": 5}
             ),
             "date_debut": forms.DateTimeInput(
-                attrs={"class": _INPUT, "type": "datetime-local"}
+                format="%Y-%m-%dT%H:%M",
+                attrs={"type": "datetime-local", "class": _INPUT}
             ),
             "date_fin": forms.DateTimeInput(
-                attrs={"class": _INPUT, "type": "datetime-local"}
+                format="%Y-%m-%dT%H:%M",
+                attrs={"type": "datetime-local", "class": _INPUT}
             ),
             "lieu": forms.TextInput(
                 attrs={"class": _INPUT, "placeholder": "Ex : Amphithéâtre A"}
@@ -320,7 +317,11 @@ class FormulaireAnnonce(forms.ModelForm):
                 attrs={"class": _INPUT, "placeholder": "Ex : Salle de conférence"}
             ),
             "date_evenement": forms.DateTimeInput(
-                attrs={"class": _INPUT, "type": "datetime-local"}
+                format="%Y-%m-%dT%H:%M",
+                attrs={
+                    "class": _INPUT,
+                    "type": "datetime-local"
+                }
             ),
             "image": forms.FileInput(attrs={"class": _INPUT}),
             "est_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),

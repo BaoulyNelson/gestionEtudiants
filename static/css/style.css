@@ -1015,6 +1015,8 @@ img { max-width: 100%; height: auto; }
   background: rgba(0,0,0,.45);
   z-index: 1055;
   display: none;
+
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
 .cat-panel-overlay.show { display: block; }
@@ -1027,4 +1029,34 @@ img { max-width: 100%; height: auto; }
   .mobile-header,
   .mobile-search-bar { display: none !important; }
   body { padding-bottom: 0; }
+}
+
+/* ── BADGES STATUTS ──────────────────────────────────── */
+.badge-succes {
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-echec {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-attente {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+.badge-traitement {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
 }

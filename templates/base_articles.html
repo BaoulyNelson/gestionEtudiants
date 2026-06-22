@@ -126,14 +126,25 @@
           <a class="nav-link {% if 'evenements' in request.path %}active{% endif %}"
             href="{% url 'articles:liste_evenements' %}">Événements</a>
         </li>
-        {% for cat in nav_categories %}
-        <li class="nav-item">
-          <a class="nav-link" href="{{ cat.get_absolute_url }}"
-             style="border-bottom:2px solid transparent"
-             onmouseover="this.style.borderBottomColor='{{ cat.couleur }}'"
-             onmouseout="this.style.borderBottomColor='transparent'">{{ cat.nom }}</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {% if 'categorie' in request.path %}active{% endif %}"
+            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Catégories
+          </a>
+          <ul class="dropdown-menu">
+            {% for cat in nav_categories %}
+            <li>
+              <a class="dropdown-item" href="{{ cat.get_absolute_url }}">
+                {% if cat.couleur %}
+                <span style="display:inline-block;width:10px;height:10px;border-radius:50%;
+                            background:{{ cat.couleur }};margin-right:6px;"></span>
+                {% endif %}
+                {{ cat.nom }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
         </li>
-        {% endfor %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact:contact' %}">Contact</a>
         </li>

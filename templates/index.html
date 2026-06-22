@@ -770,7 +770,6 @@ footer {
 
   <ul class="nav-liens" role="list">
     <li><a href="#" class="actif">Accueil</a></li>
-    <li><a href="{% url 'admissions:centre_admissions' %}">Admissions</a></li>
     <li><a href="#departements">Départements</a></li>
     <li><a href="{% url 'articles:recherche' %}">Recherche</a></li>
     <li><a href="{% url 'articles:liste_articles' %}">Actualités</a></li>
@@ -1013,25 +1012,27 @@ footer {
     <div class="row g-3">
       {% for annonce in annonces %}
       <div class="col-md-6">
-        <div class="card border-0 shadow-sm h-100">
-          {% if annonce.image %}
-            <img src="{{ annonce.image.url }}" class="card-img-top" style="height:160px;object-fit:cover;">
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">{{ annonce.titre }}</h5>
-            <p class="card-text small text-muted">{{ annonce.contenu|truncatewords:25 }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-              <small class="text-muted">
-                <i class="fas fa-calendar me-1"></i>{{ annonce.date_publication|date:"d/m/Y" }}
-              </small>
-              {% if annonce.lieu %}
+        <a href="{% url 'articles:detail_annonce' annonce.slug %}" class="text-decoration-none text-reset">
+          <div class="card border-0 shadow-sm h-100 carte-cliquable">
+            {% if annonce.image %}
+              <img src="{{ annonce.image.url }}" class="card-img-top" style="height:160px;object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ annonce.titre }}</h5>
+              <p class="card-text small text-muted">{{ annonce.contenu|truncatewords:25 }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-2">
                 <small class="text-muted">
-                  <i class="fas fa-map-marker-alt me-1"></i>{{ annonce.lieu }}
+                  <i class="fas fa-calendar me-1"></i>{{ annonce.date_publication|date:"d/m/Y" }}
                 </small>
-              {% endif %}
+                {% if annonce.lieu %}
+                  <small class="text-muted">
+                    <i class="fas fa-map-marker-alt me-1"></i>{{ annonce.lieu }}
+                  </small>
+                {% endif %}
+              </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
       {% endfor %}
     </div>
@@ -1049,62 +1050,72 @@ footer {
     <div class="row g-4">
       {% for evt in evenements %}
       <div class="col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 overflow-hidden">
-          {% if evt.image %}
-            <img src="{{ evt.image.url }}" class="card-img-top" style="height:140px;object-fit:cover;">
-          {% else %}
-            <div style="height:140px;background:linear-gradient(135deg,#1a3a6b,#2d5a9e);display:flex;align-items:center;justify-content:center;">
-              <i class="fas fa-calendar-alt" style="font-size:40px;color:rgba(255,255,255,0.4);"></i>
-            </div>
-          {% endif %}
-
-          <div class="card-body d-flex flex-column">
-            <span class="badge mb-2" style="background:var(--primary);width:fit-content;">
-              {{ evt.get_status }}
-            </span>
-            <h6 class="card-title fw-bold">{{ evt.titre }}</h6>
-            {% if evt.lieu %}
-              <p class="small text-muted mb-2">
-                <i class="fas fa-map-marker-alt me-1"></i>{{ evt.lieu }}
-              </p>
+        <a href="{% url 'articles:detail_evenement' evt.slug %}" class="text-decoration-none text-reset">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden carte-cliquable">
+            {% if evt.image %}
+              <img src="{{ evt.image.url }}" class="card-img-top" style="height:140px;object-fit:cover;">
+            {% else %}
+              <div style="height:140px;background:linear-gradient(135deg,#1a3a6b,#2d5a9e);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-calendar-alt" style="font-size:40px;color:rgba(255,255,255,0.4);"></i>
+              </div>
             {% endif %}
 
-            <!-- Compte à rebours -->
-            <div class="mt-auto">
-              <div class="countdown-box" data-date="{{ evt.date_debut|date:'Y-m-d H:i:s' }}">
-                <div class="countdown-label">Commence dans</div>
-                <div class="countdown-timer">
-                  <div class="countdown-unit">
-                    <span class="countdown-val" data-unit="j">--</span>
-                    <span class="countdown-unit-label">J</span>
-                  </div>
-                  <span class="countdown-sep">:</span>
-                  <div class="countdown-unit">
-                    <span class="countdown-val" data-unit="h">--</span>
-                    <span class="countdown-unit-label">H</span>
-                  </div>
-                  <span class="countdown-sep">:</span>
-                  <div class="countdown-unit">
-                    <span class="countdown-val" data-unit="m">--</span>
-                    <span class="countdown-unit-label">Min</span>
-                  </div>
-                  <span class="countdown-sep">:</span>
-                  <div class="countdown-unit">
-                    <span class="countdown-val" data-unit="s">--</span>
-                    <span class="countdown-unit-label">Sec</span>
+            <div class="card-body d-flex flex-column">
+              <span class="badge mb-2" style="background:var(--primary);width:fit-content;">
+                {{ evt.get_statut }}
+              </span>
+              <h6 class="card-title fw-bold">{{ evt.titre }}</h6>
+              {% if evt.lieu %}
+                <p class="small text-muted mb-2">
+                  <i class="fas fa-map-marker-alt me-1"></i>{{ evt.lieu }}
+                </p>
+              {% endif %}
+
+              <!-- Compte à rebours -->
+              <div class="mt-auto">
+                <div class="countdown-box" data-date="{{ evt.date_debut|date:'Y-m-d H:i:s' }}">
+                  <div class="countdown-label">Commence dans</div>
+                  <div class="countdown-timer">
+                    <div class="countdown-unit">
+                      <span class="countdown-val" data-unit="j">--</span>
+                      <span class="countdown-unit-label">J</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                      <span class="countdown-val" data-unit="h">--</span>
+                      <span class="countdown-unit-label">H</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                      <span class="countdown-val" data-unit="m">--</span>
+                      <span class="countdown-unit-label">Min</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                      <span class="countdown-val" data-unit="s">--</span>
+                      <span class="countdown-unit-label">Sec</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
+            </div>
           </div>
-        </div>
+        </a>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 {% endif %}
+
+<style>
+  .carte-cliquable { transition: transform .18s ease, box-shadow .18s ease; }
+  .carte-cliquable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(26,58,107,.15) !important;
+  }
+</style>
 <!-- ════════════════════════════════
      CTA PLATEFORME
 ════════════════════════════════ -->
@@ -1136,7 +1147,6 @@ footer {
     <div class="footer-col">
       <h4>Navigation</h4>
       <a href="#">Accueil</a>
-      <a href="{% url 'admissions:centre_admissions' %}">Admissions</a>
       <a href="#departements">Départements</a>
       <a href="{% url 'articles:recherche' %}">Recherche</a>
       <a href="{% url 'contact:contact' %}">Contact</a>

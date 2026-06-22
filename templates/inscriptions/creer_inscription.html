@@ -18,112 +18,83 @@
         <form method="post" id="enrollmentForm">
             {% csrf_token %}
 
+            <!-- Étape 1 : sélection étudiant -->
             <div class="mb-4">
-                <label for="etudiant" class="form-label">
+                <label for="etudiant" class="form-label fw-semibold">
                     <i class="fas fa-user-graduate"></i> Étudiant <span class="text-danger">*</span>
                 </label>
                 <select name="etudiant" id="etudiant" class="form-select" required>
                     <option value="">-- Sélectionnez un étudiant --</option>
                     {% for etudiant in etudiants %}
-                    <option value="{{ etudiant.id }}"
-                            data-departement="{{ etudiant.departement.code }}"
-                            data-annee="{{ etudiant.niveau }}">
+                    <option value="{{ etudiant.id }}">
                         {{ etudiant.numero_etudiant }} - {{ etudiant.utilisateur.get_full_name }}
                         {% if etudiant.departement %}
-                            ({{ etudiant.departement.code }} - {{ etudiant.get_niveau_display }})
+                            ({{ etudiant.departement.code }} — {{ etudiant.get_niveau_display }})
                         {% endif %}
                     </option>
                     {% endfor %}
                 </select>
-                <small class="text-muted">Recherchez par numéro ou nom d'étudiant</small>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label">Session</label>
-                    <select id="filterSession" class="form-select">
-                        <option value="">Toutes</option>
-                        {% for value, label in choix_session %}
-                        <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Semestre</label>
-                    <select id="filterSemester" class="form-select">
-                        <option value="">Tous</option>
-                        {% for value, label in choix_semestre %}
-                        <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Recherche</label>
-                    <input type="text" id="searchCourse" class="form-control" placeholder="Code ou nom du cours">
-                </div>
+            <!-- Profil de l'étudiant sélectionné -->
+            <div id="profilEtudiant" class="alert alert-info d-none mb-4">
+                <i class="fas fa-info-circle"></i>
+                <strong id="profilNom"></strong> —
+                Département : <strong id="profilDept"></strong> |
+                Niveau : <strong id="profilNiveau"></strong>
             </div>
 
-            <div class="mb-4">
-                <label for="section" class="form-label">
+            <!-- Étape 2 : sections filtrées -->
+            <div id="blocSections" class="d-none">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Session</label>
+                        <select id="filterSession" class="form-select">
+                            <option value="">Toutes</option>
+                            {% for value, label in choix_session %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Semestre</label>
+                        <select id="filterSemester" class="form-select">
+                            <option value="">Tous</option>
+                            {% for value, label in choix_semestre %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Recherche</label>
+                        <input type="text" id="searchCours" class="form-control" placeholder="Code ou nom du cours">
+                    </div>
+                </div>
+
+                <label class="form-label fw-semibold">
                     <i class="fas fa-book"></i> Section <span class="text-danger">*</span>
                 </label>
-                <div id="sectionsList" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
-                    {% if sections_par_cours %}
-                        {% for cours, sections in sections_par_cours.items %}
-                        <div class="section-group mb-3"
-                             data-session="{{ sections.0.session }}"
-                             data-semestre="{{ sections.0.semestre }}"
-                             data-cours="{{ cours.code }}|{{ cours.nom }}">
-                            <h6 class="text-primary mb-2">
-                                <strong>{{ cours.code }}</strong> - {{ cours.nom }}
-                                <span class="badge bg-secondary">{{ cours.credits }} crédits</span>
-                            </h6>
-                            {% for section in sections %}
-                            <div class="form-check ms-3 mb-2">
-                                <input class="form-check-input" type="radio"
-                                       name="section"
-                                       id="section{{ section.id }}"
-                                       value="{{ section.id }}"
-                                       data-cours="{{ cours.code }}"
-                                       data-session="{{ section.session }}"
-                                       data-semestre="{{ section.semestre }}"
-                                       required>
-                                <label class="form-check-label" for="section{{ section.id }}">
-                                    <strong>Section {{ section.numero_section }}</strong>
-                                    - {{ section.get_jour_semaine_display }}
-                                    {{ section.heure_debut|time:"H:i" }} - {{ section.heure_fin|time:"H:i" }}
-                                    {% if section.professeur %}
-                                    <small class="text-muted">
-                                        (Prof. {{ section.professeur.utilisateur.get_full_name }})
-                                    </small>
-                                    {% endif %}
-                                    <br>
-                                    <small class="text-muted">
-                                        {{ section.get_session_display }} - {{ section.get_semestre_display }} {{ section.annee }}
-                                        - Salle: {{ section.salle }}
-                                        {% if section.capacite_max %}
-                                        - Places: {{ section.nb_inscrits }}/{{ section.capacite_max }}
-                                        {% endif %}
-                                    </small>
-                                </label>
-                            </div>
-                            {% endfor %}
-                            <hr>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="alert alert-info mb-0">
-                            <i class="fas fa-info-circle"></i> Aucune section ouverte disponible.
-                        </div>
-                    {% endif %}
+                <div id="sectionsList" class="border rounded p-3" style="max-height: 420px; overflow-y: auto;">
+                    <!-- Rempli dynamiquement par JS -->
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2">
+            <!-- État initial -->
+            <div id="etatInitial" class="alert alert-secondary">
+                <i class="fas fa-arrow-up"></i> Sélectionnez un étudiant pour voir les cours disponibles.
+            </div>
+
+            <!-- Chargement -->
+            <div id="chargement" class="text-center py-4 d-none">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Chargement des cours compatibles…</p>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
                 <a href="{% url 'inscriptions:liste_inscriptions' %}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Annuler
                 </a>
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-success" id="btnSoumettre" disabled>
                     <i class="fas fa-check"></i> Créer l'inscription
                 </button>
             </div>
@@ -135,7 +106,8 @@
 .section-group {
     background-color: #f8f9fa;
     padding: 1rem;
-    border-radius: 0.25rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
 }
 .form-check-input:checked ~ .form-check-label { font-weight: 600; }
 #sectionsList::-webkit-scrollbar { width: 8px; }
@@ -143,44 +115,205 @@
 #sectionsList::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
 #sectionsList::-webkit-scrollbar-thumb:hover { background: #555; }
 </style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const selectEtudiant = document.getElementById('etudiant');
+    const blocSections   = document.getElementById('blocSections');
+    const sectionsList   = document.getElementById('sectionsList');
+    const etatInitial    = document.getElementById('etatInitial');
+    const chargement     = document.getElementById('chargement');
+    const btnSoumettre   = document.getElementById('btnSoumettre');
+    const profilEtudiant = document.getElementById('profilEtudiant');
     const filterSession  = document.getElementById('filterSession');
     const filterSemester = document.getElementById('filterSemester');
-    const searchCourse   = document.getElementById('searchCourse');
-    const sectionGroups  = document.querySelectorAll('.section-group');
+    const searchCours    = document.getElementById('searchCours');
 
-    function filterSections() {
-        const sessionValue  = filterSession.value.toLowerCase();
-        const semestreValue = filterSemester.value.toLowerCase();
-        const searchValue   = searchCourse.value.toLowerCase();
+    let coursData = {};
 
-        sectionGroups.forEach(group => {
-            const matchSession  = !sessionValue  || group.dataset.session.toLowerCase()  === sessionValue;
-            const matchSemestre = !semestreValue || group.dataset.semestre.toLowerCase() === semestreValue;
-            const matchSearch   = !searchValue   || group.dataset.cours.toLowerCase().includes(searchValue);
-            group.style.display = (matchSession && matchSemestre && matchSearch) ? 'block' : 'none';
-        });
+    // Map : code_cours → id_section sélectionné (persiste entre re-renders)
+    const selectionParCours = {};
+
+    // ── Listener unique ───────────────────────────────────────────────────────
+    sectionsList.addEventListener('change', function (e) {
+        if (e.target.dataset.cours) {
+            const codeCours = e.target.dataset.cours;
+            if (e.target.checked) {
+                selectionParCours[codeCours] = e.target.value;
+            } else {
+                delete selectionParCours[codeCours];
+            }
+            btnSoumettre.disabled = Object.keys(selectionParCours).length === 0;
+        }
+    });
+
+    // ── Chargement AJAX ───────────────────────────────────────────────────────
+    $(selectEtudiant).on('select2:select select2:clear', function () {
+        const etudiantId = this.value;
+
+        blocSections.classList.add('d-none');
+        etatInitial.classList.add('d-none');
+        profilEtudiant.classList.add('d-none');
+        sectionsList.innerHTML = '';
+        btnSoumettre.disabled  = true;
+        coursData = {};
+        Object.keys(selectionParCours).forEach(k => delete selectionParCours[k]);
+
+        if (!etudiantId) {
+            etatInitial.classList.remove('d-none');
+            return;
+        }
+
+        chargement.classList.remove('d-none');
+
+        fetch(`/inscriptions/ajax/sections/${etudiantId}/`)
+            .then(r => r.json())
+            .then(data => {
+                chargement.classList.add('d-none');
+
+                if (data.erreur) {
+                    sectionsList.innerHTML = `<div class="alert alert-danger">${data.erreur}</div>`;
+                    blocSections.classList.remove('d-none');
+                    return;
+                }
+
+                document.getElementById('profilNom').textContent    = data.etudiant.nom;
+                document.getElementById('profilDept').textContent   = data.etudiant.departement;
+                document.getElementById('profilNiveau').textContent = data.etudiant.niveau;
+                profilEtudiant.classList.remove('d-none');
+
+                coursData = data.cours;
+
+                if (Object.keys(coursData).length === 0) {
+                    sectionsList.innerHTML = `
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Aucun cours disponible pour ce département et ce niveau.
+                        </div>`;
+                } else {
+                    afficherCours(coursData);
+                }
+
+                blocSections.classList.remove('d-none');
+            })
+            .catch(() => {
+                chargement.classList.add('d-none');
+                sectionsList.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Erreur lors du chargement des cours.
+                    </div>`;
+                blocSections.classList.remove('d-none');
+            });
+    });
+
+    // ── Rendu des cours ───────────────────────────────────────────────────────
+    function afficherCours(data) {
+        const sessionVal  = filterSession.value;
+        const semestreVal = filterSemester.value;
+        const searchVal   = searchCours.value.toLowerCase();
+        let html = '';
+        let nb   = 0;
+
+        for (const [code, cours] of Object.entries(data)) {
+            const sectionsFiltrees = cours.sections.filter(s => {
+                const matchSession  = !sessionVal  || s.session_raw  === sessionVal;
+                const matchSemestre = !semestreVal || s.semestre_raw === semestreVal;
+                return matchSession && matchSemestre;
+            });
+
+            if (sectionsFiltrees.length === 0) continue;
+
+            const matchSearch = !searchVal ||
+                code.toLowerCase().includes(searchVal) ||
+                cours.nom.toLowerCase().includes(searchVal);
+            if (!matchSearch) continue;
+
+            nb++;
+
+            // Nom de groupe unique par cours → comportement radio natif par cours
+            const nomGroupe = `section_cours_${code.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            const sectionSelectionnee = selectionParCours[code] || null;
+
+            let sectionsHtml = sectionsFiltrees.map(s => {
+                const estCoche = sectionSelectionnee === String(s.id) ? 'checked' : '';
+                return `
+                <div class="form-check ms-3 mb-2">
+                    <input class="form-check-input" type="radio"
+                           name="${nomGroupe}"
+                           id="section${s.id}"
+                           value="${s.id}"
+                           data-cours="${code}"
+                           ${estCoche}>
+                    <label class="form-check-label" for="section${s.id}">
+                        <strong>Section ${s.numero}</strong>
+                        — ${s.jour} ${s.heure_debut}–${s.heure_fin}
+                        ${s.professeur ? `<small class="text-muted">(Prof. ${s.professeur})</small>` : ''}
+                        <br>
+                        <small class="text-muted">
+                            ${s.session} — ${s.semestre} ${s.annee}
+                            — Salle : ${s.salle || 'N/A'}
+                            — Places : ${s.nb_inscrits}/${s.capacite_max}
+                        </small>
+                    </label>
+                </div>`;
+            }).join('');
+
+            html += `
+                <div class="section-group">
+                    <h6 class="text-primary mb-2">
+                        <strong>${code}</strong> — ${cours.nom}
+                        <span class="badge bg-secondary">${cours.credits} crédits</span>
+                        <span class="badge bg-light text-dark border">${cours.niveau}</span>
+                    </h6>
+                    ${sectionsHtml}
+                </div>`;
+        }
+
+        if (nb === 0) {
+            sectionsList.innerHTML = `
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Aucun cours ne correspond aux filtres.
+                </div>`;
+        } else {
+            sectionsList.innerHTML = html;
+        }
+        // Pas de addEventListener ici
     }
 
-    filterSession.addEventListener('change', filterSections);
-    filterSemester.addEventListener('change', filterSections);
-    searchCourse.addEventListener('input', filterSections);
+    // ── Filtres ───────────────────────────────────────────────────────────────
+    [filterSession, filterSemester].forEach(el => {
+        el.addEventListener('change', () => {
+            if (Object.keys(coursData).length) afficherCours(coursData);
+        });
+    });
+    searchCours.addEventListener('input', () => {
+        if (Object.keys(coursData).length) afficherCours(coursData);
+    });
 
+    // ── Soumission ────────────────────────────────────────────────────────────
     document.getElementById('enrollmentForm').addEventListener('submit', function (e) {
-        if (!document.getElementById('etudiant').value) {
+        if (!selectEtudiant.value) {
             e.preventDefault();
             alert('Veuillez sélectionner un étudiant.');
-            return false;
+            return;
         }
-        if (!document.querySelector('input[name="section"]:checked')) {
+
+        const idsSelectionnes = Object.values(selectionParCours);
+        if (idsSelectionnes.length === 0) {
             e.preventDefault();
-            alert('Veuillez sélectionner une section.');
-            return false;
+            alert('Veuillez sélectionner au moins une section.');
+            return;
         }
+
+        // Injecter les IDs dans le formulaire avant envoi
+        document.querySelectorAll('input[name="sections_selectionnees"]').forEach(el => el.remove());
+        idsSelectionnes.forEach(id => {
+            const input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = 'sections_selectionnees';
+            input.value = id;
+            this.appendChild(input);
+        });
     });
 });
 </script>
-
 {% endblock %}

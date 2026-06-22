@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Bibliothèque{% endblock %}
+{% block sb_active_livres %}active{% endblock %}
+
+{% block authenticated_content %}
+  {% include 'partials/entete_etablissement.html' %}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-0 fw-bold">
+      <i class="fas fa-book me-2" style="color:#1a3a6b;"></i>
+      Bibliothèque
+    </h2>
+    <small class="text-muted">{{ livres|length }} ouvrage{{ livres|length|pluralize }}</small>
+  </div>
+
+
+  {% if user.est_administrateur %}
+  <a href="{% url 'portail:creer_livre' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Ajouter un livre
+  </a>
+{% endif %}
+</div>
+
+
+
+{% if livres %}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Titre</th>
+          <th>Auteur</th>
+          <th>Année</th>
+          <th>Résumé</th>
+          <th>Disponibilité</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for livre in livres %}
+        <tr>
+          <td><strong>{{ livre.titre }}</strong></td>
+
+          <td>{{ livre.auteur }}</td>
+
+          <td>{{ livre.annee }}</td>
+
+          <td>
+            <small class="text-muted">{{ livre.resume|truncatechars:80 }}</small>
+          </td>
+
+          <td>
+            {% if livre.disponible %}
+              <span class="badge bg-success">
+                <i class="fas fa-check me-1"></i>Disponible
+              </span>
+            {% else %}
+              <span class="badge bg-danger">
+                <i class="fas fa-times me-1"></i>Indisponible
+              </span>
+            {% endif %}
+          </td>
+
+
+          <td class="text-end">
+          {% if user.est_administrateur %}
+
+            <div class="d-flex gap-2 justify-content-end">
+              <a href="{% url 'portail:modifier_livre' livre.id %}"
+                 class="btn btn-sm btn-outline-primary" title="Modifier">
+                <i class="fas fa-pen"></i>
+              </a>
+              <a href="{% url 'portail:supprimer_livre' livre.id %}"
+                 class="btn btn-sm btn-outline-danger" title="Supprimer">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+              {% else %}
+              <span class="text-muted">—</span>
+              {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="card">
+  <div class="card-body text-center py-5">
+    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">Aucun livre enregistré</h5>
+    {% if user.est_administrateur %}
+    <a href="{% url 'portail:creer_livre' %}" class="btn btn-primary mt-2">
+      <i class="fas fa-plus me-1"></i> Ajouter le premier livre
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

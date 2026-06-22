@@ -162,7 +162,8 @@
           </div>
         {% endif %}
         <h4>{{ user.get_full_name }}</h4>
-        <p class="text-muted">{{ user.get_role_display }}</p>
+        <p class="text-muted">    {{ user.afficher_role_par_genre }}</p>
+
 
         <div class="mt-2">
           {{ form.photo_profil }}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}{{ titre }}{% endblock %}
+{% block sb_active_livres %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center mb-4">
+  <a href="{% url 'portail:liste_livres' %}" class="btn btn-outline-secondary me-3">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div>
+    <h2 class="mb-0 fw-bold">
+      <i class="fas fa-book me-2" style="color:#1a3a6b;"></i>
+      {{ titre }}
+    </h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body p-4">
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          {# ── Titre ── #}
+          <div class="mb-3">
+            <label for="{{ formulaire.titre.id_for_label }}" class="form-label fw-semibold">
+              Titre <span class="text-danger">*</span>
+            </label>
+            {{ formulaire.titre }}
+            {% if formulaire.titre.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.titre.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          {# ── Auteur ── #}
+          <div class="mb-3">
+            <label for="{{ formulaire.auteur.id_for_label }}" class="form-label fw-semibold">
+              Auteur <span class="text-danger">*</span>
+            </label>
+            {{ formulaire.auteur }}
+            {% if formulaire.auteur.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.auteur.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          {# ── Année ── #}
+          <div class="mb-3">
+            <label for="{{ formulaire.annee.id_for_label }}" class="form-label fw-semibold">
+              Année de publication <span class="text-danger">*</span>
+            </label>
+            {{ formulaire.annee }}
+            {% if formulaire.annee.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.annee.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          {# ── Résumé ── #}
+          <div class="mb-3">
+            <label for="{{ formulaire.resume.id_for_label }}" class="form-label fw-semibold">
+              Résumé <span class="text-danger">*</span>
+            </label>
+            {{ formulaire.resume }}
+            {% if formulaire.resume.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.resume.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          {# ── Disponible ── #}
+          <div class="mb-4">
+            <div class="form-check">
+              {{ formulaire.disponible }}
+              <label class="form-check-label fw-semibold" for="{{ formulaire.disponible.id_for_label }}">
+                Disponible à l'emprunt
+              </label>
+            </div>
+            {% if formulaire.disponible.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.disponible.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          {# ── Erreurs globales ── #}
+          {% if formulaire.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for erreur in formulaire.non_field_errors %}
+              <div>{{ erreur }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'portail:liste_livres' %}" class="btn btn-outline-secondary">
+              Annuler
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>
+              {% if livre %}Enregistrer les modifications{% else %}Ajouter{% endif %}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

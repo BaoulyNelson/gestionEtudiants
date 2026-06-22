@@ -18,74 +18,100 @@ class Livre(models.Model):
 
 class Personnel(models.Model):
     POSTE_CHOICES = [
-        ("doyen", "Doyen"),
-        ("vice_doyen_acad", "Vice-Doyen Académique"),
+        ("doyen",            "Doyen"),
+        ("vice_doyen_acad",  "Vice-Doyen Académique"),
         ("vice_doyen_admin", "Vice-Doyen Administratif"),
-        ("secretaire", "Secrétaire Général"),
-        ("agent_admin", "Agent Administratif"),
-        ("rap", "Responsable Année Préparatoire"),
-        ("chef_dept_socio", "Chef de Département de Sociologie"),
-        ("chef_dept_psy", "Chef de Département de Psychologie"),
-        ("chef_dept_com", "Chef de Département de Communication Sociale"),
-        ("chef_dept_ss", "Chef de Département de Service Social"),
+        ("secretaire",       "Secrétaire Général"),
+        ("agent_admin",      "Agent Administratif"),
+        ("rap",              "Responsable Année Préparatoire"),
+        ("chef_dept",        "Chef de Département"),   # ← générique
     ]
 
     poste = models.CharField(max_length=50, choices=POSTE_CHOICES)
-    nom = models.CharField(max_length=100)
+
+    # Renseigné uniquement si poste == "chef_dept"
+    departement = models.ForeignKey(
+        "departements.Departement",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="chefs_personnel",
+        verbose_name="Département",
+        help_text="Obligatoire uniquement pour le poste Chef de Département",
+    )
+
+    nom         = models.CharField(max_length=100)
     description = models.TextField()
-    photo = models.ImageField(upload_to="personnel/", blank=True, null=True)
+    photo       = models.ImageField(upload_to="personnel/", blank=True, null=True)
     date_creation = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
-        verbose_name = "Membre du personnel"
-        verbose_name_plural = "Personnel administratif"
-        ordering = ["poste"]
+        verbose_name          = "Membre du personnel"
+        verbose_name_plural   = "Personnel administratif"
+        ordering              = ["poste"]
 
     def __str__(self):
+        if self.poste == "chef_dept" and self.departement:
+            return f"{self.nom} - Chef de Département ({self.departement.nom})"
         return f"{self.nom} - {self.get_poste_display()}"
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.poste == "chef_dept" and not self.departement:
+            raise ValidationError(
+                {"departement": "Un département est obligatoire pour le poste Chef de Département."}
+            )
+        if self.poste != "chef_dept" and self.departement:
+            raise ValidationError(
+                {"departement": "Le département ne s'applique qu'au poste Chef de Département."}
+            )
 
 class Examen(models.Model):
+    CHOIX_TYPE = [
+        ("mi_parcours", "Examen de mi-parcours"),
+        ("final",       "Examen final"),
+        ("rattrapage",  "Rattrapage"),
+    ]
     CHOIX_STATUT = [
-        ("termine", "Terminé"),
+        ("a_venir",  "À venir"),
         ("en_cours", "En cours"),
-        ("a_venir", "À venir"),
+        ("termine",  "Terminé"),
     ]
 
-    titre = models.CharField("Intitulé de l'examen", max_length=255)
-    date = models.DateField("Date de l'examen")
-    description = models.TextField("Description", blank=True)
+    section_cours = models.ForeignKey(
+        'cours.SectionCours',
+        on_delete=models.CASCADE,
+        related_name='examens',
+        verbose_name='Section de cours',
+    )
+    type_examen = models.CharField(
+        'Type', max_length=20,
+        choices=CHOIX_TYPE,
+        default='final',
+    )
+    date  = models.DateField('Date')
+    heure = models.TimeField('Heure de début', null=True, blank=True)
+    salle = models.CharField('Salle', max_length=100, blank=True)
+    duree_minutes = models.PositiveIntegerField('Durée (minutes)', default=120)
+    description = models.TextField('Remarques', blank=True)
     statut = models.CharField(
-        "Statut", max_length=20, choices=CHOIX_STATUT, default="a_venir"
+        'Statut', max_length=20,
+        choices=CHOIX_STATUT,
+        default='a_venir',
     )
 
     class Meta:
-        ordering = ["date"]
-        verbose_name = "Examen"
-        verbose_name_plural = "Examens"
+        ordering = ['date', 'heure']
+        verbose_name = 'Examen'
+        verbose_name_plural = 'Examens'
 
     def __str__(self):
-        return f"{self.titre} le {self.date:%d %B %Y}"
-
-        
-        
-    def save(self, *args, **kwargs):
-        """
-        Recalcule automatiquement `statut` en fonction de `date` :
-        - date < aujourd'hui  → 'termine'
-        - date == aujourd'hui → 'en_cours'
-        - date > aujourd'hui  → 'a_venir'
-        """
-        aujourdhui = datetime.date.today()  # ← pas de timezone, compatible USE_TZ = False
-        
-        if self.date < aujourdhui:
-            self.statut = "termine"
-        elif self.date == aujourdhui:
-            self.statut = "en_cours"
-        else:
-            self.statut = "a_venir"
-        super().save(*args, **kwargs)
-
+        return (
+            f"{self.get_type_examen_display()} — "
+            f"{self.section_cours.cours.code} "
+            f"Section {self.section_cours.numero_section} "
+            f"le {self.date:%d/%m/%Y}"
+        )
 
 # models.py (dans une app existante, ex: `portail` ou une nouvelle app `config`)
 

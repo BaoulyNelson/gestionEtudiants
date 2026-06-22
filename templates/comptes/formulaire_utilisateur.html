@@ -13,106 +13,222 @@
 
 <div class="card">
   <div class="card-body">
+
+    {# ── Erreurs globales formulaire principal ── #}
+    {% if formulaire.errors %}
+      <div class="alert alert-danger">
+        {% for field in formulaire %}
+          {% for error in field.errors %}
+            <div><strong>{{ field.label }} :</strong> {{ error }}</div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in formulaire.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# ── Erreurs globales formulaire profil ── #}
+    {% if formulaire_profil.errors %}
+      <div class="alert alert-danger">
+        {% for field in formulaire_profil %}
+          {% for error in field.errors %}
+            <div><strong>{{ field.label }} :</strong> {{ error }}</div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in formulaire_profil.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
+ 
       <h5 class="mb-3"><i class="fas fa-user"></i> Informations de base</h5>
       <div class="row">
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.first_name.id_for_label }}" class="form-label">Prénom *</label>
           {{ formulaire.first_name }}
-          {% if formulaire.first_name.errors %}<div class="text-danger">{{ formulaire.first_name.errors }}</div>{% endif %}
+          {% if formulaire.first_name.errors %}
+            <div class="text-danger">{{ formulaire.first_name.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.last_name.id_for_label }}" class="form-label">Nom *</label>
           {{ formulaire.last_name }}
-          {% if formulaire.last_name.errors %}<div class="text-danger">{{ formulaire.last_name.errors }}</div>{% endif %}
+          {% if formulaire.last_name.errors %}
+            <div class="text-danger">{{ formulaire.last_name.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.email.id_for_label }}" class="form-label">Email *</label>
           {{ formulaire.email }}
-          {% if formulaire.email.errors %}<div class="text-danger">{{ formulaire.email.errors }}</div>{% endif %}
+          {% if formulaire.email.errors %}
+            <div class="text-danger">{{ formulaire.email.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.genre.id_for_label }}" class="form-label">Genre *</label>
           {{ formulaire.genre }}
-          {% if formulaire.genre.errors %}<div class="text-danger">{{ formulaire.genre.errors }}</div>{% endif %}
+          {% if formulaire.genre.errors %}
+            <div class="text-danger">{{ formulaire.genre.errors }}</div>
+          {% endif %}
         </div>
-        {% if not utilisateur_obj %}  {# Champ rôle uniquement à la création #}
-        <div class="col-md-6 mb-3">
-          <label for="{{ formulaire.role.id_for_label }}" class="form-label">Rôle *</label>
-          {{ formulaire.role }}
-          {% if formulaire.role.errors %}<div class="text-danger">{{ formulaire.role.errors }}</div>{% endif %}
-        </div>
+
+        {# Rôle uniquement à la création #}
+        {% if not utilisateur_obj %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ formulaire.role.id_for_label }}" class="form-label">Rôle *</label>
+            {{ formulaire.role }}
+            {% if formulaire.role.errors %}
+              <div class="text-danger">{{ formulaire.role.errors }}</div>
+            {% endif %}
+          </div>
         {% endif %}
 
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.role_editorial.id_for_label }}" class="form-label">Rôle éditorial</label>
           {{ formulaire.role_editorial }}
-          {% if formulaire.role_editorial.errors %}<div class="text-danger">{{ formulaire.role_editorial.errors }}</div>{% endif %}
+          {% if formulaire.role_editorial.errors %}
+            <div class="text-danger">{{ formulaire.role_editorial.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.numero_telephone.id_for_label }}" class="form-label">Téléphone</label>
           {{ formulaire.numero_telephone }}
-          {% if formulaire.numero_telephone.errors %}<div class="text-danger">{{ formulaire.numero_telephone.errors }}</div>{% endif %}
+          {% if formulaire.numero_telephone.errors %}
+            <div class="text-danger">{{ formulaire.numero_telephone.errors }}</div>
+          {% endif %}
         </div>
-        <div class="col-md-6 mb-3">
-          <label for="{{ formulaire.numero_telephone.id_for_label }}" class="form-label">Téléphone</label>
-          {{ formulaire.numero_telephone }}
-          {% if formulaire.numero_telephone.errors %}<div class="text-danger">{{ formulaire.numero_telephone.errors }}</div>{% endif %}
-        </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.date_naissance.id_for_label }}" class="form-label">Date de naissance</label>
           {{ formulaire.date_naissance }}
+          {% if formulaire.date_naissance.errors %}
+            <div class="text-danger">{{ formulaire.date_naissance.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-12 mb-3">
           <label for="{{ formulaire.adresse.id_for_label }}" class="form-label">Adresse</label>
           {{ formulaire.adresse }}
+          {% if formulaire.adresse.errors %}
+            <div class="text-danger">{{ formulaire.adresse.errors }}</div>
+          {% endif %}
         </div>
+
         <div class="col-md-6 mb-3">
           <label for="{{ formulaire.photo_profil.id_for_label }}" class="form-label">Photo de profil</label>
           {{ formulaire.photo_profil }}
+          {% if formulaire.photo_profil.errors %}
+            <div class="text-danger">{{ formulaire.photo_profil.errors }}</div>
+          {% endif %}
           {% if utilisateur_obj.photo_profil %}
             <img src="{{ utilisateur_obj.photo_profil.url }}" class="img-thumbnail mt-2" style="max-width:120px">
           {% endif %}
         </div>
+
         <div class="col-md-6 mb-3 d-flex align-items-end">
           <div class="form-check">
             {{ formulaire.is_active }}
             <label class="form-check-label" for="{{ formulaire.is_active.id_for_label }}">Compte actif</label>
           </div>
         </div>
-      </div>
 
-      {# Formulaire de profil (étudiant / professeur / admin) #}
+      </div>{# /row informations de base #}
+
+
       {% if formulaire_profil %}
       <hr class="my-4">
-      {% if utilisateur_obj.est_etudiant %}
-        <h5 class="mb-3"><i class="fas fa-graduation-cap"></i> Informations Étudiant</h5>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Département</label>
-            {{ formulaire_profil.departement }}
+
+        {# ── ÉTUDIANT ── #}
+        {% if utilisateur_obj.est_etudiant %}
+          <h5 class="mb-3"><i class="fas fa-graduation-cap"></i> Informations Étudiant</h5>
+
+          {# Numéro étudiant en lecture seule — généré automatiquement #}
+          {% if utilisateur_obj.profil_etudiant.numero_etudiant %}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Numéro étudiant</label>
+                <input type="text"
+                       class="form-control"
+                       value="{{ utilisateur_obj.profil_etudiant.numero_etudiant }}"
+                       disabled>
+                <small class="text-muted">Généré automatiquement — non modifiable.</small>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.departement.id_for_label }}" class="form-label">Département</label>
+              {{ formulaire_profil.departement }}
+              {% if formulaire_profil.departement.errors %}
+                <div class="text-danger">{{ formulaire_profil.departement.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.niveau.id_for_label }}" class="form-label">Niveau d'études</label>
+              {{ formulaire_profil.niveau }}
+              {% if formulaire_profil.niveau.errors %}
+                <div class="text-danger">{{ formulaire_profil.niveau.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.date_inscription.id_for_label }}" class="form-label">Date d'inscription</label>
+              {{ formulaire_profil.date_inscription }}
+              {% if formulaire_profil.date_inscription.errors %}
+                <div class="text-danger">{{ formulaire_profil.date_inscription.errors }}</div>
+              {% endif %}
+            </div>
           </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Niveau d'études</label>
-            {{ formulaire_profil.niveau }}
+
+        {# ── PROFESSEUR ── #}
+        {% elif utilisateur_obj.est_professeur %}
+          <h5 class="mb-3"><i class="fas fa-chalkboard-teacher"></i> Informations Professeur</h5>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.departement.id_for_label }}" class="form-label">Département</label>
+              {{ formulaire_profil.departement }}
+              {% if formulaire_profil.departement.errors %}
+                <div class="text-danger">{{ formulaire_profil.departement.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.specialite.id_for_label }}" class="form-label">Spécialité</label>
+              {{ formulaire_profil.specialite }}
+              {% if formulaire_profil.specialite.errors %}
+                <div class="text-danger">{{ formulaire_profil.specialite.errors }}</div>
+              {% endif %}
+            </div>
           </div>
-        </div>
-      {% elif utilisateur_obj.est_professeur %}
-        <h5 class="mb-3"><i class="fas fa-chalkboard-teacher"></i> Informations Professeur</h5>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Département</label>
-            {{ formulaire_profil.departement }}
+
+        {# ── ADMINISTRATEUR ── #}
+        {% elif utilisateur_obj.est_administrateur %}
+          <h5 class="mb-3"><i class="fas fa-user-shield"></i> Informations Administrateur</h5>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="{{ formulaire_profil.poste.id_for_label }}" class="form-label">Poste</label>
+              {{ formulaire_profil.poste }}
+              {% if formulaire_profil.poste.errors %}
+                <div class="text-danger">{{ formulaire_profil.poste.errors }}</div>
+              {% endif %}
+            </div>
           </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Spécialité</label>
-            {{ formulaire_profil.specialite }}
-          </div>
-        </div>
-      {% endif %}
-      {% endif %}
+        {% endif %}
+
+      {% endif %}{# /formulaire_profil #}
+
 
       <hr class="my-4">
       <div class="d-flex gap-2">
@@ -123,6 +239,7 @@
           <i class="fas fa-times"></i> Annuler
         </a>
       </div>
+
     </form>
   </div>
 </div>

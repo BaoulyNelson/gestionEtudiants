@@ -19,12 +19,15 @@ class DepartementAdmin(admin.ModelAdmin):
         }),
     )
 
+
     def affichage_chef(self, obj):
-        """Affiche le nom complet du chef de département, ou un libellé si non assigné"""
         if obj.chef_departement:
-            return obj.chef_departement.user.get_full_name()
+            return obj.chef_departement.utilisateur.get_full_name()  # ← user → utilisateur
         return format_html('<span style="color: gray;">Non assigné</span>')
     affichage_chef.short_description = 'Chef de département'
+    
+    
+
 
     def nombre_etudiants(self, obj):
         """Affiche le nombre d'étudiants avec une pastille colorée"""

@@ -199,13 +199,28 @@
   </div>
 </div>
 
+<!-- ── Sélecteur de période ── -->
+{% if periodes_display %}
+<div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+  <span class="text-muted small fw-semibold me-1">
+    <i class="fas fa-calendar-alt me-1"></i>Période :
+  </span>
+  {% for p in periodes_display %}
+  <a href="?semestre={{ p.semestre }}&annee={{ p.annee }}&statut={{ statut_actuel }}"
+     class="btn btn-sm {% if p.actif %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+    {{ p.label }}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
 <!-- ── Tableau avec onglets ── -->
 <div class="card">
   <div class="card-header">
     <ul class="nav nav-tabs card-header-tabs">
       {% for value, label in choix_statut %}
       <li class="nav-item">
-        <a class="nav-link {% if statut_actuel == value %}active{% endif %}" href="?statut={{ value }}">
+        <a class="nav-link {% if statut_actuel == value %}active{% endif %}" href="?semestre={{ semestre_filtre }}&annee={{ annee_filtre }}&statut={{ value }}">
           {{ label }}
         </a>
       </li>
@@ -280,6 +295,12 @@
                 {% if inscription.statut == 'INSCRIT' %}
                 <a href="{% url 'inscriptions:abandonner' inscription.id %}" class="btn btn-sm btn-danger" title="Abandonner" onclick="return confirm('Voulez-vous vraiment abandonner ce cours ?')">
                   <i class="fas fa-times"></i>
+                </a>
+                {% endif %}
+
+                {% if inscription.statut == 'ABANDONNE' %}
+                <a href="{% url 'inscriptions:reprendre' inscription.id %}" class="btn btn-sm btn-warning" title="Reprendre ce cours" onclick="return confirm('Voulez-vous reprendre ce cours ?')">
+                  <i class="fas fa-redo"></i> Reprendre
                 </a>
                 {% endif %}
               </div>

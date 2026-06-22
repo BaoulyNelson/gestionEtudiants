@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Personnel administratif{% endblock %}
+{% block sb_active_personnel %}active{% endblock %}
+
+{% block authenticated_content %}
+  {% include 'partials/entete_etablissement.html' %}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-0 fw-bold">
+      <i class="fas fa-users me-2" style="color:#1a3a6b;"></i>
+      Personnel administratif
+    </h2>
+    <small class="text-muted">{{ membres|length }} membre{{ membres|length|pluralize }}</small>
+  </div>
+  {% if user.est_administrateur %}
+  <a href="{% url 'portail:creer_personnel' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Ajouter un membre
+  </a>
+  {% endif %}
+</div>
+
+
+
+{% if membres %}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Photo</th>
+          <th>Nom</th>
+          <th>Poste</th>
+          <th>Département</th>
+          <th>Description</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for membre in membres %}
+        <tr>
+          <td>
+            {% if membre.photo %}
+              <img src="{{ membre.photo.url }}" alt="{{ membre.nom }}"
+                   class="rounded-circle" style="width:42px;height:42px;object-fit:cover;">
+            {% else %}
+              <span class="d-flex align-items-center justify-content-center rounded-circle bg-secondary text-white"
+                    style="width:42px;height:42px;font-size:18px;">
+                <i class="fas fa-user"></i>
+              </span>
+            {% endif %}
+          </td>
+
+          <td><strong>{{ membre.nom }}</strong></td>
+
+          <td>
+            <span class="badge bg-primary">{{ membre.get_poste_display }}</span>
+          </td>
+
+          <td>
+            {% if membre.departement %}
+              <span class="badge bg-secondary">{{ membre.departement.nom }}</span>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+
+          <td>
+            <small class="text-muted">{{ membre.description|truncatechars:80 }}</small>
+          </td>
+
+          <td class="text-end">
+            {% if user.est_administrateur %}
+            <div class="d-flex gap-2 justify-content-end">
+              <a href="{% url 'portail:modifier_personnel' membre.id %}"
+                class="btn btn-sm btn-outline-primary"><i class="fas fa-pen"></i></a>
+              <a href="{% url 'portail:supprimer_personnel' membre.id %}"
+                class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+            </div>
+            {% else %}
+            <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="card">
+  <div class="card-body text-center py-5">
+    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">Aucun membre du personnel enregistré</h5>
+    <a href="{% url 'portail:creer_personnel' %}" class="btn btn-primary mt-2">
+      <i class="fas fa-plus me-1"></i> Ajouter le premier membre
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

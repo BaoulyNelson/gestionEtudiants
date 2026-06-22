@@ -54,7 +54,7 @@ class Inscription(models.Model):
     def clean(self):
         """Validation des inscriptions"""
         if not self.pk:  # Nouvelle inscription seulement
-            max_cours = getattr(settings, 'MAX_COURSES_PER_SESSION', 8)
+            max_cours = getattr(settings, 'MAX_COURS_PAR_SESSION', 7)
 
             # Vérifier le nombre maximum de cours par session
             nb_inscriptions_session = Inscription.objects.filter(

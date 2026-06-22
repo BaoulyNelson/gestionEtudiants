@@ -5,15 +5,14 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.utils import timezone
-from django.db.models import Count, Q
+from django.http import JsonResponse
 from collections import defaultdict
 
 from .models import Inscription, HistoriqueInscription
 from applications.cours.models import SectionCours
 from applications.comptes.models import Etudiant
 from applications.departements.models import Departement
-from utilitaires.roles import est_administrateur, est_etudiant, est_professeur
-
+from utilitaires.roles import est_administrateur, est_etudiant
 # ===========================================================================
 # VUES ÉTUDIANT
 # ===========================================================================
@@ -70,6 +69,7 @@ def vue_sections_disponibles(request):
         "choix_session": SectionCours.CHOIX_SESSION,
         "choix_semestre": SectionCours.CHOIX_SEMESTRE,
         "departements": Departement.objects.all(),
+        "max_cours_par_session": settings.MAX_COURS_PAR_SESSION,
     }
     return render(request, "inscriptions/sections_disponibles.html", contexte)
 
@@ -99,7 +99,7 @@ def vue_inscrire(request, id_section):
         statut="INSCRIT",
     ).count()
 
-    max_cours = getattr(settings, "MAX_COURSES_PER_SESSION", 8)
+    max_cours = getattr(settings, "MAX_COURS_PAR_SESSION", 7)
     if nb_session >= max_cours:
         messages.error(
             request,
@@ -205,33 +205,140 @@ def vue_abandonner(request, id_inscription):
 
 @login_required
 @user_passes_test(est_etudiant)
-def vue_mes_inscriptions(request):
-    """Mes inscriptions (vue étudiant)"""
-    etudiant = request.user.profil_etudiant
-    statut = request.GET.get("statut", "INSCRIT")
-
-    inscriptions = (
-        etudiant.inscriptions.filter(statut=statut)
-        .select_related(
-            "section_cours__cours", "section_cours__professeur__utilisateur"
-        )
-        .order_by("-date_inscription")
+def vue_reprendre(request, id_inscription):
+    """Reprendre une inscription abandonnée"""
+    inscription = get_object_or_404(
+        Inscription, id=id_inscription, etudiant=request.user.profil_etudiant
     )
 
-    total_inscrit = etudiant.inscriptions.filter(statut="INSCRIT").count()
-    total_complete = etudiant.inscriptions.filter(statut="COMPLETE").count()
-    total_abandonne = etudiant.inscriptions.filter(statut="ABANDONNE").count()
+    if inscription.statut != "ABANDONNE":
+        messages.warning(request, "Seules les inscriptions abandonnées peuvent être reprises.")
+        return redirect("inscriptions:mes_inscriptions")
+
+    section = inscription.section_cours
+
+    # Section encore ouverte ?
+    if not section.est_ouverte:
+        messages.error(
+            request,
+            f"La section {section.numero_section} de {section.cours.code} est fermée — reprise impossible.",
+        )
+        return redirect("inscriptions:mes_inscriptions")
+
+    # Capacité encore disponible ?
+    nb_inscrits = Inscription.objects.filter(section_cours=section, statut="INSCRIT").count()
+    if section.capacite_max and nb_inscrits >= section.capacite_max:
+        messages.error(
+            request,
+            f"La section {section.numero_section} de {section.cours.code} est complète — reprise impossible.",
+        )
+        return redirect("inscriptions:mes_inscriptions")
+
+    # Déjà réinscrit à ce cours via une autre inscription active ?
+    if Inscription.objects.filter(
+        etudiant=request.user.profil_etudiant,
+        section_cours__cours=section.cours,
+        statut="INSCRIT",
+    ).exclude(pk=inscription.pk).exists():
+        messages.warning(
+            request,
+            f"Vous êtes déjà inscrit au cours {section.cours.code} via une autre section.",
+        )
+        return redirect("inscriptions:mes_inscriptions")
+
+    HistoriqueInscription.objects.create(
+        inscription=inscription,
+        statut_precedent=inscription.statut,
+        nouveau_statut="INSCRIT",
+        modifie_par=request.user,
+        raison="Reprise par l'étudiant",
+    )
+
+    inscription.statut = "INSCRIT"
+    inscription.date_abandon = None
+    inscription.save()
+
+    messages.success(
+        request,
+        f"✓ Vous avez repris le cours {section.cours.code}-{section.numero_section}.",
+    )
+    return redirect("inscriptions:mes_inscriptions")
+
+@login_required
+@user_passes_test(est_etudiant)
+def vue_mes_inscriptions(request):
+    """Mes inscriptions (vue étudiant) — filtrées par période et statut."""
+    etudiant = request.user.profil_etudiant
+
+    # ── Périodes disponibles pour cet étudiant ──────────────────────────────
+    periodes = (
+        etudiant.inscriptions
+        .values("section_cours__semestre", "section_cours__annee")
+        .distinct()
+        .order_by("-section_cours__annee", "section_cours__semestre")
+    )
+
+    # Période courante par défaut : la plus récente
+    if periodes.exists():
+        periode_defaut = periodes.first()
+        semestre_defaut = periode_defaut["section_cours__semestre"]
+        annee_defaut    = periode_defaut["section_cours__annee"]
+    else:
+        semestre_defaut = None
+        annee_defaut    = None
+
+    semestre_filtre = request.GET.get("semestre", semestre_defaut)
+    annee_filtre    = request.GET.get("annee", annee_defaut)
+    try:
+        annee_filtre = int(annee_filtre) if annee_filtre else None
+    except (ValueError, TypeError):
+        annee_filtre = annee_defaut
+
+    statut = request.GET.get("statut", "INSCRIT")
+
+    # ── QuerySet de base filtré sur la période choisie ──────────────────────
+    base_qs = etudiant.inscriptions.select_related(
+        "section_cours__cours",
+        "section_cours__professeur__utilisateur",
+    )
+    if semestre_filtre and annee_filtre:
+        base_qs = base_qs.filter(
+            section_cours__semestre=semestre_filtre,
+            section_cours__annee=annee_filtre,
+        )
+
+    inscriptions = base_qs.filter(statut=statut).order_by("-date_inscription")
+
+    # ── Statistiques (période courante uniquement) ───────────────────────────
+    total_inscrit   = base_qs.filter(statut="INSCRIT").count()
+    total_complete  = base_qs.filter(statut="COMPLETE").count()
+    total_abandonne = base_qs.filter(statut="ABANDONNE").count()
+
+    # ── Libellé des semestres pour l'affichage ───────────────────────────────
+    SEMESTRE_LABELS = {"AUTOMNE": "Automne", "PRINTEMPS": "Printemps", "ETE": "Été"}
+
+    periodes_display = [
+        {
+            "semestre": p["section_cours__semestre"],
+            "annee":    p["section_cours__annee"],
+            "label":    f"{SEMESTRE_LABELS.get(p['section_cours__semestre'], p['section_cours__semestre'])} {p['section_cours__annee']}",
+            "actif":    p["section_cours__semestre"] == semestre_filtre and p["section_cours__annee"] == annee_filtre,
+        }
+        for p in periodes
+    ]
 
     contexte = {
-        "inscriptions": inscriptions,
-        "statut_actuel": statut,
-        "choix_statut": Inscription.CHOIX_STATUT,
-        "total_inscrit": total_inscrit,
-        "total_complete": total_complete,
-        "total_abandonne": total_abandonne,
+        "inscriptions":      inscriptions,
+        "statut_actuel":     statut,
+        "choix_statut":      Inscription.CHOIX_STATUT,
+        "total_inscrit":     total_inscrit,
+        "total_complete":    total_complete,
+        "total_abandonne":   total_abandonne,
+        "periodes_display":  periodes_display,
+        "semestre_filtre":   semestre_filtre,
+        "annee_filtre":      annee_filtre,
     }
     return render(request, "inscriptions/mes_inscriptions.html", contexte)
-
 
 # ===========================================================================
 # VUES ADMIN
@@ -317,116 +424,153 @@ def vue_liste_inscriptions(request):
     return render(request, "inscriptions/liste_inscriptions.html", contexte)
 
 
+
+
 @login_required
 @user_passes_test(est_administrateur)
 def vue_creer_inscription(request):
     """Créer une nouvelle inscription (admin)"""
-    if request.method == "POST":
-        id_etudiant = request.POST.get("etudiant")
-        id_section = request.POST.get("section")
 
-        if not id_etudiant or not id_section:
-            messages.error(request, "Veuillez sélectionner un étudiant et une section.")
+    if request.method == "POST":
+        id_etudiant  = request.POST.get("etudiant")
+        ids_sections = request.POST.getlist("sections_selectionnees")
+
+        if not id_etudiant or not ids_sections:
+            messages.error(request, "Veuillez sélectionner un étudiant et au moins une section.")
             return redirect("inscriptions:creer_inscription")
 
         try:
             etudiant = Etudiant.objects.get(id=id_etudiant)
-            section = SectionCours.objects.get(id=id_section)
+        except Etudiant.DoesNotExist:
+            messages.error(request, "Étudiant introuvable.")
+            return redirect("inscriptions:creer_inscription")
 
-            if Inscription.objects.filter(
-                etudiant=etudiant, section_cours__cours=section.cours, statut="INSCRIT"
-            ).exists():
-                messages.warning(
-                    request,
-                    f"L'étudiant {etudiant.numero_etudiant} est déjà inscrit au cours {section.cours.code}.",
-                )
-                return redirect("inscriptions:creer_inscription")
+        nb_creees  = 0
+        nb_erreurs = 0
 
-            max_cours = getattr(settings, "MAX_COURSES_PER_SESSION", 8)
-            nb_session = Inscription.objects.filter(
-                etudiant=etudiant,
-                section_cours__session=section.session,
-                section_cours__semestre=section.semestre,
-                section_cours__annee=section.annee,
-                statut="INSCRIT",
-            ).count()
+        for id_section in ids_sections:
+            try:
+                section = SectionCours.objects.get(id=id_section)
 
-            if nb_session >= max_cours:
-                messages.error(
-                    request,
-                    f"L'étudiant a atteint le maximum de {max_cours} cours pour cette session "
-                    f"(actuellement inscrit à {nb_session} cours).",
-                )
-                return redirect("inscriptions:creer_inscription")
+                # Déjà inscrit à ce cours ?
+                if Inscription.objects.filter(
+                    etudiant=etudiant,
+                    section_cours__cours=section.cours,
+                    statut="INSCRIT",
+                ).exists():
+                    messages.warning(
+                        request,
+                        f"L'étudiant est déjà inscrit au cours {section.cours.code}.",
+                    )
+                    nb_erreurs += 1
+                    continue
 
-            nb_inscrits = Inscription.objects.filter(
-                section_cours=section, statut="INSCRIT"
-            ).count()
-            if section.capacite_max and nb_inscrits >= section.capacite_max:
-                messages.error(
-                    request,
-                    f"La section {section.numero_section} de {section.cours.code} est complète.",
-                )
-                return redirect("inscriptions:creer_inscription")
+                # Maximum de cours par session
+                max_cours  = getattr(settings, "MAX_COURS_PAR_SESSION", 7)
+                nb_session = Inscription.objects.filter(
+                    etudiant=etudiant,
+                    section_cours__session=section.session,
+                    section_cours__semestre=section.semestre,
+                    section_cours__annee=section.annee,
+                    statut="INSCRIT",
+                ).count()
 
-            # Conflits d'horaire
-            inscriptions_meme_jour = Inscription.objects.filter(
-                etudiant=etudiant,
-                section_cours__session=section.session,
-                section_cours__semestre=section.semestre,
-                section_cours__annee=section.annee,
-                section_cours__jour_semaine=section.jour_semaine,
-                statut="INSCRIT",
-            )
-            for insc in inscriptions_meme_jour:
-                sect_existante = insc.section_cours
-                if sect_existante.conflit_horaire(
-                    section.jour_semaine, section.heure_debut, section.heure_fin
-                ):
+                if nb_session >= max_cours:
                     messages.error(
                         request,
-                        f"Conflit d'horaire avec le cours {sect_existante.cours.code}-"
-                        f"{sect_existante.numero_section}.",
+                        f"Maximum de {max_cours} cours atteint pour cette session "
+                        f"— {section.cours.code} non inscrit.",
                     )
-                    return redirect("inscriptions:creer_inscription")
+                    nb_erreurs += 1
+                    continue
 
-            nouvelle_inscription = Inscription(etudiant=etudiant, section_cours=section)
-            nouvelle_inscription.full_clean()
-            nouvelle_inscription.save()
+                # Capacité de la section
+                nb_inscrits = Inscription.objects.filter(
+                    section_cours=section,
+                    statut="INSCRIT",
+                ).count()
 
-            HistoriqueInscription.objects.create(
-                inscription=nouvelle_inscription,
-                statut_precedent="",
-                nouveau_statut="INSCRIT",
-                modifie_par=request.user,
-                raison=f"Inscription créée par {request.user.get_full_name()}",
-            )
+                if section.capacite_max and nb_inscrits >= section.capacite_max:
+                    messages.error(
+                        request,
+                        f"La section {section.numero_section} de {section.cours.code} est complète.",
+                    )
+                    nb_erreurs += 1
+                    continue
 
+                # Conflits d'horaire
+                conflit = False
+                inscriptions_meme_jour = Inscription.objects.filter(
+                    etudiant=etudiant,
+                    section_cours__session=section.session,
+                    section_cours__semestre=section.semestre,
+                    section_cours__annee=section.annee,
+                    section_cours__jour_semaine=section.jour_semaine,
+                    statut="INSCRIT",
+                )
+
+                for insc in inscriptions_meme_jour:
+                    sect_existante = insc.section_cours
+                    if sect_existante.conflit_horaire(
+                        section.jour_semaine,
+                        section.heure_debut,
+                        section.heure_fin,
+                    ):
+                        messages.error(
+                            request,
+                            f"Conflit d'horaire : {section.cours.code} chevauche "
+                            f"{sect_existante.cours.code}-{sect_existante.numero_section}.",
+                        )
+                        conflit = True
+                        nb_erreurs += 1
+                        break
+
+                if conflit:
+                    continue
+
+                # Création
+                nouvelle_inscription = Inscription(etudiant=etudiant, section_cours=section)
+                nouvelle_inscription.full_clean()
+                nouvelle_inscription.save()
+
+                HistoriqueInscription.objects.create(
+                    inscription=nouvelle_inscription,
+                    statut_precedent="",
+                    nouveau_statut="INSCRIT",
+                    modifie_par=request.user,
+                    raison=f"Inscription créée par {request.user.get_full_name()}",
+                )
+                nb_creees += 1
+
+            except SectionCours.DoesNotExist:
+                messages.error(request, f"Section {id_section} introuvable.")
+                nb_erreurs += 1
+
+            except ValidationError as e:
+                if hasattr(e, "message_dict"):
+                    for champ, erreurs in e.message_dict.items():
+                        for erreur in erreurs:
+                            messages.error(request, f"{section.cours.code} — {champ} : {erreur}")
+                else:
+                    for msg in e.messages:
+                        messages.error(request, f"{section.cours.code} — {msg}")
+                nb_erreurs += 1
+
+            except Exception as e:
+                messages.error(request, f"Erreur ({section.cours.code}) : {str(e)}")
+                nb_erreurs += 1
+
+        if nb_creees > 0:
             messages.success(
                 request,
-                f"✓ Inscription créée pour {etudiant.utilisateur.get_full_name()} "
-                f"au cours {section.cours.code}-{section.numero_section}.",
+                f"✓ {nb_creees} inscription(s) créée(s) pour "
+                f"{etudiant.utilisateur.get_full_name()}.",
             )
             return redirect("inscriptions:liste_inscriptions")
 
-        except Etudiant.DoesNotExist:
-            messages.error(request, "Étudiant introuvable.")
-        except SectionCours.DoesNotExist:
-            messages.error(request, "Section introuvable.")
-        except ValidationError as e:
-            if hasattr(e, "message_dict"):
-                for champ, erreurs in e.message_dict.items():
-                    for erreur in erreurs:
-                        messages.error(request, f"{champ} : {erreur}")
-            else:
-                for msg in e.messages:
-                    messages.error(request, msg)
-        except Exception as e:
-            messages.error(request, f"Erreur lors de la création : {str(e)}")
-
         return redirect("inscriptions:creer_inscription")
 
-    # GET — afficher le formulaire
+    # ── GET ───────────────────────────────────────────────────────────────────
     etudiants = (
         Etudiant.objects.filter(utilisateur__is_active=True)
         .select_related("utilisateur", "departement")
@@ -435,7 +579,7 @@ def vue_creer_inscription(request):
 
     sections = (
         SectionCours.objects.filter(est_ouverte=True)
-        .select_related("cours", "professeur__utilisateur")
+        .select_related("cours__departement", "professeur__utilisateur")
         .order_by("cours__code", "numero_section")
     )
 
@@ -451,6 +595,71 @@ def vue_creer_inscription(request):
     }
     return render(request, "inscriptions/creer_inscription.html", contexte)
 
+
+@login_required
+@user_passes_test(est_administrateur)
+def sections_pour_etudiant(request, etudiant_id):
+    """Vue AJAX — retourne les sections compatibles avec le profil de l'étudiant"""
+    try:
+        etudiant = Etudiant.objects.select_related(
+            "utilisateur", "departement"
+        ).get(id=etudiant_id)
+    except Etudiant.DoesNotExist:
+        return JsonResponse({"erreur": "Étudiant introuvable."}, status=404)
+
+    sections = (
+        SectionCours.objects.filter(
+            est_ouverte=True,
+            cours__departement=etudiant.departement,
+            cours__niveau=etudiant.niveau,
+        )
+        .select_related("cours__departement", "professeur__utilisateur")
+        .order_by("cours__code", "numero_section")
+    )
+
+    # Exclure les cours où l'étudiant est déjà inscrit
+    deja_inscrits = Inscription.objects.filter(
+        etudiant=etudiant,
+        statut="INSCRIT",
+    ).values_list("section_cours_id", flat=True)
+
+    sections = sections.exclude(id__in=deja_inscrits)
+
+    cours_data = {}
+    for section in sections:
+        code = section.cours.code
+        if code not in cours_data:
+            cours_data[code] = {
+                "nom":      section.cours.nom,
+                "credits":  section.cours.credits,
+                "niveau":   section.cours.get_niveau_display(),
+                "sections": [],
+            }
+        cours_data[code]["sections"].append({
+            "id":           section.id,
+            "numero":       section.numero_section,
+            "jour":         section.get_jour_semaine_display(),
+            "heure_debut":  section.heure_debut.strftime("%H:%M"),
+            "heure_fin":    section.heure_fin.strftime("%H:%M"),
+            "professeur":   section.professeur.utilisateur.get_full_name() if section.professeur else "",
+            "session":      section.get_session_display(),
+            "session_raw":  section.session,
+            "semestre":     section.get_semestre_display(),
+            "semestre_raw": section.semestre,
+            "annee":        section.annee,
+            "salle":        section.salle,
+            "nb_inscrits":  section.nombre_inscrits(),
+            "capacite_max": section.capacite_max,
+        })
+
+    return JsonResponse({
+        "etudiant": {
+            "nom":         etudiant.utilisateur.get_full_name(),
+            "departement": etudiant.departement.nom if etudiant.departement else "—",
+            "niveau":      etudiant.get_niveau_display(),
+        },
+        "cours": cours_data,
+    })
 
 @login_required
 @user_passes_test(est_administrateur)

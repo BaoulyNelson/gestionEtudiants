@@ -1,22 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}{{ action }} – {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
+{% block title %}{{ action }} — {{ site.nom_etablissement|default:"FASCH" }}{% endblock %}
 
 {% block extra_css %}
 <style>
-  .examen-form-header { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding-bottom:18px; margin-bottom:0; }
-  .examen-form-header-left { flex-shrink:0; min-width:90px; display:flex; align-items:center; justify-content:center; }
-  .examen-form-header-center { flex:1; text-align:center; }
-  .examen-form-header-univ { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#555; margin-bottom:4px; font-family:Arial,sans-serif; }
-  .examen-form-header-faculty { font-size:20px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#1a3a6b; margin-bottom:6px; font-family:"Georgia",serif; }
-  .examen-form-header-slogan { font-size:11px; color:#777; font-style:italic; font-family:Arial,sans-serif; }
-  .examen-form-header-right { flex-shrink:0; text-align:right; font-size:11.5px; color:#555; font-family:Arial,sans-serif; min-width:180px; }
-  .examen-form-header-right p { margin:3px 0; display:flex; align-items:center; justify-content:flex-end; gap:6px; }
-  .examen-form-header-right i { color:#1a3a6b; width:12px; text-align:center; }
-  .examen-form-header-divider { border:none; border-top:2.5px solid #1a3a6b; margin:0 0 22px; }
-  .examen-form-doc-title { text-align:center; font-size:18px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#111; margin-bottom:28px; padding-bottom:16px; border-bottom:1px solid #ccc; font-family:"Georgia","Times New Roman",serif; }
-  .examen-form-section-title { font-size:12px; font-weight:700; color:#1a3a6b; text-transform:uppercase; letter-spacing:1px; border-left:4px solid #1a3a6b; padding-left:10px; margin-bottom:16px; font-family:Arial,sans-serif; }
-
-  /* Aperçu statut calculé */
+  .examen-form-section-title {
+    font-size:12px; font-weight:700; color:#1a3a6b;
+    text-transform:uppercase; letter-spacing:1px;
+    border-left:4px solid #1a3a6b; padding-left:10px;
+    margin-bottom:16px; font-family:Arial,sans-serif;
+  }
   .statut-preview {
     display:inline-flex; align-items:center; gap:8px;
     padding:8px 14px; border-radius:6px;
@@ -26,93 +18,99 @@
   .statut-preview.a-venir  { background:#fff3cd; color:#856404; }
   .statut-preview.en-cours { background:#d0e4ff; color:#003d8f; }
   .statut-preview.termine  { background:#e2e3e5; color:#41464b; }
-
-  @media (max-width:768px) {
-    .examen-form-header { flex-direction:column; align-items:center; text-align:center; }
-    .examen-form-header-right { text-align:center; }
-    .examen-form-header-right p { justify-content:center; }
-  }
 </style>
 {% endblock %}
 
 {% block authenticated_content %}
 
-<!-- ── En-tête université ── -->
-<div class="examen-form-header">
-  <div class="examen-form-header-left">
-    {% if site.logo %}
-      <img src="{{ site.logo.url }}" alt="{{ site.nom_etablissement }}" style="height:80px;object-fit:contain;">
-    {% else %}
-      <i class="fas fa-graduation-cap" style="font-size:48px;color:#1a3a6b;"></i>
-    {% endif %}
-  </div>
-  <div class="examen-form-header-center">
-    <div class="examen-form-header-univ">Université d'État d'Haïti</div>
-    <div class="examen-form-header-faculty">{{ site.nom_complet }}</div>
-    {% if site.slogan %}<div class="examen-form-header-slogan">{{ site.slogan }}</div>{% endif %}
-  </div>
-  <div class="examen-form-header-right">
-    {% if site.adresse_ligne1 %}<p><i class="fas fa-map-marker-alt"></i>&nbsp;{{ site.adresse_ligne1 }}</p>{% endif %}
-    {% if site.telephone %}<p><i class="fas fa-phone"></i>&nbsp;{{ site.telephone }}</p>{% endif %}
-    {% if site.email %}<p><i class="fas fa-envelope"></i>&nbsp;{{ site.email }}</p>{% endif %}
-    {% if site.lien_facebook %}<p><i class="fab fa-facebook"></i>&nbsp;{{ site.lien_facebook }}</p>{% endif %}
-  </div>
-</div>
-<div class="examen-form-header-divider"></div>
+{% include 'partials/entete_etablissement.html' %}
 
-<!-- ── Titre ── -->
-<div class="examen-form-doc-title">
+<div style="text-align:center;font-size:18px;font-weight:700;letter-spacing:3px;
+            text-transform:uppercase;color:#111;margin-bottom:28px;
+            padding-bottom:16px;border-bottom:1px solid #ccc;
+            font-family:'Georgia','Times New Roman',serif;">
   <i class="fas fa-calendar-plus me-2" style="color:#1a3a6b;"></i>{{ action }}
 </div>
 
-<!-- ── Formulaire ── -->
 <div class="card">
   <div class="card-body">
     <form method="post">
       {% csrf_token %}
 
-      <!-- Informations de l'examen -->
+      <!-- Section de cours -->
       <div class="examen-form-section-title mb-3">
-        <i class="fas fa-info-circle me-1"></i> Informations de l'examen
+        <i class="fas fa-chalkboard-teacher me-1"></i> Section de cours
       </div>
-
-      <!-- Titre -->
       <div class="mb-3">
-        <label for="{{ formulaire.titre.id_for_label }}" class="form-label">
-          {{ formulaire.titre.label }} <span class="text-danger">*</span>
+        <label for="{{ formulaire.section_cours.id_for_label }}" class="form-label">
+          {{ formulaire.section_cours.label }} <span class="text-danger">*</span>
         </label>
-        {{ formulaire.titre }}
-        {% if formulaire.titre.errors %}
-          <div class="text-danger small mt-1">{{ formulaire.titre.errors }}</div>
+        {{ formulaire.section_cours }}
+        {% if formulaire.section_cours.errors %}
+          <div class="text-danger small mt-1">{{ formulaire.section_cours.errors }}</div>
         {% endif %}
       </div>
 
-      <!-- Date -->
+      <!-- Type d'examen -->
       <div class="mb-3">
-        <label for="{{ formulaire.date.id_for_label }}" class="form-label">
-          {{ formulaire.date.label }} <span class="text-danger">*</span>
+        <label for="{{ formulaire.type_examen.id_for_label }}" class="form-label">
+          {{ formulaire.type_examen.label }} <span class="text-danger">*</span>
         </label>
-        {{ formulaire.date }}
-        {% if formulaire.date.errors %}
-          <div class="text-danger small mt-1">{{ formulaire.date.errors }}</div>
+        {{ formulaire.type_examen }}
+        {% if formulaire.type_examen.errors %}
+          <div class="text-danger small mt-1">{{ formulaire.type_examen.errors }}</div>
         {% endif %}
+      </div>
 
-        <!-- Aperçu statut calculé automatiquement -->
-        <div id="statut-preview-zone" style="margin-top:8px;display:none;">
-          <small class="text-muted" style="font-family:Arial,sans-serif;">
-            Statut calculé automatiquement :
-          </small><br>
-          <span id="statut-preview" class="statut-preview"></span>
+      <hr class="my-4">
+
+      <!-- Date et heure -->
+      <div class="examen-form-section-title mb-3">
+        <i class="fas fa-calendar-alt me-1"></i> Date et horaire
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="{{ formulaire.date.id_for_label }}" class="form-label">
+            {{ formulaire.date.label }} <span class="text-danger">*</span>
+          </label>
+          {{ formulaire.date }}
+          {% if formulaire.date.errors %}
+            <div class="text-danger small mt-1">{{ formulaire.date.errors }}</div>
+          {% endif %}
+          <div id="statut-preview-zone" style="margin-top:8px;display:none;">
+            <small class="text-muted">Statut calculé automatiquement :</small><br>
+            <span id="statut-preview" class="statut-preview"></span>
+          </div>
         </div>
+        <div class="col-md-4">
+          <label for="{{ formulaire.heure.id_for_label }}" class="form-label">
+            {{ formulaire.heure.label }}
+          </label>
+          {{ formulaire.heure }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ formulaire.duree_minutes.id_for_label }}" class="form-label">
+            {{ formulaire.duree_minutes.label }}
+          </label>
+          {{ formulaire.duree_minutes }}
+        </div>
+      </div>
+
+      <!-- Salle -->
+      <div class="mb-3">
+        <label for="{{ formulaire.salle.id_for_label }}" class="form-label">
+          {{ formulaire.salle.label }}
+        </label>
+        {{ formulaire.salle }}
       </div>
 
       <hr class="my-4">
 
       <!-- Description -->
       <div class="examen-form-section-title mb-3">
-        <i class="fas fa-align-left me-1"></i> Description
+        <i class="fas fa-align-left me-1"></i> Remarques
       </div>
-
       <div class="mb-3">
         <label for="{{ formulaire.description.id_for_label }}" class="form-label">
           {{ formulaire.description.label }}
@@ -122,20 +120,15 @@
         {% if formulaire.description.errors %}
           <div class="text-danger small mt-1">{{ formulaire.description.errors }}</div>
         {% endif %}
-        <small class="form-text text-muted">
-          Instructions, matières couvertes, documents autorisés, salle…
-        </small>
       </div>
 
       {% if examen %}
-      <!-- Statut actuel (modification) -->
       <hr class="my-4">
-      <div class="examen-form-section-title mb-3">
+      <div class="examen-form-section-title mb-2">
         <i class="fas fa-info me-1"></i> Statut actuel
       </div>
       <p style="font-family:Arial,sans-serif;font-size:13.5px;color:#555;">
-        Le statut est recalculé automatiquement à l'enregistrement selon la date choisie.
-        Statut actuel :
+        Recalculé automatiquement à l'enregistrement. Actuel :
         <strong>
           {% if examen.statut == 'a_venir' %}À venir
           {% elif examen.statut == 'en_cours' %}En cours
@@ -164,7 +157,6 @@
 
 {% block extra_js %}
 <script>
-// Aperçu du statut calculé selon la date saisie
 const champDate   = document.getElementById('{{ formulaire.date.id_for_label }}');
 const previewZone = document.getElementById('statut-preview-zone');
 const previewSpan = document.getElementById('statut-preview');
@@ -172,14 +164,10 @@ const previewSpan = document.getElementById('statut-preview');
 function mettreAJourStatut() {
   const valeur = champDate.value;
   if (!valeur) { previewZone.style.display = 'none'; return; }
-
-  const dateChoisie  = new Date(valeur + 'T00:00:00');
-  const aujourdhui   = new Date();
-  aujourdhui.setHours(0, 0, 0, 0);
-
+  const dateChoisie = new Date(valeur + 'T00:00:00');
+  const aujourdhui  = new Date(); aujourdhui.setHours(0,0,0,0);
   previewZone.style.display = 'block';
   previewSpan.className = 'statut-preview';
-
   if (dateChoisie < aujourdhui) {
     previewSpan.textContent = '✓ Terminé';
     previewSpan.classList.add('termine');
@@ -191,9 +179,7 @@ function mettreAJourStatut() {
     previewSpan.classList.add('a-venir');
   }
 }
-
 champDate.addEventListener('change', mettreAJourStatut);
-// Déclencher au chargement si modification
 if (champDate.value) mettreAJourStatut();
 </script>
 {% endblock %}

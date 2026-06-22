@@ -35,7 +35,6 @@ urlpatterns = [
     path('inscriptions/', include('applications.inscriptions.urls')),
     path('notes/', include('applications.notes.urls')),
     path('portail/', include('applications.portail.urls')),
-    path('admissions/', include('applications.admissions.urls')),
     path('departements/', include('applications.departements.urls')),
     path('articles/', include('applications.articles.urls')),
     path('notifications/', include('applications.notifications.urls')),

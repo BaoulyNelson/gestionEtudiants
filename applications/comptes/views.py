@@ -26,7 +26,7 @@ from applications.departements.models import Departement  # 'Department' -> 'Dep
 from applications.cours.models import Cours, SectionCours  # 'Course' -> 'Cours', 'CourseSection' -> 'SectionCours'
 from applications.notes.models import Note
 from applications.inscriptions.models import Inscription
-from utilitaires.roles import est_administrateur,est_professeur
+from utilitaires.roles import est_administrateur
 from applications.inscriptions.models import Inscription
 
 statut__in=Inscription.STATUTS_ACTIFS
@@ -115,12 +115,21 @@ def tableau_bord(request):
 
         total_inscriptions = Inscription.objects.filter(statut="INSCRIT").count()
 
+        # ⚠️ distinct=True est indispensable ici : deux Count() sur deux relations
+        # différentes (etudiants ET professeurs) dans le même annotate() génèrent
+        # un JOIN combiné. Sans distinct=True, Count() compte les lignes du
+        # produit cartésien des deux JOIN au lieu des objets distincts, ce qui
+        # gonfle les totaux et les rend souvent identiques entre les deux colonnes.
         departements = Departement.objects.annotate(
             nombre_etudiants=Count(
-                "etudiants", filter=Q(etudiants__utilisateur__is_active=True)
+                "etudiants",
+                filter=Q(etudiants__utilisateur__is_active=True),
+                distinct=True,
             ),
             nombre_professeurs=Count(
-                "professeurs", filter=Q(professeurs__utilisateur__is_active=True)
+                "professeurs",
+                filter=Q(professeurs__utilisateur__is_active=True),
+                distinct=True,
             ),
         )
 
@@ -142,7 +151,6 @@ def tableau_bord(request):
         return render(request, "portail/tableau_de_bord_administrateur.html", context)
 
     return render(request, "portail/tableau_de_bord_par_defaut.html", context)
-
 
 
 
@@ -249,6 +257,8 @@ def vue_profil(request):
 
     return render(request, "comptes/profil.html", context)
 
+
+
 @login_required
 @user_passes_test(est_administrateur)
 def vue_liste_utilisateurs(request):
@@ -318,6 +328,13 @@ def vue_creer_utilisateur(request):
     })
 
 
+from .forms import (
+    FormulaireUtilisateur,
+    FormulaireProfilEtudiant,       # ← nouveau
+    FormulaireModificationProfesseur,
+    FormulaireModificationAdministrateur,
+)
+
 @login_required
 @user_passes_test(est_administrateur)
 def vue_modifier_utilisateur(request, utilisateur_id):
@@ -326,36 +343,41 @@ def vue_modifier_utilisateur(request, utilisateur_id):
 
     if request.method == 'POST':
         formulaire = FormulaireUtilisateur(request.POST, request.FILES, instance=utilisateur)
-        if formulaire.is_valid():
+
+        # Instancier le formulaire profil AVANT la validation
+        if utilisateur.est_etudiant():
+            formulaire_profil = FormulaireProfilEtudiant(          # ← changement clé
+                request.POST, instance=utilisateur.profil_etudiant)
+        elif utilisateur.est_professeur():
+            formulaire_profil = FormulaireModificationProfesseur(
+                request.POST, instance=utilisateur.profil_professeur)
+        elif utilisateur.est_administrateur() and hasattr(utilisateur, 'profil_admin'):
+            formulaire_profil = FormulaireModificationAdministrateur(
+                request.POST, instance=utilisateur.profil_admin)
+
+        formulaire_valide = formulaire.is_valid()
+        profil_valide = formulaire_profil.is_valid() if formulaire_profil else True
+
+        if formulaire_valide and profil_valide:
             formulaire.save()
-
-            if utilisateur.est_etudiant():
-                formulaire_profil = FormulaireModificationEtudiant(
-                    request.POST, instance=utilisateur.profil_etudiant)
-                if formulaire_profil.is_valid():
-                    formulaire_profil.save()
-            elif utilisateur.est_professeur():
-                formulaire_profil = FormulaireModificationProfesseur(
-                    request.POST, instance=utilisateur.profil_professeur)
-                if formulaire_profil.is_valid():
-                    formulaire_profil.save()
-            elif utilisateur.est_administrateur() and hasattr(utilisateur, 'profil_admin'):
-                formulaire_profil = FormulaireModificationAdministrateur(
-                    request.POST, instance=utilisateur.profil_admin)
-                if formulaire_profil.is_valid():
-                    formulaire_profil.save()
-
+            if formulaire_profil:
+                formulaire_profil.save()
             messages.success(request, "Utilisateur modifié avec succès.")
             return redirect('comptes:liste_utilisateurs')
+        else:
+            messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
     else:
         formulaire = FormulaireUtilisateur(instance=utilisateur)
 
         if utilisateur.est_etudiant():
-            formulaire_profil = FormulaireModificationEtudiant(instance=utilisateur.profil_etudiant)
+            formulaire_profil = FormulaireProfilEtudiant(          # ← changement clé
+                instance=utilisateur.profil_etudiant)
         elif utilisateur.est_professeur():
-            formulaire_profil = FormulaireModificationProfesseur(instance=utilisateur.profil_professeur)
+            formulaire_profil = FormulaireModificationProfesseur(
+                instance=utilisateur.profil_professeur)
         elif utilisateur.est_administrateur() and hasattr(utilisateur, 'profil_admin'):
-            formulaire_profil = FormulaireModificationAdministrateur(instance=utilisateur.profil_admin)
+            formulaire_profil = FormulaireModificationAdministrateur(
+                instance=utilisateur.profil_admin)
 
     return render(request, 'comptes/formulaire_utilisateur.html', {
         'formulaire': formulaire,
@@ -404,9 +426,9 @@ def vue_reinitialiser_mot_de_passe(request, utilisateur_id):
 @user_passes_test(est_administrateur)
 def vue_liste_professeurs(request):
     """Liste de tous les professeurs"""
-    professeurs = Utilisateur.objects.filter(role="PROFESSEUR").order_by(
-        "last_name", "first_name"
-    )
+    professeurs = Utilisateur.objects.filter(role="PROFESSEUR").select_related(
+        "profil_professeur", "profil_professeur__departement"
+    ).order_by("last_name", "first_name")
 
     recherche = request.GET.get("search")
     if recherche:
@@ -414,16 +436,46 @@ def vue_liste_professeurs(request):
             Q(first_name__icontains=recherche)
             | Q(last_name__icontains=recherche)
             | Q(email__icontains=recherche)
+            | Q(profil_professeur__identifiant_professeur__icontains=recherche)
         )
+
+    departement_filtre = request.GET.get("departement")
+    if departement_filtre:
+        professeurs = professeurs.filter(profil_professeur__departement__code=departement_filtre)
+
+    specialite_filtre = request.GET.get("specialite")
+    if specialite_filtre:
+        professeurs = professeurs.filter(profil_professeur__specialite=specialite_filtre)
+
+    statut_filtre = request.GET.get("statut")
+    if statut_filtre == "actif":
+        professeurs = professeurs.filter(is_active=True)
+    elif statut_filtre == "inactif":
+        professeurs = professeurs.filter(is_active=False)
 
     paginator = Paginator(professeurs, getattr(settings, "ELEMENTS_PAR_PAGE", 10))
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
+    specialites = (
+        Professeur.objects.exclude(specialite="")
+        .order_by("specialite")
+        .values_list("specialite", flat=True)
+        .distinct()
+    )
+
     return render(
         request,
         "portail/liste_professeurs.html",
-        {"page_obj": page_obj, "recherche": recherche},
+        {
+            "page_obj": page_obj,
+            "recherche": recherche,
+            "departements": Departement.objects.all().order_by("nom"),
+            "specialites": specialites,
+            "departement_filtre": departement_filtre,
+            "specialite_filtre": specialite_filtre,
+            "statut_filtre": statut_filtre,
+        },
     )
 
 @login_required
@@ -449,11 +501,14 @@ def vue_detail_professeur(request, pk):
     
     
 # === Liste des étudiants ===
+# === Liste des étudiants ===
 @login_required
 @user_passes_test(est_administrateur)
 def vue_liste_etudiants(request):
     """Liste de tous les étudiants"""
-    etudiants = Utilisateur.objects.filter(role="ETUDIANT").order_by("last_name", "first_name")
+    etudiants = Utilisateur.objects.filter(role="ETUDIANT").select_related(
+        "profil_etudiant", "profil_etudiant__departement"
+    ).order_by("last_name", "first_name")
 
     recherche = request.GET.get("search")
     if recherche:
@@ -464,6 +519,14 @@ def vue_liste_etudiants(request):
             | Q(email__icontains=recherche)
         )
 
+    departement_filtre = request.GET.get("departement")
+    if departement_filtre:
+        etudiants = etudiants.filter(profil_etudiant__departement__code=departement_filtre)
+
+    niveau_filtre = request.GET.get("niveau")
+    if niveau_filtre:
+        etudiants = etudiants.filter(profil_etudiant__niveau=niveau_filtre)
+
     paginator = Paginator(etudiants, getattr(settings, "ELEMENTS_PAR_PAGE", 10))
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -471,9 +534,15 @@ def vue_liste_etudiants(request):
     return render(
         request,
         "portail/liste_etudiants.html",
-        {"page_obj": page_obj, "recherche": recherche},
+        {
+            "page_obj": page_obj,
+            "recherche": recherche,
+            "departements": Departement.objects.all().order_by("nom"),
+            "niveaux": Etudiant.CHOIX_ANNEE,
+            "departement_filtre": departement_filtre,
+            "niveau_filtre": niveau_filtre,
+        },
     )
-
 
 
 
