@@ -769,7 +769,7 @@ footer {
 </a>
 
   <ul class="nav-liens" role="list">
-    <li><a href="#" class="actif">Accueil</a></li>
+    <li><a href="" id="accueil" class="actif">Accueil</a></li>
     <li><a href="#departements">Départements</a></li>
     <li><a href="{% url 'articles:recherche' %}">Recherche</a></li>
     <li><a href="{% url 'articles:liste_articles' %}">Actualités</a></li>
@@ -838,15 +838,10 @@ footer {
 
     <div class="panneau-groupe-titre">Navigation</div>
 
-    <a href="#" class="panneau-item">
+    <a href="" id="accueil" class="panneau-item">
       <span class="panneau-item-label">Accueil</span>
       <i class="fas fa-chevron-right panneau-item-fleche"></i>
     </a>
-    <button class="panneau-item">
-      <span class="panneau-item-label">Gouvernance</span>
-      <i class="fas fa-chevron-down panneau-item-fleche"></i>
-    </button>
-
 
 
     <a href=" {% url 'articles:recherche' %}" class="panneau-item">
@@ -904,9 +899,10 @@ footer {
 <!-- ════════════════════════════════
      HÉRO
 ════════════════════════════════ -->
-<section class="hero" aria-labelledby="hero-titre">
+<section id="accueil" class="hero" aria-labelledby="hero-titre">
   <div class="hero-contenu">
-    <div class="hero-eyebrow">Depuis 1974 · Port-au-Prince</div>
+    <div class="hero-eyebrow">{{ site.slogan }}</div>
+
     <h1 id="hero-titre">Former les <em>esprits critiques</em> de demain</h1>
     <p>La Faculté des Sciences Humaines de l'UEH vous ouvre les portes de la psychologie, de la sociologie, des sciences de la communication et du travail social.</p>
     <div class="hero-actions">
@@ -1146,7 +1142,7 @@ footer {
 
     <div class="footer-col">
       <h4>Navigation</h4>
-      <a href="#">Accueil</a>
+      <a href="" id="accueil">Accueil</a>
       <a href="#departements">Départements</a>
       <a href="{% url 'articles:recherche' %}">Recherche</a>
       <a href="{% url 'contact:contact' %}">Contact</a>

@@ -12,6 +12,8 @@ urlpatterns = [
     path('inscription/<int:id_inscription>/note/', views.saisie_modifier_note_professeur, name='saisie_modifier_note_professeur'),
     path('mes-etudiants/',                        views.vue_mes_etudiants,          name='mes_etudiants'),
     path('palmares/',                             views.vue_palmares,               name='palmares'),
+    path("palmares/pdf/", views.vue_palmares_pdf, name="palmares_pdf"),  # ← AJOUTER
+
 
     # Étudiants
     path('mes-notes/',                            views.vue_mes_notes,              name='mes_notes'),
@@ -34,7 +36,10 @@ urlpatterns = [
     path('statistiques/',                         views.vue_statistiques_notes,     name='statistiques_notes'),
     path('generer-releve/<int:id_etudiant>/',     views.vue_generer_releve,         name='generer_releve'),
     path('gpa-etudiants/',                        views.vue_gpa_etudiants,          name='gpa_etudiants'),
-
+    path('gpa-etudiants/pdf/',  views.vue_gpa_pdf,        name='gpa_pdf'),        # ← AJOUTER
     # API AJAX
     path('recherche-ajax/',                       views.recherche_note_ajax,        name='recherche_note_ajax'),
+    
+    path('declaration/',          views.vue_declaration_notes,      name='declaration_notes'),
+    path('valider-declarations/', views.vue_valider_notes_declarees, name='valider_notes_declarees'),
 ]

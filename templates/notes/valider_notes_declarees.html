@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}Notes déclarées — Validation{% endblock %}
+
+{% block authenticated_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">
+    <i class="fas fa-clipboard-check me-2" style="color:#1a3a6b;"></i>
+    Notes auto-déclarées
+  </h4>
+  <span class="badge bg-warning text-dark fs-6">
+    {{ total }} en attente
+  </span>
+</div>
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show">
+      {{ msg }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% if notes %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Étudiant</th>
+          <th class="d-none d-md-table-cell">Cours</th>
+          <th class="d-none d-sm-table-cell">Section</th>
+          <th class="text-center">Note déclarée</th>
+          <th class="d-none d-md-table-cell">Commentaire étudiant</th>
+          <th class="d-none d-sm-table-cell">Déclaré le</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for note in notes %}
+        <tr>
+
+          <!-- Étudiant -->
+          <td>
+            <strong style="color:#1a3a6b;">
+              {{ note.inscription.etudiant.utilisateur.get_full_name }}
+            </strong><br>
+            <small class="text-muted">
+              {{ note.inscription.etudiant.numero_etudiant }}
+            </small>
+            <!-- Infos condensées sur mobile -->
+            <div class="d-sm-none text-muted small mt-1">
+              {{ note.inscription.section_cours.cours.code }} —
+              Sec. {{ note.inscription.section_cours.numero_section }}
+            </div>
+          </td>
+
+          <!-- Cours -->
+          <td class="d-none d-md-table-cell">
+            <strong>{{ note.inscription.section_cours.cours.code }}</strong><br>
+            <small class="text-muted">
+              {{ note.inscription.section_cours.cours.nom|truncatewords:5 }}
+            </small>
+          </td>
+
+          <!-- Section -->
+          <td class="d-none d-sm-table-cell text-center">
+            <span class="badge bg-secondary">
+              {{ note.inscription.section_cours.numero_section }}
+            </span>
+          </td>
+
+          <!-- Note déclarée -->
+          <td class="text-center">
+            <strong style="font-size:18px;
+              {% if note.note_declaree >= 60 %}color:#155724;
+              {% else %}color:#721c24;{% endif %}">
+              {{ note.note_declaree|floatformat:2 }}
+            </strong>
+            <br><small class="text-muted">/ 100</small>
+          </td>
+
+          <!-- Commentaire -->
+          <td class="d-none d-md-table-cell">
+            {% if note.commentaire_etudiant %}
+              <small class="fst-italic text-muted">
+                « {{ note.commentaire_etudiant|truncatewords:10 }} »
+              </small>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+
+          <!-- Date -->
+          <td class="d-none d-sm-table-cell">
+            <small class="text-muted">
+              {{ note.declare_le|date:"d/m/Y" }}<br>
+              {{ note.declare_le|time:"H:i" }}
+            </small>
+          </td>
+
+          <!-- Actions -->
+          <td class="text-center" style="white-space:nowrap;">
+
+            <!-- Valider -->
+            <form method="post" class="d-inline"
+                  onsubmit="return confirm('Valider cette note ?')">
+              {% csrf_token %}
+              <input type="hidden" name="note_id" value="{{ note.id }}">
+              <input type="hidden" name="action"  value="valider">
+              <button type="submit" class="btn btn-sm btn-success" title="Valider">
+                <i class="fas fa-check"></i>
+              </button>
+            </form>
+
+            <!-- Rejeter (ouvre modal) -->
+            <button type="button"
+                    class="btn btn-sm btn-danger ms-1"
+                    title="Rejeter"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalRejet-{{ note.id }}">
+              <i class="fas fa-times"></i>
+            </button>
+
+          </td>
+        </tr>
+
+        <!-- Modal rejet -->
+        <div class="modal fade" id="modalRejet-{{ note.id }}" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="note_id" value="{{ note.id }}">
+                <input type="hidden" name="action"  value="rejeter">
+
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title">
+                    <i class="fas fa-times-circle me-2"></i>Rejeter la note
+                  </h5>
+                  <button type="button" class="btn-close btn-close-white"
+                          data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                  <p class="text-muted mb-3">
+                    <strong>{{ note.inscription.etudiant.utilisateur.get_full_name }}</strong>
+                    — {{ note.inscription.section_cours.cours.code }}
+                    — Note déclarée : <strong>{{ note.note_declaree }}</strong>
+                  </p>
+                  <div class="mb-3">
+                    <label class="form-label">Motif du rejet (optionnel)</label>
+                    <textarea name="commentaire_admin" class="form-control" rows="3"
+                              placeholder="Ex : Note incorrecte, veuillez fournir un justificatif…">
+                    </textarea>
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                          data-bs-dismiss="modal">Annuler</button>
+                  <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-times me-1"></i> Confirmer le rejet
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- /Modal rejet -->
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% else %}
+  <div class="alert alert-success">
+    <i class="fas fa-check-circle me-2"></i>
+    Aucune note en attente de validation.
+  </div>
+{% endif %}
+
+{% endblock %}

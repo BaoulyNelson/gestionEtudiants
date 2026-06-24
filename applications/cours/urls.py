@@ -19,7 +19,7 @@ urlpatterns = [
     path('sections/<int:id_section>/modifier/',         views.modifier_section,         name='modifier_section'),
     path('sections/<int:id_section>/supprimer/',                views.supprimer_section,        name='supprimer_section'),
     path('sections/<int:id_section>/basculer/',         views.basculer_ouverture_section, name='basculer_section'),
-
+    path('<int:section_id>/export-csv/',    views.vue_export_section_csv,  name='export_section_csv'),
     # ── Mes cours ────────────────────────────────────────────────────────────
     path('mes-cours/', views.mes_cours, name='mes_cours'),
 ]

@@ -289,26 +289,110 @@
 <div class="card mb-4">
   <div class="card-body">
     <div class="etudiants-section-title mb-3">
-      <i class="fas fa-search me-1"></i> Rechercher
+      <i class="fas fa-filter me-1"></i> Filtrer les étudiants
     </div>
     <form method="get" class="row g-3 etudiants-actions">
-      <div class="col-md-8">
+
+      <!-- Recherche -->
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Recherche</label>
         <input type="text" name="recherche" class="form-control"
                placeholder="Nom ou numéro étudiant…"
                value="{{ recherche }}">
       </div>
+
+      <!-- Section -->
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Section</label>
+        <select name="section" class="form-select">
+          <option value="">— Toutes mes sections —</option>
+          {% for sec in toutes_sections %}
+            <option value="{{ sec.id }}"
+              {% if section_id == sec.id|stringformat:"s" %}selected{% endif %}>
+              {{ sec.cours.code }} – Sec.{{ sec.numero_section }}
+              ({{ sec.get_semestre_display }} {{ sec.annee }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Session -->
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Session</label>
+        <select name="session" class="form-select">
+          <option value="">— Toutes —</option>
+          {% for code, label in choix_session %}
+            <option value="{{ code }}" {% if session == code %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Semestre -->
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Semestre</label>
+        <select name="semestre" class="form-select">
+          <option value="">— Tous —</option>
+          {% for code, label in choix_semestre %}
+            <option value="{{ code }}" {% if semestre == code %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Année académique -->
       <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">
+        <label class="form-label small text-muted">Année</label>
+        <select name="annee" class="form-select">
+          <option value="">— Toutes —</option>
+          {% for a in annees_dispo %}
+            <option value="{{ a }}" {% if annee == a|stringformat:"s" %}selected{% endif %}>
+              {{ a }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Niveau -->
+      <div class="col-md-2">
+        <label class="form-label small text-muted">Niveau</label>
+        <select name="niveau" class="form-select">
+          <option value="">— Tous —</option>
+          {% for code, label in niveaux %}
+            <option value="{{ code }}" {% if niveau == code %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Département -->
+      <div class="col-md-2">
+        <label class="form-label small text-muted">Département</label>
+        <select name="departement" class="form-select">
+          <option value="">— Tous —</option>
+          {% for code, nom in departements %}
+            <option value="{{ code }}" {% if departement == code %}selected{% endif %}>
+              {{ nom }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Boutons -->
+      <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
           <i class="fas fa-search"></i> Filtrer
         </button>
-      </div>
-      {% if recherche %}
-      <div class="col-md-2">
-        <a href="?" class="btn btn-outline-secondary w-100">
-          <i class="fas fa-times"></i> Réinitialiser
+        {% if recherche or niveau or departement or session or semestre or annee or section_id %}
+        <a href="?" class="btn btn-outline-secondary">
+          <i class="fas fa-times me-1"></i> Réinitialiser
         </a>
+        {% endif %}
       </div>
-      {% endif %}
+
     </form>
   </div>
 </div>

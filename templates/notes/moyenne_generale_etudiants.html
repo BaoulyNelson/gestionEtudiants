@@ -139,7 +139,18 @@
 <!-- ── Titre ── -->
 <div class="gpa-doc-title">
   <i class="fas fa-user-graduate me-2" style="color:#1a3a6b;"></i>
-  GPA des Étudiants
+  Moyenne des Étudiants
+</div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-trophy"></i> Moyenne Générale des Étudiants</h2>
+
+    <a id="btnPdf"
+       href="{% url 'notes:gpa_pdf' %}{% if departement_choisi or annee_choisie %}?{% if departement_choisi %}departement={{ departement_choisi }}{% endif %}{% if departement_choisi and annee_choisie %}&{% endif %}{% if annee_choisie %}annee={{ annee_choisie }}{% endif %}{% endif %}"
+       class="btn btn-danger"
+       target="_blank"
+       title="Télécharger les moyennes en PDF">
+        <i class="fas fa-file-pdf"></i> Télécharger PDF
+    </a>
 </div>
 <p class="gpa-doc-subtitle">
   Aperçu du GPA et des crédits obtenus par chaque étudiant.
@@ -158,7 +169,7 @@
   </div>
 
   <div class="col-md-4">
-    <label for="annee" class="form-label">Année d'étude :</label>
+    <label for="annee" class="form-label">Niveau d'étude :</label>
     <select name="annee" id="annee" class="form-select" onchange="this.form.submit()">
       <option value="">Toutes</option>
       {% for val, label in annees %}

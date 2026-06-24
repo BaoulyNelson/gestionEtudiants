@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block authenticated_content %}
+
+<div class="container"">
+
+  <!-- Progression -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between mb-1">
+      <small class="text-muted">Cours {{ etape }} sur {{ total }}</small>
+      <small class="text-muted">{{ progression }}%</small>
+    </div>
+    <div class="progress" style="height:8px;">
+      <div class="progress-bar bg-primary" style="width:{{ progression }}%"></div>
+    </div>
+  </div>
+
+  <!-- Carte cours -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <span class="badge bg-white text-primary me-2">
+          {{ inscription.section_cours.cours.code }}
+        </span>
+        {{ inscription.section_cours.cours.nom }}
+      </h5>
+    </div>
+    <div class="card-body">
+
+      <div class="row small text-muted mb-4">
+        <div class="col-6">
+          <i class="fas fa-user me-1"></i>
+          {% if inscription.section_cours.professeur %}
+            {{ inscription.section_cours.professeur.utilisateur.get_full_name }}
+          {% else %}
+            Professeur non assigné
+          {% endif %}
+        </div>
+        <div class="col-6">
+          <i class="fas fa-layer-group me-1"></i>
+          Section {{ inscription.section_cours.numero_section }}
+        </div>
+        <div class="col-6 mt-2">
+          <i class="fas fa-coins me-1"></i>
+          {{ inscription.section_cours.cours.credits }} crédits
+        </div>
+        <div class="col-6 mt-2">
+          <i class="fas fa-calendar me-1"></i>
+          {{ inscription.section_cours.get_semestre_display }}
+          {{ inscription.section_cours.annee }}
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">
+            Votre note obtenue <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <input type="number" name="note_declaree"
+                   class="form-control form-control-lg text-center"
+                   min="0" max="100" step="0.01"
+                   placeholder="Ex : 75"
+                   required autofocus>
+            <span class="input-group-text">/ 100</span>
+          </div>
+          <small class="text-muted">
+            Si vous n'avez pas la note exacte, mettez 0 pour continuer.
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Commentaire (optionnel)</label>
+          <textarea name="commentaire" class="form-control" rows="2"
+                    placeholder="Ex : Note prise sur WhatsApp, à vérifier…"></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+          {% if etape_prec %}
+          <a href="?etape={{ etape_prec }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Précédent
+          </a>
+          {% endif %}
+
+          <button type="submit" class="btn btn-primary flex-fill">
+            {% if etape == total %}
+              <i class="fas fa-check me-1"></i> Terminer
+            {% else %}
+              Suivant <i class="fas fa-arrow-right ms-1"></i>
+            {% endif %}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Avertissement -->
+  <div class="alert alert-warning small">
+    <i class="fas fa-exclamation-triangle me-1"></i>
+    Ces notes sont <strong>auto-déclarées</strong> et doivent être validées
+    par l'administration avant d'être officielles.
+  </div>
+
+</div>
+{% endblock %}

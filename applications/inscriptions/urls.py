@@ -18,7 +18,6 @@ urlpatterns = [
     path('<int:id_inscription>/supprimer/',       views.vue_supprimer_inscription,   name='supprimer_inscription'),
     path('<int:id_inscription>/modifier-statut/', views.vue_modifier_statut,         name='modifier_statut'),
     path('ajax/sections/<int:etudiant_id>/',      views.sections_pour_etudiant,      name='ajax_sections_etudiant'),
-
     # ===== Historique =====
     path('<int:id_inscription>/historique/',      views.vue_historique_inscription,  name='historique_inscription'),
 ]

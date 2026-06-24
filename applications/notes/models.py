@@ -241,3 +241,40 @@ class Bulletin(models.Model):
         self.credits_tentes = total_cours
         self.gpa = round(total_notes / total_cours, 2) if total_cours > 0 else None
         return self.gpa
+    
+    
+    
+class NoteDeclaree(models.Model):
+    """Note auto-déclarée par l'étudiant, en attente de validation"""
+
+    STATUT_CHOICES = [
+        ('EN_ATTENTE', 'En attente de validation'),
+        ('VALIDEE',    'Validée'),
+        ('REJETEE',    'Rejetée'),
+    ]
+
+    inscription = models.OneToOneField(
+        'inscriptions.Inscription',
+        on_delete=models.CASCADE,
+        related_name='note_declaree',
+    )
+    note_declaree       = models.DecimalField(max_digits=5, decimal_places=2)
+    commentaire_etudiant = models.TextField(blank=True)
+    commentaire_admin    = models.TextField(blank=True)
+    statut              = models.CharField(max_length=20, choices=STATUT_CHOICES, default='EN_ATTENTE')
+
+    declare_le  = models.DateTimeField(auto_now_add=True)
+    modifie_le  = models.DateTimeField(auto_now=True)
+    valide_par  = models.ForeignKey(
+        'comptes.Utilisateur',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='notes_validees',
+    )
+
+    class Meta:
+        verbose_name        = 'Note déclarée'
+        verbose_name_plural = 'Notes déclarées'
+
+    def __str__(self):
+        return f"{self.inscription} — {self.note_declaree} ({self.get_statut_display()})"

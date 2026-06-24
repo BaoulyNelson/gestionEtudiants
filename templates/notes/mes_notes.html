@@ -199,6 +199,16 @@
   </button>
 </div>
 
+<div class="alert alert-warning d-flex justify-content-between align-items-center">
+  <span>
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    Des notes manquantes ? Déclarez-les pour que l'administration puisse les enregistrer.
+  </span>
+  <a href="{% url 'notes:declaration_notes' %}" class="btn btn-warning btn-sm">
+    <i class="fas fa-edit me-1"></i> Déclarer
+  </a>
+</div>
+
 <!-- ══════════════ PAGE DOCUMENT ══════════════ -->
 <div class="notes-page">
 
@@ -252,50 +262,70 @@
     <p><strong>Niveau :</strong>&nbsp; {{ etudiant.get_niveau_display }}</p>
   </div>
 
-  <!-- ── Tableau des inscriptions ── -->
-  <div class="notes-table-wrapper">
-    <table class="notes-table">
-      <thead>
-        <tr>
-          <th class="center" style="width:34px;"></th>
-          <th>Code</th>
-          <th>Matière</th>
-          <th class="center">Crédits</th>
-          <th>Professeur</th>
-          <th class="center">Statut</th>
-          <th class="center">Note / 100</th>
-          <th class="center">Mention</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in inscription_notes %}
-        {% with inscription=item.inscription note=item.note cours=item.inscription.section_cours.cours %}
-        <tr class="main-row">
-          <td class="center">
-            {% if item.composantes %}
-            <button type="button" class="details-toggle-btn"
-                    onclick="toggleDetail(this, 'detail-{{ forloop.counter }}')"
-                    aria-expanded="false" aria-label="Afficher le détail des notes">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            {% endif %}
-          </td>
-          <td><strong>{{ cours.code }}</strong></td>
-          <td>{{ cours.nom }}</td>
-          <td class="center">{{ cours.credits }}</td>
-          <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name|default:"—" }}</td>
-          <td class="center">
-            <span class="statut-badge statut-{{ inscription.statut }}">
-              {{ inscription.get_statut_display }}
-            </span>
-          </td>
-          <td class="center">
-            <strong>
-              {% if note and note.note_finale is not None %}
-                {{ note.note_finale|floatformat:0 }}
-              {% else %}—{% endif %}
+<!-- ── Tableau des inscriptions ── -->
+<div class="notes-table-wrapper">
+  <table class="notes-table">
+    <thead>
+      <tr>
+        <th class="center" style="width:34px;"></th>
+        <th>Code</th>
+        <th>Matière</th>
+        <th class="center">Crédits</th>
+        <th>Professeur</th>
+        <th class="center">Statut</th>
+        <th class="center">Note / 100</th>
+        <th class="center">Mention</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in inscription_notes %}
+      {% with inscription=item.inscription note=item.note cours=item.inscription.section_cours.cours %}
+
+      <tr class="main-row">
+
+        <!-- Chevron -->
+        <td class="center">
+          {% if note.participation != None or note.examen_final != None or note.examen_mi_parcours != None or note.projet != None or note.travaux != None %}
+          <button type="button" class="details-toggle-btn"
+                  onclick="toggleDetail(this, 'detail-{{ forloop.counter }}')"
+                  aria-expanded="false" aria-label="Afficher le détail des notes">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          {% endif %}
+        </td>
+
+        <td><strong>{{ cours.code }}</strong></td>
+        <td>{{ cours.nom }}</td>
+        <td class="center">{{ cours.credits }}</td>
+        <td>{{ inscription.section_cours.professeur.utilisateur.get_full_name|default:"—" }}</td>
+
+        <!-- Statut inscription -->
+        <td class="center">
+          <span class="statut-badge statut-{{ inscription.statut }}">
+            {{ inscription.get_statut_display }}
+          </span>
+        </td>
+
+        <!-- Note finale -->
+        <td class="center">
+          {% if note.note_finale != None %}
+            <strong style="{% if note.note_finale >= 60 %}color:#155724{% else %}color:#721c24{% endif %}">
+              {{ note.note_finale|floatformat:0 }}
             </strong>
-          </td>
+            {% with decl=inscription.note_declaree %}
+              {% if decl.statut == "VALIDEE" %}
+                <br>
+                <span class="badge bg-warning text-dark" style="font-size:10px;">
+                  <i class="fas fa-user-edit me-1"></i>Auto-déclarée
+                </span>
+              {% endif %}
+            {% endwith %}
+          {% else %}
+            <span class="text-muted">—</span>
+          {% endif %}
+        </td>
+
+        <!-- Mention -->
         <td class="center">
           {% if note and note.mention %}
             <span class="mention-badge {{ note.classe_mention }}">{{ note.mention }}</span>
@@ -303,56 +333,58 @@
             <span class="mention-badge mention-EA">En attente</span>
           {% endif %}
         </td>
-        </tr>
 
-        {% if item.composantes %}
-        <tr class="details-row" id="detail-{{ forloop.counter }}" style="display:none;">
-          <td colspan="8">
-            <table class="details-table">
-              <thead>
-                <tr>
-                  <th>Composante</th>
-                  <th>Pondération</th>
-                  <th>Note obtenue</th>
-                  <th>Points pondérés</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for c in item.composantes %}
-                <tr>
-                  <td>{{ c.label }}</td>
-                  <td>{{ c.poids }} %</td>
-                  <td>{% if c.valeur is not None %}{{ c.valeur }} / 100{% else %}—{% endif %}</td>
-                  <td>{% if c.points is not None %}{{ c.points }} / {{ c.poids }}{% else %}—{% endif %}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3">Note finale</td>
-                  <td>
-                    {% if note.note_finale is not None %}
-                      {{ note.note_finale|floatformat:0 }} / 100
-                    {% else %}—{% endif %}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </td>
-        </tr>
-        {% endif %}
+      </tr>
 
-        {% endwith %}
-        {% empty %}
-        <tr>
-          <td colspan="8" style="text-align:center;color:#999;font-style:italic;padding:14px;">
-            Aucune inscription pour le moment.
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+      <!-- Ligne détail composantes -->
+      {% if note.participation != None or note.examen_final != None or note.examen_mi_parcours != None or note.projet != None or note.travaux != None %}
+      <tr class="details-row" id="detail-{{ forloop.counter }}" style="display:none;">
+        <td colspan="8">
+          <table class="details-table">
+            <thead>
+              <tr>
+                <th>Composante</th>
+                <th>Pondération</th>
+                <th>Note obtenue</th>
+                <th>Points pondérés</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in item.composantes %}
+              <tr>
+                <td>{{ c.label }}</td>
+                <td>{{ c.poids }} %</td>
+                <td>{% if c.valeur != None %}{{ c.valeur }} / 100{% else %}—{% endif %}</td>
+                <td>{% if c.points != None %}{{ c.points }} / {{ c.poids }}{% else %}—{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3"><strong>Note finale</strong></td>
+                <td>
+                  {% if note.note_finale != None %}
+                    <strong>{{ note.note_finale|floatformat:0 }} / 100</strong>
+                  {% else %}—{% endif %}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </td>
+      </tr>
+      {% endif %}
+
+      {% endwith %}
+      {% empty %}
+      <tr>
+        <td colspan="8" style="text-align:center;color:#999;font-style:italic;padding:14px;">
+          Aucune inscription pour le moment.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
   <!-- ── Synthèse ── -->
   <div class="notes-synthese">

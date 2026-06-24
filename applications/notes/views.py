@@ -1,43 +1,33 @@
 import csv
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+import io
+from io import BytesIO
+from collections import defaultdict
+
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count, Max, Min, Q, Case, When, IntegerField
 from django.conf import settings
-from collections import defaultdict
+from django.db.models import Avg, Count, Max, Min, Q, Case, When, IntegerField
 from django.template.loader import render_to_string
 from django.utils.timezone import now
-from .models import (
-    Note,
-    HistoriqueNote,
-    Bulletin,
-)  # ← corrigé (était Grade, GradeHistory, Transcript)
-from applications.inscriptions.models import Inscription  # ← corrigé (était Enrollment)
-from applications.cours.models import SectionCours  # ← corrigé (était CourseSection)
-from .forms import FormulaireNote  # ← corrigé (était GradeForm)
-from utilitaires.roles import (
-    est_administrateur,
-    est_professeur,
-    est_etudiant,
-)  # ← corrigé (était is_admin, is_professor, is_student)
-from applications.comptes.models import (
-    Utilisateur,
-    Etudiant,
-)  # ← corrigé (était User, Student)
-from applications.departements.models import Departement  # ← corrigé (était Department)
-from io import BytesIO
-from django.http import HttpResponse
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-)
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from collections import defaultdict
+
+from .models import Note, HistoriqueNote, Bulletin,NoteDeclaree
+from .forms import FormulaireNote
+from applications.inscriptions.models import Inscription
+from applications.cours.models import SectionCours
+from applications.comptes.models import Utilisateur, Etudiant
+from applications.departements.models import Departement
+from applications.portail.models import SiteSettings
+from utilitaires.roles import est_administrateur, est_professeur, est_etudiant
 # ===========================================================================
 # VUES PROFESSEUR
 # ===========================================================================
@@ -48,17 +38,19 @@ STATUTS_VISIBLES = ["INSCRIT", "COMPLETE", "ECHOUE"]
 @login_required
 @user_passes_test(est_professeur)
 def vue_sections_professeur(request):
-    """Sections du professeur pour la saisie des notes"""
     if request.user.is_superuser:
         sections = SectionCours.objects.all().select_related("cours", "professeur")
     else:
         professeur = request.user.profil_professeur
-        sections = professeur.sections_cours.select_related("cours").annotate(
-            nb_inscrits=Count(
-                "inscriptions",
-                filter=Q(inscriptions__statut__in=STATUTS_VISIBLES)  # ← ici
-            )
+        sections = professeur.sections_cours.select_related("cours")
+
+    # ← appliquer l'annotation aux deux
+    sections = sections.annotate(
+        nb_inscrits=Count(
+            "inscriptions",
+            filter=Q(inscriptions__statut__in=STATUTS_VISIBLES)
         )
+    )
 
     contexte = {"sections": sections}
     return render(request, "notes/sections_professeur.html", contexte)
@@ -227,6 +219,8 @@ def vue_mes_notes(request):
         )
 
     moyenne = round(total_points / total_credits, 2) if total_credits > 0 else None
+    for item in inscription_notes:
+        print(f"Inscription: {item['inscription'].id} | Note: {item['note']} | note_finale: {item['note'].note_finale if item['note'] else 'PAS DE NOTE'}")
 
     contexte = {
         "etudiant":          etudiant,   # ← manquait
@@ -276,37 +270,39 @@ def vue_detail_note(request, id_note):
 @login_required
 @user_passes_test(est_administrateur)
 def vue_liste_notes(request):
-    """Liste de toutes les notes groupées par étudiant (admin)"""
     notes_qs = Note.objects.select_related(
         "inscription__etudiant__utilisateur",
+        "inscription__etudiant__departement",
         "inscription__section_cours__cours",
         "inscription__section_cours__professeur__utilisateur",
         "note_par__utilisateur",
     )
 
     numero_etudiant = request.GET.get("numero_etudiant", "").strip()
-    code_cours = request.GET.get("code_cours", "").strip()
-    note_min = request.GET.get("note_min", "").strip()
-    note_max = request.GET.get("note_max", "").strip()
+    code_cours      = request.GET.get("code_cours", "").strip()
+    niveau          = request.GET.get("niveau", "").strip()
+    departement     = request.GET.get("departement", "").strip()
 
     if numero_etudiant:
         notes_qs = notes_qs.filter(
             inscription__etudiant__numero_etudiant__icontains=numero_etudiant
+        ) | notes_qs.filter(
+            inscription__etudiant__utilisateur__first_name__icontains=numero_etudiant
+        ) | notes_qs.filter(
+            inscription__etudiant__utilisateur__last_name__icontains=numero_etudiant
         )
     if code_cours:
         notes_qs = notes_qs.filter(
             inscription__section_cours__cours__code__icontains=code_cours
         )
-    if note_min:
-        try:
-            notes_qs = notes_qs.filter(note_finale__gte=float(note_min))
-        except ValueError:
-            pass
-    if note_max:
-        try:
-            notes_qs = notes_qs.filter(note_finale__lte=float(note_max))
-        except ValueError:
-            pass
+    if niveau:
+        notes_qs = notes_qs.filter(
+            inscription__etudiant__niveau=niveau
+        )
+    if departement:
+        notes_qs = notes_qs.filter(
+            inscription__etudiant__departement__code=departement
+        )
 
     notes_qs = notes_qs.order_by("-cree_le")
     toutes_notes = list(notes_qs)
@@ -320,39 +316,42 @@ def vue_liste_notes(request):
         num = note.inscription.etudiant.numero_etudiant
         if etudiant_courant != num:
             if groupe_courant:
-                groupes.append(
-                    {
-                        "etudiant": groupe_courant[0].inscription.etudiant,
-                        "notes": groupe_courant,
-                        "total": len(groupe_courant),
-                    }
-                )
+                groupes.append({
+                    "etudiant": groupe_courant[0].inscription.etudiant,
+                    "notes":    groupe_courant,
+                    "total":    len(groupe_courant),
+                })
             etudiant_courant = num
             groupe_courant = [note]
         else:
             groupe_courant.append(note)
 
     if groupe_courant:
-        groupes.append(
-            {
-                "etudiant": groupe_courant[0].inscription.etudiant,
-                "notes": groupe_courant,
-                "total": len(groupe_courant),
-            }
-        )
+        groupes.append({
+            "etudiant": groupe_courant[0].inscription.etudiant,
+            "notes":    groupe_courant,
+            "total":    len(groupe_courant),
+        })
 
-    elements_par_page = getattr(settings, "ELEMENTS_PAR_PAGE", 20)
-    paginateur = Paginator(groupes, elements_par_page)
-    numero_page = request.GET.get("page", 1)
-    page_obj = paginateur.get_page(numero_page)
+    paginateur = Paginator(groupes, getattr(settings, "ELEMENTS_PAR_PAGE", 20))
+    page_obj   = paginateur.get_page(request.GET.get("page", 1))
 
     contexte = {
-        "groupes": page_obj.object_list,
-        "page_obj": page_obj,
-        "total_etudiants": len(groupes),
-        "total_notes": len(toutes_notes),
+        "groupes":          page_obj.object_list,
+        "page_obj":         page_obj,
+        "total_etudiants":  len(groupes),
+        "total_notes":      len(toutes_notes),
+        "niveaux":          Etudiant.CHOIX_ANNEE,
+        "departements":     Departement.objects.values_list("code", "nom"),
+        "numero_etudiant":  numero_etudiant,
+        "code_cours":       code_cours,
+        "niveau":           niveau,
+        "departement":      departement,
+         "notes_en_attente": NoteDeclaree.objects.filter(statut="EN_ATTENTE").count(),  # ← ajout
+
     }
     return render(request, "notes/liste_notes.html", contexte)
+
 
 
 @login_required
@@ -702,7 +701,6 @@ def vue_recap_notes(request, id_section):
 @login_required
 @user_passes_test(est_professeur)
 def vue_mes_etudiants(request):
-    """Liste de tous les étudiants du professeur"""
     if request.user.is_superuser:
         sections = SectionCours.objects.all()
     else:
@@ -711,12 +709,35 @@ def vue_mes_etudiants(request):
 
     STATUTS_VISIBLES = ["INSCRIT", "COMPLETE", "ECHOUE"]
 
+    # ── Récupération des filtres ──────────────────────────────
+    recherche   = request.GET.get("recherche", "").strip()
+    niveau      = request.GET.get("niveau", "").strip()
+    departement = request.GET.get("departement", "").strip()
+    session     = request.GET.get("session", "").strip()
+    semestre    = request.GET.get("semestre", "").strip()
+    annee       = request.GET.get("annee", "").strip()
+    section_id  = request.GET.get("section", "").strip()
+
+    # Filtres directs sur le queryset
+    if session:
+        sections = sections.filter(session=session)
+    if semestre:
+        sections = sections.filter(semestre=semestre)
+    if annee:
+        sections = sections.filter(annee=annee)
+    if section_id:
+        sections = sections.filter(id=section_id)
+
     inscriptions = (
         Inscription.objects.filter(
             section_cours__in=sections,
             statut__in=STATUTS_VISIBLES,
         )
-        .select_related("etudiant__utilisateur", "section_cours__cours")
+        .select_related(
+            "etudiant__utilisateur",
+            "etudiant__departement",
+            "section_cours__cours",
+        )
         .distinct()
     )
 
@@ -727,7 +748,7 @@ def vue_mes_etudiants(request):
             "total_credits": 0,
             "nb_notes":      0,
             "total_points":  0,
-            "moyenne":       None,  # ✅ sur 100, remplace gpa
+            "moyenne":       None,
         }
     )
 
@@ -750,7 +771,6 @@ def vue_mes_etudiants(request):
                 credits = inscription.section_cours.cours.credits
                 donnees_etudiants[cle]["total_credits"] += credits
                 donnees_etudiants[cle]["nb_notes"]      += 1
-                # ✅ moyenne pondérée sur 100 directement
                 donnees_etudiants[cle]["total_points"]  += float(note.note_finale) * credits
         except Exception:
             pass
@@ -762,21 +782,56 @@ def vue_mes_etudiants(request):
 
     liste_etudiants = list(donnees_etudiants.values())
 
-    recherche = request.GET.get("recherche", "")
+    # ── Filtres en mémoire ────────────────────────────────────
     if recherche:
         liste_etudiants = [
             s for s in liste_etudiants
             if recherche.lower() in s["etudiant"].utilisateur.get_full_name().lower()
             or recherche.lower() in s["etudiant"].numero_etudiant.lower()
         ]
+    if niveau:
+        liste_etudiants = [
+            s for s in liste_etudiants
+            if s["etudiant"].niveau == niveau
+        ]
+    if departement:
+        liste_etudiants = [
+            s for s in liste_etudiants
+            if s["etudiant"].departement
+            and s["etudiant"].departement.code == departement
+        ]
 
     paginateur = Paginator(liste_etudiants, getattr(settings, "ELEMENTS_PAR_PAGE", 20))
     page_obj = paginateur.get_page(request.GET.get("page"))
 
+    # Sections du prof pour le <select>
+    if request.user.is_superuser:
+        toutes_sections = SectionCours.objects.select_related("cours")
+    else:
+        toutes_sections = request.user.profil_professeur.sections_cours.select_related("cours")
+
+    # Années disponibles (depuis les sections du prof)
+    annees_dispo = (
+        toutes_sections.values_list("annee", flat=True)
+        .distinct().order_by("-annee")
+    )
+
     contexte = {
-        "page_obj":        page_obj,
-        "recherche":       recherche,
-        "total_etudiants": len(liste_etudiants),
+        "page_obj":          page_obj,
+        "recherche":         recherche,
+        "niveau":            niveau,
+        "departement":       departement,
+        "session":           session,
+        "semestre":          semestre,
+        "annee":             annee,
+        "section_id":        section_id,
+        "total_etudiants":   len(liste_etudiants),
+        "niveaux":           Etudiant.CHOIX_ANNEE,
+        "departements":      Departement.objects.values_list("code", "nom"),
+        "choix_session":     SectionCours.CHOIX_SESSION,
+        "choix_semestre":    SectionCours.CHOIX_SEMESTRE,
+        "annees_dispo":      annees_dispo,
+        "toutes_sections":   toutes_sections.order_by("cours__code", "numero_section"),
     }
     return render(request, "notes/mes_etudiants.html", contexte)
 
@@ -912,6 +967,141 @@ def vue_palmares(request):
     return render(request, "notes/palmares.html", contexte)
 
 
+
+# =============================================================================
+# VUE PRINCIPALE
+# =============================================================================
+@login_required
+@user_passes_test(est_professeur)
+def vue_palmares_pdf(request):
+    """
+    Génère le PDF du palmarès via un template HTML + WeasyPrint.
+    GET /notes/palmares/pdf/?section=<id>
+
+    Pour prévisualiser dans le navigateur (debug) :
+    GET /notes/palmares/pdf/?section=<id>&html=1
+    """
+    id_section = request.GET.get("section", "").strip()
+    if not id_section:
+        return HttpResponse("Paramètre 'section' manquant.", status=400)
+
+    # ── Restriction d'accès ──────────────────────────────────────────────────
+    if request.user.is_superuser:
+        toutes_sections = SectionCours.objects.select_related(
+            "cours", "cours__departement"
+        )
+    else:
+        toutes_sections = (
+            request.user.profil_professeur.sections_cours.select_related(
+                "cours", "cours__departement"
+            )
+        )
+    section = get_object_or_404(toutes_sections, id=id_section)
+
+    # ── Palmarès ─────────────────────────────────────────────────────────────
+    inscriptions = (
+        Inscription.objects
+        .filter(section_cours=section, statut__in=Inscription.STATUTS_ACTIFS)
+        .select_related("etudiant__utilisateur", "etudiant__departement")
+        .prefetch_related("note")
+    )
+
+    BAREMES = [
+        (90, "Excellent"),
+        (80, "Très bien"),
+        (70, "Bien"),
+        (60, "Passable"),
+        (0,  "Échec"),
+    ]
+
+    donnees_brutes = []
+    for inscription in inscriptions:
+        etudiant = inscription.etudiant
+        note_val = None
+        try:
+            note_obj = inscription.note
+            if note_obj.note_finale is not None:
+                note_val = float(note_obj.note_finale)
+        except Exception:
+            pass
+        donnees_brutes.append({
+            "nom":    etudiant.utilisateur.get_full_name(),
+            "numero": etudiant.numero_etudiant,
+            "note":   note_val,
+        })
+
+    avec_note = sorted(
+        [d for d in donnees_brutes if d["note"] is not None],
+        key=lambda x: x["note"],
+        reverse=True,
+    )
+    sans_note = [d for d in donnees_brutes if d["note"] is None]
+
+    for rang, d in enumerate(avec_note, start=1):
+        d["rang"]    = rang
+        d["mention"] = next(m for seuil, m in BAREMES if d["note"] >= seuil)
+        d["mention_css"] = d["mention"].lower().replace(" ", "-")
+    for d in sans_note:
+        d["rang"]          = "—"
+        d["mention"]       = "Note manquante"
+        d["mention_css"]   = "manquante"
+
+    palmares     = avec_note + sans_note
+    nb_total     = len(palmares)
+    nb_avec_note = len(avec_note)
+    moy_classe   = (
+        round(sum(d["note"] for d in avec_note) / nb_avec_note, 1)
+        if nb_avec_note else None
+    )
+    top = avec_note[0]["nom"] if avec_note else "—"
+
+    # ── Paramètres établissement ─────────────────────────────────────────────
+    site = SiteSettings.get()
+
+    # ── Contexte template ────────────────────────────────────────────────────
+    contexte = {
+        "section":      section,
+        "palmares":     palmares,
+        "nb_total":     nb_total,
+        "nb_avec_note": nb_avec_note,
+        "moy_classe":   moy_classe,
+        "top":          top,
+        "annee_acad":   f"{section.annee}-{section.annee + 1}",
+        "site":         site,
+    }
+
+    html_str = render_to_string("notes/palmares_pdf.html", contexte, request=request)
+
+    # ── Mode prévisualisation (debug) : ?html=1 ───────────────────────────────
+    if request.GET.get("html"):
+        return HttpResponse(html_str)
+
+    # ── Génération PDF avec WeasyPrint ───────────────────────────────────────
+    try:
+        from weasyprint import HTML, CSS
+        from weasyprint.text.fonts import FontConfiguration
+        font_config = FontConfiguration()
+        pdf_bytes = HTML(string=html_str, base_url=request.build_absolute_uri("/")).write_pdf(
+            font_config=font_config
+        )
+    except ImportError:
+        return HttpResponse(
+            "WeasyPrint n'est pas installé. "
+            "Exécutez : pip install weasyprint",
+            status=500,
+        )
+
+    nom_fichier = (
+        f"palmares_{section.cours.code}"
+        f"_S{section.numero_section}"
+        f"_{section.annee}.pdf"
+    )
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{nom_fichier}"'
+    return response
+
+
+
 @login_required
 @user_passes_test(est_administrateur)
 def vue_gpa_etudiants(request):
@@ -919,8 +1109,11 @@ def vue_gpa_etudiants(request):
     departement = request.GET.get("departement")
     annee = request.GET.get("annee")
 
-    etudiants = Utilisateur.objects.filter(role="ETUDIANT", is_active=True)
-
+    etudiants = Utilisateur.objects.filter(
+        role="ETUDIANT",
+        is_active=True,
+        profil_etudiant__isnull=False,  # ← ajout
+    )
     if departement:
         etudiants = etudiants.filter(profil_etudiant__departement__code=departement)
     if annee:
@@ -974,7 +1167,105 @@ def vue_gpa_etudiants(request):
     }
     return render(request, "notes/moyenne_generale_etudiants.html", contexte)
 
+@login_required
+@user_passes_test(est_administrateur)
+def vue_gpa_pdf(request):
+    """Génère le PDF officiel du tableau GPA avec les mêmes filtres que la vue HTML."""
+    from django.template.loader import render_to_string
+    from weasyprint import HTML
+    from django.http import HttpResponse
+    from applications.portail.models import SiteSettings
 
+    departement = request.GET.get("departement")
+    annee       = request.GET.get("annee")
+
+    etudiants = Utilisateur.objects.filter(role="ETUDIANT", is_active=True)
+    if departement:
+        etudiants = etudiants.filter(profil_etudiant__departement__code=departement)
+    if annee:
+        etudiants = etudiants.filter(profil_etudiant__niveau=annee)
+
+    liste_gpa = []
+    for utilisateur in etudiants.select_related("profil_etudiant__departement"):
+        etudiant = utilisateur.profil_etudiant
+        inscriptions = etudiant.inscriptions.filter(
+            statut__in=["INSCRIT", "COMPLETE"]
+        ).select_related("section_cours__cours")
+
+        total_points = total_credits = 0
+        for inscription in inscriptions:
+            try:
+                note = inscription.note
+                if note.note_finale is not None:
+                    credits = inscription.section_cours.cours.credits
+                    total_points += float(note.note_finale) * credits
+                    total_credits += credits
+            except Note.DoesNotExist:
+                continue
+
+        gpa = round(total_points / total_credits, 2) if total_credits > 0 else None
+
+        # Mention selon le GPA
+        if gpa is None:
+            mention = "—"
+        elif gpa >= 90:
+            mention = "Excellent"
+        elif gpa >= 80:
+            mention = "Très bien"
+        elif gpa >= 70:
+            mention = "Bien"
+        elif gpa >= 60:
+            mention = "Passable"
+        else:
+            mention = "Échec"
+
+        liste_gpa.append({
+            "nom":           utilisateur.get_full_name(),
+            "numero":        etudiant.numero_etudiant,
+            "departement":   etudiant.departement.nom if etudiant.departement else "—",
+            "annee":         etudiant.get_niveau_display(),
+            "gpa":           gpa,
+            "total_credits": total_credits,
+            "nb_cours":      inscriptions.count(),
+            "mention":       mention,
+        })
+
+    # Tri par GPA décroissant
+    liste_gpa.sort(key=lambda x: x["gpa"] or 0, reverse=True)
+    for i, item in enumerate(liste_gpa, 1):
+        item["rang"] = i
+
+    # Libellés des filtres pour le titre du PDF
+    dept_label = annee_label = ""
+    if departement:
+        from applications.departements.models import Departement
+        try:
+            dept_label = Departement.objects.get(code=departement).nom
+        except Departement.DoesNotExist:
+            dept_label = departement
+    if annee:
+        dict_annees = dict(Etudiant.CHOIX_ANNEE)
+        annee_label = dict_annees.get(annee, annee)
+
+    site = SiteSettings.get()
+    html_string = render_to_string("notes/gpa_pdf.html", {
+        "liste_gpa":   liste_gpa,
+        "site":        site,
+        "dept_label":  dept_label,
+        "annee_label": annee_label,
+        "departement": departement,
+        "annee":       annee,
+    }, request=request)
+
+    pdf = HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf()
+
+    nom_fichier = "gpa_etudiants"
+    if dept_label: nom_fichier += f"_{departement}"
+    if annee_label: nom_fichier += f"_{annee}"
+
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{nom_fichier}.pdf"'
+    return response
 # ===========================================================================
 # CRUD ADMIN
 # ===========================================================================
@@ -1366,3 +1657,131 @@ def recherche_note_ajax(request):
     ]
 
     return JsonResponse({"resultats": resultats})
+
+
+
+
+
+
+
+@login_required
+@user_passes_test(est_administrateur)
+def vue_valider_notes_declarees(request):
+    """Liste des notes auto-déclarées en attente de validation"""
+    notes = NoteDeclaree.objects.filter(
+        statut="EN_ATTENTE"
+    ).select_related(
+        "inscription__etudiant__utilisateur",
+        "inscription__section_cours__cours",
+    ).order_by("inscription__etudiant__utilisateur__last_name")
+
+    if request.method == "POST":
+        note_id = request.POST.get("note_id")
+        action  = request.POST.get("action")
+        note    = get_object_or_404(NoteDeclaree, id=note_id)
+
+        if action == "valider":
+            # Créer la Note officielle
+            Note.objects.update_or_create(
+                inscription=note.inscription,
+                defaults={"note_finale": note.note_declaree}
+            )
+            note.statut    = "VALIDEE"
+            note.valide_par = request.user
+            messages.success(request, f"Note validée pour {note.inscription.etudiant}.")
+
+        elif action == "rejeter":
+            note.statut           = "REJETEE"
+            note.commentaire_admin = request.POST.get("commentaire_admin", "")
+            messages.warning(request, f"Note rejetée pour {note.inscription.etudiant}.")
+
+        note.save()
+        return redirect("notes:valider_notes_declarees")
+
+    contexte = {
+        "notes":           notes,
+        "total":           notes.count(),
+        "notes_en_attente": NoteDeclaree.objects.filter(statut="EN_ATTENTE").count(),
+    }
+    return render(request, "notes/valider_notes_declarees.html", contexte)
+
+
+
+@login_required
+@user_passes_test(est_etudiant)
+def vue_declaration_notes(request):
+    """Formulaire multi-étapes : l'étudiant déclare ses notes manquantes"""
+    
+    etudiant = request.user.profil_etudiant
+
+    inscriptions = (
+        etudiant.inscriptions
+        .filter(statut__in=["INSCRIT", "COMPLETE"])
+        .select_related("section_cours__cours", "section_cours__professeur__utilisateur")
+        .order_by("section_cours__cours__code")
+    )
+
+    # Exclure celles qui ont déjà une Note officielle OU une NoteDeclaree en attente/validée
+    ids_avec_note_officielle = Note.objects.filter(
+        inscription__in=inscriptions,
+        note_finale__isnull=False,
+    ).values_list("inscription_id", flat=True)
+
+    ids_avec_declaration = NoteDeclaree.objects.filter(
+        inscription__in=inscriptions,
+        statut__in=["EN_ATTENTE", "VALIDEE"],
+    ).values_list("inscription_id", flat=True)
+
+    ids_a_exclure = set(ids_avec_note_officielle) | set(ids_avec_declaration)
+
+    inscriptions_sans_note = [i for i in inscriptions if i.id not in ids_a_exclure]
+
+    etape = int(request.GET.get("etape", 1))
+    total = len(inscriptions_sans_note)
+
+    if total == 0:
+        messages.info(request, "Toutes vos notes sont déjà enregistrées.")
+        return redirect("notes:mes_notes")
+
+    if etape > total:
+        messages.success(request, "Déclaration terminée. Merci !")
+        return redirect("notes:mes_notes")
+
+    inscription_courante = inscriptions_sans_note[etape - 1]
+
+    if request.method == "POST":
+        note_val    = request.POST.get("note_declaree", "").strip()
+        commentaire = request.POST.get("commentaire", "").strip()
+
+        try:
+            note_val = float(note_val)
+            if not (0 <= note_val <= 100):
+                raise ValueError
+        except ValueError:
+            messages.error(request, "Entrez une note valide entre 0 et 100.")
+            return redirect(f"{request.path}?etape={etape}")
+
+        NoteDeclaree.objects.update_or_create(
+            inscription=inscription_courante,
+            defaults={
+                "note_declaree":        note_val,
+                "commentaire_etudiant": commentaire,
+                "statut":               "EN_ATTENTE",
+            }
+        )
+
+        if etape < total:
+            return redirect(f"{request.path}?etape={etape + 1}")
+        else:
+            messages.success(request, "Déclaration terminée. Merci !")
+            return redirect("notes:mes_notes")
+
+    contexte = {
+        "inscription": inscription_courante,
+        "etape":       etape,
+        "total":       total,
+        "progression": int((etape / total) * 100),
+        "etape_prec":  etape - 1 if etape > 1 else None,
+    }
+    return render(request, "notes/declaration_notes.html", contexte)
+

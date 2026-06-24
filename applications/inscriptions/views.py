@@ -21,58 +21,44 @@ from utilitaires.roles import est_administrateur, est_etudiant
 @login_required
 @user_passes_test(est_etudiant)
 def vue_sections_disponibles(request):
-    """Sections disponibles pour inscription (vue étudiant)"""
     etudiant = request.user.profil_etudiant
 
-    # Sections ouvertes correspondant au niveau et au département
     if etudiant.departement:
         sections = SectionCours.objects.filter(
-            est_ouverte=True,
             cours__niveau=etudiant.niveau,
             cours__departement=etudiant.departement,
         )
     else:
-        # Étudiants préparatoires : sections sans département
         sections = SectionCours.objects.filter(
-            est_ouverte=True,
             cours__niveau=etudiant.niveau,
             cours__departement__isnull=True,
         )
 
     sections = sections.select_related("cours", "professeur__utilisateur")
 
-    # Exclure les cours déjà suivis ou en cours d'inscription
     ids_cours_inscrits = etudiant.inscriptions.filter(statut="INSCRIT").values_list(
         "section_cours__cours_id", flat=True
     )
     sections = sections.exclude(cours_id__in=ids_cours_inscrits)
 
-    # Filtres optionnels
-    session = request.GET.get("session")
+    session  = request.GET.get("session")
     semestre = request.GET.get("semestre")
-    departement = request.GET.get("departement")
 
     if session:
         sections = sections.filter(session=session)
     if semestre:
         sections = sections.filter(semestre=semestre)
-    if departement:
-        sections = sections.filter(cours__departement__code=departement)
 
-    # Pagination
     paginateur = Paginator(sections.order_by("cours__code"), settings.ELEMENTS_PAR_PAGE)
-    numero_page = request.GET.get("page")
-    page_obj = paginateur.get_page(numero_page)
+    page_obj   = paginateur.get_page(request.GET.get("page"))
 
     contexte = {
-        "page_obj": page_obj,
-        "choix_session": SectionCours.CHOIX_SESSION,
-        "choix_semestre": SectionCours.CHOIX_SEMESTRE,
-        "departements": Departement.objects.all(),
+        "page_obj":             page_obj,
+        "choix_session":        SectionCours.CHOIX_SESSION,
+        "choix_semestre":       SectionCours.CHOIX_SEMESTRE,
         "max_cours_par_session": settings.MAX_COURS_PAR_SESSION,
     }
     return render(request, "inscriptions/sections_disponibles.html", contexte)
-
 
 @login_required
 @user_passes_test(est_etudiant)

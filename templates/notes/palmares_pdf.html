@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ── Variables de couleur ─────────────────────────────────────── */
+  :root {
+    --bleu-fonce  : #1A3A5C;
+    --bleu-moyen  : #2E6DA4;
+    --bleu-clair  : #EBF3FB;
+    --or-accent   : #C9A84C;
+    --gris-texte  : #555555;
+    --gris-ligne  : #F4F6F8;
+  }
+
+  @page { size: A4 portrait; margin: 2cm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10pt;
+    color: #222;
+    background: white;
+  }
+
+  /* ── EN-TÊTE ÉTABLISSEMENT ───────────────────────────────────── */
+  .etablissement-header {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .etablissement-header-left,
+  .etablissement-header-center,
+  .etablissement-header-right {
+    display: table-cell;
+    vertical-align: middle;   /* centrage vertical garanti */
+  }
+
+  /* Colonnes images : largeur fixe, image ne dépasse pas */
+  .etablissement-header-left  { width: 2.8cm; text-align: left; }
+  .etablissement-header-right { width: 2.8cm; text-align: right; }
+  .etablissement-header-center { padding: 0 0.4cm; text-align: center; }
+
+  .etablissement-header-left img,
+  .etablissement-header-right img {
+    display: block;
+    width:  2.4cm;   /* largeur fixe */
+    height: 2.4cm;   /* hauteur fixe */
+    object-fit: contain;
+    object-position: center;
+  }
+  .etablissement-header-left  img { margin: 0; }
+  .etablissement-header-right img { margin-left: auto; }
+
+  /* Textes centre */
+  .etablissement-header-univ {
+    font-family: Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 3px;
+  }
+  .etablissement-header-faculty {
+    font-family: "Georgia", serif;
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1a3a6b;
+    margin-bottom: 5px;
+  }
+  .etablissement-header-slogan {
+    font-family: Arial, sans-serif;
+    font-size: 8pt;
+    color: #777;
+    font-style: italic;
+    margin-bottom: 5px;
+  }
+  .etablissement-header-contact {
+    font-family: Arial, sans-serif;
+    font-size: 7.5pt;
+    color: var(--gris-texte);
+    line-height: 1.8;
+    margin-top: 4px;
+  }
+
+  /* ── SÉPARATEUR ──────────────────────────────────────────────── */
+  .etablissement-header-divider {
+    border: none;
+    border-top: 2.5px solid #1a3a6b;
+    margin: 0.3cm 0 0.5cm;
+  }
+
+  /* ── IDENTIFICATION SECTION ──────────────────────────────────── */
+  .sous-titre {
+    font-family: "Times New Roman", serif;
+    font-size: 11pt;
+    color: var(--bleu-moyen);
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .info-section {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    color: var(--gris-texte);
+    text-align: center;
+    margin-bottom: 0.5cm;
+  }
+
+  /* ── STATISTIQUES ────────────────────────────────────────────── */
+  .stats {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1pt solid var(--bleu-moyen);
+    margin-bottom: 0.5cm;
+  }
+  .stats-row { display: table-row; }
+  .stats-cell {
+    display: table-cell;
+    width: 25%;
+    text-align: center;
+    padding: 6px;
+    border-right: 0.5pt solid var(--bleu-moyen);
+    background: var(--bleu-clair);
+  }
+  .stats-cell:last-child { border-right: none; }
+  .stats-row--val .stats-cell { background: white; }
+  .stats-label {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 8pt;
+    color: var(--gris-texte);
+    display: block;
+  }
+  .stats-val {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13pt;
+    font-weight: bold;
+    color: var(--bleu-fonce);
+    display: block;
+  }
+
+  /* ── TABLEAU PRINCIPAL ───────────────────────────────────────── */
+  .tableau {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    margin-bottom: 1.5cm;
+  }
+  .tableau thead tr { background: var(--bleu-fonce); color: white; }
+  .tableau thead th {
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 9pt;
+    border: 1pt solid var(--bleu-fonce);
+  }
+  .tableau tbody tr:nth-child(even) { background: var(--gris-ligne); }
+  .tableau tbody tr:nth-child(odd)  { background: white; }
+  .tableau tbody tr:nth-child(-n+3) td { font-weight: bold; }
+  .tableau tbody td {
+    padding: 6px;
+    border: 0.3pt solid #DDDDDD;
+    vertical-align: middle;
+  }
+  .col-rang    { text-align: center; width: 5%; }
+  .col-num     { text-align: center; width: 12%; }
+  .col-nom     { text-align: left;   width: 40%; }
+  .col-note    { text-align: center; width: 13%; }
+  .col-mention { text-align: center; width: 16%; }
+
+  .mention-excellent  { color: #1a7a1a; font-weight: bold; }
+  .mention-très-bien  { color: var(--bleu-fonce); }
+  .mention-bien       { color: var(--bleu-moyen); }
+  .mention-passable   { color: #b07000; }
+  .mention-échec,
+  .mention-manquante  { color: #c0392b; }
+
+  /* ── SIGNATURE ───────────────────────────────────────────────── */
+  .signature {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .signature-col {
+    display: table-cell;
+    vertical-align: bottom;
+    height: 2.2cm;
+  }
+  .signature-col--logo { width: 3.2cm; text-align: left; }
+  .signature-col--sig  { text-align: center; }
+
+  .logo-rond {
+    width: 2.8cm;
+    height: 2.8cm;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2pt solid var(--bleu-fonce);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+  }
+  .logo-rond img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .signature-col--sig img {
+    max-height: 1.4cm;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .sig-trait {
+    display: block;
+    width: 50%;
+    margin: 4px auto;
+    border-top: 0.8pt solid var(--bleu-fonce);
+  }
+  .sig-titre {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 8pt;
+    color: var(--gris-texte);
+  }
+  .sig-nom {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    color: var(--bleu-fonce);
+  }
+
+  /* ── PIED DE PAGE ────────────────────────────────────────────── */
+  .footer {
+    margin-top: 0.5cm;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 7pt;
+    color: var(--gris-texte);
+    text-align: center;
+    border-top: 0.5pt solid #ddd;
+    padding-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ EN-TÊTE ════════════════════════════════════════════════ -->
+<div class="etablissement-header">
+
+  <div class="etablissement-header-left">
+    {% if site.logo %}
+      <img src="{{ site.logo.url }}" alt="Logo UEH">
+    {% endif %}
+  </div>
+
+  <div class="etablissement-header-center">
+    <div class="etablissement-header-univ">Université d'État d'Haïti</div>
+    <div class="etablissement-header-faculty">{{ site.nom_complet|default:"FASCH" }}</div>
+    {% if site.slogan %}
+      <div class="etablissement-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+<div class="etablissement-header-contact">
+  {% if site.adresse_ligne1 %}
+    <div><i class="fas fa-map-marker-alt"></i> {{ site.adresse_ligne1 }}</div>
+  {% endif %}
+
+  {% if site.telephone %}
+    <div><i class="fas fa-phone-alt"></i> {{ site.telephone }}</div>
+  {% endif %}
+
+  {% if site.email %}
+    <div><i class="fas fa-envelope"></i> {{ site.email }}</div>
+  {% endif %}
+
+  {% if site.lien_facebook %}
+    <div><i class="fab fa-facebook-f"></i> {{ site.lien_facebook }}</div>
+  {% endif %}
+</div>
+  </div>
+
+  <div class="etablissement-header-right">
+    {% if site.cachet_officiel %}
+      <img src="{{ site.cachet_officiel.url }}" alt="Cachet officiel">
+    {% endif %}
+  </div>
+
+</div>
+
+<hr class="etablissement-header-divider">
+
+<!-- ═══ IDENTIFICATION SECTION ═══════════════════════════════ -->
+<div class="sous-titre">{{ section.cours.code }} — {{ section.cours.nom }}</div>
+<div class="info-section">
+  Année {{ annee_acad }} &nbsp;|&nbsp;
+  Session {{ section.get_session_display }} &nbsp;|&nbsp;
+  Semestre {{ section.get_semestre_display }} &nbsp;|&nbsp;
+  Section {{ section.numero_section }}
+  {% if section.professeur %}
+    &nbsp;|&nbsp; Prof.&nbsp;{{ section.professeur.utilisateur.get_full_name }}
+  {% endif %}
+</div>
+
+<!-- ═══ STATISTIQUES ═══════════════════════════════════════════ -->
+<div class="stats">
+  <div class="stats-row">
+    <div class="stats-cell"><span class="stats-label">INSCRITS</span></div>
+    <div class="stats-cell"><span class="stats-label">NOTÉS</span></div>
+    <div class="stats-cell"><span class="stats-label">MOYENNE DE CLASSE</span></div>
+    <div class="stats-cell"><span class="stats-label">PREMIER(E)</span></div>
+  </div>
+  <div class="stats-row stats-row--val">
+    <div class="stats-cell"><span class="stats-val">{{ nb_total }}</span></div>
+    <div class="stats-cell"><span class="stats-val">{{ nb_avec_note }}</span></div>
+    <div class="stats-cell">
+      <span class="stats-val">
+        {% if moy_classe %}{{ moy_classe }} / 100{% else %}—{% endif %}
+      </span>
+    </div>
+    <div class="stats-cell"><span class="stats-val">{{ top }}</span></div>
+  </div>
+</div>
+
+<!-- ═══ TABLEAU PRINCIPAL ══════════════════════════════════════ -->
+<table class="tableau">
+  <thead>
+    <tr>
+      <th class="col-rang">Rang</th>
+      <th class="col-num">N° Étudiant</th>
+      <th class="col-nom">Nom complet</th>
+      <th class="col-note">Note / 100</th>
+      <th class="col-mention">Mention</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in palmares %}
+    <tr>
+      <td class="col-rang">{{ d.rang }}</td>
+      <td class="col-num">{{ d.numero }}</td>
+      <td class="col-nom">{{ d.nom }}</td>
+      <td class="col-note">
+        {% if d.note %}{{ d.note|floatformat:1 }}{% else %}—{% endif %}
+      </td>
+      <td class="col-mention">
+        <span class="mention-{{ d.mention_css }}">{{ d.mention }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ═══ SIGNATURE ══════════════════════════════════════════════ -->
+<div class="signature">
+
+  <div class="signature-col signature-col--logo">
+    {% if site.logo_small %}
+      <div class="logo-rond">
+        <img src="{{ site.logo_small.url }}" alt="Logo">
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="signature-col signature-col--sig">
+    {% if site.signature_directeur %}
+      <img src="{{ site.signature_directeur.url }}" alt="Signature">
+    {% endif %}
+    <span class="sig-trait"></span>
+    {% if site.titre_directeur_etudes %}
+      <div class="sig-titre">{{ site.titre_directeur_etudes }}</div>
+    {% endif %}
+    {% if site.nom_directeur_etudes %}
+      <div class="sig-nom">{{ site.nom_directeur_etudes }}</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ═══ PIED DE PAGE ═══════════════════════════════════════════ -->
+<div class="footer">
+  {{ site.nom_complet|default:"FASCH" }}
+</div>
+
+</body>
+</html>

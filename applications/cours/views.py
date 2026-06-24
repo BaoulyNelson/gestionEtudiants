@@ -298,7 +298,42 @@ def basculer_ouverture_section(request, id_section):
     messages.success(request, f"Section {etat} aux inscriptions.")
     return redirect("cours:detail_section", id_section=section.id)
 
+import csv
+from django.http import HttpResponse
 
+@login_required
+@user_passes_test(est_administrateur)
+def vue_export_section_csv(request, section_id):
+    section = get_object_or_404(
+        SectionCours.objects.select_related("cours"), id=section_id
+    )
+    inscriptions = (
+        section.inscriptions
+        .filter(statut__in=["INSCRIT", "COMPLETE", "ECHOUE"])
+        .select_related("etudiant__utilisateur", "etudiant__departement")
+        .order_by("etudiant__utilisateur__last_name")
+    )
+
+    nom_fichier = f"section_{section.cours.code}_{section.numero_section}.csv"
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = f'attachment; filename="{nom_fichier}"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Numéro", "Nom", "Prénom", "Email", "Département", "Niveau", "Statut"])
+    for ins in inscriptions:
+        e = ins.etudiant
+        u = e.utilisateur
+        writer.writerow([
+            e.numero_etudiant,
+            u.last_name,
+            u.first_name,
+            u.email,
+            e.departement.nom if e.departement else "—",
+            e.get_niveau_display(),
+            ins.get_statut_display(),
+        ])
+
+    return response
 # ===========================================================================
 # MES COURS
 # ===========================================================================

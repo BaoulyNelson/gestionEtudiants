@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bleu-fonce : #1A3A5C;
+    --bleu-moyen : #2E6DA4;
+    --bleu-clair : #EBF3FB;
+    --or-accent  : #C9A84C;
+    --gris-texte : #555555;
+    --gris-ligne : #F4F6F8;
+  }
+
+  @page { size: A4 portrait; margin: 2cm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10pt;
+    color: #222;
+    background: white;
+  }
+
+  /* ── EN-TÊTE ── */
+  .etablissement-header {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .etablissement-header-left,
+  .etablissement-header-center,
+  .etablissement-header-right {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .etablissement-header-left  { width: 2.8cm; text-align: left; }
+  .etablissement-header-right { width: 2.8cm; text-align: right; }
+  .etablissement-header-center { padding: 0 0.4cm; text-align: center; }
+
+  .etablissement-header-left img,
+  .etablissement-header-right img {
+    display: block;
+    width: 2.4cm; height: 2.4cm;
+    object-fit: contain;
+  }
+  .etablissement-header-left  img { margin: 0; }
+  .etablissement-header-right img { margin-left: auto; }
+
+  .etablissement-header-univ {
+    font-family: Arial, sans-serif; font-size: 8pt;
+    font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: #555; margin-bottom: 3px;
+  }
+  .etablissement-header-faculty {
+    font-family: "Georgia", serif; font-size: 14pt;
+    font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--bleu-fonce); margin-bottom: 5px;
+  }
+  .etablissement-header-slogan {
+    font-family: Arial, sans-serif; font-size: 8pt;
+    color: #777; font-style: italic; margin-bottom: 5px;
+  }
+  .etablissement-header-contact {
+    font-family: Arial, sans-serif; font-size: 7.5pt;
+    color: var(--gris-texte); line-height: 1.8; margin-top: 4px;
+  }
+  .etablissement-header-divider {
+    border: none;
+    border-top: 2.5px solid var(--bleu-fonce);
+    margin: 0.3cm 0 0.5cm;
+  }
+
+  /* ── TITRE DOCUMENT ── */
+  .doc-title {
+    font-family: "Times New Roman", serif;
+    font-size: 14pt; font-weight: bold;
+    color: var(--bleu-fonce); text-align: center;
+    margin-bottom: 4px;
+  }
+  .doc-sous-titre {
+    font-family: Arial, sans-serif; font-size: 9pt;
+    color: var(--gris-texte); text-align: center;
+    margin-bottom: 0.5cm;
+  }
+  .doc-trait {
+    display: block; width: 60%;
+    margin: 0 auto 0.4cm;
+    border-top: 1pt solid var(--or-accent);
+  }
+
+  /* ── STATS GLOBALES ── */
+  .stats {
+    display: table; width: 100%;
+    border-collapse: collapse;
+    border: 1pt solid var(--bleu-moyen);
+    margin-bottom: 0.5cm;
+  }
+  .stats-row { display: table-row; }
+  .stats-cell {
+    display: table-cell; width: 25%;
+    text-align: center; padding: 6px;
+    border-right: 0.5pt solid var(--bleu-moyen);
+    background: var(--bleu-clair);
+  }
+  .stats-cell:last-child { border-right: none; }
+  .stats-row--val .stats-cell { background: white; }
+  .stats-label {
+    font-family: Arial, sans-serif; font-size: 8pt;
+    color: var(--gris-texte); display: block;
+  }
+  .stats-val {
+    font-family: Arial, sans-serif; font-size: 13pt;
+    font-weight: bold; color: var(--bleu-fonce); display: block;
+  }
+
+  /* ── TABLEAU ── */
+  .tableau {
+    width: 100%; border-collapse: collapse;
+    font-family: Arial, sans-serif; font-size: 8.5pt;
+    margin-bottom: 1.5cm;
+  }
+  .tableau thead tr { background: var(--bleu-fonce); color: white; }
+  .tableau thead th {
+    padding: 7px 5px; text-align: center;
+    border: 1pt solid var(--bleu-fonce);
+  }
+  .tableau tbody tr:nth-child(even) { background: var(--gris-ligne); }
+  .tableau tbody tr:nth-child(odd)  { background: white; }
+  .tableau tbody tr:nth-child(-n+3) td { font-weight: bold; }
+  .tableau tbody td {
+    padding: 5px; border: 0.3pt solid #ddd;
+    vertical-align: middle;
+  }
+
+  .col-rang  { text-align: center; width: 5%; }
+  .col-num   { text-align: center; width: 13%; }
+  .col-nom   { text-align: left;   width: 25%; }
+  .col-dept  { text-align: center; width: 14%; }
+  .col-annee { text-align: center; width: 10%; }
+  .col-cours { text-align: center; width: 8%; }
+  .col-cred  { text-align: center; width: 8%; }
+  .col-gpa   { text-align: center; width: 9%; }
+  .col-ment  { text-align: center; width: 12%; }
+
+  .mention-Excellent { color: #1a7a1a; font-weight: bold; }
+  .mention-Très-bien { color: var(--bleu-fonce); }
+  .mention-Bien      { color: var(--bleu-moyen); }
+  .mention-Passable  { color: #b07000; }
+  .mention-Échec     { color: #c0392b; }
+
+  /* ── SIGNATURE ── */
+  .signature {
+    display: table; width: 100%; table-layout: fixed;
+  }
+  .signature-col {
+    display: table-cell; vertical-align: bottom; height: 2.2cm;
+  }
+  .signature-col--logo { width: 3.2cm; text-align: left; }
+  .signature-col--sig  { text-align: center; }
+
+  .logo-rond {
+    width: 2.8cm; height: 2.8cm;
+    border-radius: 50%; overflow: hidden;
+    border: 2pt solid var(--bleu-fonce);
+    display: flex; align-items: center; justify-content: center;
+    background: white;
+  }
+  .logo-rond img { width: 100%; height: 100%; object-fit: cover; }
+
+  .signature-col--sig img {
+    max-height: 1.4cm; width: auto;
+    display: block; margin: 0 auto;
+  }
+  .sig-trait {
+    display: block; width: 50%; margin: 4px auto;
+    border-top: 0.8pt solid var(--bleu-fonce);
+  }
+  .sig-titre { font-family: Arial, sans-serif; font-size: 8pt; color: var(--gris-texte); }
+  .sig-nom   { font-family: Arial, sans-serif; font-size: 9pt; font-weight: bold; color: var(--bleu-fonce); }
+
+  /* ── PIED DE PAGE ── */
+  .footer {
+    margin-top: 0.5cm;
+    font-family: Arial, sans-serif; font-size: 7pt;
+    color: var(--gris-texte); text-align: center;
+    border-top: 0.5pt solid #ddd; padding-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ EN-TÊTE ═══════════════════════════════════════════════ -->
+<div class="etablissement-header">
+  <div class="etablissement-header-left">
+    {% if site.logo %}<img src="{{ site.logo.url }}" alt="Logo">{% endif %}
+  </div>
+  <div class="etablissement-header-center">
+    <div class="etablissement-header-univ">Université d'État d'Haïti</div>
+    <div class="etablissement-header-faculty">{{ site.nom_complet|default:"FASCH" }}</div>
+    {% if site.slogan %}
+      <div class="etablissement-header-slogan">{{ site.slogan }}</div>
+    {% endif %}
+<div class="etablissement-header-contact">
+  {% if site.adresse_ligne1 %}
+    <div><i class="fas fa-map-marker-alt"></i> {{ site.adresse_ligne1 }}</div>
+  {% endif %}
+
+  {% if site.telephone %}
+    <div><i class="fas fa-phone-alt"></i> {{ site.telephone }}</div>
+  {% endif %}
+
+  {% if site.email %}
+    <div><i class="fas fa-envelope"></i> {{ site.email }}</div>
+  {% endif %}
+
+  {% if site.lien_facebook %}
+    <div><i class="fab fa-facebook-f"></i> {{ site.lien_facebook }}</div>
+  {% endif %}
+</div>
+  </div>
+  <div class="etablissement-header-right">
+    {% if site.cachet_officiel %}<img src="{{ site.cachet_officiel.url }}" alt="Cachet">{% endif %}
+  </div>
+</div>
+<hr class="etablissement-header-divider">
+
+<!-- ═══ TITRE ══════════════════════════════════════════════════ -->
+<div class="doc-title">Tableau des Moyennes — Étudiants</div>
+{% if dept_label or annee_label %}
+<div class="doc-sous-titre">
+  {% if dept_label %}{{ dept_label }}{% endif %}
+  {% if dept_label and annee_label %} &nbsp;|&nbsp; {% endif %}
+  {% if annee_label %}{{ annee_label }}{% endif %}
+</div>
+{% endif %}
+<span class="doc-trait"></span>
+
+<!-- ═══ STATISTIQUES GLOBALES ══════════════════════════════════ -->
+{% with nb=liste_gpa|length %}
+<div class="stats">
+  <div class="stats-row">
+    <div class="stats-cell"><span class="stats-label">ÉTUDIANTS</span></div>
+    <div class="stats-cell"><span class="stats-label">AVEC GPA</span></div>
+    <div class="stats-cell"><span class="stats-label">GPA MOYEN</span></div>
+    <div class="stats-cell"><span class="stats-label">PREMIER(E)</span></div>
+  </div>
+  <div class="stats-row stats-row--val">
+    <div class="stats-cell"><span class="stats-val">{{ nb }}</span></div>
+    <div class="stats-cell">
+      <span class="stats-val">
+        {% with avec_gpa=liste_gpa|length %}{{ avec_gpa }}{% endwith %}
+      </span>
+    </div>
+    <div class="stats-cell">
+      <span class="stats-val">
+        {% if liste_gpa %}
+          {% with total=0 %}
+            {# Calcul simple : on affiche le GPA du 1er de la liste triée #}
+            —
+          {% endwith %}
+        {% else %}—{% endif %}
+      </span>
+    </div>
+    <div class="stats-cell">
+      <span class="stats-val">
+        {% if liste_gpa %}{{ liste_gpa.0.nom }}{% else %}—{% endif %}
+      </span>
+    </div>
+  </div>
+</div>
+{% endwith %}
+
+<!-- ═══ TABLEAU PRINCIPAL ══════════════════════════════════════ -->
+<table class="tableau">
+  <thead>
+    <tr>
+      <th class="col-rang">Rang</th>
+      <th class="col-num">N° Étudiant</th>
+      <th class="col-nom">Nom complet</th>
+      <th class="col-dept">Département</th>
+      <th class="col-annee">Année</th>
+      <th class="col-cours">Cours</th>
+      <th class="col-cred">Crédits</th>
+      <th class="col-gpa">GPA</th>
+      <th class="col-ment">Mention</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in liste_gpa %}
+    <tr>
+      <td class="col-rang">{{ item.rang }}</td>
+      <td class="col-num">{{ item.numero }}</td>
+      <td class="col-nom">{{ item.nom }}</td>
+      <td class="col-dept">{{ item.departement }}</td>
+      <td class="col-annee">{{ item.annee }}</td>
+      <td class="col-cours">{{ item.nb_cours }}</td>
+      <td class="col-cred">{{ item.total_credits }}</td>
+      <td class="col-gpa">
+        {% if item.gpa %}{{ item.gpa }}{% else %}—{% endif %}
+      </td>
+      <td class="col-ment">
+        <span class="mention-{{ item.mention|slugify|capfirst }}">{{ item.mention }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ═══ SIGNATURE ══════════════════════════════════════════════ -->
+<div class="signature">
+  <div class="signature-col signature-col--logo">
+    {% if site.logo_small %}
+      <div class="logo-rond">
+        <img src="{{ site.logo_small.url }}" alt="Logo">
+      </div>
+    {% endif %}
+  </div>
+  <div class="signature-col signature-col--sig">
+    {% if site.signature_directeur %}
+      <img src="{{ site.signature_directeur.url }}" alt="Signature">
+    {% endif %}
+    <span class="sig-trait"></span>
+    {% if site.titre_directeur_etudes %}
+      <div class="sig-titre">{{ site.titre_directeur_etudes }}</div>
+    {% endif %}
+    {% if site.nom_directeur_etudes %}
+      <div class="sig-nom">{{ site.nom_directeur_etudes }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══ PIED DE PAGE ═══════════════════════════════════════════ -->
+<div class="footer">{{ site.nom_complet|default:"FASCH" }}</div>
+
+</body>
+</html>
