@@ -455,24 +455,35 @@
               </td>
 
               <!-- Actions -->
-              <td>
-                <div class="action-btns">
-                  <a href="{% url 'inscriptions:historique_inscription' inscription.id %}"
-                     class="btn-action btn-action-info" title="Historique">
-                    <i class="fas fa-history"></i>
-                  </a>
-                  {% if user.is_superuser or user.est_administrateur %}
-                  <a href="{% url 'inscriptions:modifier_inscription' inscription.id %}"
-                     class="btn-action btn-action-warning" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  {% endif %}
-                  <a href="{% url 'notes:saisie_notes_professeur' inscription.section_cours.id %}?enrollment={{ inscription.id }}"
-                     class="btn-action btn-action-primary" title="Ajouter note">
-                    <i class="fas fa-plus"></i>
-                  </a>
-                </div>
-              </td>
+<!-- Actions -->
+<td>
+  <div class="action-btns">
+    <a href="{% url 'inscriptions:historique_inscription' inscription.id %}"
+       class="btn-action btn-action-info" title="Historique">
+      <i class="fas fa-history"></i>
+    </a>
+    {% if user.is_superuser or user.est_administrateur %}
+    <a href="{% url 'inscriptions:modifier_inscription' inscription.id %}"
+       class="btn-action btn-action-warning" title="Modifier">
+      <i class="fas fa-edit"></i>
+    </a>
+    {% endif %}
+
+    {% if inscription.statut in "INSCRIT,COMPLETE,ECHOUE" %}
+      <a href="{% url 'notes:saisie_notes_professeur' inscription.section_cours.id %}?enrollment={{ inscription.id }}"
+         class="btn-action btn-action-primary" title="Ajouter note">
+        <i class="fas fa-plus"></i>
+      </a>
+    {% else %}
+      <span class="btn-action btn-action-secondary"
+            title="Notation impossible — {{ inscription.get_statut_display }}"
+            style="opacity:.4;cursor:not-allowed;">
+        <i class="fas fa-ban"></i>
+      </span>
+    {% endif %}
+
+  </div>
+</td>
             </tr>
             {% endfor %}
           </tbody>

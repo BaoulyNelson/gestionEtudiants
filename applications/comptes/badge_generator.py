@@ -162,7 +162,7 @@ def _entete(c, site):
     zone_h = ENTETE_H       # 9 mm
 
     # ── Logo à gauche (logo_small ou logo) ──────────────────────────────
-    logo_path = _image_path(site.logo_small) or _image_path(site.logo)
+    logo_path = _image_path(site.logo) or _image_path(site.logo_small)
     logo_sz   = 7 * mm
     logo_x    = 2 * mm
     logo_y    = top_y - zone_h / 2 - logo_sz / 2
