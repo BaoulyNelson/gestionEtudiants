@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Noter — {{ remise.etudiant.utilisateur.get_full_name }}{% endblock %}
+{% block sb_active_liste_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center mb-4 gap-3">
+  <a href="{% url 'devoirs:liste_remises' devoir.id %}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div>
+    <h2 class="mb-0 fw-bold">
+      <i class="fas fa-star me-2" style="color:#1a3a6b;"></i>Évaluer une remise
+    </h2>
+    <small class="text-muted">{{ devoir.titre }}</small>
+  </div>
+</div>
+
+
+
+<div class="row g-4">
+
+  <!-- Travail rendu -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <i class="fas fa-user-graduate text-primary"></i>
+        {{ remise.etudiant.utilisateur.get_full_name }}
+        <span class="badge bg-{% if remise.statut == 'EN_RETARD' %}warning text-dark{% elif remise.statut == 'NOTE' %}success{% else %}primary{% endif %} ms-1">
+          {{ remise.get_statut_display }}
+        </span>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-3">
+          <i class="fas fa-clock me-1"></i>Remis le {{ remise.remis_le|date:"d/m/Y à H:i" }}
+          {% if remise.modifie_le != remise.remis_le %}
+            · <em>modifié le {{ remise.modifie_le|date:"d/m/Y à H:i" }}</em>
+          {% endif %}
+        </p>
+
+        <!-- Fichiers soumis -->
+        {% if remise.fichiers.all %}
+        <div class="mb-3">
+          <p class="small fw-semibold mb-2">Fichiers soumis :</p>
+          <div class="list-group">
+            {% for f in remise.fichiers.all %}
+            <a href="{{ f.fichier.url }}" class="list-group-item list-group-item-action d-flex align-items-center gap-3" download>
+              <i class="fas {{ f.icone_css }} fa-lg"></i>
+              <div class="flex-fill">
+                <div class="small fw-semibold">{{ f.nom }}</div>
+                <div class="text-muted" style="font-size:0.75rem;">{{ f.taille_lisible }}</div>
+              </div>
+              <i class="fas fa-download text-muted"></i>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Réponse texte -->
+        {% if remise.contenu %}
+        <div>
+          <p class="small fw-semibold mb-2">Réponse de l'étudiant :</p>
+          <div class="border rounded p-3 bg-light" style="white-space: pre-wrap; font-size: 0.9rem; max-height: 400px; overflow-y: auto;">{{ remise.contenu }}</div>
+        </div>
+        {% endif %}
+
+        {% if not remise.fichiers.all and not remise.contenu %}
+          <p class="text-muted text-center py-4">Aucun contenu soumis.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire de notation -->
+  <div class="col-lg-5">
+
+    <!-- Rappel du devoir -->
+    <div class="card mb-3 border-primary">
+      <div class="card-body py-2 px-3">
+        <small class="text-muted">
+          <i class="fas fa-tasks me-1"></i>{{ devoir.titre }}<br>
+          <i class="fas fa-star me-1"></i>Barème : {{ devoir.points_max }} points
+        </small>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="card">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-pen me-1 text-primary"></i>Évaluation
+      </div>
+      <div class="card-body p-4">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              {{ formulaire.note.label }} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              {{ formulaire.note }}
+              <span class="input-group-text">/ {{ devoir.points_max }}</span>
+            </div>
+            {% if formulaire.note.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.note.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">{{ formulaire.commentaire_prof.label }}</label>
+            {{ formulaire.commentaire_prof }}
+            {% if formulaire.commentaire_prof.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.commentaire_prof.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'devoirs:liste_remises' devoir.id %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-check me-1"></i>Enregistrer la note
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if remise.statut == 'NOTE' %}
+    <div class="alert alert-success mt-3 d-flex align-items-center gap-2">
+      <i class="fas fa-check-circle"></i>
+      <div>
+        <strong>Déjà noté : {{ remise.note }}/{{ devoir.points_max }}</strong>
+        {% if remise.commentaire_prof %}
+          <br><small>{{ remise.commentaire_prof }}</small>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

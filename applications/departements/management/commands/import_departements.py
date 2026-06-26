@@ -31,7 +31,7 @@ class Command(BaseCommand):
         },
         {
             "code": "COMM",
-            "slug": "communication",
+            "slug": "communication-sociale",
             "nom": "Communication Sociale",
             "couleur": "secondary",
             "emoji": "📣",

@@ -69,15 +69,16 @@ class Command(BaseCommand):
     help = "Importe les sections de cours (emplois du temps) depuis un ou plusieurs fichiers CSV."
 
     # Nom du fichier -> déduction département + niveau
-    FICHIER_REGEX = re.compile(r'^emploi_du_temps_(?P<slug>[a-zA-Z]+)(?:_niveau(?P<niveau>\d))?\.csv$')
+    FICHIER_REGEX = re.compile(r'^emploi_du_temps_(?P<slug>[a-zA-Z-]+)(?:_niveau(?P<niveau>\d))?\.csv$')
 
+    
     SLUG_DEPARTEMENT = {
-        "communication": "COMM",
-        "psychologie": "PSY",
-        "sociologie": "SOCIO",
-        "travailsocial": "TS",
-        "preparatoire": None,
-    }
+    "psychologie":           "PSY",
+    "communication-sociale": "COMM",  # ✅ mis à jour
+    "sociologie":            "SOCIO",
+    "travail-social":        "TS",
+    "preparatoire":          None,
+}
 
     NIVEAU_DIGIT_MAP = {"1": "NIVEAU1", "2": "NIVEAU2", "3": "NIVEAU3"}
 

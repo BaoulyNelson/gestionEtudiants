@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Mes Devoirs{% endblock %}
+{% block sb_active_mes_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-0 fw-bold"><i class="fas fa-tasks me-2" style="color:#1a3a6b;"></i>Mes Devoirs</h2>
+    <small class="text-muted">{{ devoirs|length }} devoir{{ devoirs|length|pluralize }}</small>
+  </div>
+</div>
+
+
+<!-- Filtres rapides -->
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <div class="d-flex gap-2 flex-wrap align-items-center">
+      <span class="text-muted small">Afficher :</span>
+      {% for val, label, icon in filtres_disponibles %}
+      <a href="?filtre={{ val }}"
+         class="btn btn-sm {% if filtre == val %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        <i class="fas {{ icon }} me-1"></i>{{ label }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% if devoirs %}
+<div class="row g-3">
+  {% for devoir in devoirs %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100
+      {% if devoir.ma_remise and devoir.ma_remise.statut == 'NOTE' %}border-success
+      {% elif devoir.ma_remise and devoir.ma_remise.statut == 'EN_RETARD' %}border-warning
+      {% elif devoir.ma_remise %}border-primary
+      {% elif devoir.en_retard %}border-danger
+      {% endif %}">
+
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="badge bg-secondary">{{ devoir.section_cours.cours.code }}</span>
+        {% if devoir.ma_remise %}
+          {% if devoir.ma_remise.statut == 'NOTE' %}
+            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Noté</span>
+          {% elif devoir.ma_remise.statut == 'EN_RETARD' %}
+            <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Remis en retard</span>
+          {% else %}
+            <span class="badge bg-primary"><i class="fas fa-paper-plane me-1"></i>Remis</span>
+          {% endif %}
+        {% elif devoir.en_retard %}
+          <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>Non remis — Expiré</span>
+        {% else %}
+          <span class="badge bg-warning text-dark"><i class="fas fa-hourglass-half me-1"></i>À remettre</span>
+        {% endif %}
+      </div>
+
+      <div class="card-body">
+        <h6 class="fw-bold mb-1">{{ devoir.titre }}</h6>
+        <small class="text-muted d-block mb-2">Section {{ devoir.section_cours.numero_section }}</small>
+        <p class="text-muted small mb-3">{{ devoir.description|truncatechars:90 }}</p>
+
+        <div class="d-flex flex-wrap gap-2 mb-2">
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-clock me-1 {% if devoir.en_retard %}text-danger{% else %}text-warning{% endif %}"></i>
+            {{ devoir.date_limite|date:"d/m/Y H:i" }}
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-star me-1 text-primary"></i>{{ devoir.points_max }} pts
+          </span>
+          {% if devoir.fichiers.all %}
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-paperclip me-1 text-muted"></i>{{ devoir.fichiers.count }} pièce{{ devoir.fichiers.count|pluralize }}
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Note reçue -->
+        {% if devoir.ma_remise and devoir.ma_remise.statut == 'NOTE' %}
+        <div class="alert alert-success py-2 px-3 mb-0 small">
+          <div class="d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-star me-1"></i>{{ devoir.ma_remise.note }} / {{ devoir.points_max }}</strong>
+            {% with pct=devoir.ma_remise.pourcentage_note %}
+              {% if pct is not None %}
+              <span class="badge {% if pct >= 60 %}bg-success{% elif pct >= 40 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ pct }}%
+              </span>
+              {% endif %}
+            {% endwith %}
+          </div>
+          {% if devoir.ma_remise.commentaire_prof %}
+            <hr class="my-1">
+            <em class="text-muted">{{ devoir.ma_remise.commentaire_prof|truncatechars:80 }}</em>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="card-footer">
+        <div class="d-flex gap-2">
+          <a href="{% url 'devoirs:detail_devoir_etudiant' devoir.id %}" class="btn btn-sm btn-outline-secondary flex-fill">
+            <i class="fas fa-eye me-1"></i>Voir
+          </a>
+          {% if not devoir.en_retard or devoir.ma_remise %}
+            <a href="{% url 'devoirs:remettre_devoir' devoir.id %}" class="btn btn-sm btn-primary flex-fill">
+              {% if devoir.ma_remise %}
+                <i class="fas fa-edit me-1"></i>Modifier
+              {% else %}
+                <i class="fas fa-paper-plane me-1"></i>Remettre
+              {% endif %}
+            </a>
+          {% else %}
+            <button class="btn btn-sm btn-secondary flex-fill" disabled>
+              <i class="fas fa-lock me-1"></i>Expiré
+            </button>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="card">
+  <div class="card-body text-center py-5">
+    <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">
+      {% if filtre == 'tous' %}Aucun devoir en cours
+      {% else %}Aucun devoir dans cette catégorie
+      {% endif %}
+    </h5>
+    <p class="text-muted small">
+      {% if filtre == 'tous' %}
+        Les devoirs publiés par vos professeurs apparaîtront ici.
+      {% else %}
+        <a href="?filtre=tous" class="text-muted">Voir tous les devoirs</a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -173,12 +173,19 @@ def vue_mes_notes(request):
         messages.warning(request, "Les superusers n'ont pas de profil étudiant.")
         return redirect("accueil")
 
-    etudiant = request.user.profil_etudiant
     etudiant = (
         Etudiant.objects
         .select_related("utilisateur", "departement")
         .get(utilisateur=request.user)
     )
+
+    # Marquer toutes les notes non lues comme vues → badge disparaît
+    Note.objects.filter(
+        inscription__etudiant=etudiant,
+        note_finale__isnull=False,
+        est_lu=False,
+    ).update(est_lu=True)
+
     inscriptions = (
         etudiant.inscriptions.filter(statut__in=["INSCRIT", "COMPLETE"])
         .select_related(
@@ -219,19 +226,15 @@ def vue_mes_notes(request):
         )
 
     moyenne = round(total_points / total_credits, 2) if total_credits > 0 else None
-    for item in inscription_notes:
-        print(f"Inscription: {item['inscription'].id} | Note: {item['note']} | note_finale: {item['note'].note_finale if item['note'] else 'PAS DE NOTE'}")
 
     contexte = {
-        "etudiant":          etudiant,   # ← manquait
+        "etudiant":          etudiant,
         "inscription_notes": inscription_notes,
-        "moyenne": moyenne,
-        "total_credits": total_credits,
+        "moyenne":           moyenne,
+        "total_credits":     total_credits,
     }
-    
 
     return render(request, "notes/mes_notes.html", contexte)
-
 
 @login_required
 def vue_detail_note(request, id_note):
@@ -1681,15 +1684,21 @@ def vue_valider_notes_declarees(request):
         note    = get_object_or_404(NoteDeclaree, id=note_id)
 
         if action == "valider":
-            # Créer la Note officielle
-            Note.objects.update_or_create(
+            note_val = float(note.note_declaree)
+
+            # get_or_create pour éviter de toucher au save() du modèle
+            note_obj, created = Note.objects.get_or_create(
                 inscription=note.inscription,
-                defaults={"note_finale": note.note_declaree}
+                defaults={'note_par': None},
             )
-            note.statut    = "VALIDEE"
+            # Mise à jour directe en base — contourne calculer_note_finale()
+            Note.objects.filter(pk=note_obj.pk).update(
+                note_finale=note_val,
+                mention=Note.obtenir_mention(note_val),
+            )
+            note.statut     = "VALIDEE"
             note.valide_par = request.user
             messages.success(request, f"Note validée pour {note.inscription.etudiant}.")
-
         elif action == "rejeter":
             note.statut           = "REJETEE"
             note.commentaire_admin = request.POST.get("commentaire_admin", "")

@@ -1,217 +1,197 @@
-# Guide d'installation - Système de gestion FASCH
+# FASCH University — Plateforme de Gestion Universitaire
 
-## Prérequis
+Application web développée avec **Django 4.2** pour la gestion complète d'un établissement universitaire : étudiants, professeurs, cours, notes, devoirs, inscriptions et plus encore.
 
-- Python 3.10+
-- XAMPP (MySQL)
-- Git
+---
+
+## Fonctionnalités principales
+
+- **Gestion des comptes** : authentification par email, rôles multiples (étudiant, professeur, administrateur, super-utilisateur), changement de mot de passe obligatoire à la première connexion, génération de badges
+- **Cours & emplois du temps** : création de cours, sections, import d'emplois du temps via commandes de gestion
+- **Inscriptions** : inscription aux sections disponibles, historique, validation administrative
+- **Notes** : saisie individuelle ou groupée, relevés de notes, palmarès, GPA, statistiques, déclaration et validation de notes
+- **Devoirs** : création par les professeurs, remise par les étudiants, correction et notation
+- **Examens** : gestion des examens par département
+- **Départements** : organisation par département, affectation des cours et enseignants
+- **Articles & blog** : système éditorial avec rôles (lecteur, auteur, éditeur), commentaires
+- **Notifications** : alertes sur les notes et événements
+- **Portail** : tableau de bord personnalisé selon le rôle, annuaire étudiants/professeurs, recherche globale, livres, newsletter
+- **Contact** : formulaire de contact intégré
+- **Export PDF** : relevés de notes, palmarès et GPA exportables en PDF (WeasyPrint, xhtml2pdf)
+
+---
+
+## Stack technique
+
+| Composant | Technologie |
+|---|---|
+| Framework | Django 4.2 |
+| Base de données | MySQL (mysqlclient) |
+| Authentification | Django Auth + django-allauth |
+| Formulaires | django-crispy-forms + Bootstrap 5 |
+| Éditeur riche | django-ckeditor |
+| Génération PDF | WeasyPrint, xhtml2pdf, ReportLab |
+| Paiements | django-paypal, Stripe, Moncashify |
+| Tâches asynchrones | Celery + Kombu |
+| API REST | Django REST Framework + drf-spectacular |
+| Fichiers statiques | Whitenoise |
+
+---
+
+## Structure du projet
+
+```
+fasch_university/
+├── applications/
+│   ├── articles/         # Blog et système éditorial
+│   ├── comments/         # Commentaires
+│   ├── comptes/          # Authentification, profils, badges
+│   ├── contact/          # Formulaire de contact
+│   ├── cours/            # Cours, sections, emplois du temps
+│   ├── departements/     # Départements
+│   ├── devoirs/          # Devoirs et remises
+│   ├── inscriptions/     # Inscriptions aux cours
+│   ├── notes/            # Notes, relevés, palmarès
+│   ├── notifications/    # Système de notifications
+│   └── portail/          # Tableaux de bord, examens, livres
+├── configuration/
+│   ├── settings.py
+│   └── urls.py
+├── templates/            # Templates HTML par module
+├── utilitaires/
+│   └── roles.py          # Helpers de vérification des rôles
+├── manage.py
+├── requirements.txt
+└── .env
+```
+
+---
+
+## Rôles utilisateurs
+
+| Rôle | Description |
+|---|---|
+| `SUPERUTILISATEUR` | Accès total à l'administration Django |
+| `ADMIN` | Gestion de l'établissement (inscriptions, notes, paramètres) |
+| `PROFESSEUR` | Saisie des notes, gestion des cours et devoirs |
+| `ETUDIANT` | Consultation des notes, inscriptions, remise de devoirs |
+
+Les professeurs disposent également d'un rôle éditorial (`LECTEUR`, `AUTEUR`, `EDITEUR`) pour le module articles.
+
+---
 
 ## Installation
 
-### 1. Créer le projet Django
+### Prérequis
+
+- Python 3.10+
+- MySQL 8+
+- pip
+
+### Mise en place
 
 ```bash
-# Créer le dossier du projet
-mkdir fasch_university
+# 1. Cloner le dépôt
+git clone <url-du-depot>
 cd fasch_university
 
-# Créer l'environnement virtuel
+# 2. Créer et activer un environnement virtuel
 python -m venv venv
+source venv/bin/activate  # Windows : venv\Scripts\activate
 
-# Activer l'environnement virtuel
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
+# 3. Installer les dépendances
+pip install -r requirements.txt
 
-# Installer Django et dépendances
-pip install django==4.2
-pip install mysqlclient
-pip install python-decouple
-pip install pillow
+# 4. Configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos valeurs
 ```
 
-### 2. Créer le projet Django
-
-```bash
-django-admin startproject fasch_config .
-```
-
-### 3. Créer les applications
-
-```bash
-python manage.py startapp accounts
-python manage.py startapp courses
-python manage.py startapp enrollments
-python manage.py startapp grades
-python manage.py startapp departments
-```
-
-### 4. Configuration de la base de données
-
-1. Démarrer XAMPP et activer MySQL
-2. Créer la base de données via phpMyAdmin:
-   - Nom: `fasch_university_db`
-   - Encodage: `utf8mb4_unicode_ci`
-
-### 5. Créer le fichier .env
-
-À la racine du projet, créer un fichier `.env`:
+### Configuration `.env`
 
 ```env
-SECRET_KEY=votre-cle-secrete-django-ici
+SECRET_KEY='votre-clé-secrète'
 DEBUG=True
 DB_NAME=fasch_university_db
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=votre_mot_de_passe
 DB_HOST=127.0.0.1
 DB_PORT=3306
 ```
 
-### 6. Créer le fichier .gitignore
-
-```
-venv/
-*.pyc
-__pycache__/
-db.sqlite3
-.env
-media/
-staticfiles/
-*.log
-```
-
-### 7. Structure des dossiers
-
-```
-fasch_university/
-├── comptes/
-│   └── management/
-│       └── commands/
-├── departements/
-│   └── management/
-│       └── commands/
-│           └── charger_departements.py
-├── cours/
-├── inscriptions/
-├── notes/
-├── templates/
-│   ├── comptes/
-│   │   ├── connexion.html
-│   │   ├── changer_mot_de_passe.html
-│   │   ├── profil.html
-│   │   ├── liste_utilisateurs.html
-│   │   ├── creer_utilisateur.html
-│   │   └── modifier_utilisateur.html
-│   ├── cours/
-│   │   ├── liste_cours.html
-│   │   ├── detail_cours.html
-│   │   ├── formulaire_cours.html
-│   │   ├── liste_sections.html
-│   │   ├── detail_section.html
-│   │   ├── formulaire_section.html
-│   │   └── mes_cours.html
-│   ├── inscriptions/
-│   │   ├── mes_inscriptions.html
-│   │   ├── sections_disponibles.html
-│   │   ├── liste_inscriptions.html
-│   │   └── historique_inscriptions.html
-│   ├── notes/
-│   │   ├── mes_notes.html
-│   │   ├── saisie_notes.html
-│   │   ├── liste_notes.html
-│   │   ├── detail_note.html
-│   │   ├── sections_professeur.html
-│   │   ├── releve_notes.html
-│   │   └── statistiques_cours.html
-│   ├── base.html
-│   ├── accueil.html
-│   ├── tableau_bord_etudiant.html
-│   ├── tableau_bord_professeur.html
-│   └── tableau_bord_administrateur.html
-├── static/
-├── media/
-├── donnees/
-│   └── departements.csv
-└── configuration_fasch/
-    ├── settings.py
-    ├── urls.py
-    └── views.py
-```
-
-### 8. Appliquer les migrations
+### Base de données
 
 ```bash
-python manage.py makemigrations
+# Créer la base de données MySQL
+mysql -u root -p -e "CREATE DATABASE fasch_university_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Appliquer les migrations
 python manage.py migrate
-```
 
-### 9. Créer le superuser
-
-```bash
+# Créer un super-utilisateur
 python manage.py createsuperuser
 ```
 
-### 10. Collecter les fichiers statiques
-
-```bash
-python manage.py collectstatic
-```
-
-### 11. Lancer le serveur
+### Lancer le serveur de développement
 
 ```bash
 python manage.py runserver
 ```
 
-Accéder à: http://127.0.0.1:8000
+L'application est accessible sur [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-## Fichier requirements.txt
+---
 
-```
-Django==4.2
-mysqlclient
-python-decouple
-Pillow
-```
+## Commandes de gestion
 
-## Commandes personnalisées
+Des commandes personnalisées permettent l'import de données initiales :
 
 ```bash
-# Charger les données depuis CSV
-python manage.py import_emplois_du_temps . --annee 2026 --semestre AUTOMNE --dry-run
+# Importer des étudiants depuis un fichier
+python manage.py import_etudiants
+
+# Importer des cours
+python manage.py import_cours
+
+# Importer les emplois du temps
+python manage.py import_emplois_du_temps
+
+# Importer les emplois du temps communs
+python manage.py import_emplois_du_temps_commun
 ```
 
-## Notes importantes
+---
 
-- Toujours activer l'environnement virtuel avant de travailler
-- Ne jamais commiter le fichier .env
-- Sauvegarder régulièrement la base de données
-- Les mots de passe temporaires par défaut: "TempPass2024!"
+## URLs principales
 
+| Chemin | Module |
+|---|---|
+| `/` | Accueil du portail |
+| `/tableau-de-bord/` | Tableau de bord (selon le rôle) |
+| `/comptes/` | Authentification et profils |
+| `/cours/` | Cours et sections |
+| `/inscriptions/` | Inscriptions |
+| `/notes/` | Notes et relevés |
+| `/devoirs/` | Devoirs |
+| `/departements/` | Départements |
+| `/articles/` | Blog |
+| `/portail/` | Portail administrateur |
+| `/notifications/` | Notifications |
+| `/contact/` | Contact |
+| `/commentaires/` | Commentaires |
+| `/admin/` | Administration Django |
 
-accounts/management/commands/
-├── load_professors.py
-└── load_students.py
+---
 
-cours/management/commands/
-├── load_courses.py
-└── load_sections.py
+## Contribution
 
-departments/management/commands/
-└── load_departments.py
+1. Créer une branche : `git checkout -b feature/ma-fonctionnalite`
+2. Committer les changements : `git commit -m "feat: description"`
+3. Pousser la branche : `git push origin feature/ma-fonctionnalite`
+4. Ouvrir une Pull Request
 
-enrollments/management/commands/
-└── load_enrollments.py
+---
 
-grades/management/commands/
-└── load_grades.py
+## Licence
 
-
-python manage.py load_departments --file data/departments.csv
-python manage.py load_courses --file data/courses.csv
-python manage.py load_sections --file data/sections.csv
-python manage.py load_professors --file data/professors.csv
-python manage.py load_students --file data/students.csv
-python manage.py load_enrollments --file data/enrollments.csv
-python manage.py load_grades --file data/grades.csv
+Projet à usage interne — FASCH (Faculté des Sciences Humaines). Tous droits réservés.

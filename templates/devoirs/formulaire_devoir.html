@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block title %}{{ titre }}{% endblock %}
+{% block sb_active_liste_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center mb-4">
+  <a href="{% url 'devoirs:liste_devoirs' %}" class="btn btn-outline-secondary me-3">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div>
+    <h2 class="mb-0 fw-bold">
+      <i class="fas fa-tasks me-2" style="color:#1a3a6b;"></i>{{ titre }}
+    </h2>
+    <small class="text-muted">
+      <i class="fas fa-book me-1"></i>
+      {{ section.cours.code }} — {{ section.cours.nom }} · Section {{ section.numero_section }}
+    </small>
+  </div>
+</div>
+
+
+
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  <div class="row g-4">
+
+    <!-- Colonne principale -->
+    <div class="col-lg-8">
+
+      <!-- Infos générales -->
+      <div class="card mb-4">
+        <div class="card-header fw-semibold">
+          <i class="fas fa-info-circle me-1 text-primary"></i>Informations générales
+        </div>
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ formulaire.titre.label }} <span class="text-danger">*</span></label>
+            {{ formulaire.titre }}
+            {% if formulaire.titre.errors %}<div class="text-danger small mt-1">{{ formulaire.titre.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ formulaire.type_devoir.label }} <span class="text-danger">*</span></label>
+            {{ formulaire.type_devoir }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ formulaire.description.label }} <span class="text-danger">*</span></label>
+            {{ formulaire.description }}
+            <div class="form-text">Résumé court affiché dans la liste des devoirs.</div>
+            {% if formulaire.description.errors %}<div class="text-danger small mt-1">{{ formulaire.description.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="mb-0">
+            <label class="form-label fw-semibold">{{ formulaire.consignes.label }}</label>
+            {{ formulaire.consignes }}
+            <div class="form-text">Instructions détaillées, critères d'évaluation, barème…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fichiers joints -->
+      <div class="card mb-4">
+        <div class="card-header fw-semibold">
+          <i class="fas fa-paperclip me-1 text-primary"></i>Fichiers joints
+          <span class="text-muted fw-normal small ms-1">(optionnel)</span>
+        </div>
+        <div class="card-body p-4">
+
+          {% if mode == 'modification' and fichiers_existants %}
+          <div class="mb-3">
+            <p class="small fw-semibold text-muted mb-2">Fichiers actuels :</p>
+            <div class="list-group">
+              {% for f in fichiers_existants %}
+              <div class="list-group-item d-flex align-items-center gap-3 py-2">
+                <i class="fas {{ f.icone_css }} fa-lg"></i>
+                <span class="flex-fill small">{{ f.nom }}</span>
+                <a href="{{ f.fichier.url }}" class="btn btn-sm btn-outline-primary" download title="Télécharger">
+                  <i class="fas fa-download"></i>
+                </a>
+                <div class="form-check mb-0">
+                  <input class="form-check-input" type="checkbox" name="supprimer_fichier" value="{{ f.id }}" id="sup_{{ f.id }}">
+                  <label class="form-check-label text-danger small" for="sup_{{ f.id }}">Supprimer</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <hr class="my-3">
+            <p class="small fw-semibold text-muted mb-2">Ajouter de nouveaux fichiers :</p>
+          </div>
+          {% endif %}
+
+          <label class="form-label small">Fichiers (PDF, DOCX, PPTX, ZIP, images…)</label>
+          {{ form_fichiers.fichiers }}
+          <div class="form-text">{{ form_fichiers.fichiers.help_text }}</div>
+          {% if form_fichiers.fichiers.errors %}
+            <div class="text-danger small mt-1">{{ form_fichiers.fichiers.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- Colonne latérale -->
+    <div class="col-lg-4">
+
+      <!-- Dates -->
+      <div class="card mb-4">
+        <div class="card-header fw-semibold">
+          <i class="fas fa-calendar-alt me-1 text-primary"></i>Dates
+        </div>
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">{{ formulaire.date_publication.label }}</label>
+            {{ formulaire.date_publication }}
+            <div class="form-text">{{ formulaire.date_publication.help_text }}</div>
+            {% if formulaire.date_publication.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.date_publication.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-0">
+            <label class="form-label fw-semibold small">{{ formulaire.date_limite.label }} <span class="text-danger">*</span></label>
+            {{ formulaire.date_limite }}
+            {% if formulaire.date_limite.errors %}
+              <div class="text-danger small mt-1">{{ formulaire.date_limite.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Barème -->
+      <div class="card mb-4">
+        <div class="card-header fw-semibold">
+          <i class="fas fa-star me-1 text-primary"></i>Barème
+        </div>
+        <div class="card-body p-4">
+          <label class="form-label fw-semibold small">{{ formulaire.points_max.label }}</label>
+          <div class="input-group">
+            {{ formulaire.points_max }}
+            <span class="input-group-text">points</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Publication -->
+      <div class="card mb-4 border-success">
+        <div class="card-body p-4">
+          <div class="form-check form-switch">
+            {{ formulaire.est_publie }}
+            <label class="form-check-label fw-semibold" for="{{ formulaire.est_publie.id_for_label }}">
+              {{ formulaire.est_publie.label }}
+            </label>
+          </div>
+          <p class="text-muted small mt-2 mb-0">
+            Si activé, le devoir sera immédiatement visible par les étudiants inscrits à ce cours.
+          </p>
+        </div>
+      </div>
+
+      {% if formulaire.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for e in formulaire.non_field_errors %}{{ e }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-1"></i>
+          {% if mode == 'modification' %}Enregistrer les modifications{% else %}Créer le devoir{% endif %}
+        </button>
+        <a href="{% url 'devoirs:liste_devoirs' %}" class="btn btn-outline-secondary">Annuler</a>
+      </div>
+
+    </div><!-- /col-lg-4 -->
+  </div><!-- /row -->
+</form>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}{{ devoir.titre }}{% endblock %}
+{% block sb_active_mes_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-start mb-4 gap-3">
+  <a href="{% url 'devoirs:mes_devoirs' %}" class="btn btn-outline-secondary mt-1">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div class="flex-fill">
+    <h2 class="mb-0 fw-bold">{{ devoir.titre }}</h2>
+    <small class="text-muted">
+      <i class="fas fa-book me-1"></i>
+      {{ devoir.section_cours.cours.code }} — {{ devoir.section_cours.cours.nom }} · Section {{ devoir.section_cours.numero_section }}
+    </small>
+  </div>
+  {% if not en_retard or remise_existante %}
+  <a href="{% url 'devoirs:remettre_devoir' devoir.id %}" class="btn btn-primary mt-1">
+    {% if remise_existante %}
+      <i class="fas fa-edit me-1"></i>Modifier ma remise
+    {% else %}
+      <i class="fas fa-paper-plane me-1"></i>Remettre le devoir
+    {% endif %}
+  </a>
+  {% else %}
+  <button class="btn btn-secondary mt-1" disabled>
+    <i class="fas fa-lock me-1"></i>Délai expiré
+  </button>
+  {% endif %}
+</div>
+
+
+<div class="row g-4">
+
+  <!-- Contenu du devoir -->
+  <div class="col-lg-8">
+
+    <!-- Description -->
+    <div class="card mb-3">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <span class="badge bg-{% if devoir.type_devoir == 'FICHIER' %}primary{% elif devoir.type_devoir == 'TEXTE' %}success{% else %}warning text-dark{% endif %}">
+          {{ devoir.get_type_devoir_display }}
+        </span>
+        <span>Description</span>
+      </div>
+      <div class="card-body">
+        <p class="mb-0">{{ devoir.description }}</p>
+      </div>
+    </div>
+
+    <!-- Consignes -->
+    {% if devoir.consignes %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-list-ul me-1 text-primary"></i>Consignes
+      </div>
+      <div class="card-body" style="white-space: pre-wrap;">{{ devoir.consignes }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Fichiers joints par le prof -->
+    {% if devoir.fichiers.all %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-paperclip me-1 text-primary"></i>Documents fournis par votre professeur
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for f in devoir.fichiers.all %}
+        <li class="list-group-item d-flex align-items-center gap-3">
+          <i class="fas {{ f.icone_css }} fa-lg"></i>
+          <span class="flex-fill">{{ f.nom }}</span>
+          <a href="{{ f.fichier.url }}" class="btn btn-sm btn-outline-primary" download>
+            <i class="fas fa-download me-1"></i>Télécharger
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Ma remise -->
+    {% if remise_existante %}
+    <div class="card {% if remise_existante.statut == 'NOTE' %}border-success{% elif remise_existante.statut == 'EN_RETARD' %}border-warning{% else %}border-primary{% endif %}">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <i class="fas fa-check-circle {% if remise_existante.statut == 'NOTE' %}text-success{% else %}text-primary{% endif %}"></i>
+        Mon travail remis
+        <span class="badge bg-{% if remise_existante.statut == 'NOTE' %}success{% elif remise_existante.statut == 'EN_RETARD' %}warning text-dark{% else %}primary{% endif %} ms-1">
+          {{ remise_existante.get_statut_display }}
+        </span>
+        <small class="text-muted ms-auto">{{ remise_existante.remis_le|date:"d/m/Y à H:i" }}</small>
+      </div>
+      <div class="card-body">
+
+        {% if remise_existante.fichiers.all %}
+        <div class="mb-3">
+          <p class="small fw-semibold mb-2">Fichiers soumis :</p>
+          <div class="list-group">
+            {% for f in remise_existante.fichiers.all %}
+            <a href="{{ f.fichier.url }}" class="list-group-item list-group-item-action d-flex align-items-center gap-3" download>
+              <i class="fas {{ f.icone_css }} fa-lg"></i>
+              <div class="flex-fill">
+                <div class="small fw-semibold">{{ f.nom }}</div>
+                <div class="text-muted" style="font-size:0.75rem;">{{ f.taille_lisible }}</div>
+              </div>
+              <i class="fas fa-download text-muted"></i>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if remise_existante.contenu %}
+        <div>
+          <p class="small fw-semibold mb-2">Votre réponse :</p>
+          <div class="border rounded p-3 bg-light small" style="white-space: pre-wrap;">{{ remise_existante.contenu }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Note et commentaire -->
+        {% if remise_existante.statut == 'NOTE' %}
+        <div class="alert alert-success mt-3 mb-0">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong><i class="fas fa-star me-1"></i>Note reçue</strong>
+            <span class="fs-5 fw-bold">{{ remise_existante.note }} / {{ devoir.points_max }}</span>
+          </div>
+          {% if remise_existante.commentaire_prof %}
+          <hr class="my-2">
+          <p class="mb-0 small"><em>{{ remise_existante.commentaire_prof }}</em></p>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endif %}
+
+  </div><!-- /col-lg-8 -->
+
+  <!-- Panneau latéral -->
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-info-circle me-1 text-primary"></i>Informations
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Date limite</span>
+          <span class="small fw-semibold {% if en_retard %}text-danger{% else %}text-warning{% endif %}">
+            {{ devoir.date_limite|date:"d/m/Y H:i" }}
+          </span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Barème</span>
+          <span class="small fw-semibold">{{ devoir.points_max }} points</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Type de remise</span>
+          <span class="badge bg-secondary">{{ devoir.get_type_devoir_display }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Mon statut</span>
+          {% if remise_existante %}
+            <span class="badge bg-{% if remise_existante.statut == 'NOTE' %}success{% elif remise_existante.statut == 'EN_RETARD' %}warning text-dark{% else %}primary{% endif %}">
+              {{ remise_existante.get_statut_display }}
+            </span>
+          {% elif en_retard %}
+            <span class="badge bg-danger">Non remis — Expiré</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">À remettre</span>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+
+    {% if en_retard and not remise_existante %}
+    <div class="alert alert-danger">
+      <i class="fas fa-lock me-1"></i>
+      Le délai de remise est expiré. Vous ne pouvez plus soumettre ce devoir.
+    </div>
+    {% elif not en_retard %}
+    <div class="d-grid">
+      <a href="{% url 'devoirs:remettre_devoir' devoir.id %}" class="btn btn-primary">
+        {% if remise_existante %}
+          <i class="fas fa-edit me-1"></i>Modifier ma remise
+        {% else %}
+          <i class="fas fa-paper-plane me-1"></i>Remettre le devoir
+        {% endif %}
+      </a>
+    </div>
+    {% endif %}
+
+  </div><!-- /col-lg-4 -->
+</div>
+{% endblock %}

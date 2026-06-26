@@ -179,16 +179,23 @@
             </td>
             <td>{{ section.salle|default:"N/A" }}</td>
 
-            <td>
-              <a href="{% url 'cours:detail_section' section.id %}"
-                 class="btn btn-sm btn-info">
-                <i class="fas fa-eye"></i>
-              </a>
-              <a href="{% url 'notes:saisie_notes_professeur' section.id %}"
-                 class="btn btn-sm btn-warning">
-                <i class="fas fa-edit"></i>
-              </a>
-            </td>
+<td>
+  <a href="{% url 'cours:detail_section' section.id %}"
+     class="btn btn-sm btn-info"
+     title="Voir la section" data-bs-toggle="tooltip">
+    <i class="fas fa-eye"></i>
+  </a>
+  <a href="{% url 'notes:saisie_notes_professeur' section.id %}"
+     class="btn btn-sm btn-warning"
+     title="Saisir les notes" data-bs-toggle="tooltip">
+    <i class="fas fa-edit"></i>
+  </a>
+  <a href="{% url 'devoirs:creer_devoir' section.id %}"
+     class="btn btn-sm btn-primary"
+     title="Créer un devoir" data-bs-toggle="tooltip">
+    <i class="fas fa-tasks"></i>
+  </a>
+</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% block title %}{{ devoir.titre }}{% endblock %}
+{% block sb_active_liste_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-start mb-4 gap-3">
+  <a href="{% url 'devoirs:liste_devoirs' %}" class="btn btn-outline-secondary mt-1">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div class="flex-fill">
+    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+      <h2 class="mb-0 fw-bold">{{ devoir.titre }}</h2>
+      {% if devoir.est_publie %}
+        <span class="badge bg-success"><i class="fas fa-eye me-1"></i>Publié</span>
+      {% else %}
+        <span class="badge bg-secondary"><i class="fas fa-eye-slash me-1"></i>Brouillon</span>
+      {% endif %}
+      {% if devoir.est_en_retard %}
+        <span class="badge bg-danger"><i class="fas fa-lock me-1"></i>Délai expiré</span>
+      {% endif %}
+    </div>
+    <small class="text-muted">
+      <i class="fas fa-book me-1"></i>
+      {{ devoir.section_cours.cours.code }} — {{ devoir.section_cours.cours.nom }} · Section {{ devoir.section_cours.numero_section }}
+    </small>
+  </div>
+  <div class="d-flex gap-2 flex-shrink-0">
+    <form method="post" action="{% url 'devoirs:basculer_publication' devoir.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm {% if devoir.est_publie %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+        <i class="fas fa-{% if devoir.est_publie %}eye-slash{% else %}eye{% endif %} me-1"></i>
+        {% if devoir.est_publie %}Masquer{% else %}Publier{% endif %}
+      </button>
+    </form>
+    <a href="{% url 'devoirs:modifier_devoir' devoir.id %}" class="btn btn-sm btn-outline-primary">
+      <i class="fas fa-pen me-1"></i>Modifier
+    </a>
+    <a href="{% url 'devoirs:supprimer_devoir' devoir.id %}" class="btn btn-sm btn-outline-danger">
+      <i class="fas fa-trash me-1"></i>Supprimer
+    </a>
+  </div>
+</div>
+
+
+
+<div class="row g-4">
+
+  <!-- Contenu du devoir -->
+  <div class="col-lg-8">
+
+    <!-- Description -->
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <span class="badge bg-{% if devoir.type_devoir == 'FICHIER' %}primary{% elif devoir.type_devoir == 'TEXTE' %}success{% else %}warning text-dark{% endif %} me-2">
+          {{ devoir.get_type_devoir_display }}
+        </span>
+        Description
+      </div>
+      <div class="card-body">
+        <p class="mb-0">{{ devoir.description }}</p>
+      </div>
+    </div>
+
+    <!-- Consignes -->
+    {% if devoir.consignes %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-list-ul me-1 text-primary"></i>Consignes détaillées
+      </div>
+      <div class="card-body" style="white-space: pre-wrap;">{{ devoir.consignes }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Fichiers joints -->
+    {% if devoir.fichiers.all %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-paperclip me-1 text-primary"></i>Fichiers joints ({{ devoir.fichiers.count }})
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for f in devoir.fichiers.all %}
+        <li class="list-group-item d-flex align-items-center gap-3">
+          <i class="fas {{ f.icone_css }} fa-lg"></i>
+          <span class="flex-fill small">{{ f.nom }}</span>
+          <a href="{{ f.fichier.url }}" class="btn btn-sm btn-outline-primary" download>
+            <i class="fas fa-download"></i>
+          </a>
+          <form method="post" action="{% url 'devoirs:supprimer_fichier_devoir' f.id %}" class="d-inline"
+                onsubmit="return confirm('Supprimer ce fichier ?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+              <i class="fas fa-times"></i>
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Dernières remises -->
+    {% if remises %}
+    <div class="card">
+      <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-inbox me-1 text-primary"></i>Dernières remises</span>
+        <div class="d-flex gap-2">
+          <a href="{% url 'devoirs:telecharger_remises' devoir.id %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-download me-1"></i>Tout télécharger
+          </a>
+          <a href="{% url 'devoirs:liste_remises' devoir.id %}" class="btn btn-sm btn-outline-primary">
+            Toutes les remises
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Étudiant</th>
+              <th>Remis le</th>
+              <th>Statut</th>
+              <th>Note</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for remise in remises %}
+            <tr>
+              <td class="fw-semibold">{{ remise.etudiant.utilisateur.get_full_name }}</td>
+              <td><small class="text-muted">{{ remise.remis_le|date:"d/m/Y H:i" }}</small></td>
+              <td>
+                <span class="badge bg-{% if remise.statut == 'NOTE' %}success{% elif remise.statut == 'EN_RETARD' %}warning text-dark{% else %}primary{% endif %}">
+                  {{ remise.get_statut_display }}
+                </span>
+              </td>
+              <td>
+                {% if remise.note %}
+                  <strong>{{ remise.note }}</strong><span class="text-muted">/{{ devoir.points_max }}</span>
+                {% else %}—{% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{% url 'devoirs:noter_remise' remise.id %}" class="btn btn-sm btn-outline-success">
+                  <i class="fas fa-pen me-1"></i>
+                  {% if remise.statut == 'NOTE' %}Modifier{% else %}Noter{% endif %}
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+  </div><!-- /col-lg-8 -->
+
+  <!-- Panneau latéral -->
+  <div class="col-lg-4">
+
+    <!-- Statistiques -->
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-chart-bar me-1 text-primary"></i>Statistiques
+      </div>
+      <div class="card-body">
+        <div class="row g-2 text-center">
+          <div class="col-6">
+            <div class="p-3 bg-light rounded">
+              <div class="fw-bold fs-4 text-primary">{{ nb_remises }}</div>
+              <small class="text-muted">Remise{{ nb_remises|pluralize }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-light rounded">
+              <div class="fw-bold fs-4 text-success">{{ nb_notes }}</div>
+              <small class="text-muted">Noté{{ nb_notes|pluralize }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-light rounded">
+              <div class="fw-bold fs-4 text-warning">{{ nb_retard }}</div>
+              <small class="text-muted">En retard</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-light rounded">
+              <div class="fw-bold fs-4">{{ devoir.points_max }}</div>
+              <small class="text-muted">Points max</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dates -->
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-calendar-alt me-1 text-primary"></i>Dates
+      </div>
+      <ul class="list-group list-group-flush">
+        {% if devoir.date_publication %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Publication</span>
+          <span class="small fw-semibold">{{ devoir.date_publication|date:"d/m/Y H:i" }}</span>
+        </li>
+        {% endif %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Date limite</span>
+          <span class="small fw-semibold {% if devoir.est_en_retard %}text-danger{% else %}text-warning{% endif %}">
+            {{ devoir.date_limite|date:"d/m/Y H:i" }}
+          </span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Créé le</span>
+          <span class="small">{{ devoir.cree_le|date:"d/m/Y" }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="d-grid gap-2">
+      <a href="{% url 'devoirs:liste_remises' devoir.id %}" class="btn btn-success">
+        <i class="fas fa-inbox me-1"></i>Gérer les remises
+      </a>
+      <a href="{% url 'devoirs:telecharger_remises' devoir.id %}" class="btn btn-outline-secondary">
+        <i class="fas fa-download me-1"></i>Télécharger toutes les remises
+      </a>
+    </div>
+
+  </div><!-- /col-lg-4 -->
+</div>
+{% endblock %}

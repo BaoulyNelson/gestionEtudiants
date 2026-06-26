@@ -31,7 +31,7 @@ class Command(BaseCommand):
     # Nom du département (colonne CSV) -> code du modèle Departement
     # None = pas de département (cas du Préparatoire)
     DEPARTEMENT_MAP = {
-        "Communication": "COMM",
+        "Communication Sociale": "COMM",
         "Psychologie": "PSY",
         "Sociologie": "SOCIO",
         "Travail Social": "TS",

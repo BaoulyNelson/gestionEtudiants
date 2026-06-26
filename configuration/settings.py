@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "applications.portail",
     "applications.contact",
     "applications.comments",
+    "applications.devoirs",
     # Apps tierces
     "widget_tweaks",
     "crispy_forms",

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}Devoirs{% endblock %}
+{% block sb_active_liste_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-0 fw-bold"><i class="fas fa-tasks me-2" style="color:#1a3a6b;"></i>Devoirs</h2>
+    <small class="text-muted">{{ devoirs|length }} devoir{{ devoirs|length|pluralize }}</small>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <select id="select-section" class="form-select form-select-sm" style="max-width:280px;">
+      <option value="">— Choisir une section —</option>
+      {% for section in mes_sections %}
+        <option value="{% url 'devoirs:creer_devoir' section.id %}">
+          {{ section.cours.code }} — {{ section.cours.nom }} · Section {{ section.numero_section }}
+        </option>
+      {% endfor %}
+    </select>
+    <button onclick="allerSection()" class="btn btn-primary btn-sm text-nowrap">
+      <i class="fas fa-plus me-1"></i>Créer un devoir
+    </button>
+  </div>
+</div>
+
+
+
+<!-- Filtres -->
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="d-flex gap-2 flex-wrap align-items-center">
+      <span class="text-muted small">Filtrer :</span>
+      <select name="publie" class="form-select form-select-sm" style="width:auto;">
+        <option value="">Tous les statuts</option>
+        <option value="1" {% if filtre_publie == '1' %}selected{% endif %}>Publiés</option>
+        <option value="0" {% if filtre_publie == '0' %}selected{% endif %}>Brouillons</option>
+      </select>
+      <select name="section" class="form-select form-select-sm" style="width:auto;">
+        <option value="">Toutes les sections</option>
+        {% for section in mes_sections %}
+          <option value="{{ section.id }}" {% if filtre_section == section.id|stringformat:"s" %}selected{% endif %}>
+            {{ section.cours.code }} · Section {{ section.numero_section }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-filter me-1"></i>Filtrer
+      </button>
+      <a href="{% url 'devoirs:liste_devoirs' %}" class="btn btn-link btn-sm text-muted">Réinitialiser</a>
+    </form>
+  </div>
+</div>
+
+{% if devoirs %}
+<div class="row g-3">
+  {% for devoir in devoirs %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 {% if not devoir.est_publie %}border-secondary opacity-75{% endif %}">
+      <div class="card-header d-flex align-items-center justify-content-between gap-2">
+        <span class="badge bg-{% if devoir.type_devoir == 'FICHIER' %}primary{% elif devoir.type_devoir == 'TEXTE' %}success{% else %}warning text-dark{% endif %}">
+          <i class="fas fa-{% if devoir.type_devoir == 'FICHIER' %}paperclip{% elif devoir.type_devoir == 'TEXTE' %}align-left{% else %}list-ul{% endif %} me-1"></i>
+          {{ devoir.get_type_devoir_display }}
+        </span>
+        <div class="d-flex gap-1 align-items-center">
+          {% if devoir.est_publie %}
+            <span class="badge bg-success"><i class="fas fa-eye me-1"></i>Publié</span>
+          {% else %}
+            <span class="badge bg-secondary"><i class="fas fa-eye-slash me-1"></i>Brouillon</span>
+          {% endif %}
+          {% if devoir.est_en_retard %}
+            <span class="badge bg-danger" title="Date limite dépassée"><i class="fas fa-lock"></i></span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h6 class="fw-bold mb-1">{{ devoir.titre }}</h6>
+        <small class="text-muted d-block mb-2">
+          <i class="fas fa-book me-1"></i>{{ devoir.section_cours.cours.code }} — Section {{ devoir.section_cours.numero_section }}
+        </small>
+        <p class="text-muted small mb-3">{{ devoir.description|truncatechars:90 }}</p>
+
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-clock me-1 {% if devoir.est_en_retard %}text-danger{% else %}text-warning{% endif %}"></i>
+            {{ devoir.date_limite|date:"d/m/Y H:i" }}
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-star me-1 text-primary"></i>{{ devoir.points_max }} pts
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-inbox me-1 text-success"></i>{{ devoir.nb_remises }} remise{{ devoir.nb_remises|pluralize }}
+          </span>
+          {% if devoir.nb_notes > 0 %}
+          <span class="badge bg-light text-dark border">
+            <i class="fas fa-check-circle me-1 text-success"></i>{{ devoir.nb_notes }} noté{{ devoir.nb_notes|pluralize }}
+          </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card-footer d-flex gap-1">
+        <a href="{% url 'devoirs:detail_devoir' devoir.id %}" class="btn btn-sm btn-outline-primary flex-fill">
+          <i class="fas fa-eye"></i> Détail
+        </a>
+        <a href="{% url 'devoirs:liste_remises' devoir.id %}" class="btn btn-sm btn-outline-success flex-fill">
+          <i class="fas fa-inbox"></i> Remises
+        </a>
+        <a href="{% url 'devoirs:modifier_devoir' devoir.id %}" class="btn btn-sm btn-outline-secondary" title="Modifier">
+          <i class="fas fa-pen"></i>
+        </a>
+        <form method="post" action="{% url 'devoirs:basculer_publication' devoir.id %}" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">  {# ✅ /devoirs/ #}
+          <button type="submit" class="btn btn-sm {% if devoir.est_publie %}btn-outline-warning{% else %}btn-outline-success{% endif %}"
+                  title="{% if devoir.est_publie %}Masquer{% else %}Publier{% endif %}">
+            <i class="fas fa-{% if devoir.est_publie %}eye-slash{% else %}eye{% endif %}"></i>
+          </button>
+        </form>
+        <a href="{% url 'devoirs:supprimer_devoir' devoir.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+          <i class="fas fa-trash"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="card">
+  <div class="card-body text-center py-5">
+    <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">Aucun devoir trouvé</h5>
+    <p class="text-muted small">Créez votre premier devoir en sélectionnant une section ci-dessus.</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function allerSection() {
+    const url = document.getElementById('select-section').value;
+    if (url) window.location.href = url;
+    else alert('Veuillez sélectionner une section de cours.');
+  }
+</script>
+{% endblock %}

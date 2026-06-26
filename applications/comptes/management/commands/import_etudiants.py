@@ -17,7 +17,7 @@ Le script est idempotent : un étudiant déjà importé (retrouvé par
 Usage :
     python manage.py import_etudiants etudiants.csv
     python manage.py import_etudiants etudiants.csv --dry-run
-    python manage.py import_etudiants etudiants.csv --mot-de-passe-defaut monmotdepasse
+    python manage.py import_etudiants etudiants.csv --mot-de-passe-defaut motdepasse123
 """
 
 import csv

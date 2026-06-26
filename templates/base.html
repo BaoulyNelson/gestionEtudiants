@@ -1143,7 +1143,17 @@ a {
         <span>Relevé</span>
       </a>
     </li>
-
+      {# Lien étudiant #}
+      <li>
+        <a href="{% url 'devoirs:mes_devoirs' %}"
+          class="sidebar-menu-link {% block sb_active_mes_devoirs %}{% endblock %}">
+          <i class="fas fa-tasks sidebar-menu-icon"></i>
+          <span>Mes devoirs</span>
+            {% if badges.devoirs_count %}
+            <span class="badge bg-danger ms-auto">{{ badges.devoirs_count }}</span>
+          {% endif %}
+        </a>
+      </li>
 
     {% endif %}
 
@@ -1170,6 +1180,15 @@ a {
       <span>Palmarès</span>
     </a>
   </li>
+
+{# Lien prof/admin #}
+<li>
+  <a href="{% url 'devoirs:liste_devoirs' %}"
+     class="sidebar-menu-link {% block sb_active_liste_devoirs %}{% endblock %}">
+    <i class="fas fa-tasks sidebar-menu-icon"></i>
+    <span>Devoirs</span>
+  </a>
+</li>
   {% endif %}
 
     <!-- ── ADMINISTRATEUR ── -->
@@ -1401,10 +1420,23 @@ a {
     <i class="fas fa-plus-circle"></i>
     <span>Inscrire</span>
   </a>
+
+
   <a href="{% url 'notes:mes_notes' %}" class="bn-item{% if current_view == 'notes:mes_notes' %} bn-item--center{% endif %}">
+  <span style="position:relative; display:inline-block;">
     <i class="fas fa-star"></i>
-    <span>Notes</span>
-  </a>
+    {% if badges.notes_count %}
+      <span style="
+        position:absolute; top:-6px; right:-8px;
+        background:#dc3545; color:white;
+        font-size:9px; font-weight:700;
+        border-radius:50%; width:15px; height:15px;
+        display:flex; align-items:center; justify-content:center;
+        line-height:1;">{{ badges.notes_count }}</span>
+    {% endif %}
+  </span>
+  <span>Notes</span>
+</a>
 
 
 
@@ -1503,12 +1535,12 @@ a {
   {% if user.est_etudiant %}
   <div class="bs-section-label">Espace étudiant</div>
   <div class="bs-links">
-<a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link">
-  <i class="fas fa-list"></i>Mes inscriptions
-  {% if badges.cours_count %}
-  <span class="badge bg-danger rounded-pill">{{ badges.cours_count }}</span>
-  {% endif %}
-</a>
+  <a href="{% url 'inscriptions:mes_inscriptions' %}" class="bs-link">
+    <i class="fas fa-list"></i>Mes inscriptions
+    {% if badges.cours_count %}
+    <span class="badge bg-danger rounded-pill">{{ badges.cours_count }}</span>
+    {% endif %}
+  </a>
     <a href="{% url 'notes:mes_professeurs' %}" class="bs-link"><i class="fas fa-chalkboard-teacher"></i>Mes professeurs</a>
     <a href="{% url 'notes:releve_notes' %}" class="bs-link"><i class="fas fa-file-alt"></i>Relevé de notes</a>
   <a href="{% url 'portail:liste_examens' %}" class="bs-link">
@@ -1517,6 +1549,12 @@ a {
     <span class="badge bg-danger rounded-pill">{{ badges.examens_count }}</span>
     {% endif %}
 </a>
+  <a href="{% url 'devoirs:mes_devoirs' %}" class="bs-link">
+    <i class="fas fa-tasks sidebar-menu-icon"></i>Mes devoirs
+        {% if badges.devoirs_count %}
+    <span class="badge bg-danger ms-auto">{{ badges.devoirs_count }}</span>
+  {% endif %}
+  </a>
 
   </div>
 
@@ -1526,7 +1564,9 @@ a {
     <a href="{% url 'cours:liste_sections' %}" class="bs-link"><i class="fas fa-list"></i>Toutes les sections</a>
     <a href="{% url 'notes:palmares' %}" class="bs-link"><i class="fas fa-trophy"></i>Palmarès</a>
     <a href="{% url 'portail:liste_examens' %}" class="bs-link"><i class="fas fa-pencil-alt"></i>Examens</a>
-
+    <a href="{% url 'devoirs:liste_devoirs' %}" class="bs-link">
+      <i class="fas fa-tasks sidebar-menu-icon"></i>Devoirs
+    </a>
   </div>
 
   {% elif user.est_administrateur %}

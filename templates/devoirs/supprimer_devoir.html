@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer — {{ devoir.titre }}{% endblock %}
+{% block sb_active_liste_devoirs %}active{% endblock %}
+
+{% block authenticated_content %}
+<div class="d-flex align-items-center mb-4 gap-3">
+  <a href="{% url 'devoirs:detail_devoir' devoir.id %}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <h2 class="mb-0 fw-bold text-danger">
+    <i class="fas fa-trash me-2"></i>Supprimer un devoir
+  </h2>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card border-danger">
+      <div class="card-body p-5 text-center">
+
+        <div class="d-flex align-items-center justify-content-center rounded-circle bg-danger text-white mx-auto mb-4"
+             style="width:72px;height:72px;font-size:32px;">
+          <i class="fas fa-tasks"></i>
+        </div>
+
+        <h5 class="fw-bold mb-1">{{ devoir.titre }}</h5>
+        <p class="text-muted small mb-1">
+          {{ devoir.section_cours.cours.code }} — Section {{ devoir.section_cours.numero_section }}
+        </p>
+        <p class="text-muted small mb-4">
+          <i class="fas fa-inbox me-1"></i>
+          {{ devoir.remises.count }} remise{{ devoir.remises.count|pluralize }} enregistrée{{ devoir.remises.count|pluralize }}
+        </p>
+
+        <div class="alert alert-danger text-start">
+          <i class="fas fa-exclamation-triangle me-1"></i>
+          Cette action est <strong>irréversible</strong>. Le devoir, tous ses fichiers joints
+          et toutes les remises des étudiants seront définitivement supprimés.
+        </div>
+
+        <form method="post" class="d-flex gap-3 justify-content-center mt-3">
+          {% csrf_token %}
+          <a href="{% url 'devoirs:detail_devoir' devoir.id %}" class="btn btn-outline-secondary px-4">
+            Annuler
+          </a>
+          <button type="submit" class="btn btn-danger px-4">
+            <i class="fas fa-trash me-1"></i>Confirmer la suppression
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

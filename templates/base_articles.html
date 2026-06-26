@@ -407,6 +407,12 @@
     <i class="fas fa-calendar-alt me-2"></i> Événement
     <i class="fas fa-arrow-right ms-auto"></i>
   </a>
+<a href="{% url 'portail:accueil' %}" class="cat-panel-item cat-panel-item--all">
+    <span class="cat-panel-dot" style="background:#64748b"></span>
+    <i class="fas fa-home me-2"></i> Accueil
+    <i class="fas fa-arrow-right ms-auto"></i>
+</a>
+
 </div>
   {% if user.is_authenticated %}
   <div class="cat-panel-footer">
