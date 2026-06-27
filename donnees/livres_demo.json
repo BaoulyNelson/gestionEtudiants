@@ -1,0 +1,242 @@
+[
+  {
+    "model": "portail.livre",
+    "pk": 1,
+    "fields": {
+      "titre": "L'État et ses transformations",
+      "auteur": "Bertrand Badie",
+      "isbn": "9782021345678",
+      "editeur": "Seuil",
+      "annee": 2020,
+      "categorie": "science_politique",
+      "resume": "Une analyse approfondie des mutations contemporaines de l'État-nation face à la mondialisation, aux recompositions identitaires et aux nouvelles formes de gouvernance internationale.",
+      "couverture": "",
+      "nombre_exemplaires": 3,
+      "date_creation": "2024-09-01T08:00:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 2,
+    "fields": {
+      "titre": "Sociologie de l'éducation",
+      "auteur": "Marie Duru-Bellat, Agnès Van Zanten",
+      "isbn": "9782130583447",
+      "editeur": "PUF",
+      "annee": 2019,
+      "categorie": "sciences_educ",
+      "resume": "Un ouvrage de référence qui décrypte les inégalités scolaires, les effets des contextes familiaux et institutionnels sur les trajectoires des élèves, et les politiques éducatives comparées.",
+      "couverture": "",
+      "nombre_exemplaires": 4,
+      "date_creation": "2024-09-01T08:05:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 3,
+    "fields": {
+      "titre": "Introduction au droit international public",
+      "auteur": "Patrick Daillier, Mathias Forteau, Alain Pellet",
+      "isbn": "9782275040127",
+      "editeur": "LGDJ",
+      "annee": 2022,
+      "categorie": "droit_international",
+      "resume": "Manuel fondamental du droit international, couvrant les sources, les sujets, les organisations internationales et le règlement pacifique des différends. Incontournable pour tout juriste.",
+      "couverture": "",
+      "nombre_exemplaires": 5,
+      "date_creation": "2024-09-01T08:10:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 4,
+    "fields": {
+      "titre": "Macroéconomie",
+      "auteur": "Olivier Blanchard, Daniel Cohen",
+      "isbn": "9782326002364",
+      "editeur": "Pearson",
+      "annee": 2021,
+      "categorie": "economie",
+      "resume": "Le manuel de référence en macroéconomie, alliant rigueur théorique et applications empiriques. Aborde la croissance, le chômage, l'inflation et les politiques économiques contemporaines.",
+      "couverture": "",
+      "nombre_exemplaires": 6,
+      "date_creation": "2024-09-01T08:15:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 5,
+    "fields": {
+      "titre": "Psychologie sociale",
+      "auteur": "Gustave-Nicolas Fischer",
+      "isbn": "9782100822195",
+      "editeur": "Dunod",
+      "annee": 2020,
+      "categorie": "psycho_sociale",
+      "resume": "Une introduction complète à la psychologie sociale : influence, conformité, attitudes, préjugés et comportements collectifs. Riche en études de cas et expériences classiques.",
+      "couverture": "",
+      "nombre_exemplaires": 3,
+      "date_creation": "2024-09-01T08:20:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 6,
+    "fields": {
+      "titre": "Linguistique générale : théorie et description",
+      "auteur": "John Lyons",
+      "isbn": "9782070726714",
+      "editeur": "Gallimard",
+      "annee": 2018,
+      "categorie": "linguistique",
+      "resume": "Un traité rigoureux des théories linguistiques modernes : phonologie, morphologie, syntaxe et sémantique. Traduit de l'anglais, cet ouvrage reste une référence internationale.",
+      "couverture": "",
+      "nombre_exemplaires": 2,
+      "date_creation": "2024-09-01T08:25:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 7,
+    "fields": {
+      "titre": "Histoire d'Haïti : des origines à nos jours",
+      "auteur": "Leslie Manigat",
+      "isbn": "9789993572011",
+      "editeur": "CRESFED",
+      "annee": 2017,
+      "categorie": "histoire",
+      "resume": "Une fresque historique complète retraçant l'histoire d'Haïti depuis les peuples autochtones jusqu'aux enjeux politiques du XXIe siècle, par l'un des intellectuels haïtiens les plus reconnus.",
+      "couverture": "",
+      "nombre_exemplaires": 4,
+      "date_creation": "2024-09-01T08:30:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 8,
+    "fields": {
+      "titre": "Méthodes de recherche en sciences sociales",
+      "auteur": "Raymond Quivy, Luc Van Campenhoudt",
+      "isbn": "9782100801459",
+      "editeur": "Dunod",
+      "annee": 2022,
+      "categorie": "recherche",
+      "resume": "Le guide méthodologique par excellence pour la réalisation d'une recherche en sciences humaines et sociales : problématique, hypothèses, collecte et analyse de données.",
+      "couverture": "",
+      "nombre_exemplaires": 7,
+      "date_creation": "2024-09-01T08:35:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 9,
+    "fields": {
+      "titre": "Philosophie du droit",
+      "auteur": "Michel Villey",
+      "isbn": "9782130449256",
+      "editeur": "Dalloz",
+      "annee": 2019,
+      "categorie": "philosophie",
+      "resume": "Une réflexion fondamentale sur les rapports entre philosophie et droit, la justice, le droit naturel et le positivisme juridique. Œuvre majeure de la pensée juridique française.",
+      "couverture": "",
+      "nombre_exemplaires": 2,
+      "date_creation": "2024-09-01T08:40:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 10,
+    "fields": {
+      "titre": "Communication et médias numériques",
+      "auteur": "Dominique Wolton",
+      "isbn": "9782271078912",
+      "editeur": "CNRS Éditions",
+      "annee": 2021,
+      "categorie": "medias_numeriques",
+      "resume": "Une analyse critique des transformations de la communication à l'ère du numérique : réseaux sociaux, information en temps réel, et leurs effets sur le lien social et la démocratie.",
+      "couverture": "",
+      "nombre_exemplaires": 3,
+      "date_creation": "2024-09-01T08:45:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 11,
+    "fields": {
+      "titre": "Comptabilité générale : principes et applications",
+      "auteur": "Béatrice Grandguillot, Francis Grandguillot",
+      "isbn": "9782297181068",
+      "editeur": "Gualino",
+      "annee": 2023,
+      "categorie": "comptabilite",
+      "resume": "Un manuel pratique couvrant l'ensemble du cycle comptable : du plan comptable général aux états financiers, avec de nombreux exercices corrigés conformes aux normes en vigueur.",
+      "couverture": "",
+      "nombre_exemplaires": 5,
+      "date_creation": "2024-09-01T08:50:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 12,
+    "fields": {
+      "titre": "Anthropologie culturelle",
+      "auteur": "Roger Keesing, Andrew Strathern",
+      "isbn": "9782804185244",
+      "editeur": "De Boeck",
+      "annee": 2018,
+      "categorie": "anthropologie",
+      "resume": "Une introduction à l'anthropologie culturelle comparative : parenté, religion, rituel, organisation sociale et identités. Illustré par de nombreuses études de terrain.",
+      "couverture": "",
+      "nombre_exemplaires": 2,
+      "date_creation": "2024-09-01T08:55:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 13,
+    "fields": {
+      "titre": "Travail social et intervention",
+      "auteur": "Jean-Pierre Deslauriers, Renaud Paquet",
+      "isbn": "9782897993528",
+      "editeur": "PUQ",
+      "annee": 2020,
+      "categorie": "travail_social",
+      "resume": "Un ouvrage pédagogique sur les pratiques d'intervention sociale : évaluation des besoins, accompagnement des personnes vulnérables, éthique professionnelle et politiques sociales.",
+      "couverture": "",
+      "nombre_exemplaires": 3,
+      "date_creation": "2024-09-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 14,
+    "fields": {
+      "titre": "Statistiques pour les sciences humaines",
+      "auteur": "Stéphane Tufféry",
+      "isbn": "9782100826742",
+      "editeur": "Dunod",
+      "annee": 2021,
+      "categorie": "statistiques",
+      "resume": "De la statistique descriptive à l'inférentielle, en passant par les tests d'hypothèses et la régression. Exemples tirés des sciences sociales, avec applications sur R et Python.",
+      "couverture": "",
+      "nombre_exemplaires": 4,
+      "date_creation": "2024-09-01T09:05:00Z"
+    }
+  },
+  {
+    "model": "portail.livre",
+    "pk": 15,
+    "fields": {
+      "titre": "Relations internationales",
+      "auteur": "Dario Battistella",
+      "isbn": "9782724623956",
+      "editeur": "Presses de Sciences Po",
+      "annee": 2022,
+      "categorie": "relations_inter",
+      "resume": "Un panorama complet des théories et des enjeux contemporains des relations internationales : réalisme, libéralisme, constructivisme, conflits armés et gouvernance mondiale.",
+      "couverture": "",
+      "nombre_exemplaires": 3,
+      "date_creation": "2024-09-01T09:10:00Z"
+    }
+  }
+]

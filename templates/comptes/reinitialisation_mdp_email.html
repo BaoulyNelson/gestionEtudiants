@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background:#f1f5f9; font-family:'Helvetica Neue', Arial, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9; padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%;">
+
+          <!-- EN-TÊTE -->
+          <tr>
+            <td style="background:#1a2c4e; padding:28px 40px; border-radius:12px 12px 0 0; text-align:center;">
+              <p style="margin:0; color:rgba(255,255,255,.6); font-size:12px; letter-spacing:.08em; text-transform:uppercase;">
+                Université d'État d'Haïti
+              </p>
+              <h1 style="margin:6px 0 0; color:#ffffff; font-size:20px; font-weight:800; letter-spacing:.04em;">
+                {{ site.nom_complet }}
+              </h1>
+            </td>
+          </tr>
+
+          <!-- BANDE ACCENT -->
+          <tr>
+            <td style="background:#e63946; height:4px;"></td>
+          </tr>
+
+          <!-- CORPS -->
+          <tr>
+            <td style="background:#ffffff; padding:40px; border-radius:0 0 12px 12px;">
+
+              <!-- Icône cadenas -->
+              <div style="text-align:center; margin-bottom:24px;">
+                <div style="display:inline-block; background:#fff0f1; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px; text-align:center;">
+                  🔐
+                </div>
+              </div>
+
+              <h2 style="margin:0 0 8px; color:#1a2c4e; font-size:20px; font-weight:700; text-align:center;">
+                Réinitialisation de mot de passe
+              </h2>
+              <p style="margin:0 0 24px; color:#6c757d; font-size:14px; text-align:center;">
+                Vous recevez cet email car une demande de réinitialisation a été effectuée pour votre compte <strong>{{ site.nom_complet }}</strong>.
+              </p>
+
+              <!-- Bouton -->
+              <div style="text-align:center; margin:32px 0;">
+                <a href="{{ protocol }}://{{ domain }}{% url 'comptes:password_reset_confirm' uidb64=uid token=token %}"
+                   style="display:inline-block; background:#e63946; color:#ffffff; text-decoration:none;
+                          font-size:15px; font-weight:700; padding:14px 36px; border-radius:8px;
+                          letter-spacing:.03em;">
+                  Choisir un nouveau mot de passe
+                </a>
+              </div>
+
+              <!-- Avertissement -->
+              <div style="background:#f8f9fa; border-left:4px solid #e63946; border-radius:4px; padding:14px 16px; margin-bottom:24px;">
+                <p style="margin:0; color:#495057; font-size:13px;">
+                  ⚠️ Ce lien n'est valable qu'<strong>une seule fois</strong> et expirera dans 24 heures.
+                </p>
+              </div>
+
+              <p style="margin:0; color:#adb5bd; font-size:12px; text-align:center;">
+                Si vous n'avez pas fait cette demande, ignorez simplement cet email.<br>
+                Votre mot de passe restera inchangé.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- PIED -->
+          <tr>
+            <td style="padding:24px 40px; text-align:center;">
+              <p style="margin:0; color:#94a3b8; font-size:11px;">
+                © {{ site.annee_copyright }} {{ site.nom_complet }} — {{ site.adresse_ligne1 }}<br>
+                <a href="mailto:{{ site.email }}" style="color:#94a3b8;">{{ site.email }}</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

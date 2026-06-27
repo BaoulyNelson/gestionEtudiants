@@ -384,7 +384,7 @@
     <h6 class="cat-panel-title"><i class="fas fa-th-large me-2"></i>Catégories</h6>
     <button class="cat-panel-close" id="closeCategoriesPanel"><i class="fas fa-times"></i></button>
   </div>
-<div class="cat-panel-grid">
+  <div class="cat-panel-grid">
   {% for cat in nav_categories %}
   <a href="{{ cat.get_absolute_url }}" class="cat-panel-item" style="--cat-c:{{ cat.couleur }}">
     <span class="cat-panel-dot" style="background:{{ cat.couleur }}"></span>
@@ -407,20 +407,30 @@
     <i class="fas fa-calendar-alt me-2"></i> Événement
     <i class="fas fa-arrow-right ms-auto"></i>
   </a>
-<a href="{% url 'portail:accueil' %}" class="cat-panel-item cat-panel-item--all">
-    <span class="cat-panel-dot" style="background:#64748b"></span>
-    <i class="fas fa-home me-2"></i> Accueil
-    <i class="fas fa-arrow-right ms-auto"></i>
-</a>
+  <a href="{% url 'portail:accueil' %}" class="cat-panel-item cat-panel-item--all">
+      <span class="cat-panel-dot" style="background:#64748b"></span>
+      <i class="fas fa-home me-2"></i> Accueil
+      <i class="fas fa-arrow-right ms-auto"></i>
+  </a>
+{% if user.is_authenticated %}
+    <a href="{% url 'comptes:tableau_bord' %}" class="cat-panel-item cat-panel-item--all">
+        <span class="cat-panel-dot" style="background:#64748b"></span>
+        <i class="fas fa-graduation-cap me-2"></i> Académique
+        <i class="fas fa-arrow-right ms-auto"></i>
+    </a>
 
-</div>
+{% endif %}
+
+  </div>
   {% if user.is_authenticated %}
   <div class="cat-panel-footer">
     {% if user.peut_ecrire %}
-    <a href="{% url 'comptes:tableau_bord' %}" class="cat-panel-action">
-      <i class="fas fa-tachometer-alt me-2"></i>Académique
+    <a href="{% url 'articles:dashboard' %}" class="cat-panel-action">
+      <i class="fas fa-layer-group me-2"></i> Dashboard
     </a>
     {% endif %}
+
+
 
         {# Après #}
     <button type="button" class="cat-panel-action cat-panel-action--muted border-0 bg-transparent"

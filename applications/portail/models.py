@@ -1,19 +1,226 @@
 from django.db import models
 from django.utils.text import slugify
 import datetime
+from django.core.exceptions import ValidationError
+from django.conf import settings
+
+
+# ============================================================
+# À INTÉGRER dans applications/portail/models.py
+# Remplacer l'ancien modèle Livre et ajouter Emprunt + Reservation
+# ============================================================
+
 
 
 
 class Livre(models.Model):
-    titre = models.CharField(max_length=200)
-    auteur = models.CharField(max_length=100)
-    annee = models.IntegerField()
-    resume = models.TextField()
-    disponible = models.BooleanField(default=True)
-    date_creation = models.DateTimeField(auto_now_add=True, editable=False)
+    """Catalogue de la médiathèque."""
+
+    CHOIX_CATEGORIE = [
+        # ── Sciences humaines fondamentales ──────────────────────────────────────
+        ('philosophie',        'Philosophie'),
+        ('histoire',           'Histoire'),
+        ('geographie',         'Géographie'),
+        ('histoire_geo',       'Histoire & Géographie'),
+        ('archeologie',        'Archéologie'),
+        ('anthropologie',      'Anthropologie'),
+
+        # ── Sciences sociales ────────────────────────────────────────────────────
+        ('sociologie',         'Sociologie'),
+        ('psychologie',        'Psychologie'),
+        ('psycho_sociale',     'Psychologie sociale'),
+        ('psycho_clinique',    'Psychologie clinique'),
+        ('sciences_educ',      'Sciences de l\'éducation'),
+        ('travail_social',     'Travail social'),
+        ('demographe',         'Démographie'),
+
+        # ── Sciences politiques & juridiques ─────────────────────────────────────
+        ('droit',              'Droit'),
+        ('droit_public',       'Droit public'),
+        ('droit_prive',        'Droit privé'),
+        ('droit_international','Droit international'),
+        ('science_politique',  'Science politique'),
+        ('relations_inter',    'Relations internationales'),
+
+        # ── Économie & Gestion ───────────────────────────────────────────────────
+        ('economie',           'Économie'),
+        ('economie_dev',       'Économie du développement'),
+        ('gestion',            'Gestion & Administration'),
+        ('comptabilite',       'Comptabilité & Finance'),
+
+        # ── Langues & Lettres ────────────────────────────────────────────────────
+        ('litterature',        'Littérature'),
+        ('litterature_fr',     'Littérature française'),
+        ('litterature_comp',   'Littérature comparée'),
+        ('linguistique',       'Linguistique'),
+        ('langues',            'Langues étrangères'),
+        ('traduction',         'Traduction & Interprétariat'),
+
+        # ── Communication & Médias ───────────────────────────────────────────────
+        ('communication',      'Communication'),
+        ('journalisme',        'Journalisme'),
+        ('medias_numeriques',  'Médias & Communication numérique'),
+        ('relations_pub',      'Relations publiques'),
+
+        # ── Arts & Culture ───────────────────────────────────────────────────────
+        ('arts',               'Arts & Culture'),
+        ('arts_plastiques',    'Arts plastiques'),
+        ('musique',            'Musique'),
+        ('cinema',             'Cinéma & Audiovisuel'),
+        ('patrimoine',         'Patrimoine culturel'),
+
+        # ── Sciences & Méthodes ──────────────────────────────────────────────────
+        ('statistiques',       'Statistiques & Méthodes quantitatives'),
+        ('informatique',       'Informatique & Humanités numériques'),
+        ('recherche',          'Méthodologie de la recherche'),
+
+        # ── Divers ───────────────────────────────────────────────────────────────
+        ('interdisciplinaire', 'Interdisciplinaire'),
+        ('autre',              'Autre'),
+    ]
+
+    titre           = models.CharField('Titre', max_length=200)
+    auteur          = models.CharField('Auteur(s)', max_length=200)
+    isbn            = models.CharField('ISBN', max_length=20, blank=True, null=True, unique=True)
+    editeur         = models.CharField('Éditeur', max_length=100, blank=True)
+    annee           = models.IntegerField('Année de publication')
+    categorie       = models.CharField('Catégorie', max_length=30, choices=CHOIX_CATEGORIE, default='autre')
+    resume          = models.TextField('Résumé')
+    couverture      = models.ImageField('Couverture', upload_to='livres/couvertures/', blank=True, null=True)
+    nombre_exemplaires = models.PositiveIntegerField('Nombre d\'exemplaires', default=1)
+    date_creation   = models.DateTimeField(auto_now_add=True, editable=False)
+
+    class Meta:
+        verbose_name        = 'Livre'
+        verbose_name_plural = 'Livres'
+        ordering            = ['titre']
 
     def __str__(self):
-        return self.titre
+        return f"{self.titre} — {self.auteur}"
+
+    @property
+    def exemplaires_disponibles(self):
+        """Nombre d'exemplaires actuellement disponibles."""
+        empruntes = self.emprunts.filter(statut='en_cours').count()
+        return max(0, self.nombre_exemplaires - empruntes)
+
+    @property
+    def disponible(self):
+        return self.exemplaires_disponibles > 0
+
+    def en_attente_count(self):
+        return self.reservations.filter(statut='en_attente').count()
+
+
+class Emprunt(models.Model):
+    """Enregistre chaque emprunt d'un livre par un utilisateur."""
+
+    STATUT_CHOICES = [
+        ('en_cours', 'En cours'),
+        ('rendu',    'Rendu'),
+        ('en_retard','En retard'),
+    ]
+
+    DUREE_DEFAUT_JOURS = 14  # 2 semaines
+
+    utilisateur     = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='emprunts',
+        verbose_name='Emprunteur',
+    )
+    livre           = models.ForeignKey(
+        Livre,
+        on_delete=models.CASCADE,
+        related_name='emprunts',
+        verbose_name='Livre',
+    )
+    date_emprunt    = models.DateField('Date d\'emprunt', default=datetime.date.today)
+    date_retour_prevue = models.DateField('Date de retour prévue')
+    date_retour_effective = models.DateField('Date de retour effective', null=True, blank=True)
+    statut          = models.CharField('Statut', max_length=10, choices=STATUT_CHOICES, default='en_cours')
+    note_admin      = models.TextField('Note interne', blank=True)
+
+    class Meta:
+        verbose_name        = 'Emprunt'
+        verbose_name_plural = 'Emprunts'
+        ordering            = ['-date_emprunt']
+
+    def __str__(self):
+        return f"{self.utilisateur.get_full_name()} — {self.livre.titre} ({self.statut})"
+
+    def save(self, *args, **kwargs):
+        # Calcule la date de retour prévue si pas définie
+        if not self.date_retour_prevue:
+            self.date_retour_prevue = self.date_emprunt + datetime.timedelta(days=self.DUREE_DEFAUT_JOURS)
+        # Met à jour le statut automatiquement
+        if self.statut == 'en_cours' and self.date_retour_prevue < datetime.date.today():
+            self.statut = 'en_retard'
+        super().save(*args, **kwargs)
+
+    @property
+    def est_en_retard(self):
+        if self.statut == 'rendu':
+            return False
+        return self.date_retour_prevue < datetime.date.today()
+
+    @property
+    def jours_retard(self):
+        if not self.est_en_retard:
+            return 0
+        return (datetime.date.today() - self.date_retour_prevue).days
+
+    @property
+    def jours_restants(self):
+        if self.statut == 'rendu':
+            return None
+        delta = self.date_retour_prevue - datetime.date.today()
+        return delta.days  # négatif si en retard
+
+
+class Reservation(models.Model):
+    """File d'attente quand un livre est indisponible."""
+
+    STATUT_CHOICES = [
+        ('en_attente',  'En attente'),
+        ('disponible',  'Disponible — à récupérer'),
+        ('expiree',     'Expirée'),
+        ('annulee',     'Annulée'),
+    ]
+
+    DELAI_DISPONIBILITE_JOURS = 3  # L'utilisateur a 3 jours pour récupérer
+
+    utilisateur = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='reservations',
+        verbose_name='Utilisateur',
+    )
+    livre = models.ForeignKey(
+        Livre,
+        on_delete=models.CASCADE,
+        related_name='reservations',
+        verbose_name='Livre',
+    )
+    date_reservation  = models.DateTimeField('Date de réservation', auto_now_add=True)
+    statut            = models.CharField('Statut', max_length=15, choices=STATUT_CHOICES, default='en_attente')
+    date_disponibilite = models.DateField('Disponible jusqu\'au', null=True, blank=True)
+
+    class Meta:
+        verbose_name        = 'Réservation'
+        verbose_name_plural = 'Réservations'
+        ordering            = ['date_reservation']
+        # Un utilisateur ne peut réserver le même livre qu'une seule fois en attente
+        unique_together = [['utilisateur', 'livre']]
+
+    def __str__(self):
+        return f"{self.utilisateur.get_full_name()} — {self.livre.titre} ({self.statut})"
+
+    def notifier_disponible(self):
+        """Passe la réservation à 'disponible' et fixe la date limite."""
+        self.statut = 'disponible'
+        self.date_disponibilite = datetime.date.today() + datetime.timedelta(days=self.DELAI_DISPONIBILITE_JOURS)
+        self.save()
 
 
 class Personnel(models.Model):

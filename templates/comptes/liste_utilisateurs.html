@@ -201,7 +201,8 @@
                 {% elif user_obj.role == 'ADMIN' %}bg-warning
                 {% elif user_obj.role == 'PROFESSOR' %}bg-info
                 {% else %}bg-primary{% endif %}">
-                {{ user_obj.get_role_display }}
+                {{ user_obj.afficher_role_par_genre }}
+
               </span>
             </td>
             <td>{{ user_obj.get_genre_display }}</td>

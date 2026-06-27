@@ -1586,12 +1586,7 @@ a {
 
   <div class="bs-section-label">Mon compte</div>
   <div class="bs-links">
-    <a href="{% url 'notifications:mes_notifications' %}" class="bs-link">
-      <i class="fas fa-bell"></i>Notifications
-      {% if notifications_non_lues and notifications_non_lues.count > 0 %}
-      <span class="badge bg-danger rounded-pill ms-auto">{{ notifications_non_lues.count }}</span>
-      {% endif %}
-    </a>
+
       <a href="{% url 'portail:liste_personnel' %}" class="bs-link">
     <i class="fas fa-user-tie"></i>Personnel
       </a>

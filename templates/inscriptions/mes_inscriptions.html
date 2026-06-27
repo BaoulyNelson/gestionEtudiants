@@ -216,11 +216,14 @@
 
 <!-- ── Tableau avec onglets ── -->
 <div class="card">
-  <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs">
+  <div class="card-header p-0">
+    <ul class="nav nav-tabs card-header-tabs d-grid w-100" 
+        style="grid-template-columns: repeat({{ choix_statut|length }}, 1fr);">
       {% for value, label in choix_statut %}
       <li class="nav-item">
-        <a class="nav-link {% if statut_actuel == value %}active{% endif %}" href="?semestre={{ semestre_filtre }}&annee={{ annee_filtre }}&statut={{ value }}">
+        <a class="nav-link text-center {% if statut_actuel == value %}active{% endif %}" 
+           href="?semestre={{ semestre_filtre }}&annee={{ annee_filtre }}&statut={{ value }}"
+           style="font-size: 0.78rem; padding: 0.5rem 0.25rem; white-space: nowrap;">
           {{ label }}
         </a>
       </li>

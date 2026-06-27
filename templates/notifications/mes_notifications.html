@@ -90,10 +90,75 @@
     margin-bottom: 28px;
   }
 
+  /* ── Corrections mobile ── */
+
+  /* Empêche tout débordement horizontal */
+  * { box-sizing: border-box; }
+  body, .container { overflow-x: hidden; max-width: 100%; }
+
   @media (max-width: 768px) {
-    .notifs-header { flex-direction: column; align-items: center; text-align: center; }
-    .notifs-header-right { text-align: center; }
+
+    /* Header : empilé verticalement */
+    .notifs-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .notifs-header-left  { min-width: unset; }
+    .notifs-header-right {
+      min-width: unset;
+      width: 100%;
+      text-align: center;
+    }
     .notifs-header-right p { justify-content: center; }
+
+    /* Titre + bouton : empilés */
+    .d-flex.justify-content-between.align-items-center.mb-2 {
+      flex-direction: column;
+      align-items: stretch !important;
+      gap: 10px;
+    }
+    .notifs-doc-title {
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+    #mark-all-read {
+      width: 100%;
+      margin-left: 0 !important;
+    }
+
+    /* Cartes : pleine largeur, pas de débordement */
+    .notification-card {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .notification-card .card-body {
+      padding: 12px;
+    }
+
+    /* En-tête de chaque carte : titre + badge empilés */
+    .notification-card .d-flex.justify-content-between {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .notification-card .ms-3 {
+      margin-left: 0 !important;
+    }
+
+    /* Boutons d'action : pleine largeur */
+    .notification-card .mt-3.d-flex.gap-2 {
+      flex-direction: column;
+    }
+    .notification-card .mt-3.d-flex.gap-2 .btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Texte du titre de la notif */
+    .notification-card .card-title {
+      font-size: 15px;
+    }
   }
 </style>
 {% endblock %}

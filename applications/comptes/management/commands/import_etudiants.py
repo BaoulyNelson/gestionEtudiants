@@ -15,7 +15,7 @@ Le script est idempotent : un étudiant déjà importé (retrouvé par
 `numero_etudiant`) est mis à jour, pas dupliqué.
 
 Usage :
-    python manage.py import_etudiants etudiants.csv
+    python manage.py import_etudiants donnees/etudiants.csv
     python manage.py import_etudiants etudiants.csv --dry-run
     python manage.py import_etudiants etudiants.csv --mot-de-passe-defaut motdepasse123
 """

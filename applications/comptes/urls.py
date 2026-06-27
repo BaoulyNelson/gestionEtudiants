@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as vues_auth
 from django.urls import reverse_lazy
+from applications.portail.models import SiteSettings
 
 app_name = 'comptes'
 
@@ -14,7 +15,6 @@ urlpatterns = [
 
     # Profil
     path('profil/', views.vue_profil, name='profil'),
-    # Ajouter dans urlpatterns
     path('profil/badge/pdf/', views.badge_pdf, name='badge_pdf'),
     path('profil/badge/png/', views.badge_png, name='badge_png'),
 
@@ -30,8 +30,26 @@ urlpatterns = [
     path('etudiant/<int:pk>/', views.vue_detail_etudiant, name='detail_etudiant'),
 
     # Réinitialisation mot de passe
-    path('reinitialisation/', vues_auth.PasswordResetView.as_view(template_name='comptes/reinitialisation_mdp_formulaire.html', success_url=reverse_lazy('comptes:reinitialisation_done')), name='reinitialisation'),
-    path('reinitialisation/envoye/', vues_auth.PasswordResetDoneView.as_view(template_name='comptes/reinitialisation_mdp_envoye.html'), name='reinitialisation_done'),
-    path('reinitialisation/<uidb64>/<token>/', vues_auth.PasswordResetConfirmView.as_view(template_name='comptes/reinitialisation_mdp_confirmation.html', success_url=reverse_lazy('comptes:reinitialisation_complete')), name='reinitialisation_confirmer'),
-    path('reinitialisation/complete/', vues_auth.PasswordResetCompleteView.as_view(template_name='comptes/reinitialisation_mdp_complete.html'), name='reinitialisation_complete'),
+
+
+    path('reinitialisation/', vues_auth.PasswordResetView.as_view(
+        template_name='comptes/reinitialisation_mdp_formulaire.html',
+        email_template_name='comptes/reinitialisation_mdp_email.txt',
+        html_email_template_name='comptes/reinitialisation_mdp_email.html',  # ← ajout
+        success_url=reverse_lazy('comptes:reinitialisation_done'),
+        extra_email_context={'site': SiteSettings.get()},
+    ), name='reinitialisation'),
+    
+    path('reinitialisation/envoye/', vues_auth.PasswordResetDoneView.as_view(
+        template_name='comptes/reinitialisation_mdp_envoye.html',
+    ), name='reinitialisation_done'),
+
+    path('reinitialisation/<uidb64>/<token>/', vues_auth.PasswordResetConfirmView.as_view(
+        template_name='comptes/reinitialisation_mdp_confirmation.html',
+        success_url=reverse_lazy('comptes:reinitialisation_complete'),
+    ), name='password_reset_confirm'),  # ← nom Django attendu, ne pas changer
+
+    path('reinitialisation/complete/', vues_auth.PasswordResetCompleteView.as_view(
+        template_name='comptes/reinitialisation_mdp_complete.html',
+    ), name='reinitialisation_complete'),
 ]

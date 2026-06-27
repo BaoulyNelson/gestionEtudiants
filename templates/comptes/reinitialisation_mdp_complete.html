@@ -1,8 +1,37 @@
 {% extends "base_public.html" %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+
 {% block public_content %}
-<h2>Mot de passe réinitialisé</h2>
-<p>Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.</p>
-<a href="{% url 'comptes:connexion' %}" class="btn btn-primary">Connexion</a>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4 p-md-5 text-center">
+
+          <!-- Icône succès -->
+          <div class="mb-3">
+            <span style="font-size:3rem; color:#22c55e;">
+              <i class="fas fa-check-circle"></i>
+            </span>
+          </div>
+
+          <h4 class="fw-bold mb-2" style="color:var(--primary);">Mot de passe réinitialisé !</h4>
+          <p class="text-muted small mb-4">
+            Votre mot de passe a été modifié avec succès.<br>
+            Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
+          </p>
+
+          <div class="d-grid">
+            <a href="{% url 'comptes:connexion' %}" class="btn btn-primary btn-lg">
+              <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

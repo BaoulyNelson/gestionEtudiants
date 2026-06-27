@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des emprunts{% endblock %}
+{% block sb_active_livres %}active{% endblock %}
+
+{% block authenticated_content %}
+  {% include 'partials/entete_etablissement.html' %}
+
+  <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0 fw-bold">
+        <i class="fas fa-book me-2" style="color:#1a3a6b;"></i>Gestion des emprunts
+      </h2>
+      <small class="text-muted">Vue administrateur</small>
+    </div>
+    <a href="{% url 'portail:liste_livres' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="fas fa-book me-1"></i>Catalogue
+    </a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card text-center shadow-sm">
+        <div class="card-body py-3">
+          <div class="fs-3 fw-bold text-primary">{{ stats.en_cours }}</div>
+          <div class="small text-muted">En cours</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card text-center shadow-sm border-danger">
+        <div class="card-body py-3">
+          <div class="fs-3 fw-bold text-danger">{{ stats.en_retard }}</div>
+          <div class="small text-muted">En retard</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card text-center shadow-sm border-success">
+        <div class="card-body py-3">
+          <div class="fs-3 fw-bold text-success">{{ stats.rendus_mois }}</div>
+          <div class="small text-muted">Rendus ce mois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-sm-5">
+      <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm"
+             placeholder="Rechercher titre, nom…">
+    </div>
+    <div class="col-sm-3">
+      <select name="statut" class="form-select form-select-sm">
+        <option value="">Tous les statuts</option>
+        <option value="en_cours"  {% if statut_filtre == 'en_cours'  %}selected{% endif %}>En cours</option>
+        <option value="en_retard" {% if statut_filtre == 'en_retard' %}selected{% endif %}>En retard</option>
+        <option value="rendu"     {% if statut_filtre == 'rendu'     %}selected{% endif %}>Rendus</option>
+      </select>
+    </div>
+    <div class="col-sm-4 d-flex gap-2">
+      <button type="submit" class="btn btn-primary btn-sm">
+        <i class="fas fa-search me-1"></i>Filtrer
+      </button>
+      <a href="{% url 'portail:gestion_emprunts' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-times me-1"></i>Réinitialiser
+      </a>
+    </div>
+  </form>
+
+  {% if emprunts %}
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Emprunteur</th>
+            <th>Livre</th>
+            <th>Emprunté le</th>
+            <th>Retour prévu</th>
+            <th>Statut</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for emprunt in emprunts %}
+          <tr>
+            <td>
+              <strong>{{ emprunt.utilisateur.get_full_name }}</strong>
+              <div class="small text-muted">{{ emprunt.utilisateur.email }}</div>
+            </td>
+            <td>{{ emprunt.livre.titre }}</td>
+            <td>{{ emprunt.date_emprunt|date:"d/m/Y" }}</td>
+            <td>{{ emprunt.date_retour_prevue|date:"d/m/Y" }}</td>
+            <td>
+              {% if emprunt.statut == 'en_retard' %}
+                <span class="badge bg-danger">
+                  <i class="fas fa-exclamation-triangle me-1"></i>Retard ({{ emprunt.jours_retard }}j)
+                </span>
+              {% elif emprunt.statut == 'en_cours' %}
+                <span class="badge bg-primary">
+                  <i class="fas fa-clock me-1"></i>En cours
+                </span>
+              {% else %}
+                <span class="badge bg-success">
+                  <i class="fas fa-check me-1"></i>Rendu
+                </span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              {% if emprunt.statut != 'rendu' %}
+              <form method="post" action="{% url 'portail:enregistrer_retour_admin' emprunt_id=emprunt.id %}"
+                    onsubmit="return confirm('Enregistrer le retour de ce livre ?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  <i class="fas fa-undo me-1"></i>Retour
+                </button>
+              </form>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+      <h5 class="text-muted">Aucun emprunt trouvé</h5>
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock %}

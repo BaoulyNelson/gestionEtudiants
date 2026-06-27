@@ -1,12 +1,41 @@
 {% extends "base_public.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/entete_etablissement.css' %}">
+
 {% block public_content %}
-<h2>Choisir un nouveau mot de passe</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <button type="submit" class="btn btn-primary mt-2">Réinitialiser</button>
-</form>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4 p-md-5">
+
+          <!-- Icône + titre -->
+          <div class="text-center mb-4">
+            <div class="mb-3">
+              <span style="font-size:2.5rem; color:var(--accent);">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+            <h4 class="fw-bold" style="color:var(--primary);">Nouveau mot de passe</h4>
+            <p class="text-muted small">Choisissez un mot de passe sécurisé pour votre compte.</p>
+          </div>
+
+          <!-- Formulaire -->
+          <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-grid mt-3">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-check me-2"></i>Réinitialiser le mot de passe
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

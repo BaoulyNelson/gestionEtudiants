@@ -1060,3 +1060,13 @@ img { max-width: 100%; height: auto; }
   padding: 0.25rem 0.6rem;
   border-radius: 20px;
 }
+
+:root {
+  --mobile-header-h: 52px;
+}
+
+@media (max-width: 991.98px) {
+  .dash-topbar {
+    top: var(--mobile-header-h);
+  }
+}

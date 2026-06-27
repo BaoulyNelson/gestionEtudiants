@@ -18,12 +18,32 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         return False
 
 
+class FiltreDisponible(admin.SimpleListFilter):
+    title         = 'Disponibilité'
+    parameter_name = 'dispo'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('oui', 'Disponible'),
+            ('non', 'Indisponible'),
+        ]
+
+    def queryset(self, request, queryset):
+        # On délègue le calcul à Python car c'est une property
+        if self.value() == 'oui':
+            ids = [l.pk for l in queryset if l.disponible]
+        elif self.value() == 'non':
+            ids = [l.pk for l in queryset if not l.disponible]
+        else:
+            return queryset
+        return queryset.filter(pk__in=ids)
+
+
 @admin.register(Livre)
 class LivreAdmin(admin.ModelAdmin):
-    list_display  = ['titre', 'auteur', 'annee', 'disponible']
-    list_filter   = ['disponible']
-    search_fields = ['titre', 'auteur']
-
+    list_display  = ['titre', 'auteur', 'annee', 'categorie', 'nombre_exemplaires', 'exemplaires_disponibles']
+    list_filter   = ['categorie', FiltreDisponible]
+    search_fields = ['titre', 'auteur', 'isbn']
 
 @admin.register(Personnel)
 class PersonnelAdmin(admin.ModelAdmin):

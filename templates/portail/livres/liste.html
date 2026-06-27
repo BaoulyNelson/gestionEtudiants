@@ -34,56 +34,80 @@
           <th>Auteur</th>
           <th>Année</th>
           <th>Résumé</th>
+            <th>Exemplaires</th>
           <th>Disponibilité</th>
           <th class="text-end">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        {% for livre in livres %}
-        <tr>
-          <td><strong>{{ livre.titre }}</strong></td>
+<tbody>
+  {% for livre in livres %}
+  <tr>
+    <td><strong>{{ livre.titre }}</strong></td>
+    <td>{{ livre.auteur }}</td>
+    <td>{{ livre.annee }}</td>
+    <td><small class="text-muted">{{ livre.resume|truncatechars:80 }}</small></td>
+    <td>
+  <span class="fw-semibold">{{ livre.exemplaires_disponibles }}</span>
+  <span class="text-muted small"> / {{ livre.nombre_exemplaires }}</span>
+</td>
+    <td>
+      {% if livre.disponible %}
+        <span class="badge bg-success">
+          <i class="fas fa-check me-1"></i>Disponible
+        </span>
+      {% else %}
+        <span class="badge bg-danger">
+          <i class="fas fa-times me-1"></i>Indisponible
+        </span>
+      {% endif %}
+    </td>
 
-          <td>{{ livre.auteur }}</td>
+    <td class="text-end">
+      <div class="d-flex gap-2 justify-content-end">
 
-          <td>{{ livre.annee }}</td>
+        <a href="{% url 'portail:detail_livre' livre.id %}"
+           class="btn btn-sm btn-outline-secondary" title="Voir la fiche">
+          <i class="fas fa-eye"></i>
+        </a>
 
-          <td>
-            <small class="text-muted">{{ livre.resume|truncatechars:80 }}</small>
-          </td>
+        {% if not user.est_administrateur %}
+          {% if livre.id in mes_emprunts_ids %}
+            <span class="btn btn-sm btn-outline-success disabled" title="Déjà emprunté">
+              <i class="fas fa-bookmark"></i>
+            </span>
+          {% elif livre.id in mes_reservations_ids %}
+            <span class="btn btn-sm btn-outline-warning disabled" title="Déjà réservé">
+              <i class="fas fa-hourglass-half"></i>
+            </span>
+          {% elif livre.disponible %}
+            <a href="{% url 'portail:emprunter' livre.id %}"
+               class="btn btn-sm btn-primary" title="Emprunter">
+              <i class="fas fa-book"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'portail:reserver' livre.id %}"
+               class="btn btn-sm btn-warning" title="Réserver">
+              <i class="fas fa-hourglass"></i>
+            </a>
+          {% endif %}
+        {% endif %}
 
-          <td>
-            {% if livre.disponible %}
-              <span class="badge bg-success">
-                <i class="fas fa-check me-1"></i>Disponible
-              </span>
-            {% else %}
-              <span class="badge bg-danger">
-                <i class="fas fa-times me-1"></i>Indisponible
-              </span>
-            {% endif %}
-          </td>
+        {% if user.est_administrateur %}
+          <a href="{% url 'portail:modifier_livre' livre.id %}"
+             class="btn btn-sm btn-outline-primary" title="Modifier">
+            <i class="fas fa-pen"></i>
+          </a>
+          <a href="{% url 'portail:supprimer_livre' livre.id %}"
+             class="btn btn-sm btn-outline-danger" title="Supprimer">
+            <i class="fas fa-trash"></i>
+          </a>
+        {% endif %}
 
-
-          <td class="text-end">
-          {% if user.est_administrateur %}
-
-            <div class="d-flex gap-2 justify-content-end">
-              <a href="{% url 'portail:modifier_livre' livre.id %}"
-                 class="btn btn-sm btn-outline-primary" title="Modifier">
-                <i class="fas fa-pen"></i>
-              </a>
-              <a href="{% url 'portail:supprimer_livre' livre.id %}"
-                 class="btn btn-sm btn-outline-danger" title="Supprimer">
-                <i class="fas fa-trash"></i>
-              </a>
-            </div>
-              {% else %}
-              <span class="text-muted">—</span>
-              {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
     </table>
   </div>
 </div>

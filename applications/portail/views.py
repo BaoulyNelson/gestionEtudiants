@@ -11,10 +11,25 @@ from applications.departements.models import Departement
 from applications.articles.models import Article, Evenement, Annonce
 from applications.inscriptions.models import Inscription
 
-from .forms import ExamenForm, FormulaireParametresSite,FormulairePersonnel,FormulaireliVre
+from .forms import ExamenForm, FormulaireParametresSite,FormulairePersonnel,FormulaireLivre
 from utilitaires.roles import est_administrateur, est_etudiant, est_professeur, est_professeur_ou_admin
 from .models import Personnel, Livre
+# ============================================================
+# À INTÉGRER dans applications/portail/views.py
+# Remplacer les 4 vues livre existantes par ce bloc complet
+# ============================================================
 
+import datetime
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.db import IntegrityError
+from django.http import HttpResponseForbidden
+from django.utils import timezone
+
+from .models import Livre, Emprunt, Reservation
+from utilitaires.roles import est_administrateur
+from applications.notifications.models import Notification
 # ──────────────────────────────────────────────────────────────
 # ACCUEIL
 # ──────────────────────────────────────────────────────────────
@@ -346,39 +361,341 @@ def vue_supprimer_personnel(request, personnel_id):
 
 # ── Livres ───────────────────────────────────────────────────────────────────
 
+
+
+
+# ── Helpers ─────────────────────────────────────────────────────────────────
+
+def _notifier(utilisateur, titre, message, lien=''):
+    Notification.objects.create(
+        utilisateur=utilisateur,
+        type_notification='livre',
+        titre=titre,
+        message=message,
+        lien=lien,
+    )
+
+
+def _activer_prochaine_reservation(livre):
+    """Notifie le prochain en liste d'attente quand un exemplaire se libère."""
+    prochaine = (
+        livre.reservations
+        .filter(statut='en_attente')
+        .order_by('date_reservation')
+        .first()
+    )
+    if prochaine:
+        prochaine.notifier_disponible()
+        _notifier(
+            prochaine.utilisateur,
+            titre=f'"{livre.titre}" est disponible pour vous',
+            message=(
+                f'Bonne nouvelle ! Le livre « {livre.titre} » que vous avez réservé '
+                f'est maintenant disponible. Vous avez {Reservation.DELAI_DISPONIBILITE_JOURS} jours '
+                f'pour venir le récupérer à la médiathèque.'
+            ),
+            lien='/portail/livres/',
+        )
+
+
+# ── Catalogue ────────────────────────────────────────────────────────────────
+
 @login_required
 def vue_liste_livres(request):
-    livres = Livre.objects.order_by("titre")
-    return render(request, "portail/livres/liste.html", {"livres": livres})
+    q         = request.GET.get('q', '').strip()
+    categorie = request.GET.get('categorie', '')
+    dispo     = request.GET.get('dispo', '')
+
+    livres = Livre.objects.prefetch_related('emprunts', 'reservations')
+
+    if q:
+        livres = livres.filter(titre__icontains=q) | livres.filter(auteur__icontains=q)
+        livres = livres.distinct()
+    if categorie:
+        livres = livres.filter(categorie=categorie)
+    if dispo == '1':
+        # On filtre côté Python car disponible est une property
+        livres = [l for l in livres if l.disponible]
+
+    # Mes emprunts en cours + réservations actives (pour les badges)
+    mes_emprunts_ids     = set()
+    mes_reservations_ids = set()
+    if request.user.is_authenticated:
+        mes_emprunts_ids = set(
+            Emprunt.objects.filter(utilisateur=request.user, statut__in=['en_cours', 'en_retard'])
+            .values_list('livre_id', flat=True)
+        )
+        mes_reservations_ids = set(
+            Reservation.objects.filter(utilisateur=request.user, statut__in=['en_attente', 'disponible'])
+            .values_list('livre_id', flat=True)
+        )
+
+    return render(request, 'portail/livres/liste.html', {
+        'livres':              livres,
+        'categories':          Livre.CHOIX_CATEGORIE,
+        'q':                   q,
+        'categorie_filtre':    categorie,
+        'dispo_filtre':        dispo,
+        'mes_emprunts_ids':    mes_emprunts_ids,
+        'mes_reservations_ids': mes_reservations_ids,
+    })
+
+
+@login_required
+def vue_detail_livre(request, livre_id):
+    livre = get_object_or_404(Livre, id=livre_id)
+    mon_emprunt = Emprunt.objects.filter(
+        utilisateur=request.user, livre=livre, statut__in=['en_cours', 'en_retard']
+    ).first()
+    ma_reservation = Reservation.objects.filter(
+        utilisateur=request.user, livre=livre, statut__in=['en_attente', 'disponible']
+    ).first()
+    file_attente = livre.reservations.filter(statut='en_attente').count()
+
+    return render(request, 'portail/livres/detail.html', {
+        'livre':          livre,
+        'mon_emprunt':    mon_emprunt,
+        'ma_reservation': ma_reservation,
+        'file_attente':   file_attente,
+    })
+
+
+# ── Emprunts ─────────────────────────────────────────────────────────────────
+
+@login_required
+def vue_emprunter(request, livre_id):
+    livre = get_object_or_404(Livre, id=livre_id)
+
+    # Vérifications
+    if not livre.disponible:
+        messages.error(request, "Ce livre n'a plus d'exemplaires disponibles.")
+        return redirect('portail:detail_livre', livre_id=livre_id)
+
+    deja = Emprunt.objects.filter(
+        utilisateur=request.user, livre=livre, statut__in=['en_cours', 'en_retard']
+    ).exists()
+    if deja:
+        messages.warning(request, "Vous avez déjà ce livre en votre possession.")
+        return redirect('portail:detail_livre', livre_id=livre_id)
+
+    if request.method == 'POST':
+        duree = int(request.POST.get('duree_jours', Emprunt.DUREE_DEFAUT_JOURS))
+        duree = max(1, min(duree, 30))  # entre 1 et 30 jours
+        aujourd_hui = datetime.date.today()
+
+        emprunt = Emprunt.objects.create(
+            utilisateur=request.user,
+            livre=livre,
+            date_emprunt=aujourd_hui,
+            date_retour_prevue=aujourd_hui + datetime.timedelta(days=duree),
+        )
+
+        # Annuler la réservation si elle en avait une
+        Reservation.objects.filter(
+            utilisateur=request.user, livre=livre, statut__in=['en_attente', 'disponible']
+        ).update(statut='annulee')
+
+        _notifier(
+            request.user,
+            titre=f'Emprunt confirmé : « {livre.titre} »',
+            message=(
+                f'Vous avez emprunté « {livre.titre} » le {aujourd_hui.strftime("%d/%m/%Y")}. '
+                f'Retour prévu le {emprunt.date_retour_prevue.strftime("%d/%m/%Y")}.'
+            ),
+            lien='/portail/livres/mes-emprunts/',
+        )
+
+        messages.success(request, f"Emprunt de « {livre.titre} » enregistré. Retour prévu le {emprunt.date_retour_prevue.strftime('%d/%m/%Y')}.")
+        return redirect('portail:mes_emprunts')
+
+    return render(request, 'portail/livres/confirmer_emprunt.html', {
+        'livre': livre,
+        'duree_defaut': Emprunt.DUREE_DEFAUT_JOURS,
+    })
+
+
+@login_required
+def vue_retourner(request, emprunt_id):
+    emprunt = get_object_or_404(Emprunt, id=emprunt_id)
+
+    # Seul l'emprunteur ou un admin peut retourner
+    if emprunt.utilisateur != request.user and not request.user.est_administrateur():
+        return HttpResponseForbidden()
+
+    if emprunt.statut == 'rendu':
+        messages.warning(request, "Ce livre a déjà été retourné.")
+        return redirect('portail:mes_emprunts')
+
+    if request.method == 'POST':
+        emprunt.statut = 'rendu'
+        emprunt.date_retour_effective = datetime.date.today()
+        emprunt.save()
+
+        _notifier(
+            emprunt.utilisateur,
+            titre=f'Retour enregistré : « {emprunt.livre.titre} »',
+            message=f'Le retour de « {emprunt.livre.titre} » a été enregistré le {datetime.date.today().strftime("%d/%m/%Y")}. Merci !',
+            lien='/portail/livres/mes-emprunts/',
+        )
+
+        # Notifier le prochain en liste d'attente
+        _activer_prochaine_reservation(emprunt.livre)
+
+        messages.success(request, f"Retour de « {emprunt.livre.titre} » enregistré.")
+        return redirect('portail:mes_emprunts' if not request.user.est_administrateur() else 'portail:gestion_emprunts')
+
+    return render(request, 'portail/livres/confirmer_retour.html', {'emprunt': emprunt})
+
+
+@login_required
+def vue_mes_emprunts(request):
+    emprunts_actifs = Emprunt.objects.filter(
+        utilisateur=request.user, statut__in=['en_cours', 'en_retard']
+    ).select_related('livre').order_by('date_retour_prevue')
+
+    historique = Emprunt.objects.filter(
+        utilisateur=request.user, statut='rendu'
+    ).select_related('livre').order_by('-date_retour_effective')[:20]
+
+    mes_reservations = Reservation.objects.filter(
+        utilisateur=request.user, statut__in=['en_attente', 'disponible']
+    ).select_related('livre').order_by('date_reservation')
+
+    return render(request, 'portail/livres/mes_emprunts.html', {
+        'emprunts_actifs':  emprunts_actifs,
+        'historique':       historique,
+        'mes_reservations': mes_reservations,
+    })
+
+
+# ── Réservations ─────────────────────────────────────────────────────────────
+
+@login_required
+def vue_reserver(request, livre_id):
+    livre = get_object_or_404(Livre, id=livre_id)
+
+    if livre.disponible:
+        messages.info(request, "Ce livre est disponible — vous pouvez directement l'emprunter.")
+        return redirect('portail:detail_livre', livre_id=livre_id)
+
+    deja_emprunt = Emprunt.objects.filter(
+        utilisateur=request.user, livre=livre, statut__in=['en_cours', 'en_retard']
+    ).exists()
+    if deja_emprunt:
+        messages.warning(request, "Vous avez déjà ce livre en votre possession.")
+        return redirect('portail:detail_livre', livre_id=livre_id)
+
+    if request.method == 'POST':
+        try:
+            Reservation.objects.create(utilisateur=request.user, livre=livre)
+            messages.success(request, f"Réservation enregistrée pour « {livre.titre} ». Vous serez notifié dès qu'un exemplaire se libère.")
+        except IntegrityError:
+            messages.warning(request, "Vous avez déjà une réservation active pour ce livre.")
+        return redirect('portail:mes_emprunts')
+
+    position = livre.reservations.filter(statut='en_attente').count() + 1
+    return render(request, 'portail/livres/confirmer_reservation.html', {
+        'livre':    livre,
+        'position': position,
+    })
+
+
+@login_required
+def vue_annuler_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id, utilisateur=request.user)
+    if request.method == 'POST':
+        reservation.statut = 'annulee'
+        reservation.save()
+        messages.success(request, f"Réservation pour « {reservation.livre.titre} » annulée.")
+    return redirect('portail:mes_emprunts')
+
+
+# ── Administration ────────────────────────────────────────────────────────────
+
+@login_required
+@user_passes_test(est_administrateur)
+def vue_gestion_emprunts(request):
+    """Vue admin : tous les emprunts en cours + retards."""
+    statut = request.GET.get('statut', '')
+    q      = request.GET.get('q', '').strip()
+
+    emprunts = Emprunt.objects.select_related('utilisateur', 'livre').order_by('-date_emprunt')
+
+    if statut:
+        emprunts = emprunts.filter(statut=statut)
+    if q:
+        emprunts = emprunts.filter(
+            livre__titre__icontains=q
+        ) | emprunts.filter(
+            utilisateur__first_name__icontains=q
+        ) | emprunts.filter(
+            utilisateur__last_name__icontains=q
+        )
+        emprunts = emprunts.distinct()
+
+    # Statistiques rapides
+    stats = {
+        'en_cours':  Emprunt.objects.filter(statut='en_cours').count(),
+        'en_retard': Emprunt.objects.filter(statut='en_retard').count(),
+        'rendus_mois': Emprunt.objects.filter(
+            statut='rendu',
+            date_retour_effective__month=datetime.date.today().month
+        ).count(),
+    }
+
+    return render(request, 'portail/livres/gestion_emprunts.html', {
+        'emprunts': emprunts,
+        'stats':    stats,
+        'statut_filtre': statut,
+        'q': q,
+    })
 
 
 @login_required
 @user_passes_test(est_administrateur)
+def vue_enregistrer_retour_admin(request, emprunt_id):
+    """Admin enregistre un retour physique."""
+    emprunt = get_object_or_404(Emprunt, id=emprunt_id)
+    if request.method == 'POST':
+        emprunt.statut = 'rendu'
+        emprunt.date_retour_effective = datetime.date.today()
+        emprunt.save()
+        _activer_prochaine_reservation(emprunt.livre)
+        messages.success(request, f"Retour de « {emprunt.livre.titre} » enregistré pour {emprunt.utilisateur.get_full_name()}.")
+    return redirect('portail:gestion_emprunts')
+
+
+# ── CRUD Livre (admin) ────────────────────────────────────────────────────────
+
+@login_required
+@user_passes_test(est_administrateur)
 def vue_creer_livre(request):
-    formulaire = FormulaireliVre(request.POST or None)
-    if request.method == "POST" and formulaire.is_valid():
+    from .forms import FormulaireLivre
+    formulaire = FormulaireLivre(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and formulaire.is_valid():
         formulaire.save()
         messages.success(request, "Livre ajouté avec succès.")
-        return redirect("portail:liste_livres")
-    return render(request, "portail/livres/formulaire.html", {
-        "formulaire": formulaire,
-        "titre": "Ajouter un livre",
+        return redirect('portail:liste_livres')
+    return render(request, 'portail/livres/formulaire.html', {
+        'formulaire': formulaire,
+        'titre': 'Ajouter un livre',
     })
 
 
 @login_required
 @user_passes_test(est_administrateur)
 def vue_modifier_livre(request, livre_id):
+    from .forms import FormulaireLivre
     livre = get_object_or_404(Livre, id=livre_id)
-    formulaire = FormulaireliVre(request.POST or None, instance=livre)
-    if request.method == "POST" and formulaire.is_valid():
+    formulaire = FormulaireLivre(request.POST or None, request.FILES or None, instance=livre)
+    if request.method == 'POST' and formulaire.is_valid():
         formulaire.save()
         messages.success(request, "Livre modifié avec succès.")
-        return redirect("portail:liste_livres")
-    return render(request, "portail/livres/formulaire.html", {
-        "formulaire": formulaire,
-        "titre": f"Modifier — {livre.titre}",
-        "livre": livre,
+        return redirect('portail:liste_livres')
+    return render(request, 'portail/livres/formulaire.html', {
+        'formulaire': formulaire,
+        'titre': f'Modifier — {livre.titre}',
+        'livre': livre,
     })
 
 
@@ -386,8 +703,8 @@ def vue_modifier_livre(request, livre_id):
 @user_passes_test(est_administrateur)
 def vue_supprimer_livre(request, livre_id):
     livre = get_object_or_404(Livre, id=livre_id)
-    if request.method == "POST":
+    if request.method == 'POST':
         livre.delete()
         messages.success(request, f"« {livre.titre} » supprimé.")
-        return redirect("portail:liste_livres")
-    return render(request, "portail/livres/supprimer.html", {"livre": livre})
+        return redirect('portail:liste_livres')
+    return render(request, 'portail/livres/supprimer.html', {'livre': livre})

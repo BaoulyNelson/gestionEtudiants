@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}{{ livre.titre }}{% endblock %}
+{% block sb_active_livres %}active{% endblock %}
+
+{% block authenticated_content %}
+  {% include 'partials/entete_etablissement.html' %}
+
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'portail:liste_livres' %}">Bibliothèque</a></li>
+      <li class="breadcrumb-item active">{{ livre.titre }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+
+    <div class="col-md-3 text-center">
+      {% if livre.couverture %}
+        <img src="{{ livre.couverture.url }}" class="img-fluid rounded shadow" alt="Couverture">
+      {% else %}
+        <div class="bg-light rounded d-flex align-items-center justify-content-center border" style="height:260px;">
+          <i class="fas fa-book fa-3x text-muted"></i>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-9">
+      <h2 class="fw-bold mb-1">{{ livre.titre }}</h2>
+      <p class="text-muted mb-1">
+        <i class="fas fa-user me-1"></i>{{ livre.auteur }}
+        {% if livre.editeur %} &nbsp;·&nbsp; <i class="fas fa-building me-1"></i>{{ livre.editeur }}{% endif %}
+        {% if livre.annee %} &nbsp;·&nbsp; {{ livre.annee }}{% endif %}
+      </p>
+
+      {% if livre.isbn %}
+        <p class="small text-muted mb-2"><i class="fas fa-barcode me-1"></i>ISBN : {{ livre.isbn }}</p>
+      {% endif %}
+
+      <span class="badge bg-secondary mb-3">{{ livre.get_categorie_display }}</span>
+
+{% if livre.disponible %}
+  <div class="alert alert-success py-2">
+    <i class="fas fa-check-circle me-1"></i>
+    <strong>{{ livre.exemplaires_disponibles }}</strong> / {{ livre.nombre_exemplaires }}
+    exemplaire{{ livre.nombre_exemplaires|pluralize }} disponible{{ livre.exemplaires_disponibles|pluralize }}
+  </div>
+{% else %}
+  <div class="alert alert-danger py-2">
+    <i class="fas fa-times-circle me-1"></i>
+    Aucun exemplaire disponible ({{ livre.nombre_exemplaires }} au total)
+    {% if file_attente %}
+      — <strong>{{ file_attente }}</strong> personne{{ file_attente|pluralize }} en attente
+    {% endif %}
+  </div>
+{% endif %}
+
+      <p>{{ livre.resume }}</p>
+
+   
+      <div class="d-flex flex-wrap gap-2 mt-3">
+
+        {% if mon_emprunt %}
+          <span class="btn btn-outline-secondary disabled">
+            <i class="fas fa-bookmark me-1"></i>Déjà emprunté
+          </span>
+          <a href="{% url 'portail:retourner' emprunt_id=mon_emprunt.id %}" class="btn btn-outline-danger">
+            <i class="fas fa-undo me-1"></i>Retourner
+          </a>
+
+        {% elif ma_reservation %}
+          <span class="btn btn-outline-warning disabled">
+            <i class="fas fa-hourglass-half me-1"></i>
+            {% if ma_reservation.statut == 'disponible' %}
+              Disponible — à récupérer avant le {{ ma_reservation.date_disponibilite|date:"d/m/Y" }}
+            {% else %}
+              Réservé — en attente
+            {% endif %}
+          </span>
+          <form method="post" action="{% url 'portail:annuler_reservation' reservation_id=ma_reservation.id %}"
+                onsubmit="return confirm('Annuler votre réservation ?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm">Annuler la réservation</button>
+          </form>
+
+        {% elif livre.disponible %}
+          <a href="{% url 'portail:emprunter' livre_id=livre.id %}" class="btn btn-primary">
+            <i class="fas fa-book me-1"></i>Emprunter
+          </a>
+
+        {% else %}
+          <a href="{% url 'portail:reserver' livre_id=livre.id %}" class="btn btn-warning">
+            <i class="fas fa-hourglass me-1"></i>Réserver
+          </a>
+        {% endif %}
+
+        {% if user.est_administrateur %}
+          <a href="{% url 'portail:modifier_livre' livre.id %}" class="btn btn-outline-primary">
+            <i class="fas fa-pen me-1"></i>Modifier
+          </a>
+        {% endif %}
+
+        <a href="{% url 'portail:liste_livres' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left me-1"></i>Retour
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

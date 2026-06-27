@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Réserver — {{ livre.titre }}{% endblock %}
+{% block sb_active_livres %}active{% endblock %}
+
+{% block authenticated_content %}
+  {% include 'partials/entete_etablissement.html' %}
+
+  <div class="d-flex align-items-center mb-4">
+    <a href="{% url 'portail:detail_livre' livre_id=livre.id %}" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <div>
+      <h2 class="mb-0 fw-bold"><i class="fas fa-hourglass-half me-2" style="color:#1a3a6b;"></i>Confirmer la réservation</h2>
+      <small class="text-muted">{{ livre.titre }} — {{ livre.auteur }}</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+
+          <div class="alert alert-warning py-2 small mb-3">
+            <i class="fas fa-exclamation-circle me-1"></i>
+            Aucun exemplaire disponible actuellement. Vous serez
+            <strong>n°{{ position }}</strong> dans la file d'attente.
+          </div>
+
+          <p class="small text-muted mb-3">
+            <i class="fas fa-bell me-1"></i>
+            Vous recevrez une notification dès qu'un exemplaire se libère.
+            Vous aurez alors <strong>3 jours</strong> pour venir le récupérer à la médiathèque.
+          </p>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-warning">
+                <i class="fas fa-hourglass me-1"></i>Confirmer la réservation
+              </button>
+              <a href="{% url 'portail:detail_livre' livre_id=livre.id %}" class="btn btn-outline-secondary">
+                Annuler
+              </a>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

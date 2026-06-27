@@ -14,10 +14,13 @@ import sys
 import django
 from pathlib import Path
 
-# ── Bootstrap Django ──────────────────────────────────────────────────────────
-BASE_DIR = Path(__file__).resolve().parent
+# ── ROOT DU PROJET (important) ─────────────────────────────
+BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
+
+# ── SETTINGS DJANGO ────────────────────────────────────────
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "configuration.settings")
+
 django.setup()
 
 # ── Imports après setup ───────────────────────────────────────────────────────
